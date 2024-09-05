@@ -1,0 +1,61 @@
+
+
+table{
+    margin: auto;
+}
+
+tr, td, table{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+
+
+td{
+    height: 50px;
+    width: 50px;
+    position: relative;
+}
+
+button{
+    --size : 70%;
+    width:  var(--size);
+    height: var(--size);
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    border: none;
+   background-color: transparent;
+}
+
+
+
+tr:first-child{
+    border: 0px solid white;
+}
+
+tr > td:first-child{
+    border: 0px solid white;
+}
+
+.main{
+    bottom: calc(var(--size) /-2);
+    right: calc(var(--size) /-2);
+}
+
+.up{
+    right: calc(var(--size) /-2);
+    top: calc(var(--size) /-2);
+}
+
+.left{
+    left: calc(var(--size) /-2);
+    bottom: calc(var(--size) /-2);
+}
+
+.upleft{
+    left: calc(var(--size) /-2);
+    top: calc(var(--size) /-2);
+}
+
+
