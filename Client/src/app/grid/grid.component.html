@@ -1,0 +1,10 @@
+<table>
+    <tr *ngFor="let e of [].constructor(9); let i = index">
+        <td class="" *ngFor="let f of [].constructor(9); let j = index" [id]="'l'+i+'c'+j">
+            <div class="container main"><div (click)="this.click()" class="button main"></div></div>
+            <div *ngIf="i==0" class="container up"><div (click)="this.click()" class="button up" ></div></div>
+            <div *ngIf="j==0" class="container left"><div (click)="this.click()" class="button left" ></div></div>
+            <div *ngIf="i==0 && j==0" class="container upleft"><div (click)="this.click()" class="button upleft" ></div></div>
+        </td>
+    </tr>
+</table>

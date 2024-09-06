@@ -1,0 +1,104 @@
+
+table{
+    margin: auto;
+    --size : 50%;
+    background-image: url("../../img/background.jpg");
+}
+
+tr, td, table{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+
+
+td{
+    height: 50px;
+    width: 50px;
+    position: relative;
+}
+
+.button{
+    width:  var(--size);
+    height: var(--size);
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 50%;
+    z-index: 3;
+}
+
+.container{
+    width: calc(var(--size)*2);
+    height: calc(var(--size)*2);
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    border: none;
+    z-index: 3;
+}
+
+
+.container:hover{
+    .button{
+        background-color: grey;
+        opacity: 0.5;
+    }
+}
+
+
+
+tr:first-child{
+    border: 0px solid white;
+}
+
+tr > td:first-child{
+    border: 0px solid white;
+}
+
+.button.main{
+    bottom: calc(var(--size)/2);
+    right: calc(var(--size)/2);
+}
+
+.button.up{
+    top: calc(var(--size)/2);
+    right: calc(var(--size)/2);
+}
+
+
+.button.left{
+    bottom: calc(var(--size)/2);
+    left: calc(var(--size)/2);
+}
+
+.button.upleft{
+    top: calc(var(--size)/2);
+    left: calc(var(--size)/2);
+}
+
+
+
+
+.container.main{
+    bottom: calc(var(--size)*-1);
+    right: calc(var(--size)*-1);
+}
+
+.container.up{
+    right: calc(var(--size)*-1);
+    top: calc(var(--size)*-1);
+}
+
+.container.left{
+    left: calc(var(--size)*-1);
+    bottom: calc(var(--size)*-1);
+}
+
+.container.upleft{
+    left: calc(var(--size)*-1);
+    top: calc(var(--size)*-1);
+}
+
+
