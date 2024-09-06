@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { elementAt } from 'rxjs';
 
@@ -9,9 +9,7 @@ import { elementAt } from 'rxjs';
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css'
 })
-export class GridComponent {
-
-
+export class GridComponent{
 
   public click():void{
     alert("clicked");
