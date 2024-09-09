@@ -1,0 +1,58 @@
+<mat-sidenav-container id="container">
+  <mat-sidenav-content id="logo-container">
+    <img src="renard.png" id="logo" alt="logo">
+    DGS
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button mat-primary>
+      <mat-icon>play_arrow</mat-icon>
+      Jouer
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button>
+      <mat-icon>replay</mat-icon>
+      Replay
+    </button>
+  </mat-sidenav-content>
+
+
+  <mat-sidenav-content>
+    <button mat-button>
+      <mat-icon>language</mat-icon>
+      Social
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button>
+      <mat-icon>person</mat-icon>
+      Mon compte
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button (click)="this.changeLightState()">
+      <mat-icon>light_mode</mat-icon>
+      <span id="state">Interface sombre</span>
+    </button>
+  </mat-sidenav-content>
+
+
+  <mat-sidenav-content>
+    <button mat-button>
+      <mat-icon>settings</mat-icon>
+      Paramètres
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button>
+      <mat-icon>help</mat-icon>
+      Aide
+    </button>
+  </mat-sidenav-content>
+  
+</mat-sidenav-container>

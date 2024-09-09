@@ -1,0 +1,29 @@
+mat-sidenav-container{
+    width: 12%;
+    height: 100%;
+    color: black !important;
+}
+
+mat-sidenav-content{
+    height: auto;
+    margin-top: 10px;
+}
+
+
+#logo-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+button{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    color: unset !important;
+}
+
+#logo{
+    width: 100px;
+    height: 100px;
+}
