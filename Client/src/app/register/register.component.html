@@ -1,0 +1,33 @@
+<div class="register-container">
+    <img src="assets/logo.png" alt="Logo" class="logo">
+    
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Pseudo</label>
+        <input type="text" id="username" name="username" >
+      </div>
+  
+      <div class="form-group">
+        <label for="email">Adresse Email</label>
+        <input type="email" id="email" name="email" >
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" >
+      </div>
+  
+      <div class="form-group">
+        <label for="confirmPassword">Confirmez le mot de passe</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" >
+      </div>
+  
+      <div class="form-group">
+        <label for="avatar">Avatar</label>
+        <input type="file" id="avatar" (change)="onFileSelected($event)">
+      </div>
+  
+      <button type="submit">S'inscrire</button>
+    </form>
+  </div>
+  
