@@ -18,7 +18,7 @@ td{
     position: relative;
 }
 
-.button{
+.pawn{
     width:  var(--size);
     height: var(--size);
     position: absolute;
@@ -41,7 +41,7 @@ td{
 
 
 .container:hover{
-    .button{
+    .pawn{
         background-color: grey;
         opacity: 0.5;
     }
@@ -57,23 +57,23 @@ tr > td:first-child{
     border: 0px solid white;
 }
 
-.button.main{
+.pawn.main{
     bottom: calc(var(--size)/2);
     right: calc(var(--size)/2);
 }
 
-.button.up{
+.pawn.up{
     top: calc(var(--size)/2);
     right: calc(var(--size)/2);
 }
 
 
-.button.left{
+.pawn.left{
     bottom: calc(var(--size)/2);
     left: calc(var(--size)/2);
 }
 
-.button.upleft{
+.pawn.upleft{
     top: calc(var(--size)/2);
     left: calc(var(--size)/2);
 }
