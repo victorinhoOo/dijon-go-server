@@ -1,0 +1,15 @@
+.card-pos{
+    max-width: 60%; margin: 0 auto;
+    padding: 1%;
+    background-color: #FFEBE4;
+}
+#params{
+    margin-left: auto;
+    display: block;
+    padding-top: 5px;
+}
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

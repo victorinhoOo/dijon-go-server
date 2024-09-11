@@ -1,0 +1,27 @@
+<div class="container 5 test">
+<h1 mat-dialog-title>Test</h1>
+
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="container mt-4">
+  <div class="form-group row">
+    <label for="pseudo" class="col-12 col-form-label">Pseudo:</label>
+    <div class="col-12">
+      <input id="pseudo" formControlName="pseudo" class="form-control" />
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="pwd" class="col-12 col-form-label">Password:</label>
+    <div class="col-12">
+      <input type="password" formControlName="pwd" id="pwd" class="form-control" />
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="!profileForm.valid">
+        Soumettre
+      </button>
+    </div>
+  </div>
+</form>
+</div>
