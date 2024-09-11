@@ -41,6 +41,11 @@
     cursor: pointer;
   }
   
+  #Inscription{
+    text-align: center;
+  
+  }
+  
   button:disabled {
     background-color: #ccc;
   }
