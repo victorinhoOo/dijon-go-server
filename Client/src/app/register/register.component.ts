@@ -1,21 +1,29 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { EmailValidator, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { UploadImageComponent } from "../upload-image/upload-image.component";
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [],
+  imports: [UploadImageComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  avatarFile: File | null = null;
   
-  onFileSelected(event: any): void {
-    this.avatarFile = event.target.files[0];
-  }
+  profileForm!: FormGroup;
 
+  constructor(private fb: FormBuilder) {}
+  ngOnInit(): void {
+    this.profileForm = this.fb.group({
+      pseudo: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      
+    });}
+    
   onSubmit(): void {
-    console.log('Form submitted');
+    if (this.profileForm.valid) {
+      console.log(this.profileForm.value);  
+    }
   }
 }

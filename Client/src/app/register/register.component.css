@@ -5,7 +5,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #FFEBE4;
-    font-family: ArialArial_rounded_mt2;
+    font-family: Nunito;
     font-weight: bold;
   }
   
@@ -23,7 +23,7 @@
   label {
     display: block;
     margin-bottom: 5px;
-    font-family: ArialArial_rounded_mt2;
+    font-family: Nunito;
     font-weight: bold;
   }
   
@@ -44,12 +44,13 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: ArialArial_rounded_mt2;
+    font-family: Nunito;
     font-weight: bold;
   }
   
   #Inscription{
     text-align: center;
+    font-size: 120%;
   
   }
   
@@ -58,8 +59,18 @@
     color: black;
   }
 
-@font-face {
-  font-family: Arial_rounded_mt;
-  src: url(../../../font/arial-rounded-mt.ttf);
+  #avatar {
+    display: none;
 }
-  
+
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.custom-file-label svg {
+  margin-left: 8px;
+}
+
+
