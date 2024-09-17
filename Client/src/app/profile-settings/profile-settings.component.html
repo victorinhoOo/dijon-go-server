@@ -1,5 +1,5 @@
-<div class="container 5 test">
-<h1 mat-dialog-title>Test</h1>
+<div class="container 5 ">
+<h1 mat-dialog-title>Modifier son profil</h1>
 
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="container mt-4">
   <div class="form-group row">
@@ -17,8 +17,8 @@
   </div>
 
   <div class="row mt-4">
-    <div class="col-12">
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="!profileForm.valid">
+    <div class="col-12 test">
+      <button type="submit" class="btn btn-block" [disabled]="!profileForm.valid" id="sub">
         Soumettre
       </button>
     </div>

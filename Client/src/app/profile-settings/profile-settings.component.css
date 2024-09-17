@@ -1,6 +1,12 @@
-body{
-    background-color: #FFEBE4;
+.container{
+
+    font-family: 'Nunito';
 }
-.test{
-    background-color: #FFEBE4;
+
+#sub{    
+    color : #ffffff;
+    background-color: #FA7E5C;    
+}
+h1{
+    text-align: center;
 }
