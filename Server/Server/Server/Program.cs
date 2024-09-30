@@ -1,3 +1,8 @@
+using Microsoft.Extensions.Options;
+using Server.Model.Data;
+using Server.Model.Images;
+using Server.Model.Managers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +11,23 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<FTPSettings>(builder.Configuration.GetSection("FTPSettings"));
+
+// Injection de dépendances
+builder.Services.AddScoped<IDatabase, MySqlDatabase>(provider =>
+{
+    var config = provider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+    return new MySqlDatabase(config.DefaultConnection);
+});
+builder.Services.AddScoped<TokenManager>();
+builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<ImageManager>();
+builder.Services.AddScoped<IUserDAO, UserDAO>();
+builder.Services.AddScoped<ITokenDAO, TokenDAO>();
+builder.Services.AddScoped<IFileUploader, FtpUploader>();
+
 
 var app = builder.Build();
 
