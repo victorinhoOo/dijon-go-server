@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-upload-image',
@@ -11,15 +11,19 @@ export class UploadImageComponent {
 
   uploadedImage:any;
 
-  fileChange(e:any){
-  debugger
-    if(e.target.files[0]!=null){
-      var reader = new FileReader();
-      reader.onload=(e:any)=>{
-        this.uploadedImage = e.target.result;
-      }
+  @Output() imageSelected = new EventEmitter<any>();
+
+  fileChange(e: any) {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      
+      reader.onload = (event: any) => {
+        this.uploadedImage = event.target.result;  // Conversion en base64
+        this.imageSelected.emit(this.uploadedImage);  // envoye l'image a profile-setting
+      };
+
       reader.readAsDataURL(e.target.files[0]);
     }
-  }  
+  }
 
 }
