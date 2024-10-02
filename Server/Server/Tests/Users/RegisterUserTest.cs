@@ -75,7 +75,7 @@ public class RegisterUserTest
 
         var registerUserDto = new RegisterUserDTO
         {
-            Username = "user1",  // ce nom d'utilisateur existe déjà dans le fakedao
+            Username = "victor",  // ce nom d'utilisateur existe déjà dans le fakedao
             Email = "test@test.com",
             Password = "password",
             ProfilePic = null
