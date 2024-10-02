@@ -98,6 +98,7 @@
             return result;
         }
 
+        /// <inheritdoc/>
         public User GetUserByToken(string token)
         {
             User user = null;

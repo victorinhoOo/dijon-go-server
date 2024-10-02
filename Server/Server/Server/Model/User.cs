@@ -18,7 +18,7 @@
             this.email = email;
         }
 
-        public User() { }
+        public User() { } // constructeur vide nécessaire pour la récupération depuis la bdd
 
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }

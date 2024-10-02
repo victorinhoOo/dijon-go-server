@@ -125,26 +125,5 @@ namespace Server.Model.Data
             database.Disconnect();
             return user;
         }
-
-        public int GetIdByUsername(string username)
-        {
-            int res = 0;
-            database.Connect();
-            string query = "SELECT idUser FROM user WHERE username = @username";
-            var parameters = new Dictionary<string, object>
-                {
-                    {"@username", username}
-                };
-
-            var result = database.ExecuteQuery(query, parameters);
-
-            if (result.Rows.Count > 0)
-            {
-                res = Convert.ToInt32(result.Rows[0]["idUser"]);
-            }
-
-            database.Disconnect();
-            return res;
-        }
     }
 }

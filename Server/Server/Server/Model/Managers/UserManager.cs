@@ -141,17 +141,23 @@ namespace Server.Model.Managers
 
         /// <summary>
         /// Hash le mot de passe pour le stocker en base de données ou le comparer avec le hash stocké en base de données
+        /// (méthode publique pour les tests unitaires)
         /// </summary>
         /// <param name="password">Le mot de passe à hacher</param>
         /// <returns>Le mot de passe haché</returns>
-        private string HashPassword(string password)
+        public string HashPassword(string password)
         {
+            // On établit un sel pour renforcer la sécurité du hash
+            string salt = "C3ciEst1SuperSelLaBale1Ne"; 
+
             using (SHA256 sha256Hash = SHA256.Create())
             {
-                // ComputeHash - retourne un tableau de bytes
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+                string saltedPassword = salt + password;
 
-                // Convertis le tableau de bytes en une chaîne de caractères hexadécimaux
+                // ComputeHash - retourne un tableau de bytes
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
+
+                // Convertis le tableau de bytes en une chaîne de caractères hexadecimale
                 StringBuilder builder = new StringBuilder();
 
                 for (int i = 0; i < bytes.Length; i++)
@@ -162,5 +168,6 @@ namespace Server.Model.Managers
                 return builder.ToString();
             }
         }
+
     }
 }

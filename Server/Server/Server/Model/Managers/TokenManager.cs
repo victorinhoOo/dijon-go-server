@@ -76,5 +76,10 @@ namespace Server.Model.Managers
 
             return token;
         }
+
+        /// <summary>
+        /// Constructeur vide pour les tests unitaires
+        /// </summary>
+        public TokenManager() {}
     }
 }
