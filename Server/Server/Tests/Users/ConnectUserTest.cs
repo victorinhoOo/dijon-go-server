@@ -6,6 +6,9 @@ using Server.Model;
 
 namespace Tests.Users
 {
+    /// <summary>
+    /// Classe de tests pour la connexion d'un utilisateur.
+    /// </summary>
     public class ConnectUserTest
     {
         IUserDAO fakeUserDAO;
