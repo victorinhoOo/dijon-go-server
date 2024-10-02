@@ -17,6 +17,20 @@
   </div>
 
   <div class="form-group row mt-3">
+    <label for="Cpwd" class="col-12 col-form-label">Confirm Password:</label>
+    <div class="col-12">
+      <input type="password"  id="Cpwd" class="form-control" />
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="email" class="col-12 col-form-label">email:</label>
+    <div class="col-12">
+      <input type="text"  id="email" class="form-control" formControlName="email"/>
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
   <app-upload-image (imageSelected)="onImageSelected($event)"></app-upload-image>
   </div>
 

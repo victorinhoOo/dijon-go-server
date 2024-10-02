@@ -24,7 +24,8 @@ export class ProfileSettingsComponent {
     this.profileForm = this.fb.group({
       pseudo: ['', Validators.required],
       pwd: ['',Validators.required],
-      img:[null]
+      img:[null],
+      email:['',Validators.required]
       
     });
     
