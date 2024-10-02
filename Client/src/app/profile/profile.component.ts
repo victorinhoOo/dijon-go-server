@@ -23,7 +23,7 @@ export class ProfileComponent {
   openDialog(): void {
     const dialogRef = this.dialog.open(ProfileSettingsComponent, {
       width: '80%',
-      height: '80%',
+      height: '85%',
       panelClass: 'custom-dialog-container'
     });
     dialogRef.afterClosed().subscribe(result => {
