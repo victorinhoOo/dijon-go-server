@@ -10,4 +10,16 @@ import { GridComponent } from '../grid/grid.component';
 })
 export class GameScreenComponent {
 
+  public constructor(){
+    alert("ok")
+    const ws = new WebSocket("wss://127.0.0.1:7000");
+
+    ws.onopen = ()=>{
+      console.log("connected");
+    }
+
+    ws.onerror = (event) => {
+      console.error("WebSocket error observed:", event);
+  };
+  }
 }
