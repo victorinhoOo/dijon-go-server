@@ -16,7 +16,7 @@ namespace ServerTest
 
         public Server()
         {
-            this.listener = new TcpListener(IPAddress.Parse("10.211.55.3"), 7000);
+            this.listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7000); //10.211.55.3
             this.games = new Dictionary<string, Dictionary<string, Client>>();
         }
 
@@ -33,31 +33,27 @@ namespace ServerTest
                     Thread thread = new Thread(() => {
                         TcpClient tcp = this.listener.AcceptTcpClient();
                         Client client = new Client(tcp);
-                        if (this.games.Count > 0)
+                        if (this.games.Count > 0) // si il y a au moins une partie de créée 
                         {
-                            foreach(string key in this.games.Keys)
+                            Dictionary<string, Client> game = this.games[$"game{this.games.Count()}"]; // on récupère la dernière partie créée
+                            if(game.Count < 2)
                             {
-                                if (this.games[key].Count() < 2)
-                                {
-                                    int count = this.games[key].Count();
-                                    this.games[key][$"player{count}"] = client;
-                                }
+                                game["player2"] = client;
                             }
-                        }
-                        if (this.games.ContainsKey($"game{this.games.Count()}"))
-                        {
-                            Dictionary<string, Client> game = this.games[$"game{this.games.Count()}"];
-                            if (game.Count() < 2)
+                            else
                             {
-                                game[$"player{game.Count()}"] = client;
+                                Dictionary<string, Client> newGame = new Dictionary<string, Client>(); // création d'une nouvelle partie
+                                this.games[$"game{this.games.Count()+1}"] = newGame; // ajout de la partie créée au dictionnaire des parties
+                                newGame["player1"] = client; // ajout du joueur à la partie fraichement créée
                             }
                         }
                         else
                         {
-                            Dictionary<string, Client> game = new Dictionary<string, Client>();
-                            game.Add("player0", client);
-                            this.games[$"game{this.games.Count()}"] = game;
+                            Dictionary<string, Client> newGame = new Dictionary<string, Client>(); // création d'une nouvelle partie
+                            this.games[$"game{this.games.Count() + 1}"] = newGame; // ajout de la partie créée au dictionnaire des parties
+                            newGame["player1"] = client; // ajout du joueur à la partie fraichement créée
                         }
+                                
                         Console.WriteLine("new client connected"); 
                     });
                     thread.Start();
