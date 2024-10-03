@@ -23,48 +23,92 @@ namespace Server.Model.Images
         /// </summary>
         /// <param name="file">Le fichier à analyser.</param>
         /// <returns>Le type de fichier.</returns>
-        public string GetFileType(IFormFile file)
+        private string GetFileType(IFormFile file)
         {
             return System.IO.Path.GetExtension(file.FileName).ToLower();
         }
-
         /// <summary>
-        /// Téléverse l'image de profil d'un utilisateur sur le serveur FTP, si l'image existe déja, elle est remplacée.
+        /// Ouvre la connexion au serveur FTP si elle n'est pas déjà ouverte
         /// </summary>
-        /// <param name="file">Le fichier à téléverser.</param>
-        /// <param name="username">Le nom d'utilisateur.</param>
-        public void UploadProfilePic(IFormFile file, string username)
+        private void Connect()
         {
-            try
+            if (!ftpClient.IsConnected)
             {
-                using (ftpClient)
-                {
-
-                    // Connexion au serveur FTP
-                    ftpClient.AutoConnect();
-
-                    // définit le chemin de l'image sur le serveur (nom de l'utilisateur + extension du fichier)
-                    string type = GetFileType(file);
-                    string remoteFilePath = $"/profile_pics/{username}{type}";
-
-                    // Lire le contenu du fichier en tableau d'octets
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        file.CopyTo(memoryStream);
-                        byte[] fileBytes = memoryStream.ToArray();
-
-                        // Téléverse le fichier vers le serveur FTP
-                        ftpClient.UploadBytes(fileBytes, remoteFilePath, FtpRemoteExists.Overwrite, true);
-                    }
-
-                    ftpClient.Disconnect();
-                }
-            }
-            catch (Exception ex) 
-            {
-                throw new Exception($"Erreur lors du téléversement des fichiers sur le serveur FTP : {ex.Message}", ex);
+                ftpClient.AutoConnect();
             }
         }
 
+        /// <summary>
+        /// Ferme la connexion au serveur FTP
+        /// </summary>
+        private void Disconnect()
+        {
+            if (ftpClient.IsConnected)
+            {
+                ftpClient.Disconnect();
+            }
+        }
+
+        /// <inheritdoc/>
+        public void RenameProfilePic(string oldFileName, string newFileName)
+        {
+            try
+            {
+                this.Connect();
+                // Récupère la liste des photos de profil
+                string profilePicsDirectory = "/profile_pics/";
+                FtpListItem[] profileFiles = ftpClient.GetListing(profilePicsDirectory);
+                // Recherche une image dans la liste qui commence par l'ancien nom 
+                FtpListItem? oldFile = profileFiles.FirstOrDefault(file => file.Name.StartsWith(oldFileName));
+
+                if (oldFile != null)
+                {
+                    // on renomme le nom du fichier sur le serveur en gardant son extension
+                    string fileType = System.IO.Path.GetExtension(oldFile.Name);
+                    string oldFilePath = profilePicsDirectory + oldFile.Name;
+                    string newFilePath = profilePicsDirectory + newFileName + fileType;
+                    ftpClient.Rename(oldFilePath, newFilePath);
+                }
+                else
+                {
+                    throw new FileNotFoundException($"Aucune image de profil trouvée pour {oldFileName}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors du renommage de l'image de profil sur le serveur FTP : {ex.Message}", ex);
+            }
+            finally
+            {
+                this.Disconnect();  
+            }
+        }
+
+        /// <inheritdoc/>
+        public void UploadProfilePic(IFormFile file, string fileName)
+        {
+            try
+            {
+                this.Connect();
+                // récupère l'extension du fichier puis l'enregistre au bon format
+                string type = GetFileType(file);
+                string remoteFilePath = $"/profile_pics/{fileName}{type}";
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.CopyTo(memoryStream);
+                    byte[] fileBytes = memoryStream.ToArray();
+                    ftpClient.UploadBytes(fileBytes, remoteFilePath, FtpRemoteExists.Overwrite, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors du téléversement des fichiers sur le serveur FTP : {ex.Message}", ex);
+            }
+            finally
+            {
+                this.Disconnect();  
+            }
+        }
     }
 }
