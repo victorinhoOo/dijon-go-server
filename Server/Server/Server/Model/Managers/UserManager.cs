@@ -89,7 +89,7 @@ namespace Server.Model.Managers
 
         }
 
-        /// <summary>e
+        /// <summary>
         /// Met à jour les informations de l'utilisateur en fonction de ce qu'il souhaite modifier
         /// </summary>
         /// <param name="updateUserDTO">Les informations de mise à jour de l'utilisateur</param>
@@ -97,45 +97,40 @@ namespace Server.Model.Managers
         {
             // Récupère l'utilisateur existant grâce à son token de connexion 
             User user = tokenManager.GetUserByToken(updateUserDTO.Tokenuser);
-            if (user == null)
+            if(user != null)
             {
-                throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
-            }
+                try
+                {
+                    if (!string.IsNullOrEmpty(updateUserDTO.Username))
+                    {
+                        imageManager.RenameProfilePic(user.Username, updateUserDTO.Username); // Renomme l'image de profil sur le FTP (pour correspondre au nouveau nom d'utilisateur)
+                        user.Username = updateUserDTO.Username;
+                    }
+                    if (!string.IsNullOrEmpty(updateUserDTO.Email))
+                    {
+                        user.Email = updateUserDTO.Email;
+                    }
+                    if (!string.IsNullOrEmpty(updateUserDTO.Password))
+                    {
+                        user.Password = HashPassword(updateUserDTO.Password);
+                    }
+                    if (updateUserDTO.ProfilePic != null)
+                    {
+                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); // une modification de la photo de profil entraine un upload qui écrase l'ancienne photo
+                    }
 
-            try
-            {
-                bool dataChanged = false;
-                // Met à jour les différentes informations de l'utilisateur si elles sont fournies (non null)
-                if (!string.IsNullOrEmpty(updateUserDTO.Username))
-                {
-                    user.Username = updateUserDTO.Username;
-                    dataChanged = true;
-                }
-                if (!string.IsNullOrEmpty(updateUserDTO.Email))
-                {
-                    user.Email = updateUserDTO.Email;
-                    dataChanged = true;
-                }
-                if (!string.IsNullOrEmpty(updateUserDTO.Password))
-                {
-                    user.Password = HashPassword(updateUserDTO.Password);
-                    dataChanged = true;
-                }
-                if (updateUserDTO.ProfilePic != null)
-                {
-                    imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username);
-                }
-
-                if (dataChanged)
-                {  // Enregistre les modifications en base de données 
+                    // Enregistre les modifications en base de données 
                     userDAO.Update(user);
                 }
+                catch (Exception ex)
+                {
+                    throw new Exception("Erreur lors de la mise à jour de l'utilisateur : " + ex.Message);
 
+                }
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("Erreur lors de la mise à jour de l'utilisateur : " + ex.Message);
-
+                throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
             }
         }
 
