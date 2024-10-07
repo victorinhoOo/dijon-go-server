@@ -1,4 +1,4 @@
-<mat-sidenav-container id="container">
+<mat-sidenav-container id="navbar-container">
   <mat-sidenav-content id="logo-container">
     <img src="renard.png" id="logo" alt="logo">
     DGS
@@ -34,7 +34,7 @@
   </mat-sidenav-content>
 
   <mat-sidenav-content>
-    <button mat-button (click)="this.changeLightState()">
+    <button mat-button id="state-button">
       <mat-icon>light_mode</mat-icon>
       <span id="state">Interface sombre</span>
     </button>

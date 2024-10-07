@@ -1,8 +1,12 @@
+#grid-container{
+    padding: 20px;
+    background-color: rgb(207, 156, 89);
+    position: relative;
+}
 
 table{
     margin: auto;
     --size : 50%;
-    background-image: url("../../img/background.jpg");
 }
 
 tr, td, table{
@@ -13,14 +17,14 @@ tr, td, table{
 
 
 td{
-    height: 50px;
-    width: 50px;
+    height: 30px;
+    width: 30px;
     position: relative;
 }
 
 .pawn{
-    width:  var(--size);
-    height: var(--size);
+    width:  calc(var(--size)*2);
+    height: calc(var(--size)*2);
     position: absolute;
     padding: 0;
     margin: 0;
@@ -57,29 +61,6 @@ tr > td:first-child{
     border: 0px solid white;
 }
 
-.pawn.main{
-    bottom: calc(var(--size)/2);
-    right: calc(var(--size)/2);
-}
-
-.pawn.up{
-    top: calc(var(--size)/2);
-    right: calc(var(--size)/2);
-}
-
-
-.pawn.left{
-    bottom: calc(var(--size)/2);
-    left: calc(var(--size)/2);
-}
-
-.pawn.upleft{
-    top: calc(var(--size)/2);
-    left: calc(var(--size)/2);
-}
-
-
-
 
 .container.main{
     bottom: calc(var(--size)*-1);
@@ -99,6 +80,54 @@ tr > td:first-child{
 .container.upleft{
     left: calc(var(--size)*-1);
     top: calc(var(--size)*-1);
+}
+
+
+#player, #opponent{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between ;
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+#player{
+    bottom: -60px;
+}
+
+#opponent{
+    top: -60px;
+}
+
+
+.pseudo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.pseudo img{
+    width: 50px;
+    margin-right: 5px;
+}
+
+.timer{
+    padding : 10px 15px
+}
+
+#player .timer{
+    border: 1px solid black
+}
+
+#opponent .timer{
+    border: 1px solid black
+}
+
+#pass{
+    margin-left: auto;
+    margin-right: 15px;
 }
 
 
