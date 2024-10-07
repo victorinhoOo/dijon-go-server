@@ -19,6 +19,15 @@
 body{
     font-family: 'Nunito' ;
 }
+
 img{
     border-radius:5%;
 }
+#params {
+    background-color: #FA7E5C !important;
+    border: none;
+  }
+
+  #params mat-icon {
+    color: white;
+  }

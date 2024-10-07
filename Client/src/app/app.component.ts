@@ -32,8 +32,8 @@ export class AppComponent implements AfterViewInit{
 
   public changeLightState():void{
     if(this.state == "light"){
-      document.body.style.background = "black";
-      document.body.style.color = "white";
+      document.body.style.background = "#333";
+      document.body.style.color = "black";
       document.getElementById("navbar-container")!.style.setProperty("background", "grey", "important");
       document.getElementById("navbar-container")!.style.setProperty("color", "white", "important");
       Array.from(document.getElementsByClassName("timer")).forEach(timer=>{
@@ -56,10 +56,5 @@ export class AppComponent implements AfterViewInit{
     }
     
   }
-
-
-
-  
-
   
 }
