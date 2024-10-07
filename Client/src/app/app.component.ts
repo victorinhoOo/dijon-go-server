@@ -24,6 +24,7 @@ export class AppComponent implements AfterViewInit{
     document.getElementById('state-button')!.addEventListener('click', () => {
       this.changeLightState();
     });
+    this.connectWebSocket();
   }
 
 
@@ -64,12 +65,12 @@ export class AppComponent implements AfterViewInit{
     }
   }
 
-  /*public connectWebSocket(): void {
-    var client = new WebSocket("ws://10.211.55.3:7000/");
+  public connectWebSocket(): void {
+    var client = new WebSocket("ws://127.0.0.1:7000/"); //10.211.55.3:7000
     client.onopen = ()=>{
       console.log('Connected to WebSocket server');
       client.send('Hello from the browser client!');
     }
 
-  }*/
+  }
 }
