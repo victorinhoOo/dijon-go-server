@@ -36,5 +36,15 @@ namespace Server.Model.Managers
         {
             fileUploader.RenameProfilePic(oldUsername, newUsername);
         }
+
+        /// <summary>
+        /// Renvoie la photo de profil d'un utilisateur donné
+        /// </summary>
+        /// <param name="username">Le nom d'utilisateur dont on souhaite la photo</param>
+        /// <returns>La photo de profil associé à cet utilisateur</returns>
+        public byte[] GetProfilePic(string username)
+        {
+            return fileUploader.GetProfilePic(username);
+        }
     }
 }

@@ -110,5 +110,10 @@ namespace Server.Model.Images
                 this.Disconnect();  
             }
         }
+
+        public byte[] GetProfilePic(string fileName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
