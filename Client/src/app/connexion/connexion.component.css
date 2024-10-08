@@ -41,6 +41,13 @@
     background-color: #FFEBE4;
     color: black;
 }
-#submit{
+
+#submit {
+    border: none;
+    box-shadow: none; 
     background-color: #FA7E5C;
+}
+
+#submit:focus {
+    outline: none; 
 }

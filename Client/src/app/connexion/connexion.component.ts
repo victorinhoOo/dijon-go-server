@@ -23,7 +23,7 @@ export class ConnexionComponent {
   }
 
   onSubmit(): void{
-    console.log(this.connexionForm.value);
+
   }
 
 }
