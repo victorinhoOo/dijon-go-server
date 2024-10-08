@@ -1,0 +1,181 @@
+.main-container {
+    display: flex; /* Utilise flexbox pour aligner les éléments */
+    justify-content: center; /* Espace entre les éléments */
+    align-items: center; /* Aligne verticalement au centre */
+    flex-direction: column; /* Affiche les éléments en colonne */
+    margin-top: 20px; /* Espace au-dessus du conteneur principal */
+}
+.player-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.player-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.top-section {
+    display: flex; /* Utilise flexbox pour aligner les éléments */
+    justify-content: center; /* Espace entre les éléments */
+    align-items: center; /* Aligne verticalement au centre */
+    margin-top: 20px; /* Espace au-dessus de la section */
+    width: 50%;
+}
+
+.rank {
+    display: grid;
+    grid-template-columns: 80px auto; /* 80px pour l'image, le reste pour le texte */
+    grid-template-rows: auto auto; /* Deux lignes pour le label et la valeur */
+    align-items: center; /* Aligne le contenu au début */
+    margin-right: 70px;
+    padding: 10px;
+    border-radius: 10px; /* Arrondir les coins */
+}
+
+.rank img {
+    width: 80px; /* Largeur de l'image */
+    height: 80px; /* Hauteur de l'image */
+}
+
+.rank-text {
+    display: flex;
+    flex-direction: column; /* Affiche le texte en colonne */
+    justify-content: flex-start; /* Aligne le texte en haut */
+}
+
+.rank-label {
+    margin: 0; /* Marge autour du label */
+    font-size: 20px; /* Taille de la police pour le label */
+}
+
+.rank-value {
+    margin: 0;
+    margin-top: 5px; /* Espace entre le label et la valeur */
+    font-size: 24px; /* Taille de la police pour la valeur */
+    font-weight: bold; /* Ajoute du poids au texte de la valeur */
+}
+.last-game {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 90px; /* Ajoute un espace entre rank et last-game */
+    background-color: #EBB840 ;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    border-radius: 10px; /* Coins arrondis */
+    transition: background-color 0.2s ease; /* Animation sur hover */
+}
+
+.last-game:hover{
+    background-color: #f1af13; /* Change la couleur d'arrière-plan au survol */
+    transform: scale(1.02); /* Agrandit l'élément au survol */
+}
+
+.last-game h2{
+    color: black;
+    margin-bottom: 0;
+}
+
+.last-game i{
+    margin-right: 5px; /* Ajoute un espace entre l'icône et le texte */
+}
+.replay-last{
+    margin-top: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+.presentation {
+    display: flex; /* Utilise flexbox pour aligner les éléments */
+    justify-content: center; /* Espace entre les éléments */
+    align-items: center; /* Aligne verticalement au centre */
+    flex-direction: column; /* Affiche les éléments en colonne */
+    margin-top: 20px; /* Espace au-dessus du conteneur principal */
+    margin-right: 60px;
+    margin-left: 60px;
+    font-style: justify;
+}
+
+.game-options {
+    display: flex; /* Utilise flexbox pour aligner les boutons en ligne */
+    justify-content: center; /* Centre les boutons horizontalement */
+    gap: 20px; /* Espace entre les boutons */
+    margin-top: 30px; /* Espace au-dessus de la section */
+}
+
+.game-options a {
+    display: flex; /* Pour aligner l'image et le texte ensemble */
+    flex-direction: column; /* Place l'image au-dessus du texte */
+    align-items: center; /* Centre l'image et le texte */
+    justify-content: center; /* Centre verticalement */
+    background-color: #f8cbbe ; /* Couleur d'arrière-plan des boutons */
+    padding: 20px; /* Ajoute de l'espace autour du contenu du bouton */
+    text-decoration: none; /* Retire la décoration des liens */
+    color: black; /* Couleur du texte */
+    font-size: 18px; /* Taille du texte */
+    font-weight: bold; /* Rendre le texte plus épais */
+    border-radius: 10px; /* Coins arrondis */
+    width: 200px; /* Largeur fixe pour les boutons */
+    height: 150px; /* Hauteur fixe pour les boutons */
+    transition: background-color 0.1s ease; /* Animation sur hover */
+    text-align:center;
+}
+
+.game-options a:hover {
+    background-color: #f7af9b ; /* Change la couleur d'arrière-plan au survol */
+    transform: scale(1.02); /* Agrandit l'élément au survol */
+}
+
+.game-options img {
+    width: 100px; /* Taille des images/ */
+    height: 100px; /* Taille des images */
+}
+
+.leaderboard-section {
+    text-align: center;
+    margin-top: 10px;
+    margin-right: 80px;
+}
+
+.leaderboard {
+    background-color: #f3f3f3; /* Fond gris clair pour le leaderboard */
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto; /* Centre le leaderboard */
+    padding-right: 40px;
+    padding-left: 40px;
+    text-align: justify;
+    width: 200px;
+}
+
+.leaderboard p {
+    font-size: 18px;
+    letter-spacing: 1cm;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #ffffff; /* Fond blanc pour chaque entrée */
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+}
+
+.bottom-section{
+    display: flex; /* Utilise flexbox pour aligner les éléments */
+    justify-content: center; /* Espace entre les éléments */
+    align-items: center; /* Aligne verticalement au centre */
+    margin-top: 20px; /* Espace au-dessus de la section */
+    width: 50%;
+}
+
+
+
+
