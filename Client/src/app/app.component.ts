@@ -28,7 +28,7 @@ export class AppComponent implements AfterViewInit{
 
   public changeLightState():void{
     if(this.state == "light"){
-      document.body.style.background = "black";
+      document.body.style.background = "#302E2B";
       document.body.style.color = "white";
       document.getElementById("navbar-container")!.style.setProperty("background", "grey", "important");
       document.getElementById("navbar-container")!.style.setProperty("color", "white", "important");
@@ -39,7 +39,7 @@ export class AppComponent implements AfterViewInit{
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
       this.state = "dark";
     }else{
-      document.body.style.background = "white";
+      document.body.style.background = "#e9e9e9";
       document.body.style.color = "black";
       document.getElementById("navbar-container")!.style.setProperty("background", "#faf9fd", "important");
       document.getElementById("navbar-container")!.style.setProperty("color", "black", "important");

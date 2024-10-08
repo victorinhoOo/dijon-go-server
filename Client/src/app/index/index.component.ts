@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [NavbarComponent],
+  imports: [NavbarComponent, MatIcon],
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
