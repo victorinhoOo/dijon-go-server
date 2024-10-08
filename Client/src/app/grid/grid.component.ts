@@ -1,11 +1,11 @@
 import { Component, AfterViewInit} from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { elementAt } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [NgFor, NgIf],
+  imports: [NgFor, NgIf, MatIconModule],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css'
 })
