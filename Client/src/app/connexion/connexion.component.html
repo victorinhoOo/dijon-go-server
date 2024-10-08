@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col marge">
         <div class="container">
-            <img src="jeuDeGo.jpg" class="img-fluid custom-image" alt="Image d'exemple" />
+            <img src="jeuDeGo.png" class="img-fluid custom-image" alt="Image d'exemple" />
         </div>
     </div>
     <div class="col marge2">
         <div class="container">
             <div class="d-flex justify-content-center align-items-center ">
-                <mat-card class="custom-card">
+                <mat-card class="custom-card con">
                     <div class="text-center mb-4">
                         <h2>Connexion</h2>
                     </div>
@@ -22,7 +22,7 @@
                                 <input type="password" formControlName="pwd" id="pwd" class="form-control" />
                             </div>
                             <div class="mt-4">
-                                <button type="submit" class="btn btn-primary btn-block" [disabled]="!connexionForm.valid">
+                                <button type="submit" class="btn btn-primary btn-block" [disabled]="!connexionForm.valid" id="submit">
                                     Soumettre
                                 </button>
                             </div>

@@ -37,3 +37,10 @@
     height: 110%; /* pour conserver les proportions */
     max-width: 600px; /* largeur maximum pour éviter qu'elle soit trop grande */
 }
+.con{
+    background-color: #FFEBE4;
+    color: black;
+}
+#submit{
+    background-color: #FA7E5C;
+}
