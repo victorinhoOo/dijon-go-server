@@ -72,20 +72,21 @@ namespace Server.Model.Images
         /// récupère une photo de profil dans le répertoire local.
         /// </summary>
         /// <param name="fileName">Le nom du fichier</param>
-        /// <returns>La photo de profil en bytes</returns>
-        /// <exception cref="FileNotFoundException">Levée si l'image n'existe pas dans le dossier local</exception>
+        /// <returns>La photo de profil en bytes ou l'image de profil par défaut</returns>
         public byte[] GetProfilePic(string fileName)
         {
+            byte[] result = null;
             string filePath = Directory.GetFiles(profilePicsPath, $"{fileName}.*").FirstOrDefault();
 
             if (filePath != null)
             {
-                return File.ReadAllBytes(filePath);
+                result = File.ReadAllBytes(filePath);
             }
             else
             {
-                throw new FileNotFoundException("Image de profil non trouvée.");
+                result = File.ReadAllBytes(Path.Combine(profilePicsPath, "default.png"));
             }
+            return result;
         }
     }
 }

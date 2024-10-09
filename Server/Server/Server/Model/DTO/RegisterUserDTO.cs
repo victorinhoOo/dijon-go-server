@@ -28,6 +28,6 @@
         /// <summary>
         /// La photo de profil de l'utilisateur souhaitant s'inscrire
         /// </summary>
-        public IFormFile ProfilePic { get => profilePic; set => profilePic = value; }
+        public IFormFile? ProfilePic { get => profilePic; set => profilePic = value; }
     }
 }
