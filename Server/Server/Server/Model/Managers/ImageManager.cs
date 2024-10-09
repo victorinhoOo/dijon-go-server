@@ -41,7 +41,7 @@ namespace Server.Model.Managers
         /// Renvoie la photo de profil d'un utilisateur donné
         /// </summary>
         /// <param name="username">Le nom d'utilisateur dont on souhaite la photo</param>
-        /// <returns>La photo de profil associé à cet utilisateur</returns>
+        /// <returns>La photo de profil associé à cet utilisateur sous forme de tableau de bytes</returns>
         public byte[] GetProfilePic(string username)
         {
             return fileUploader.GetProfilePic(username);

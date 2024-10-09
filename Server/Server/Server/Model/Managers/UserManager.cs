@@ -79,7 +79,10 @@ namespace Server.Model.Managers
             };
             try
             {
-                imageManager.UploadProfilePic(registerUserDto.ProfilePic, user.Username); // Upload l'image de profil sur le FTP
+                if(registerUserDto.ProfilePic != null) // si une image a été sélectionné par l'utilisateur
+                {
+                    imageManager.UploadProfilePic(registerUserDto.ProfilePic, user.Username); // Upload l'image de profil sur le serveur
+                }
                 userDAO.Register(user);
             }
             catch (Exception ex)
