@@ -262,6 +262,7 @@
 
     .leaderboard{
         width: 500px;
+        text-align: center;
     }
     .leaderboard-section {
         margin-left: auto;
