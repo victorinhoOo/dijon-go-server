@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerTest
+namespace WebSocket
 {
     public class WebSocket : IWebProtocol
     {
