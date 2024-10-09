@@ -3,40 +3,43 @@
 
 <img src="renard.png" alt="Logo" class="logo">
 <div class="register-container">
+
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
     
-    
-    <form (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label id="Inscription">Inscription</label>
-        <label for="username">Pseudo</label>
-        <input type="text" id="username" FormcontrolName="pseudo" >
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <label id="Inscription">Inscription</label>
+  
+      <div class="form-group">        
+        <label for="pseudo">Pseudo</label>
+        <input class="form-control" type="text" id="pseudo" formControlName="pseudo"> 
       </div>
   
       <div class="form-group">
         <label for="email">Adresse email</label>
-        <input type="email" id="email" FormcontrolName="email" >
+        <input class="form-control" type="email" id="email" formControlName="email"> 
       </div>
-  
+    
       <div class="form-group">
         <label for="password">Mot de passe</label>
-        <input type="password" id="password" FormcontrolName="password" >
+        <input class="form-control" type="password" id="password" formControlName="password">
       </div>
   
       <div class="form-group">
         <label for="confirmPassword">Confirmez le mot de passe</label>
-        <input type="password" id="confirmPassword" FormcontrolName="confirmPassword" >
+        <input class="form-control" type="password" id="confirmPassword" formControlName="confirmPassword">
       </div>
-  
+ 
+      
       <div class="form-group">
         <label for="avatar">Avatar</label>
-        
-
         <div class="input-group">
-            <app-upload-image></app-upload-image>
-            
+          <app-upload-image  (imageSelected)="onImageSelected($event)"></app-upload-image>        
         </div>
 
       </div>
+      
     
       <button type="submit">S'inscrire</button>
     </form>
