@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace WebSocket
 {
+    /// <summary>
+    /// Classe qui sert d'intermédiaire entre le client et le serveur
+    /// </summary>
     public class Client
     {
         private TcpClient client;
@@ -18,6 +21,10 @@ namespace WebSocket
             this.stream = this.client.GetStream();
         }
 
+        /// <summary>
+        /// Reçois un message du client
+        /// </summary>
+        /// <returns>un tableau d'octets contenant la trame qui encapsule le message</returns>
         public byte[] ReceiveMessage()
         {
             while (!this.stream.DataAvailable) ; // Tant que le serveur ne reçois rien le serveur reste bloqué à cette étape
@@ -27,6 +34,10 @@ namespace WebSocket
             return bytes;
         }
 
+        /// <summary>
+        /// Envoie un message au client 
+        /// </summary>
+        /// <param name="bytes">tableau d'octets contenant la trame qui encapsule le message</param>
         public void SendMessage(byte[] bytes)
         {
             this.stream.Write(bytes, 0, bytes.Length);

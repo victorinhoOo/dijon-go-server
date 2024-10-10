@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace WebSocket
 {
+    /// <summary>
+    /// Classe qui se charge de communiquer avec des clients 
+    /// </summary>
     public class Server
     {
         private IWebProtocol webSocket;
@@ -17,6 +20,7 @@ namespace WebSocket
             this.webSocket = new WebSocket("10.211.55.3",7000);
             this.games = new Dictionary<string, Dictionary<string, Client>>();
         }
+
 
         public void Start()
         {
@@ -37,34 +41,36 @@ namespace WebSocket
                         {
                             byte[] bytes = client.ReceiveMessage();
                             string message = Encoding.UTF8.GetString(bytes);
+                            string response = ""; 
 
                             if (Regex.IsMatch(message, "^GET")) // test si le message reçu est une demande de handshake
                             {
-                                Console.WriteLine($"Received : {message}");
-
-                                byte[] handshake = this.webSocket.HandShake(message);
-                                string handshakeString = Encoding.UTF8.GetString(handshake);
+                                byte[] handshake = this.webSocket.BuildHandShake(message);
+                                response = Encoding.UTF8.GetString(handshake);
                                 client.SendMessage(handshake);
-
-                                Console.WriteLine($"Sent : {Encoding.UTF8.GetString(handshake)}");
                             }
                             else
                             {
                                 try
                                 {
                                     byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
-                                    Console.WriteLine($"Received : {Encoding.UTF8.GetString(decryptedMessage)}\n");
-                                    string response = "Hello World";
+                                    message = Encoding.UTF8.GetString(decryptedMessage);
+                                    response = "Hello World";
                                     byte[] responseBytes = this.webSocket.BuildMessage(response);
                                     client.SendMessage(responseBytes);
-                                    Console.WriteLine($"Sent : {response}\n");
                                 }
                                 catch(DeconnectionException ex)
                                 {
                                     byte[] deconnectionBytes = this.webSocket.BuildDeconnection(ex.Code);
                                     client.SendMessage(deconnectionBytes);
                                     Console.WriteLine(ex.Message + "\n");
+                                    endOfCommunication = true;
                                 } 
+                            }
+                            if (!endOfCommunication)
+                            {
+                                Console.WriteLine($"Received : {message}");
+                                Console.WriteLine($"Sent : {response}");
                             }
                         }
 
