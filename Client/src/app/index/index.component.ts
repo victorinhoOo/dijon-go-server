@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { MatIcon } from '@angular/material/icon';
+import { AuthService } from '../Model/AuthService';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -10,6 +12,46 @@ import { MatIcon } from '@angular/material/icon';
   styleUrls: ['./index.component.css']
 })
 export class IndexComponent implements OnInit {
+
+   private _token: string = '';
+   private _userPseudo: string = '';
+   private _img: string = 'https://localhost:7065/profile-pics/'; //stock le src de l'image
+
+     // Getter pour token
+  public get token(): string 
+  {
+    return this._token;
+  }
+
+  // Setter pour token
+  public set token(value: string) 
+  {
+    this._token = value;
+  }
+
+  // Getter pour userPseudo
+  public get userPseudo(): string 
+  {
+    return this._userPseudo;
+  }
+
+  // Setter pour userPseudo
+  public set userPseudo(value: string) 
+  {
+    this._userPseudo = value;
+  }
+
+  //Get pour le lien de l'image   
+  public get img(): string{
+    return this._img;
+  }
+
+  //Set le lien de l'image
+  public set img(value: string)
+  {
+    this._img = value;
+  }
+  constructor(private authService: AuthService, private router: Router) {}
   
   // Méthode pour remplir le leaderboard avec des données fictives
   populateLeaderboard(): void {
@@ -33,6 +75,18 @@ export class IndexComponent implements OnInit {
   }
 
   ngOnInit() {
+    //recuperation du token, du pseudo de l'utilisateur
+    this.userPseudo = this.authService.getUserPseudo();
+    this.token = this.authService.getToken();
+
+    //recuperation de l'image de l'utilisateur
+    this._img += this._userPseudo; 
+    
+    //verfication du token utilisateur sinon redirection login
+    if(!this.token)
+    {
+        this.router.navigate(['/login']);
+    }
     this.populateLeaderboard();
   }
 }

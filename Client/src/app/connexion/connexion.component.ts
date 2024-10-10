@@ -27,7 +27,7 @@ export class ConnexionComponent {
   ngOnInit(): void {
 
     //si je n'ai pas de token
-  //  if(!this.authService.getToken())
+  if(!this.authService.getToken())
   {
       this.connexionForm = this.fb.group({
         pseudo: ['', Validators.required],
@@ -35,9 +35,9 @@ export class ConnexionComponent {
       });
     }
     //sinon rediriger vers la page d'accueil
-    //else{
-     // this.router.navigate(['/']);
-   // }
+    else{
+      this.router.navigate(['/index']);
+    }
   }
 
   onSubmit(): void {
@@ -55,7 +55,7 @@ export class ConnexionComponent {
           this.errorMessage = ''; // Réinitialise l'erreur
 
           //rediriger vers page d'acceuil
-          this.router.navigate(['/'])
+          this.router.navigate(['/index'])
         },
         error: (err: HttpErrorResponse) => {
           if (err.status === 400 && err.error && typeof err.error === 'object' && err.error.message) {
