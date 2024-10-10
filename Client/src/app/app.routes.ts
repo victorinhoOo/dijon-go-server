@@ -8,7 +8,7 @@ import { RegisterComponent } from './register/register.component';
 export const routes: Routes = [
     {path:"", component: GameScreenComponent},
     {path:"grid", component: GridComponent},
-    {path:"connexion", component: ConnexionComponent},
+    {path:"login", component: ConnexionComponent},
     {path:"profile", component: ProfileComponent},
     {path:"register", component:RegisterComponent}
 ];
