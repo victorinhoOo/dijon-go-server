@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GoLogic\GoLogic.csproj" />
     <ProjectReference Include="..\Server\Server.csproj" />
   </ItemGroup>
 

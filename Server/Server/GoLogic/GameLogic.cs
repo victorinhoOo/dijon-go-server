@@ -1,4 +1,4 @@
-﻿namespace Go_logic_csharp
+﻿namespace Go_logic
 {
     public class GameLogic
     {
