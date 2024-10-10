@@ -6,12 +6,12 @@ import { UploadImageComponent } from './upload-image/upload-image.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ConnexionComponent } from './connexion/connexion.component';
 import { ProfileComponent }  from './profile/profile.component'
-
+import { IndexComponent } from './index/index.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, GridComponent, RegisterComponent,UploadImageComponent,NavbarComponent,ProfileComponent,ConnexionComponent ],
+  imports: [RouterOutlet, GridComponent, RegisterComponent,UploadImageComponent,NavbarComponent,ProfileComponent,ConnexionComponent,IndexComponent ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 
@@ -34,7 +34,7 @@ export class AppComponent implements AfterViewInit{
   public changeLightState():void{
     if(this.state == "light"){
       document.body.style.background = "#302E2B";
-      document.body.style.color = "black";
+      document.body.style.color = "white";
       document.getElementById("navbar-container")!.style.setProperty("background", "grey", "important");
       document.getElementById("navbar-container")!.style.setProperty("color", "white", "important");
       Array.from(document.getElementsByClassName("timer")).forEach(timer=>{
