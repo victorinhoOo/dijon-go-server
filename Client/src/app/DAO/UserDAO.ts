@@ -42,7 +42,11 @@ export class UserDAO {
 
   }
 
-  //Methode pour envoyer le login
+    /**
+   * Envoie une requête POST au serveur pour se connecter au serveur
+   * @param user Objet contenant les données de l'utilisateur à enregistrer (LoginUserDTO)
+   * @returns Un Observable qui émet la réponse du serveur ou une erreur
+   */
   LoginUser(user: LoginUserDTO): Observable<any>{
       try{
 
@@ -52,6 +56,7 @@ export class UserDAO {
         return this.http.post(this.url + 'Login', formData); // Retourne un Observable
       }
 
+      //gestion de l'erreur
       catch (error) 
       {
           console.error('Erreur lors de la préparation des données pour la connexion', error);
