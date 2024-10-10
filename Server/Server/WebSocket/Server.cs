@@ -22,6 +22,9 @@ namespace WebSocket
         }
 
 
+       /// <summary>
+       /// Démarre l'écoute du serveur 
+       /// </summary>
         public void Start()
         {
             this.webSocket.Start();
@@ -43,28 +46,19 @@ namespace WebSocket
                             string message = Encoding.UTF8.GetString(bytes);
                             string response = ""; 
 
-                            if (Regex.IsMatch(message, "^GET")) // test si le message reçu est une demande de handshake
+                            if (this.MessageIsHandshakeRequest(message)) // test si le message reçu est une demande de handshake
                             {
-                                byte[] handshake = this.webSocket.BuildHandShake(message);
-                                response = Encoding.UTF8.GetString(handshake);
-                                client.SendMessage(handshake);
+                                this.ProceedHandshake(message, client, ref response);
                             }
-                            else
+                            else // Le message est un message chiffré
                             {
                                 try
                                 {
-                                    byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
-                                    message = Encoding.UTF8.GetString(decryptedMessage);
-                                    response = "Hello World";
-                                    byte[] responseBytes = this.webSocket.BuildMessage(response);
-                                    client.SendMessage(responseBytes);
+                                    this.TreatMessage(bytes, client, ref message, ref response);
                                 }
-                                catch(DeconnectionException ex)
+                                catch(DisconnectionException ex) // Le message reçu est un message de déconnexion
                                 {
-                                    byte[] deconnectionBytes = this.webSocket.BuildDeconnection(ex.Code);
-                                    client.SendMessage(deconnectionBytes);
-                                    Console.WriteLine(ex.Message + "\n");
-                                    endOfCommunication = true;
+                                    this.DisconnectClient(client, ex, ref endOfCommunication);
                                 } 
                             }
                             if (!endOfCommunication)
@@ -115,5 +109,34 @@ namespace WebSocket
                 }
             }
         }
+        private bool MessageIsHandshakeRequest(string message)
+        {
+            return Regex.IsMatch(message, "^GET");
+        }
+
+        private void ProceedHandshake(string message, Client client, ref string response)
+        {
+            byte[] handshake = this.webSocket.BuildHandShake(message);
+            response = Encoding.UTF8.GetString(handshake);
+            client.SendMessage(handshake);
+        }
+
+        private void DisconnectClient(Client client, DisconnectionException ex, ref bool endOfCommunication)
+        {
+            byte[] deconnectionBytes = this.webSocket.BuildDeconnection(ex.Code);
+            client.SendMessage(deconnectionBytes);
+            Console.WriteLine(ex.Message + "\n");
+            endOfCommunication = true; // Fin de la communication
+        }
+
+        private void TreatMessage(byte[] bytes, Client client, ref string message, ref string response)
+        {
+            byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
+            message = Encoding.UTF8.GetString(decryptedMessage);
+            response = "Hello World";
+            byte[] responseBytes = this.webSocket.BuildMessage(response);
+            client.SendMessage(responseBytes);
+        }
     }
+
 }
