@@ -1,9 +1,6 @@
 ﻿using GoLogic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace WebSocket
 {
@@ -48,6 +45,17 @@ namespace WebSocket
         public void PlaceStone(int x, int y)
         {
             this.logic.PlaceStone(x, y);
+        }
+
+        public string StringifyGameBoard()
+        { 
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("x,y,color");
+            foreach (Stone stone in this.gameBoard.Board)
+            {
+                sb.AppendLine($"{stone.X},{stone.Y},{stone.Color}");
+            }
+            return sb.ToString();
         }
     }
 }
