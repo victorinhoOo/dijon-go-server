@@ -1,8 +1,10 @@
+
 .register-container {
+  color: black;
   
   max-width: 450px;
-    margin: 0 auto;
-    font-family: Nunito;
+  margin: 0 auto;
+  font-family: Nunito;
   }
 
   .formStyle{

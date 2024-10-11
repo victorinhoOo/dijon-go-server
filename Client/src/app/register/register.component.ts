@@ -36,6 +36,9 @@ export class RegisterComponent {
 
   // Titre de la popup
   private _popupTitle: string;     
+  private lightState: string;
+
+ 
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     // Initialisation du UserDAO avec HttpClient
@@ -44,6 +47,7 @@ export class RegisterComponent {
     this._popupMessage = '';
     this._showPopup = false;
     this._errorMessage = '';
+    this.lightState = 'light';
   }
 
   // Getters et Setters
