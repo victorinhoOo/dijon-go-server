@@ -1,4 +1,4 @@
-﻿using Go_logic;
+﻿using GoLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;

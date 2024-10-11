@@ -1,4 +1,4 @@
-﻿using Go_logic;
+﻿using GoLogic;
 
 namespace Test_GoLogic
 {
@@ -33,31 +33,16 @@ namespace Test_GoLogic
         }
 
         [Fact]
-        public void PlaceStone_InvalidMove_ReturnsFalse()
+        public void PlaceStone_InvalidOperation_ThrowsException()
         {
             // Organise
             var gameBoard = new GameBoard(9);
             var gameLogic = new GameLogic(gameBoard);
-            gameLogic.PlaceStone(1, 1); // First move
+            gameLogic.PlaceStone(1, 1);
 
-            // Fait
-            bool isValid = gameLogic.PlaceStone(1, 1); // Invalid move, same position
-
-            // Assert
-            Assert.False(isValid);
+            // Fait & Assert
+            Assert.Throws<InvalidOperationException>(() => gameLogic.PlaceStone(1, 1));
         }
-
-        //[Fact]
-        //public void PlaceStone_InvalidOperation_ThrowsException()
-        //{
-        //    // Organise
-        //    var gameBoard = new GameBoard(9);
-        //    var gameLogic = new GameLogic(gameBoard);
-        //    gameLogic.PlaceStone(1, 1);
-
-        //    // Fait & Assert
-        //    Assert.Throws<InvalidOperationException>(() => gameLogic.PlaceStone(1, 1));
-        //}
 
         [Fact]
         public void IsKoViolation_NoViolation_ReturnsFalse()
