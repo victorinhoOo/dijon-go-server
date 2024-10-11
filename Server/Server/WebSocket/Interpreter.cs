@@ -43,7 +43,7 @@ namespace WebSocket
                     Server.Games[idGame].PlaceStone(x, y);
 
 
-                    response = $"{idGame}/Stone:{x}-{y}";
+                    response = $"{idGame}/{Server.Games[idGame].StringifyGameBoard()}";
                 }
                 catch (Exception e)
                 {
