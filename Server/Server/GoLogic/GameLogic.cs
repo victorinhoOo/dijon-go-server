@@ -28,7 +28,6 @@
         /// </summary>
         /// <param name="board">Le tableau contenant les pierres</param>
         /// <param name="currentTurn">Tour actuel du jeu, blanc ou noir</param>
-        /// <param name="previousBoard">Plateau copie de l'état précédant du plateau actuel</param>
         public GameLogic(GameBoard board)
         {
             this.board = board;

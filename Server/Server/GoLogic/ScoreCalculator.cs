@@ -1,8 +1,12 @@
-﻿namespace Go_logic
+﻿using GoLogic;
+using static System.Formats.Asn1.AsnWriter;
+
+namespace Go_logic
 {
     public class ScoreCalculator
     {
         private readonly GameBoard gameBoard;
+        private IScoreRule scoreRule;
         
         /// <summary>
         /// Le plateau du jeu et ses pions
@@ -109,12 +113,17 @@
         // Fonction d'aide pour obtenir les voisins d'une position (x, y)
         private List<(int, int)> GetNeighbors(int x, int y)
         {
-            List<(int, int)> neighbors = new List<(int, int)>();
+            List<(int, int)> neighbors = [];
 
-            if (x > 0) neighbors.Add((x - 1, y));     // Up
-            if (x < gameBoard.Size - 1) neighbors.Add((x + 1, y)); // Down
-            if (y > 0) neighbors.Add((x, y - 1));     // Left
-            if (y < gameBoard.Size - 1) neighbors.Add((x, y + 1)); // Right
+            // Récupère les coordonnées des Pierres voisines
+            foreach (var (nx, ny) in GameBoard.GetStone(x, y).GetNeighborsCoordinate())
+            {
+                // Si les coordonnées sont correct on ajoute la pierre correspondante
+                if (GameBoard.IsValidCoordinate(ny, nx))
+                {
+                    neighbors.Add((nx, ny));
+                }
+            }
 
             return neighbors;
         }
