@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RegisterUserDTO } from '../Model/DTO/RegisterUserDTO';
 import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
+import { UpdateUserDTO }from '../Model/DTO/UpdateUserDTO';
 
 export class UserDAO {
   
@@ -47,14 +48,15 @@ export class UserDAO {
    * @param user Objet contenant les données de l'utilisateur à enregistrer (LoginUserDTO)
    * @returns Un Observable qui émet la réponse du serveur ou une erreur
    */
-  LoginUser(user: LoginUserDTO): Observable<any>{
+  LoginUser(user: LoginUserDTO): Observable<any>
+  {
       try{
 
-        const formData: FormData = new FormData();
-        formData.append('Username', user.username);
-        formData.append('Password', user.password);
-        return this.http.post(this.url + 'Login', formData); // Retourne un Observable
-      }
+          const formData: FormData = new FormData();
+          formData.append('Username', user.username);
+          formData.append('Password', user.password);
+          return this.http.post(this.url + 'Login', formData); // Retourne un Observable
+        }
 
       //gestion de l'erreur
       catch (error) 
@@ -64,5 +66,30 @@ export class UserDAO {
       }
   
   }
+  UpdateUser(user: UpdateUserDTO): Observable<any>
+  {
+    try{
+
+      const formData: FormData = new FormData();
+      formData.append('Username', user.username);
+      formData.append('Email', user.email);
+      formData.append('Password', user.password);
+      // Si l'utilisateur a sélectionné une image de profil elle est ajoutée 
+      if (user.profilePic) 
+      {
+        formData.append('ProfilePic', user.profilePic);
+      }
+      return this.http.post(this.url + 'Update', formData); // Retourne un Observable
+    }
+
+    //gestion de l'erreur
+    catch (error) 
+    {
+        console.error('Erreur lors de la préparation des données pour update', error);
+        throw error;
+    }
+
+  }
 }
+
 
