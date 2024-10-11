@@ -39,7 +39,7 @@ export class AppComponent implements AfterViewInit{
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
       this.state = "dark";
     }else{
-      document.body.style.background = "#e9e9e9";
+      document.body.style.background = "#f5f5f5";
       document.body.style.color = "black";
       document.getElementById("navbar-container")!.style.setProperty("background", "#faf9fd", "important");
       document.getElementById("navbar-container")!.style.setProperty("color", "black", "important");

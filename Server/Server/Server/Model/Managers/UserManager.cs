@@ -138,6 +138,22 @@ namespace Server.Model.Managers
         }
 
         /// <summary>
+        /// Renvoie l'utilisateur correspondant au token de connexion
+        /// </summary>
+        /// <param name="tokenUser">token de connexion de l'utilisateur</param>
+        /// <returns>L'utilisateur associé au token</returns>
+        /// <exception cref="UnauthorizedAccessException">Levée si le token est invalide</exception>
+        public User GetUser(string tokenUser)
+        {
+            User user = tokenManager.GetUserByToken(tokenUser);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
+            }
+            return user;
+        }
+
+        /// <summary>
         /// Hash le mot de passe pour le stocker en base de données ou le comparer avec le hash stocké en base de données
         /// (méthode publique pour les tests unitaires)
         /// </summary>

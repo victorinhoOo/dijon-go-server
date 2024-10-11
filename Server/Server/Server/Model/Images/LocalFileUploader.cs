@@ -49,18 +49,18 @@ namespace Server.Model.Images
                 // Cherche l'extension du fichier à renommer
                 var oldFilePath = Directory.GetFiles(profilePicsPath, oldFileName + ".*").FirstOrDefault();
 
-                if (oldFilePath != null)
-                {
+                // si le fichier n'existe pas cela veut dire que l'utilisateur n'a pas de photo de profil, il n'y a donc rien à renommer
+                if (oldFilePath == null) {
+
+                }
+                else { // sinon on le renomme
                     // Détermine le nouveau chemin avec l'extension actuelle
                     string newFilePath = Path.Combine(profilePicsPath, newFileName + Path.GetExtension(oldFilePath));
 
                     // Renomme le fichier
                     File.Move(oldFilePath, newFilePath);
                 }
-                else
-                {
-                    throw new FileNotFoundException($"Le fichier {oldFileName} n'a pas été trouvé.");
-                }
+
             }
             catch (Exception ex)
             {
