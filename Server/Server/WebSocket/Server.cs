@@ -1,6 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Concurrent;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,19 +11,21 @@ namespace WebSocket
     public class Server
     {
         private IWebProtocol webSocket;
-        private Dictionary<string, Dictionary<string, Client>> games;
         private bool isRunning;
+        private static ConcurrentDictionary<int, Game> games = new ConcurrentDictionary<int, Game>();
+        private Interpreter interpreter;
+
+        public static ConcurrentDictionary<int, Game> Games { get => games; set => games = value; }
 
         public Server()
         {
-            this.webSocket = new WebSocket("10.211.55.3",7000);
-            this.games = new Dictionary<string, Dictionary<string, Client>>();
+            this.webSocket = new WebSocket("10.211.55.3", 7000);
         }
 
 
-       /// <summary>
-       /// Démarre l'écoute du serveur 
-       /// </summary>
+        /// <summary>
+        /// Démarre l'écoute du serveur 
+        /// </summary>
         public void Start()
         {
             this.webSocket.Start();
@@ -39,12 +40,15 @@ namespace WebSocket
                     {
                         TcpClient tcp = this.webSocket.AcceptClient();
                         Client client = new Client(tcp);
+                        this.interpreter = new Interpreter();
                         bool endOfCommunication = false;
+
+                        
                         while (!endOfCommunication)
                         {
                             byte[] bytes = client.ReceiveMessage();
                             string message = Encoding.UTF8.GetString(bytes);
-                            string response = ""; 
+                            string response = "";
 
                             if (this.MessageIsHandshakeRequest(message)) // test si le message reçu est une demande de handshake
                             {
@@ -56,10 +60,10 @@ namespace WebSocket
                                 {
                                     this.TreatMessage(bytes, client, ref message, ref response);
                                 }
-                                catch(DisconnectionException ex) // Le message reçu est un message de déconnexion
+                                catch (DisconnectionException ex) // Le message reçu est un message de déconnexion
                                 {
                                     this.DisconnectClient(client, ex, ref endOfCommunication);
-                                } 
+                                }
                             }
                             if (!endOfCommunication)
                             {
@@ -133,9 +137,22 @@ namespace WebSocket
         {
             byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
             message = Encoding.UTF8.GetString(decryptedMessage);
-            response = "Hello World";
+            response = this.interpreter.Interpret(message, client);
+            int idGame = Convert.ToInt32(response.Split("/")[0]);
             byte[] responseBytes = this.webSocket.BuildMessage(response);
-            client.SendMessage(responseBytes);
+            Game game = games[idGame];
+            Client p1;
+            Client p2;
+            if (game.Player1 != null)
+            {
+                p1 = game.Player1;
+                p1.SendMessage(responseBytes);
+            }
+            if (game.Player2 != null)
+            {
+                p2 = game.Player2;
+                p2.SendMessage(responseBytes);
+            }  
         }
     }
 

@@ -69,7 +69,7 @@
             catch(Exception ex) 
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                throw new InvalidOperationException(ex.Message);
             }
         }
 
