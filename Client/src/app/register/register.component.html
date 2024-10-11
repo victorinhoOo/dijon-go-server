@@ -4,11 +4,11 @@
 <img src="renard.png" alt="Logo" class="logo">
 <div class="register-container">
 
-    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-      {{ errorMessage }}
-    </div>
+  
+  <app-popup [show]="showPopup" [popupMessage]="popupMessage" [title]="popupTitle" ></app-popup>
+
     
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <form class="formStyle" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <label id="Inscription">Inscription</label>
   
       <div class="form-group">        

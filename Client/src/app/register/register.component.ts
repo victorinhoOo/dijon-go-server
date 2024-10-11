@@ -1,105 +1,146 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UploadImageComponent } from "../upload-image/upload-image.component";
 import { CommonModule } from '@angular/common';
 import { RegisterUserDTO } from '../Model/DTO/RegisterUserDTO';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
 import { UserDAO } from '../DAO/UserDAO';
+import { PopupComponent } from '../popup/popup.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, UploadImageComponent, CommonModule],
+  imports: [ReactiveFormsModule, UploadImageComponent, CommonModule, PopupComponent, HttpClientModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
+
   // Formulaire de création de compte
-  registerForm!: FormGroup;
+  private _registerForm!: FormGroup;
 
   // Image sélectionnée par l'utilisateur pour l'avatar
-  selectedImage: File | null = null;
+  private _selectedImage: File | null = null;
 
   // Message d'erreur à afficher en cas d'échec de l'inscription
-  errorMessage: string = '';
+  private _errorMessage: string;
 
   // Instance de UserDAO pour la gestion des requêtes HTTP liées à l'utilisateur
-  userDAO: UserDAO;
+  private _userDAO: UserDAO;
 
-  /**
-   * Constructeur de RegisterComponent.
-   * Initialise le DAO et le FormBuilder.
-   * 
-   * @param fb FormBuilder pour la création de formulaires réactifs
-   * @param http HttpClient pour les requêtes HTTP
-   */
+  // Contrôle la visibilité de la popup
+  private _showPopup: boolean;   
+
+  // Message à afficher dans la popup
+  private _popupMessage: string;   
+
+  // Titre de la popup
+  private _popupTitle: string;     
+
   constructor(private fb: FormBuilder, private http: HttpClient) {
     // Initialisation du UserDAO avec HttpClient
-    this.userDAO = new UserDAO(this.http);
+    this._userDAO = new UserDAO(this.http);
+    this._popupTitle = '';
+    this._popupMessage = '';
+    this._showPopup = false;
+    this._errorMessage = '';
   }
 
-  /**
-   * ngOnInit est appelé une fois que le composant est initialisé
-   * Crée le formulaire avec ses champs et leurs validateurs
-   */
+  // Getters et Setters
+
+  get registerForm(): FormGroup {
+    return this._registerForm;
+  }
+
+  get selectedImage(): File | null {
+    return this._selectedImage;
+  }
+
+  set selectedImage(value: File | null) {
+    this._selectedImage = value;
+  }
+
+  get errorMessage(): string {
+    return this._errorMessage;
+  }
+
+  set errorMessage(value: string) {
+    this._errorMessage = value;
+  }
+
+  get showPopup(): boolean {
+    return this._showPopup;
+  }
+
+  set showPopup(value: boolean) {
+    this._showPopup = value;
+  }
+
+  get popupMessage(): string {
+    return this._popupMessage;
+  }
+
+  set popupMessage(value: string) {
+    this._popupMessage = value;
+  }
+
+  get popupTitle(): string {
+    return this._popupTitle;
+  }
+
+  set popupTitle(value: string) {
+    this._popupTitle = value;
+  }
+
   ngOnInit(): void {
-    // Initialisation du formulaire avec des validateurs
-    this.registerForm = this.fb.group({
+    // Initialisation des variables
+    this._registerForm = this.fb.group({
       pseudo: ['', Validators.required],
       password: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       confirmPassword: ['', Validators.required],
-      img: [null]  // Champ pour l'image de profil
+      img: [null]
     });
   }
 
-  /**
-   * Méthode appelée lors de la soumission du formulaire
-   * Elle envoie les données d'inscription au serveur si le formulaire est valide
-   */
   onSubmit(): void {
-    if (this.registerForm.valid) {
-      // Création d'un objet RegisterUserDTO avec les valeurs du formulaire
+    if (this._registerForm.valid) {
       const registerUserDTO = new RegisterUserDTO(
-        this.registerForm.value.pseudo,
-        this.registerForm.value.email,
-        this.registerForm.value.password,
-        this.selectedImage
+        this._registerForm.value.pseudo,
+        this._registerForm.value.email,
+        this._registerForm.value.password,
+        this._selectedImage
       );
 
-      // Appel de la méthode du DAO pour enregistrer l'utilisateur
-      this.userDAO.registerUser(registerUserDTO).subscribe({
+      this._userDAO.registerUser(registerUserDTO).subscribe({
         next: (response) => {
-          console.log('Inscription réussie :', response);
           this.errorMessage = '';  // Aucune erreur
         },
         error: (err: HttpErrorResponse) => {
-          // En cas d'erreur
-          console.log('Erreur complète :', err);
-          // S'il y a un message d'erreur provenant du serveur
           if (err.status === 400 && err.error && typeof err.error === 'object' && err.error.message) {
-            // Affiche le message d'erreur du serveur
-            this.errorMessage = err.error.message;
+            this.popupMessage = err.error.message;  // Message d'erreur personnalisé
           } else {
-            // Affiche un message d'erreur générique si le serveur ne fournit pas d'information détaillée
-            this.errorMessage = 'Une erreur est survenue lors de l\'inscription';
+            this.popupMessage = 'Une erreur est survenue lors de l\'inscription';
           }
+          this.popupTitle = 'Erreur lors de l\'inscription';
+          this.openPopup();  // Affiche le popup en cas d'erreur
         }
       });
-
+      
     } else {
-      // Si le formulaire est invalide
-      this.errorMessage = 'Formulaire non valide';
+      this.popupMessage = 'Formulaire non valide. Veuillez corriger les erreurs.';
+      this.popupTitle = 'Erreur';
+      this.openPopup();  // Affiche le popup en cas de formulaire invalide
     }
   }
 
-  /**
-   * Méthode appelée lors de la sélection d'une image par l'utilisateur
-   * Elle met à jour la propriété selectedImage et le champ correspondant dans le formulaire
-   * @param image Fichier sélectionné par l'utilisateur
-   */
   onImageSelected(image: File) {
     this.selectedImage = image;    
-    this.registerForm.patchValue({ img: this.selectedImage });// Mise à jour du champ 'img' dans le formulaire avec l'image sélectionnée
+    this._registerForm.patchValue({ img: this._selectedImage });
   }
+
+  openPopup() {
+    this.showPopup = true;
+  }
+
 }

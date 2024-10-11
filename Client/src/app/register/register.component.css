@@ -1,14 +1,17 @@
 .register-container {
-    max-width: 400px;
+  
+  max-width: 450px;
     margin: 0 auto;
-    padding: 20px;
+    font-family: Nunito;
+  }
+
+  .formStyle{
+    background-color: #FFEBE4;
+    margin: 0;
+    padding: 30px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    background-color: #FFEBE4;
-    font-family: Nunito;
-    font-weight: bold;
   }
-  
   .logo {
     display: block;
     margin: 0 auto 20px;
@@ -73,15 +76,6 @@
   margin-left: 8px;
 }
 
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
 
-.alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
+
+
