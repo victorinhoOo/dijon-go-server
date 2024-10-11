@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RegisterUserDTO } from '../Model/DTO/RegisterUserDTO';
+import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
 
 export class UserDAO {
   
@@ -38,5 +39,30 @@ export class UserDAO {
       console.error('Erreur lors de la préparation des données pour l\'inscription', error);
       throw error;// Lancer l'erreur pour qu'elle puisse être traitée par le composant appelant
     }
+
+  }
+
+    /**
+   * Envoie une requête POST au serveur pour se connecter au serveur
+   * @param user Objet contenant les données de l'utilisateur à enregistrer (LoginUserDTO)
+   * @returns Un Observable qui émet la réponse du serveur ou une erreur
+   */
+  LoginUser(user: LoginUserDTO): Observable<any>{
+      try{
+
+        const formData: FormData = new FormData();
+        formData.append('Username', user.username);
+        formData.append('Password', user.password);
+        return this.http.post(this.url + 'Login', formData); // Retourne un Observable
+      }
+
+      //gestion de l'erreur
+      catch (error) 
+      {
+          console.error('Erreur lors de la préparation des données pour la connexion', error);
+          throw error;
+      }
+  
   }
 }
+

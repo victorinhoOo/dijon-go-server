@@ -4,11 +4,14 @@ import { GridComponent } from './grid/grid.component';
 import { ConnexionComponent } from './connexion/connexion.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
+import { IndexComponent } from './index/index.component';
 
 export const routes: Routes = [
     {path:"", component: GameScreenComponent},
     {path:"grid", component: GridComponent},
-    {path:"connexion", component: ConnexionComponent},
+    {path:"login", component: ConnexionComponent},
     {path:"profile", component: ProfileComponent},
-    {path:"register", component:RegisterComponent}
+    {path:"register", component:RegisterComponent},
+    {path:"game", component: GameScreenComponent},
+    {path: "index", component: IndexComponent}
 ];
