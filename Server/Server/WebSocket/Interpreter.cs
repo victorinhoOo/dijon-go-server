@@ -1,4 +1,4 @@
-﻿using Go_logic;
+﻿using GoLogic;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
