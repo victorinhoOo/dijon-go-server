@@ -23,6 +23,7 @@ export class ProfileSettingsComponent {
 
   private profileForm!: FormGroup;
   private userDAO: UserDAO;
+  private token: string;
   private selectedImage: any;
   private errorMessage: string;
   private userPseudo: string;
@@ -69,6 +70,7 @@ export class ProfileSettingsComponent {
    */
   constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<ProfileSettingsComponent>, private authService: AuthService, private http: HttpClient) {
     this.userDAO = new UserDAO(this.http);
+    this.token = this.authService.getToken();
     this.userPseudo = this.authService.getUser().Username;
     this.userEmail = this.authService.getUser().Email;
     this.errorMessage = '';
@@ -96,7 +98,7 @@ export class ProfileSettingsComponent {
       // Création d'un objet UpdateUserDTO avec les valeurs du formulaire
       const user = new UpdateUserDTO
         (
-          this.authService.getToken(),
+          this.token,
           this.profileForm.value.pseudo,
           this.profileForm.value.email,
           this.profileForm.value.password,
@@ -109,9 +111,10 @@ export class ProfileSettingsComponent {
           console.log('Mise à jour réussie :', response);
 
           // Met à jour les informations de l'utilisateur dans les cookies
-          this.userDAO.GetUser(response.token).subscribe({
+          this.userDAO.GetUser(this.token).subscribe({
             next: (user: User) => {
               this.authService.setUser(user);
+              window.location.reload();
             },
             error: (err) => {
               this.errorMessage = 'Erreur lors de la récupération de l\'utilisateur:', err.message;

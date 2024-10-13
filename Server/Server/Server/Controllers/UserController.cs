@@ -25,7 +25,7 @@ namespace Server.Controllers
         /// <param name="loginUserDTO">Les informations de connexion de l'utilisateur.</param>
         /// <returns>Le résultat de la connexion.</returns>
         [HttpPost("Login")]
-        public IActionResult Login([FromForm] LoginUserDTO loginUserDTO)
+        public IActionResult Login([FromBody] LoginUserDTO loginUserDTO)
         {
             IActionResult result = BadRequest(new { Message = "L'utilisateur n'existe pas" });
             try
@@ -49,7 +49,7 @@ namespace Server.Controllers
         /// <param name="registerUserDTO">Les informations d'inscription de l'utilisateur.</param>
         /// <returns>Le résultat de l'inscription.</returns>
         [HttpPost("Register")]
-        public IActionResult Register([FromForm] RegisterUserDTO registerUserDTO)
+        public IActionResult Register([FromBody] RegisterUserDTO registerUserDTO)
         {
             IActionResult result = BadRequest(new { Message = "Inscription impossible" });
             try
@@ -92,7 +92,7 @@ namespace Server.Controllers
         /// </summary>
         /// <param name="tokenUser">Token de connexion utilisateur</param>
         /// <returns>L'utilisateur correspondant</returns>
-        [HttpPost("GetUser")]
+        [HttpGet("Get")]
         public IActionResult GetUser(string tokenUser)
         {
             IActionResult result = BadRequest(new { Message = "Impossible de récupérer l'utilisateur" });

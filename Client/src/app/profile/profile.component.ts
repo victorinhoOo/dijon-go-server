@@ -72,7 +72,7 @@ export class ProfileComponent {
       panelClass: 'custom-dialog-container'
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('popup close'); //indiquer plus tard les changements save ici
+       
     });
   }
   
