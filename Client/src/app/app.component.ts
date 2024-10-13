@@ -1,15 +1,20 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GridComponent } from './grid/grid.component';
+import { RegisterComponent } from './register/register.component';  
+import { UploadImageComponent } from './upload-image/upload-image.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { ConnexionComponent } from './connexion/connexion.component';
+import { ProfileComponent }  from './profile/profile.component'
 import { IndexComponent } from './index/index.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, GridComponent, NavbarComponent, IndexComponent],
+  imports: [RouterOutlet, GridComponent, RegisterComponent,UploadImageComponent,NavbarComponent,ProfileComponent,ConnexionComponent,IndexComponent ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
+
 })
 export class AppComponent implements AfterViewInit{
 
@@ -36,6 +41,7 @@ export class AppComponent implements AfterViewInit{
         (timer as HTMLDivElement).style.border = "1px solid white";
       });
       (document.getElementById("logo") as HTMLImageElement).src = "renard_dark.png";
+      (document.getElementById("renardRegister") as HTMLImageElement).src = "renard_dark.png";
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
       this.state = "dark";
     }else{
@@ -47,15 +53,11 @@ export class AppComponent implements AfterViewInit{
         (timer as HTMLDivElement).style.border = "1px solid black";
       });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface sombre";
-      (document.getElementById("logo") as HTMLImageElement).src = "renard.png"
+      (document.getElementById("logo") as HTMLImageElement).src = "renard.png";
+      (document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
       this.state = "light"
     }
     
   }
-
-
-
-  
-
   
 }

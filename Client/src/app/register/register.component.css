@@ -1,0 +1,83 @@
+
+.register-container {
+  color: black;
+  
+  max-width: 450px;
+  margin: 0 auto;
+  font-family: Nunito;
+  }
+
+  .formStyle{
+    background-color: #FFEBE4;
+    margin: 0;
+    padding: 30px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  .logo {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 100px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-family: Nunito;
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #FA7E5C ;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Nunito;
+    font-weight: bold;
+  }
+  
+  #Inscription{
+    text-align: center;
+    font-size: 120%;
+  
+  }
+  
+  button:disabled {
+    background-color: #FFEBE4;
+    color: black;
+  }
+
+  #avatar {
+    display: none;
+}
+
+.custom-file-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.custom-file-label svg {
+  margin-left: 8px;
+}
+
+
+
+
