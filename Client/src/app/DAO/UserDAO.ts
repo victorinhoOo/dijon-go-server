@@ -72,15 +72,24 @@ export class UserDAO {
    * @param user L'utilisateur à modifier (UpdateUserDTO)
    * @returns un message d'erreur ou de succès
    */
-  public UpdateUser(user: UpdateUserDTO): Observable<any>
-  {
-    return this.http.post<{ message: string }>(this.url + 'Update', user).pipe(
+  public UpdateUser(user: UpdateUserDTO): Observable<any> {
+    // On passe par un formulaire pour envoyer les données car on envoie un fichier (l'image de profil)
+    const formData: FormData = new FormData();  
+    formData.append('tokenuser', user.TokenUser);
+    formData.append('username', user.Username || '');
+    formData.append('email', user.Email || '');
+    formData.append('password', user.Password || '');   
+    // Ajoute le fichier si disponible
+    if (user.ProfilePic) {
+      formData.append('profilePic', user.ProfilePic);
+    }
+    return this.http.post<{ message: string }>(this.url + 'Update', formData).pipe(
       catchError(error => {
-        // Gestion des erreurs HTTP et remontée d'un message d'erreur
         return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
       })
     );
   }
+  
 
 }
 

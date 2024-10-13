@@ -8,7 +8,37 @@ export class UpdateUserDTO {
     private email: string;
     private password: string;
     private profilePic: File | null;
-  
+
+    /**
+     * Renvoi le token de l'utilisateur
+     */
+    public get TokenUser(): string {
+        return this.tokenuser;
+    }
+    /**
+     * Renvoi le nom de l'utilisateur
+     */
+    public get Username(): string {
+        return this.username;
+    }
+    /**
+    * Renvoi l'email de l'utilisateur
+    */
+    public get Email(): string {
+        return this.email;
+    }
+    /**
+     * Renvoi le mot de passe de l'utilisateur
+     */
+    public get Password(): string {
+        return this.password;
+    }
+    /**
+     * Renvoi l'image de profil de l'utilisateur
+     */
+    public get ProfilePic(): File | null {
+        return this.profilePic;
+    }
   
     constructor(token: string, user: string, mail: string,password: string, profile: File) 
     {
