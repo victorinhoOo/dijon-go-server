@@ -1,9 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { RegisterUserDTO } from '../Model/DTO/RegisterUserDTO';
 import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
 import { UpdateUserDTO }from '../Model/DTO/UpdateUserDTO';
+import { User } from '../Model/User';
+import { HttpParams } from '@angular/common/http';
 
+/**
+ * Gère les requêtes HTTP vers l'API utilisateur
+ */
 export class UserDAO {
   
   // URL de base pour les requêtes vers l'API utilisateur
@@ -21,75 +26,62 @@ export class UserDAO {
    * @param user Objet contenant les données de l'utilisateur à enregistrer (RegisterUserDTO)
    * @returns Un Observable qui émet la réponse du serveur ou une erreur
    */
-  registerUser(user: RegisterUserDTO): Observable<any> {
-    try {
-      // Création d'un objet FormData pour envoyer les données utilisateur 
-      const formData: FormData = new FormData();
-      // Ajoute le pseudo, l'email et le mot de passe à la requête
-      formData.append('Username', user.username);
-      formData.append('Email', user.email);
-      formData.append('Password', user.password);
-      // Si l'utilisateur a sélectionné une image de profil elle est ajoutée 
-      if (user.profilePic) {
-        formData.append('ProfilePic', user.profilePic);
-      }
-      // Envoie la requête POST à l'URL spécifiée avec les données de l'utilisateur
-      return this.http.post(this.url + 'Register', formData); // Retourne un Observable de la réponse HTTP
-    } 
-    catch (error) {
-      console.error('Erreur lors de la préparation des données pour l\'inscription', error);
-      throw error;// Lancer l'erreur pour qu'elle puisse être traitée par le composant appelant
-    }
-
+  public registerUser(registerUserDTO: RegisterUserDTO): Observable<any> {
+    return this.http.post<{ message: string }>(this.url + 'Register', registerUserDTO).pipe(
+      catchError(error => {
+        // Gestion des erreurs HTTP et remontée d'un message d'erreur
+        return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
+      })
+    );
   }
 
-    /**
-   * Envoie une requête POST au serveur pour se connecter au serveur
-   * @param user Objet contenant les données de l'utilisateur à enregistrer (LoginUserDTO)
+  /**
+   * Envoie une requête POST pour se connecter au serveur
+   * @param loginUserDTO Objet contenant les données de l'utilisateur (LoginUserDTO)
    * @returns Un Observable qui émet la réponse du serveur ou une erreur
    */
-  LoginUser(user: LoginUserDTO): Observable<any>
-  {
-      try{
-
-          const formData: FormData = new FormData();
-          formData.append('Username', user.username);
-          formData.append('Password', user.password);
-          return this.http.post(this.url + 'Login', formData); // Retourne un Observable
-        }
-
-      //gestion de l'erreur
-      catch (error) 
-      {
-          console.error('Erreur lors de la préparation des données pour la connexion', error);
-          throw error;
-      }
-  
+  public LoginUser(loginUserDTO: LoginUserDTO): Observable<any> {
+    return this.http.post<{ token: string, message?: string }>(this.url + 'Login', loginUserDTO).pipe(
+      catchError(error => {
+        // Gestion des erreurs HTTP et remontée d'un message d'erreur
+        return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
+      })
+    );
   }
-  UpdateUser(user: UpdateUserDTO): Observable<any>
-  {
-    try{
 
-      const formData: FormData = new FormData();
-      formData.append('Username', user.username);
-      formData.append('Email', user.email);
-      formData.append('Password', user.password);
-      // Si l'utilisateur a sélectionné une image de profil elle est ajoutée 
-      if (user.profilePic) 
-      {
-        formData.append('ProfilePic', user.profilePic);
-      }
-      return this.http.post(this.url + 'Update', formData); // Retourne un Observable
-    }
-
-    //gestion de l'erreur
-    catch (error) 
-    {
-        console.error('Erreur lors de la préparation des données pour update', error);
-        throw error;
-    }
-
+  /**
+   * Envoie une requête GET pour récupérer les informations de l'utilisateur
+   * @param token token utilisateur
+   * @returns Les informations de l'utilisateur sous forme d'objet
+  **/
+  public GetUser(token: string): Observable<User> {
+    const params = new HttpParams().set('tokenUser', token);
+    return this.http.get<{ user: { username: string, email: string } }>(this.url + 'Get', { params }).pipe(
+      map((response: { user: { username: string, email: string } }) => {
+        // Créé un nouvel objet User à partir de l'objet  renvoyé par le serveur
+        return new User(response.user.username, response.user.email);
+      }),
+      catchError(error => {
+        return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
+      })
+    );
   }
+
+  /**
+   * Envoie une requête POST pour mettre à jour les informations de l'utilisateur
+   * @param user L'utilisateur à modifier (UpdateUserDTO)
+   * @returns un message d'erreur ou de succès
+   */
+  public UpdateUser(user: UpdateUserDTO): Observable<any>
+  {
+    return this.http.post<{ message: string }>(this.url + 'Update', user).pipe(
+      catchError(error => {
+        // Gestion des erreurs HTTP et remontée d'un message d'erreur
+        return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
+      })
+    );
+  }
+
 }
 
 

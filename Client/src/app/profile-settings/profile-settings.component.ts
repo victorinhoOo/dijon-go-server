@@ -6,7 +6,8 @@ import { UploadImageComponent } from '../upload-image/upload-image.component';
 import { UpdateUserDTO } from '../Model/DTO/UpdateUserDTO';
 import { AuthService } from '../Model/AuthService';
 import { UserDAO } from '../DAO/UserDAO';
-import { HttpClient, HttpErrorResponse, HttpClientModule  } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
+import { User } from '../Model/User';
 
 @Component({
   selector: 'app-profile-settings',
@@ -15,74 +16,107 @@ import { HttpClient, HttpErrorResponse, HttpClientModule  } from '@angular/commo
   templateUrl: './profile-settings.component.html',
   styleUrls: ['./profile-settings.component.css']
 })
+/**
+ * Composant de paramétrage du profil utilisateur
+ */
 export class ProfileSettingsComponent {
 
-  private _profileForm!: FormGroup;
+  private profileForm!: FormGroup;
   private userDAO: UserDAO;
-  private _selectedImage: any; // Stocke l'image upload
-  private _errorMessage: string = ''; // Message d'erreur à afficher en cas d'échec
+  private selectedImage: any;
+  private errorMessage: string;
+  private userPseudo: string;
+  private userEmail: string;
 
-  constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<ProfileSettingsComponent>, private auth: AuthService,  private http: HttpClient) 
-  {
-    this.userDAO = new UserDAO(this.http);
+  /**
+   * Getter pour userPseudo
+   * @returns le pseudo de l'utilisateur
+   * */
+  public get UserPseudo(): string {
+    return this.userPseudo;
   }
-
-  ngOnInit(): void {
-    this.profileForm = this.fb.group({
-      pseudo: ['', Validators.required],
-      pwd: ['', Validators.required],
-      img: [null],
-      email: ['', Validators.required]
-    });
+  /**
+   * Getter pour userEmail
+   * @returns l'email de l'utilisateur
+   */
+  public get UserEmail(): string {
+    return this.userEmail;
   }
 
   // Getter pour profileForm
-  public get profileForm(): FormGroup {
-    return this._profileForm;
-  }
-
-  // Setter pour profileForm
-  public set profileForm(value: FormGroup) {
-    this._profileForm = value;
+  public get ProfileForm(): FormGroup {
+    return this.profileForm;
   }
 
   // Getter pour selectedImage
-  public get selectedImage(): any {
-    return this._selectedImage;
+  public get SelectedImage(): any {
+    return this.selectedImage;
   }
 
   // Setter pour selectedImage
-  public set selectedImage(value: any) {
-    this._selectedImage = value;
-    this.profileForm.patchValue({ img: this._selectedImage }); // Met à jour le formulaire avec l'image
+  public set SelectedImage(value: any) {
+    this.selectedImage = value;
+    this.profileForm.patchValue({ img: this.selectedImage }); // Met à jour le formulaire avec l'image
   }
 
   // Getter pour errorMessage
-  public get errorMessage(): string {
-    return this._errorMessage;
+  public get ErrorMessage(): string {
+    return this.errorMessage;
   }
 
-  // Setter pour errorMessage
-  public set errorMessage(value: string) {
-    this._errorMessage = value;
+  /**
+   * Initialise le composant en créant un objet UserDAO et en récupérant les informations de l'utilisateurice 
+   */
+  constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<ProfileSettingsComponent>, private authService: AuthService, private http: HttpClient) {
+    this.userDAO = new UserDAO(this.http);
+    this.userPseudo = this.authService.getUser().Username;
+    this.userEmail = this.authService.getUser().Email;
+    this.errorMessage = '';
   }
 
-  onSubmit(): void {
+  /**
+   * Lancé à la fin de l'initialisation du composant, crée le formulaire de paramétrage du profil
+   */
+  ngOnInit(): void {
+    this.profileForm = this.fb.group({
+      pseudo: [this.userPseudo],
+      pwd: ['',],
+      img: [null],
+      email: [this.UserEmail]
+    });
+  }
+
+  /**
+   * Méthode appelée lors de la soumission du formulaire de paramétrage du profil
+   * Envoie les informations du formulaire au serveur pour mettre à jour le profil
+   * Met ensuite à jour les informations de l'utilisateur dans les cookies puis ferme la popup
+   */
+  public onSubmit(): void {
     if (this.profileForm.valid) {
       // Création d'un objet UpdateUserDTO avec les valeurs du formulaire
       const user = new UpdateUserDTO
-      (
-        this.auth.getToken(),
-        this.profileForm.value.pseudo,
-        this.profileForm.value.email,
-        this.profileForm.value.password,
-        this.selectedImage,
-      );
+        (
+          this.authService.getToken(),
+          this.profileForm.value.pseudo,
+          this.profileForm.value.email,
+          this.profileForm.value.password,
+          this.selectedImage,
+        );
       console.log(user);
       // Appel de la méthode du DAO pour mettre à jour l'utilisateur
       this.userDAO.UpdateUser(user).subscribe({
         next: (response) => {
           console.log('Mise à jour réussie :', response);
+
+          // Met à jour les informations de l'utilisateur dans les cookies
+          this.userDAO.GetUser(response.token).subscribe({
+            next: (user: User) => {
+              this.authService.setUser(user);
+            },
+            error: (err) => {
+              this.errorMessage = 'Erreur lors de la récupération de l\'utilisateur:', err.message;
+            }
+          });
         },
         error: (err: HttpErrorResponse) => {
           // En cas d'erreur
@@ -103,9 +137,9 @@ export class ProfileSettingsComponent {
     }
     this.dialogRef.close();
   }
-  
-  // Récupère l'image uploadée
+
+  // Récupère l'image uploadée par l'utilisateur
   onImageSelected(image: any) {
-    this.selectedImage = image; // Utilisation du setter
+    this.selectedImage = image; 
   }
 }

@@ -12,7 +12,7 @@
                         <h1>Connexion</h1>
                     </div>
                     <mat-card-content>
-                        <form [formGroup]="connexionForm" (ngSubmit)="onSubmit()">
+                        <form [formGroup]="ConnexionForm" (ngSubmit)="onSubmit()">
                             <div class="form-group">
                                 <label for="pseudo" class="col-form-label">Pseudo :</label>
                                 <input id="pseudo" formControlName="pseudo" class="form-control" />
@@ -22,7 +22,7 @@
                                 <input type="password" formControlName="pwd" id="pwd" class="form-control" />
                             </div>
                             <div class="mt-4">
-                                <button type="submit" class="btn btn-primary btn-block" [disabled]="!connexionForm.valid" id="submit">
+                                <button type="submit" class="btn btn-primary btn-block" [disabled]="!ConnexionForm.valid" id="submit">
                                     Se connecter
                                 </button>
                             </div>                                                                                                                                                                                                                                

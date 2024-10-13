@@ -11,50 +11,45 @@ import { Router } from '@angular/router';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
+/**
+ * Composant de la page d'accueil (connecté)
+ */
 export class IndexComponent implements OnInit {
 
-   private _token: string = '';
-   private _userPseudo: string = '';
-   private _img: string = 'https://localhost:7065/profile-pics/'; //stock le src de l'image
+   private token: string;
+   private userPseudo: string;
+   private avatar: string; 
+   private userRank: string;
 
-     // Getter pour token
-  public get token(): string 
-  {
-    return this._token;
+   /**
+    * Getter pour le lien d'affichage de l'avatar
+    */
+  public get Avatar(): string {
+    return this.avatar;
+  }
+  /**
+   * Getter pour le pseudo de l'utilisateur
+   */
+  public get UserPseudo(): string {
+    return this.userPseudo;
   }
 
-  // Setter pour token
-  public set token(value: string) 
-  {
-    this._token = value;
+  public get UserRank(): string {
+    return this.userRank;
   }
 
-  // Getter pour userPseudo
-  public get userPseudo(): string 
-  {
-    return this._userPseudo;
+  /**
+   * Initialisation du composant
+  */
+  constructor(private authService: AuthService, private router: Router) {
+    this.avatar = 'https://localhost:7065/profile-pics/';
+    this.token = '';
+    this.userPseudo = '';
+    this.userRank = '9 dan';
   }
-
-  // Setter pour userPseudo
-  public set userPseudo(value: string) 
-  {
-    this._userPseudo = value;
-  }
-
-  //Get pour le lien de l'image   
-  public get img(): string{
-    return this._img;
-  }
-
-  //Set le lien de l'image
-  public set img(value: string)
-  {
-    this._img = value;
-  }
-  constructor(private authService: AuthService, private router: Router) {}
   
-  // Méthode pour remplir le leaderboard avec des données fictives
-  populateLeaderboard(): void {
+  // Méthode pour remplir le leaderboard avec des données fictives (todo:  remplacer par des données réelles)
+  private populateLeaderboard(): void {
     const leaderboard = document.querySelector('.leaderboard');
     // temporaire
     const fakeEntries = [
@@ -74,19 +69,23 @@ export class IndexComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    //recuperation du token, du pseudo de l'utilisateur
-    this.userPseudo = this.authService.getUserPseudo();
+  /**
+   * Initialisation du composant
+   */
+  public ngOnInit() {
+    // Récupère le token utilisateur
     this.token = this.authService.getToken();
-
-    //recuperation de l'image de l'utilisateur
-    this._img += this._userPseudo; 
-    
     //verfication du token utilisateur sinon redirection login
     if(!this.token)
     {
         this.router.navigate(['/login']);
     }
+    //recuperation du pseudo de l'utilisateur
+    this.userPseudo = this.authService.getUser().Username;
+
+    //recuperation de l'image de l'utilisateur à partir de son pseudo
+    this.avatar += this.userPseudo; 
+    
     this.populateLeaderboard();
   }
 }
