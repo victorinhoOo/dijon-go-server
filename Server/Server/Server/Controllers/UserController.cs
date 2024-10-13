@@ -87,5 +87,26 @@ namespace Server.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Renvoie l'utilisateur correspondant au token de connexion.
+        /// </summary>
+        /// <param name="tokenUser">Token de connexion utilisateur</param>
+        /// <returns>L'utilisateur correspondant</returns>
+        [HttpPost("GetUser")]
+        public IActionResult GetUser(string tokenUser)
+        {
+            IActionResult result = BadRequest(new { Message = "Impossible de récupérer l'utilisateur" });
+            try
+            {
+                User user = userManager.GetUser(tokenUser);
+                result = Ok(new { User = user });
+            }
+            catch (Exception ex)
+            {
+                result = BadRequest(new { Message = ex.Message });
+
+            }
+            return result;
+        }
     }
 }

@@ -5,9 +5,10 @@ import { ConnexionComponent } from './connexion/connexion.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { IndexComponent } from './index/index.component';
+import { HomeScreenComponent } from './home-screen/home-screen.component';
 
 export const routes: Routes = [
-    {path:"", component: GameScreenComponent},
+    {path:"", component: HomeScreenComponent},
     {path:"grid", component: GridComponent},
     {path:"login", component: ConnexionComponent},
     {path:"profile", component: ProfileComponent},
