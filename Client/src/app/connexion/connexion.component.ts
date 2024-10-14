@@ -9,10 +9,11 @@ import { Router } from '@angular/router';
 import { User } from '../Model/User';
 import { PopupComponent } from '../popup/popup.component';
 
+
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, PopupComponent],
+  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, PopupComponent,HttpErrorResponse],
   templateUrl: './connexion.component.html',
   styleUrls: ['./connexion.component.css']
 })
@@ -130,32 +131,33 @@ export class ConnexionComponent {
         this.ConnexionForm.value.pwd
       ); 
       // Essaye de se connecter
-      const token = this.dao.LoginUser(loginUserDTO).subscribe({
-        next: (response) => 
+        this.dao.LoginUser(loginUserDTO).subscribe({
+        next: (response: {token: string}) => 
           {
-            this.popupMessage = response.message;  // Aucune erreur
+            this.popupMessage = response.token;  // Aucune erreur
             this.PopupTitle = 'Connexion réussie';
-            this.authService.setToken(response.message); // Stocke le token dans les cookies
+            this.authService.setToken(response.token); // Stocke le token dans les cookies
             
             //recuperation des infos l'utilisateur à partir de son token
-            this.dao.GetUser(response).subscribe({
+            this.dao.GetUser(response.token).subscribe({
               next: (user: User) => 
               {
                 this.authService.setUser(user);
                 // Redirige vers la page d'accueil
                 this.router.navigate(['/index']);
               },
-              error: (err :HttpErrorResponse) => 
+              error: (err: HttpErrorResponse) => 
               {
                 //affiche le message d'erreur du serveur
                 this.popupMessage = err.message;
-                this.PopupTitle = 'Erreur';
+                this.PopupTitle = 'Erreur :';
               }
             });
           },
-        error: (err :HttpErrorResponse) =>
+        error: (err: HttpErrorResponse) =>
          {
           //affiche le message d'erreur du serveur
+          this.PopupTitle = 'Erreur :';
           this.PopupMessage = err.message;
          }
       });
