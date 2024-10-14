@@ -41,7 +41,7 @@ export class AppComponent implements AfterViewInit{
         (timer as HTMLDivElement).style.border = "1px solid white";
       });
       (document.getElementById("logo") as HTMLImageElement).src = "renard_dark.png";
-      (document.getElementById("renardRegister") as HTMLImageElement).src = "renard_dark.png";
+      //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard_dark.png";
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
       this.state = "dark";
     }else{
@@ -54,7 +54,7 @@ export class AppComponent implements AfterViewInit{
       });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface sombre";
       (document.getElementById("logo") as HTMLImageElement).src = "renard.png";
-      (document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
+      //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
       this.state = "light"
     }
     
