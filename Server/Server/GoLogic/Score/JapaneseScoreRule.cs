@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GoLogic.Score
+﻿namespace GoLogic.Score
 {
+    /// <summary>
+    /// Classe pour gérer le décompte des points
+    /// Selon les règles Japonaise
+    /// </summary>
     public class JapaneseScoreRule : ScoreRule
     {
-        public JapaneseScoreRule(GameBoard gameBoard) : base(gameBoard)
-        {
-        }
+        public JapaneseScoreRule(GameBoard gameBoard) : base(gameBoard) { }
 
+        /// <summary>
+        /// Règles de décompte des points Japonaise
+        /// </summary>
+        /// <returns>Tuple d'entier correspondant aux scores noirs et blanc</returns>
         public override (int blackStones, int whiteStones) CalculateScore()
         {
             (int territoryBlack, int territoryWhite) = FindTerritory();

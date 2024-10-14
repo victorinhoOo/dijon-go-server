@@ -1,6 +1,8 @@
-﻿
-namespace GoLogic.Score
+﻿namespace GoLogic.Score
 {
+    /// <summary>
+    /// Classe abstraite pour gérer les différents décompte de point
+    /// </summary>
     public abstract class ScoreRule
     {
         private readonly GameBoard gameBoard;

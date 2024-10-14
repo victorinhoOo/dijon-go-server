@@ -1,9 +1,57 @@
 ﻿using GoLogic;
+using Org.BouncyCastle.Asn1.BC;
 
 namespace Test_GoLogic
 {
     public class GameLogicTests
     {
+        //TODO: tester création de plus grand plateau
+        [Fact]
+        public void Create_Board_Size()
+        {
+            // Organise
+            int neuf = 9;
+            int treize = 13;
+            int dixneuf = 19;
+
+            var gameBoard9 = new GameBoard(neuf);
+            var gameBoard13 = new GameBoard(treize);
+            var gameBoard19 = new GameBoard(dixneuf);
+            var gameLogic9 = new GameLogic(gameBoard9);
+            var gameLogic13 = new GameLogic(gameBoard13);
+            var gameLogic19 = new GameLogic(gameBoard19);
+
+            // fait
+            gameLogic9.PlaceStone(0, 0);
+            gameLogic13.PlaceStone(0, 0);
+            gameLogic19.PlaceStone(0, 0);
+
+            gameLogic9.PlaceStone(neuf - 1, neuf - 1);
+            gameLogic13.PlaceStone(treize - 1, treize - 1);
+            gameLogic19.PlaceStone(dixneuf - 1, dixneuf - 1);
+
+            // Assert
+            Assert.Equal(neuf, gameBoard9.Board.GetLength(0));
+            Assert.Equal(treize, gameBoard13.Board.GetLength(0));
+            Assert.Equal(dixneuf, gameBoard19.Board.GetLength(0));
+
+            Assert.Equal(neuf, gameBoard9.Board.GetLength(1));
+            Assert.Equal(treize, gameBoard13.Board.GetLength(1));
+            Assert.Equal(dixneuf, gameBoard19.Board.GetLength(1));
+
+            Assert.Equal(neuf, gameBoard9.Size);
+            Assert.Equal(treize, gameBoard13.Size);
+            Assert.Equal(dixneuf, gameBoard19.Size);
+
+            Assert.NotEqual(StoneColor.Empty, gameBoard9.Board[0, 0].Color);
+            Assert.NotEqual(StoneColor.Empty, gameBoard13.Board[0, 0].Color);
+            Assert.NotEqual(StoneColor.Empty, gameBoard19.Board[0, 0].Color);
+
+            Assert.NotEqual(StoneColor.Empty, gameBoard9.Board[neuf -1, neuf -1].Color);
+            Assert.NotEqual(StoneColor.Empty, gameBoard13.Board[treize - 1, treize -1].Color);
+            Assert.NotEqual(StoneColor.Empty, gameBoard19.Board[dixneuf - 1, dixneuf - 1].Color);
+        }
+
         [Fact]
         public void PlaceStone_ValidMove_ReturnsTrue()
         {

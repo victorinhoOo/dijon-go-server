@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GoLogic.Score
+﻿namespace GoLogic.Score
 {
+    /// <summary>
+    /// Classe pour gérer le décompte des points
+    /// Selon les règles Chinoise
+    /// </summary>
     public class ChineseScoreRule : ScoreRule
     {
-        public ChineseScoreRule(GameBoard gameBoard) : base(gameBoard)
-        {
-        }
+        public ChineseScoreRule(GameBoard gameBoard) : base(gameBoard) { }
 
+        /// <summary>
+        /// Règles de décompte des points Chinoise
+        /// </summary>
+        /// <returns>Tuple d'entier correspondant aux scores noirs et blanc</returns>
         public override (int blackStones, int whiteStones) CalculateScore()
         {
             (int blackStones, int whiteStones) = CountStones();
