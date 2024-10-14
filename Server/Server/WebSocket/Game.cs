@@ -8,6 +8,7 @@ namespace WebSocket
     {
         private Client player1;
         private Client player2;
+        private Client currentTurn;
         private GameBoard gameBoard;
         private GameLogic logic;    
 
@@ -21,11 +22,12 @@ namespace WebSocket
 
         public Client Player1 { get => player1; set => player1 = value; }
         public Client Player2 { get => player2; set => player2 = value; }
+        public Client CurrentTurn { get => currentTurn; }
 
         public Game(Client player1)
         {
             this.player1 = player1;
-
+            this.currentTurn = player1;
             this.gameBoard = new GameBoard(9);
             this.logic = new GameLogic(this.gameBoard);
         }
@@ -45,6 +47,11 @@ namespace WebSocket
         public void PlaceStone(int x, int y)
         {
             this.logic.PlaceStone(x, y);
+        }
+
+        public void ChangeTurn()
+        {
+            this.currentTurn = this.currentTurn == this.player1 ? this.player2 : this.player1;
         }
 
         public string StringifyGameBoard()

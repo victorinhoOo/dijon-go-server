@@ -141,18 +141,28 @@ namespace WebSocket
             int idGame = Convert.ToInt32(response.Split("/")[0]);
             byte[] responseBytes = this.webSocket.BuildMessage(response);
             Game game = games[idGame];
-            Client p1;
-            Client p2;
-            if (game.Player1 != null)
+            if (response.Length == 2)
             {
-                p1 = game.Player1;
-                p1.SendMessage(responseBytes);
+                this.SendMessage(client, responseBytes);
             }
-            if (game.Player2 != null)
+            else
             {
-                p2 = game.Player2;
-                p2.SendMessage(responseBytes);
-            }  
+                this.BroadastMessage(game, responseBytes);
+            }
+        }
+
+        private void SendMessage(Client client, byte[] bytes)
+        {
+            if(client != null)
+            {
+                client.SendMessage(bytes);
+            }
+        }
+
+        private void BroadastMessage(Game game, byte[] bytes)
+        {
+            this.SendMessage(game.Player1, bytes);
+            this.SendMessage(game.Player2, bytes);
         }
     }
 
