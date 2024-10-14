@@ -5,7 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { UploadImageComponent } from '../upload-image/upload-image.component';
 import { UpdateUserDTO } from '../Model/DTO/UpdateUserDTO';
 import { AuthService } from '../Model/AuthService';
-import { UserDAO } from '../DAO/UserDAO';
+import { UserDAO } from '../Model/DAO/UserDAO';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
 import { User } from '../Model/User';
 

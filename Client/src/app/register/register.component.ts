@@ -4,7 +4,7 @@ import { UploadImageComponent } from "../upload-image/upload-image.component";
 import { CommonModule } from '@angular/common';
 import { RegisterUserDTO } from '../Model/DTO/RegisterUserDTO';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
-import { UserDAO } from '../DAO/UserDAO';
+import { UserDAO } from '../Model/DAO/UserDAO';
 import { PopupComponent } from '../popup/popup.component';
 import { Router } from '@angular/router';
 
