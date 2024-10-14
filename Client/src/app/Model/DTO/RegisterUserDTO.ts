@@ -8,6 +8,34 @@ export class RegisterUserDTO {
   private password: string;
   private profilePic: File | null;
 
+  /**
+   * Renvoi le nom de l'utilisateur
+   */
+  public get ProfilePic(): File | null {
+    return this.profilePic;
+  }
+
+  /**
+   * Renvoi le mot de passe de l'utilisateur
+   */
+  public get Password(): string {
+    return this.password;
+  }
+
+  /**
+   * Renvoi l'email de l'utilisateur
+   */
+  public get Email(): string {
+    return this.email;
+  }
+
+  /**
+   * Renvoi le nom de l'utilisateur
+   */
+  public get Username(): string {
+    return this.username;
+  }
+
   constructor(username: string, email: string, password: string, profilePic: File | null) {
     this.username = username;
     this.email = email;

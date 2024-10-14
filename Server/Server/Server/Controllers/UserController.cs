@@ -49,7 +49,7 @@ namespace Server.Controllers
         /// <param name="registerUserDTO">Les informations d'inscription de l'utilisateur.</param>
         /// <returns>Le résultat de l'inscription.</returns>
         [HttpPost("Register")]
-        public IActionResult Register([FromBody] RegisterUserDTO registerUserDTO)
+        public IActionResult Register([FromForm] RegisterUserDTO registerUserDTO)
         {
             IActionResult result = BadRequest(new { Message = "Inscription impossible" });
             try

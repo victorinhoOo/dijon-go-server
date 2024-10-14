@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { RegisterUserDTO } from '../Model/DTO/RegisterUserDTO';
-import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
-import { UpdateUserDTO }from '../Model/DTO/UpdateUserDTO';
-import { User } from '../Model/User';
+import { RegisterUserDTO } from '../DTO/RegisterUserDTO';
+import { LoginUserDTO } from '../DTO/LoginUserDTO';
+import { UpdateUserDTO }from '../DTO/UpdateUserDTO';
+import { User } from '../User';
 import { HttpParams } from '@angular/common/http';
 
 /**
- * Gère les requêtes HTTP vers l'API utilisateur
+ * Gère les requêtes HTTP vers l'API pour la gestion des comptes utilisateurs
  */
 export class UserDAO {
   
@@ -27,7 +27,16 @@ export class UserDAO {
    * @returns Un Observable qui émet la réponse du serveur ou une erreur
    */
   public registerUser(registerUserDTO: RegisterUserDTO): Observable<any> {
-    return this.http.post<{ message: string }>(this.url + 'Register', registerUserDTO).pipe(
+    // On passe par un formdata pour envoyer les données car on envoie un fichier (l'image de profil)
+    const formData: FormData = new FormData();  
+    formData.append('username', registerUserDTO.Username || '');
+    formData.append('email', registerUserDTO.Email || '');
+    formData.append('password', registerUserDTO.Password || '');   
+    // Ajoute le fichier si disponible
+    if (registerUserDTO.ProfilePic) {
+      formData.append('profilePic', registerUserDTO.ProfilePic);
+    }
+    return this.http.post<{ message: string }>(this.url + 'Register', formData).pipe(
       catchError(error => {
         // Gestion des erreurs HTTP et remontée d'un message d'erreur
         return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
@@ -73,7 +82,7 @@ export class UserDAO {
    * @returns un message d'erreur ou de succès
    */
   public UpdateUser(user: UpdateUserDTO): Observable<any> {
-    // On passe par un formulaire pour envoyer les données car on envoie un fichier (l'image de profil)
+    // On passe par un formdata pour envoyer les données car on envoie un fichier (l'image de profil)
     const formData: FormData = new FormData();  
     formData.append('tokenuser', user.TokenUser);
     formData.append('username', user.Username || '');

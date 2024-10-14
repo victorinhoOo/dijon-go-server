@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
-import { UserDAO } from '../DAO/UserDAO';
+import { UserDAO } from '../Model/DAO/UserDAO';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../Model/AuthService';
 import { Router } from '@angular/router';
