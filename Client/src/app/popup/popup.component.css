@@ -10,6 +10,7 @@
   align-items: center; 
   z-index: 1000; 
   font-style: Nunito;
+  color: black;
 }
 
 .popup-content {

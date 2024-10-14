@@ -100,7 +100,7 @@ export class RegisterComponent {
           this.router.navigate(['/login']);
         },
         error: (err: HttpErrorResponse) => {
-          if (err.status === 400 && err.error && typeof err.error === 'object' && err.error.message) {
+          if ( err.error && typeof err.error === 'object' && err.error.message) {
             this.popupMessage = err.error.message;  // Message d'erreur personnalisé
           } else {
             this.popupMessage = 'Une erreur est survenue lors de l\'inscription';

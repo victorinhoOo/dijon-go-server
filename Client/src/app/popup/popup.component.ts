@@ -51,7 +51,9 @@ export class PopupComponent {
 
   // Méthode pour fermer la popup
   closePopup() {
+    //on ferme la popup et on reinitialise le message
     this.show = false; 
+    this.popupMessage ='';
     window.location.reload();  
   }
 }
