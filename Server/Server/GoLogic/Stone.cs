@@ -1,4 +1,4 @@
-﻿namespace Go_logic
+﻿namespace GoLogic
 {
     public class Stone
     {

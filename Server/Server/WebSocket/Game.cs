@@ -1,4 +1,4 @@
-﻿using Go_logic;
+﻿using GoLogic;
 using System.Text;
 using System.Text.Json;
 

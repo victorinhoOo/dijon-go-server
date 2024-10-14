@@ -1,15 +1,16 @@
-﻿using Go_logic;
+﻿using GoLogic;
+using GoLogic.Score;
 
 namespace Test_GoLogic
 {
     public class ScoreTest
     {
         [Fact]
-        public void Score_CalculateChinese()
+        public void ScoreRule_Chinese()
         {
-            var gameBoard = new GameBoard(9);
-            var gameLogic = new GameLogic(gameBoard);
-            var gameScore = new ScoreCalculator(gameBoard);
+            GameBoard gameBoard = new GameBoard(9);
+            GameLogic gameLogic = new GameLogic(gameBoard);
+            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
 
             gameLogic.PlaceStone(1, 2); // noir
             gameLogic.PlaceStone(2, 2); // blanc
@@ -32,18 +33,18 @@ namespace Test_GoLogic
             // . . . . . . . . .
             // . . . @ . . . . .
 
-            (int black, int white) = gameScore.CalculateScoreChinese();
-            
+            (int black, int white) = gameScore.CalculateScore();
+
             Assert.Equal(6, black);
             Assert.Equal(3, white);
         }
 
         [Fact]
-        public void Score_CalculateJapanese()
+        public void ScoreRule_Japanese()
         {
-            var gameBoard = new GameBoard(9);
-            var gameLogic = new GameLogic(gameBoard);
-            var gameScore = new ScoreCalculator(gameBoard);
+            GameBoard gameBoard = new GameBoard(9);
+            GameLogic gameLogic = new GameLogic(gameBoard);
+            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
 
             gameLogic.PlaceStone(1, 2); // noir
             gameLogic.PlaceStone(2, 2); // blanc
@@ -66,10 +67,10 @@ namespace Test_GoLogic
             // . . . . . . . . .
             // . . . @ . . . . .
 
-            (int black, int white) = gameScore.CalculateScoreJapanese();
-
-            Assert.Equal(2, black);
-            Assert.Equal(0, white);
+            (int black, int white) = gameScore.CalculateScore();
+            
+            Assert.Equal(6, black);
+            Assert.Equal(3, white);
         }
     }
 }

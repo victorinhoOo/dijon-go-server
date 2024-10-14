@@ -1,4 +1,4 @@
-﻿using Go_logic;
+﻿using GoLogic;
 
 namespace Test_GoLogic
 {
