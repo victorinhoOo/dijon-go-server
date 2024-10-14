@@ -3,7 +3,7 @@ import  {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AuthService } from '../Model/AuthService';
+import { AuthService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 

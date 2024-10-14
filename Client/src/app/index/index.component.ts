@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { MatIcon } from '@angular/material/icon';
-import { AuthService } from '../Model/AuthService';
+import { AuthService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 
 @Component({

@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { AuthService } from '../Model/AuthService';
+import { AuthService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { User } from '../Model/User';
 
