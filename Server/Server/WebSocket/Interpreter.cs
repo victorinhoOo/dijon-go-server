@@ -21,7 +21,7 @@ namespace WebSocket
             string response = "";
             switch (type)
             {
-                case "Stone": this.PlaceStone(idGame, message.Split(':')[1], ref response);break;
+                case "Stone": this.PlaceStone(client, idGame, message.Split(':')[1], ref response);break;
                 case "Create": this.CreateGame(client, ref response); break;
                 case "Join": this.JoinGame(client, idGame, ref response);break;
 
@@ -31,23 +31,27 @@ namespace WebSocket
         }
 
 
-        private void PlaceStone(int idGame, string coordinates, ref string response)
+        private void PlaceStone(Client player, int idGame, string coordinates, ref string response)
         {
             if(idGame != 0)
             {
-                try
+                Game game = Server.Games[idGame];
+                if(game.CurrentTurn == player)
                 {
-                    int x = Convert.ToInt32(coordinates.Split("-")[0]);
-                    int y = Convert.ToInt32(coordinates.Split("-")[1]);
+                    try
+                    {
+                        int x = Convert.ToInt32(coordinates.Split("-")[0]);
+                        int y = Convert.ToInt32(coordinates.Split("-")[1]);
 
-                    Server.Games[idGame].PlaceStone(x, y);
+                        game.PlaceStone(x, y);
 
-
-                    response = $"{idGame}/{Server.Games[idGame].StringifyGameBoard()}";
-                }
-                catch (Exception e)
-                {
-                    response = $"{idGame}/Error:{e.Message}";
+                        game.ChangeTurn();
+                        response = $"{idGame}/{game.StringifyGameBoard()}";
+                    }
+                    catch (Exception e)
+                    {
+                        response = $"{idGame}/Error:{e.Message}";
+                    }
                 }
             }
         }

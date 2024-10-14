@@ -45,7 +45,13 @@ namespace WebSocket
             switch (messageLength)
             {
                 case <= 125:lengthIndicator = messageLength;break;
-                case <= 65535:
+                case <= 65535: // la trame contiendra 2 octets supplémentaires qui  indiqueront la longueur du message
+                    {
+                        lengthIndicator = 126;
+                        length = BitConverter.GetBytes(Convert.ToInt16(messageLength));
+                        Array.Reverse(length);
+                        break;
+                    }
                     {
                         lengthIndicator = 126;
                         length = BitConverter.GetBytes(Convert.ToInt16(messageLength));
