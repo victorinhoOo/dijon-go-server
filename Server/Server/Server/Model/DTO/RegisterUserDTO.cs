@@ -8,7 +8,7 @@
         private string username;
         private string email;
         private string password;
-        private IFormFile profilePic;
+        private IFormFile? profilePic;
 
         /// <summary>
         /// Le nom de l'utilisateur souhaitant s'inscrire
@@ -28,6 +28,6 @@
         /// <summary>
         /// La photo de profil de l'utilisateur souhaitant s'inscrire
         /// </summary>
-        public IFormFile ProfilePic { get => profilePic; set => profilePic = value; }
+        public IFormFile? ProfilePic { get => profilePic; set => profilePic = value; }
     }
 }
