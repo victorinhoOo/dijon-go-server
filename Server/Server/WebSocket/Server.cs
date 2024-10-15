@@ -138,17 +138,22 @@ namespace WebSocket
             byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
             message = Encoding.UTF8.GetString(decryptedMessage);
             response = this.interpreter.Interpret(message, client);
-            int idGame = Convert.ToInt32(response.Split("/")[0]);
-            byte[] responseBytes = this.webSocket.BuildMessage(response);
+
+            string responseType = response.Split("_")[0];
+            string responseData = response.Split("_")[1];
+
+            int idGame = Convert.ToInt32(responseData.Split("/")[0]);
+            byte[] responseBytes = this.webSocket.BuildMessage(responseData);
             Game game = games[idGame];
-            if (response.Length == 2)
+            if (responseType == "Send")
             {
                 this.SendMessage(client, responseBytes);
             }
-            else
+            else if(responseType == "Broadcast")
             {
                 this.BroadastMessage(game, responseBytes);
             }
+            response = responseData;
         }
 
         private void SendMessage(Client client, byte[] bytes)
