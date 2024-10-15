@@ -1,16 +1,25 @@
-#app-component-container{
+#app-component-container {
     width: 100%;
     height: 100%;
     display: flex;
 }
 
-app-navbar{
+app-navbar {
     width: 13%;
 }
 
-#content-container{
+#content-container {
+    display: flex;
+    flex-direction: column;
     overflow: scroll;
+    overflow-x: hidden;
     width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+#footer-container {
+    margin-top: auto;
 }
 
 

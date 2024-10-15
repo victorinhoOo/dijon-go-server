@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { HttpClientModule } from '@angular/common/http'; 
 
@@ -15,7 +15,10 @@ export class PopupComponent {
   private _popupMessage: string = '';
   private _show: boolean = false;
   private _title: string = ''; 
-  
+
+  // Événement pour notifier la fermeture de la popup
+  @Output() onClose = new EventEmitter<void>();
+
   // Getter pour popupMessage
   get popupMessage(): string {
     return this._popupMessage;
@@ -51,9 +54,7 @@ export class PopupComponent {
 
   // Méthode pour fermer la popup
   closePopup() {
-    //on ferme la popup et on reinitialise le message
-    this.show = false; 
-    this.popupMessage ='';
-    window.location.reload();  
+    this._show = false; 
+    this.onClose.emit();  // Notifie le composant parent
   }
 }
