@@ -81,10 +81,11 @@ export class ProfileSettingsComponent {
    */
   ngOnInit(): void {
     this.profileForm = this.fb.group({
-      pseudo: [this.userPseudo],
+      pseudo: [''],
+      oldpwd: ['',],
       pwd: ['',],
       img: [null],
-      email: [this.UserEmail]
+      email: ['']
     });
   }
 
@@ -101,6 +102,7 @@ export class ProfileSettingsComponent {
           this.token,
           this.profileForm.value.pseudo,
           this.profileForm.value.email,
+          this.profileForm.value.oldpwd,
           this.profileForm.value.pwd,
           this.selectedImage,
         );
