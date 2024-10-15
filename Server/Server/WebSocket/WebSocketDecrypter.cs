@@ -57,7 +57,7 @@ namespace WebSocket
                 if (opcode == 8) // Le message envoyé est un message de déconnexion 
                 {
                     ushort code = BitConverter.ToUInt16(new byte[] { decoded[1], decoded[0] }, 0); // Calcul du code de déconnexion
-                    throw new DeconnectionException(code);
+                    throw new DisconnectionException(code);
                 }
 
             }

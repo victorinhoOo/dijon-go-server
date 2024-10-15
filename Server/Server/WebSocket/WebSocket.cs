@@ -39,7 +39,34 @@ namespace WebSocket
         public byte[] BuildMessage(string message)
         {
             byte[] charsBytes = Encoding.UTF8.GetBytes((message.ToCharArray())); // transformation du message en tableau d'octets
-            List<byte> messageBytes = new List<byte>() { 129, Convert.ToByte(message.Length) }; // préparation de la trame
+            int messageLength = message.Length;
+            int lengthIndicator = 0;
+            byte[] length = new byte[] { };
+            switch (messageLength)
+            {
+                case <= 125:lengthIndicator = messageLength;break;
+                case <= 65535: // la trame contiendra 2 octets supplémentaires qui  indiqueront la longueur du message
+                    {
+                        lengthIndicator = 126;
+                        length = BitConverter.GetBytes(Convert.ToInt16(messageLength));
+                        Array.Reverse(length);
+                        break;
+                    }
+                    {
+                        lengthIndicator = 126;
+                        length = BitConverter.GetBytes(Convert.ToInt16(messageLength));
+                        Array.Reverse(length);
+                        break;
+                    }
+            }
+            List<byte> messageBytes = new List<byte>() { 129, Convert.ToByte(lengthIndicator) }; // préparation de la trame
+            if (lengthIndicator == 126) // si la longueur du message est supérieure à 125 octets
+            {
+                foreach(byte b in length)
+                {
+                   messageBytes.Add(b);
+                }
+            }
             foreach (byte b in charsBytes)
             {
                 messageBytes.Add(b); // Transformation de chaque charactère du message en octet et ajout à la trame

@@ -9,7 +9,7 @@ namespace WebSocket
     /// <summary>
     /// Exception qui sera levée lorsqu'un client client se déconnecte du serveur
     /// </summary>
-    public class DeconnectionException  : Exception
+    public class DisconnectionException  : Exception
     {
         private int code; 
 
@@ -18,7 +18,7 @@ namespace WebSocket
         /// </summary>
         public int Code { get { return code; } } 
 
-        public DeconnectionException(int code):base($"Client deconnected with status {code}")
+        public DisconnectionException(int code):base($"Client deconnected with status {code}")
         {
             this.code = code;
         }
