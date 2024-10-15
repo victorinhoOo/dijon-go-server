@@ -13,7 +13,7 @@ import { PopupComponent } from '../popup/popup.component';
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, PopupComponent,HttpErrorResponse],
+  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, PopupComponent],
   templateUrl: './connexion.component.html',
   styleUrls: ['./connexion.component.css']
 })
@@ -149,8 +149,9 @@ export class ConnexionComponent {
               error: (err: HttpErrorResponse) => 
               {
                 //affiche le message d'erreur du serveur
-                this.popupMessage = err.message;
                 this.PopupTitle = 'Erreur :';
+                this.popupMessage = err.message;
+                
               }
             });
           },
@@ -163,6 +164,7 @@ export class ConnexionComponent {
       });
 
     }
-    this.ShowPopup = true;
-  }  
+    this.ShowPopup = true; //ouverture de la pop up
+  } 
 }
+
