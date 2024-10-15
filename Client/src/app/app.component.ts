@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GridComponent } from './grid/grid.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { WebsocketService } from './websocket.service';
 
 
 @Component({
@@ -15,7 +16,7 @@ export class AppComponent implements AfterViewInit{
   title = 'Client';
   private state: string;
 
-  public constructor() {
+  public constructor(private websocketService:WebsocketService) {
     this.state = 'light';
   }
 
@@ -66,11 +67,7 @@ export class AppComponent implements AfterViewInit{
   }
 
   public connectWebSocket(): void {
-    var client = new WebSocket("ws://127.0.0.1:7000/"); //10.211.55.3:7000
-    client.onopen = ()=>{
-      console.log('Connected to WebSocket server');
-      client.send('Hello from the browser client!');
-    }
+    this.websocketService.connectWebsocket();
 
   }
 }

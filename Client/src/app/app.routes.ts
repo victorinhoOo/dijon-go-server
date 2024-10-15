@@ -3,6 +3,6 @@ import { GameScreenComponent } from './game-screen/game-screen.component';
 import { GridComponent } from './grid/grid.component';
 
 export const routes: Routes = [
-    {path:"", component: GameScreenComponent},
+    {path:":size", component: GameScreenComponent},
     {path:"grid", component: GridComponent}
 ];
