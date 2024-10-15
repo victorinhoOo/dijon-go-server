@@ -4,83 +4,7 @@
     position: relative;
 }
 
-table{
-    margin: auto;
-    --size : 50%;
-}
 
-tr, td, table{
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-
-
-
-td{
-    height: 30px;
-    width: 30px;
-    position: relative;
-}
-
-.pawn{
-    width:  calc(var(--size)*2);
-    height: calc(var(--size)*2);
-    position: absolute;
-    padding: 0;
-    margin: 0;
-    border: none;
-    border-radius: 50%;
-    z-index: 3;
-}
-
-.container{
-    width: calc(var(--size)*2);
-    height: calc(var(--size)*2);
-    position: absolute;
-    padding: 0;
-    margin: 0;
-    border: none;
-    z-index: 3;
-}
-
-
-.container:hover{
-    .pawn{
-        background-color: grey;
-        opacity: 0.5;
-    }
-}
-
-
-
-tr:first-child{
-    border: 0px solid white;
-}
-
-tr > td:first-child{
-    border: 0px solid white;
-}
-
-
-.container.main{
-    bottom: calc(var(--size)*-1);
-    right: calc(var(--size)*-1);
-}
-
-.container.up{
-    right: calc(var(--size)*-1);
-    top: calc(var(--size)*-1);
-}
-
-.container.left{
-    left: calc(var(--size)*-1);
-    bottom: calc(var(--size)*-1);
-}
-
-.container.upleft{
-    left: calc(var(--size)*-1);
-    top: calc(var(--size)*-1);
-}
 
 
 #player, #opponent{
@@ -128,6 +52,67 @@ tr > td:first-child{
 #pass{
     margin-left: auto;
     margin-right: 15px;
+}
+
+#cells-container{
+    position: relative;
+}
+
+.cell{
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    position: relative;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    
+}
+
+.stone{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    left: -50%;
+    top: -50%;
+    z-index: 3;
+}
+
+.stone.right{
+    left: unset;
+    right: -50%;
+}
+
+.row-bottom{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.cell-bottom{
+    position: relative;
+    width: 32px;
+    height: 32px;
+}
+
+.bottom{
+    top: unset;
+    bottom: -50%;
+}
+
+
+
+.stone:hover{
+    background-color: grey !important;
+    opacity: 0.8 !important;
 }
 
 

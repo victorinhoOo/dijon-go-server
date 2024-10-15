@@ -9,5 +9,4 @@ import { GridComponent } from '../grid/grid.component';
   styleUrl: './game-screen.component.css'
 })
 export class GameScreenComponent {
-
 }

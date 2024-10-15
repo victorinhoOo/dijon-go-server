@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GridComponent } from './grid/grid.component';
 import { RegisterComponent } from './register/register.component';  
@@ -8,6 +8,8 @@ import { ConnexionComponent } from './connexion/connexion.component';
 import { ProfileComponent }  from './profile/profile.component'
 import { IndexComponent } from './index/index.component';
 import { FooterComponent } from "./footer/footer.component";
+import { WebsocketService } from './websocket.service';
+
 
 @Component({
   selector: 'app-root',
@@ -18,19 +20,21 @@ import { FooterComponent } from "./footer/footer.component";
 
 })
 export class AppComponent implements AfterViewInit{
-
   title = 'Client';
   private state: string;
 
-  public constructor(){
-    this.state = "light"
+  public constructor(private websocketService:WebsocketService) {
+    this.state = 'light';
   }
 
-  ngAfterViewInit(): void {
-    document.getElementById("state-button")!.addEventListener("click",()=>{
+
+  public ngAfterViewInit(){
+    document.getElementById('state-button')!.addEventListener('click', () => {
       this.changeLightState();
-    })
+    });
+    this.connectWebSocket();
   }
+
 
   public changeLightState():void{
     if(this.state == "light"){
@@ -86,6 +90,11 @@ export class AppComponent implements AfterViewInit{
       this.state = "light"
     }
     
+  }
+
+  public connectWebSocket(): void {
+    this.websocketService.connectWebsocket();
+
   }
   
 }
