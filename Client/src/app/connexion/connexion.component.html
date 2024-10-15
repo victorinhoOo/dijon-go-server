@@ -1,4 +1,4 @@
-<app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" ></app-popup>
+<app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ></app-popup>
 <div class="row">
     <div class="col marge">
         <div class="container">
@@ -7,8 +7,8 @@
     </div>
     <div class="col marge2">
         <div class="container">
-            <div class="d-flex justify-content-center align-items-center ">
-                <mat-card class="custom-card con">
+            <div class="d-flex justify-content-center align-items-center">
+                <mat-card class="custom-card con shadow-container">
                     <div class="text-center mb-4">
                         <h1>Connexion</h1>
                     </div>

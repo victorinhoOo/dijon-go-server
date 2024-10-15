@@ -1,7 +1,7 @@
 .card-pos{
     max-width: 60%; margin: 0 auto;
     padding: 1%;
-    background-color: #FFEBE4;
+    background-color: #FFF3E4;
 }
 #params{
     margin-left: auto;
@@ -14,7 +14,7 @@
     align-items: center;
 }
 .custom-dialog-container{
-    background-color: #FFEBE4;
+    background-color: #FFF3E4;
 }
 .container{
     color: black;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { User } from './User'; 
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,15 +9,27 @@ import { User } from './User';
 /**
  * Gère le stockage des cookies utilisateurs et des tokens d'authenthification
  */
-export class AuthService {
+export class UserCookieService {
   private tokenKey = 'authToken';        // Clé pour le stockage du token
   private userKey = 'authUser';          // Clé pour le stockage de l'utilisateur
 
-  constructor(private cookieService: CookieService) {}
+  private tokenSubject : BehaviorSubject<string>;
+
+  constructor(private cookieService: CookieService) {
+    this.tokenSubject = new BehaviorSubject<string>(this.getToken());
+  }
 
   // Méthode pour définir le token
   public setToken(token: string): void {
     this.cookieService.set(this.tokenKey, token);
+    this.tokenSubject.next(token);
+  }
+  
+  /**
+   * Méthode pour obtenir le token sous forme d'observable
+   */
+  public getTokenObservable() {
+    return this.tokenSubject.asObservable();
   }
 
   // Méthode pour obtenir le token
@@ -27,6 +40,7 @@ export class AuthService {
   // Méthode pour supprimer le token
   public deleteToken(): void {
     this.cookieService.delete(this.tokenKey);
+    this.tokenSubject.next('');
   }
 
   // Méthode pour définir l'utilisateur

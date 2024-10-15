@@ -1,5 +1,6 @@
 .custom-card {
     width: 400px; /* Largeur de la carte */
+    height: 80%;
     padding: 20px;
     border-radius: 8px;
 }
@@ -20,6 +21,10 @@
     text-align: center; /* Centre le texte du titre */
 }
 
+.shadow-container {
+    box-shadow: 10px 10px 0px rgba(85, 70, 28, 0.5); /* Ajoute une ombre légère */   
+}
+
 .row{
 
     margin-left: 8%;
@@ -38,7 +43,7 @@
     max-width: 600px; /* largeur maximum pour éviter qu'elle soit trop grande */
 }
 .con{
-    background-color: #FFEBE4;
+    background-color: #FFF3E4;
     color: black;
 }
 

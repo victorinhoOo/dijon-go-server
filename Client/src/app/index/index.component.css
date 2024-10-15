@@ -121,7 +121,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #f8cbbe;
+    background-color: #fadbb5;
     padding: 20px;
     text-decoration: none;
     color: black;
@@ -135,8 +135,9 @@
 }
 
 .game-options a:hover {
-    background-color: #f7af9b;
+    background-color: #f1c690;
     transform: scale(1.02);
+    cursor: pointer;
 }
 
 .game-options img {
@@ -215,6 +216,34 @@
     color: #EBB840;
 }
 
+.game-choice{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    color: black;
+}
+
+::ng-deep .game-choice a {
+    background-color: #FADBB5;
+    color: black;
+    width: 500px;
+    border-radius: 10px;
+    padding: 10px;
+    display: block; 
+    margin-bottom: 5px;
+    text-decoration: none;
+    text-align: left;
+}
+
+::ng-deep .game-choice a:hover {
+    background-color: #F1C690;
+}
+
+
+
+
 /* Media Queries pour les écrans plus petits */
 @media (max-width: 1100px) {
     .top-section,
@@ -261,7 +290,7 @@
     }
 
     .leaderboard{
-        width: 500px;
+        width: 100%;
         text-align: center;
     }
     .leaderboard-section {

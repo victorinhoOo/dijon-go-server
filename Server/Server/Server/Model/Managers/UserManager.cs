@@ -103,15 +103,24 @@ namespace Server.Model.Managers
         {
             // Récupère l'utilisateur existant grâce à son token de connexion 
             User user = tokenManager.GetUserByToken(updateUserDTO.Tokenuser);
-            if(user != null)
+            // Vérifie que  que le mot de passe est le bon pour l'utilisateur connecté (pour éviter les usurpations de compte)
+            if (this.userDAO.VerifyExists(new User { Password = this.HashPassword(updateUserDTO.Oldpassword), Username = user.Username }))
             {
                 try
                 {
+                    //  applique les modifications souhaitées
                     if (!string.IsNullOrEmpty(updateUserDTO.Username))
                     {
+                        if(this.userDAO.GetUserByUsername(updateUserDTO.Username) == null) // vérifie si le nom d'utilisateur n'est pas déjà pris
+                        {
                             imageManager.RenameProfilePic(user.Username, updateUserDTO.Username); // Renomme l'image de profil sur le FTP (pour correspondre au nouveau nom d'utilisateur)
                             user.Username = updateUserDTO.Username;
                         }
+                        else
+                        {
+                            throw new Exception("Ce nom d'utilisateur est déjà pris");
+                        }
+                    }
                     if (!string.IsNullOrEmpty(updateUserDTO.Email))
                     {
                         user.Email = updateUserDTO.Email;
@@ -136,7 +145,7 @@ namespace Server.Model.Managers
             }
             else
             {
-                throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
+                throw new UnauthorizedAccessException("Mot de passe invalide");
             }
         }
 

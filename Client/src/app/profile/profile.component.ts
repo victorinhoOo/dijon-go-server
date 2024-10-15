@@ -3,7 +3,7 @@ import  {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AuthService } from '../Model/UserCookieService';
+import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
@@ -46,9 +46,9 @@ export class ProfileComponent {
    * à partir des cookies. Si le jeton n'est pas valide, l'utilisateur est redirigé vers 
    * la page de connexion.
    * */
-  constructor(public dialog: MatDialog, private authService: AuthService, private router: Router, private http: HttpClient) {
+  constructor(public dialog: MatDialog, private userCookieService: UserCookieService, private router: Router, private http: HttpClient) {
     // Récupère le token utilisateur
-    this.token = this.authService.getToken();
+    this.token = this.userCookieService.getToken();
     //verfication du token utilisateur sinon redirection login
     if(!this.token)
     {
@@ -56,8 +56,8 @@ export class ProfileComponent {
     }
 
     //recuperation de l'image de l'utilisateur à partir de son pseudo
-    this.userPseudo = this.authService.getUser().Username;
-    this.userEmail = this.authService.getUser().Email;
+    this.userPseudo = this.userCookieService.getUser().Username;
+    this.userEmail = this.userCookieService.getUser().Email;
     this.rank = "9 dan";
     this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo            
   }

@@ -41,6 +41,7 @@ namespace Tests.Users
             {
                 Tokenuser = "abc123",
                 Username = "VictorNew",
+                Oldpassword = "mdp",
                 Password = "MdpNew",
                 Email = "nouvelemail@gmail.com"
             };
@@ -58,14 +59,15 @@ namespace Tests.Users
         }
 
         /// <summary>
-        /// Teste la tentative de mise à jour d'un utilisateur inexistant.
+        /// Teste la tentative de mise à jour d'un utilisateur avec le mauvais mot de passe.
         /// </summary>
         [Fact]
-        public void TestUpdateNonExistentToken()
+        public void TestUpdateWrongMdp()
         {
             UpdateUserDTO updateUserDto = new UpdateUserDTO
             {
-                Tokenuser = "wrongtoken",
+                Oldpassword = "mauvaismdp",
+                Tokenuser = "abc123",
                 Username = "VictorNewww"
             };
 
@@ -94,6 +96,7 @@ namespace Tests.Users
 
             UpdateUserDTO updateUserDto = new UpdateUserDTO
             {
+                Oldpassword = "mdp",
                 Tokenuser = "abc123",
                 ProfilePic = fakeProfilePic.Object
             };

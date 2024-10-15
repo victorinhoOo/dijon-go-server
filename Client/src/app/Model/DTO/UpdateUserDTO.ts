@@ -6,6 +6,7 @@ export class UpdateUserDTO {
     private tokenuser: string;
     private username: string;
     private email: string;
+    private oldpassword: string
     private password: string;
     private profilePic: File | null;
 
@@ -27,6 +28,14 @@ export class UpdateUserDTO {
     public get Email(): string {
         return this.email;
     }
+
+    /**
+     * Renvoi l'ancien mot de passe de l'utilisateur
+     */
+    public get OldPassword(): string {
+        return this.oldpassword;
+    }
+
     /**
      * Renvoi le mot de passe de l'utilisateur
      */
@@ -40,11 +49,12 @@ export class UpdateUserDTO {
         return this.profilePic;
     }
   
-    constructor(token: string, user: string, mail: string,password: string, profile: File) 
+    constructor(token: string, user: string, mail: string, oldpassword: string, password: string, profile: File) 
     {
         this.tokenuser = token;
         this.username = user;
         this.email = mail;
+        this.oldpassword = oldpassword;
         this.password = password;
         this.profilePic = profile;
 

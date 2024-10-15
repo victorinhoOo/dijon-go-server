@@ -5,7 +5,7 @@
 <div class="register-container">
 
   
-  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" ></app-popup>
+  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ><a href="/login">Connectez-vous</a></app-popup>
 
     
     <form class="formStyle" [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
@@ -13,7 +13,7 @@
   
       <div class="form-group">        
         <label for="pseudo">Pseudo</label>
-        <input class="form-control" type="text" id="pseudo" formControlName="pseudo"> 
+        <input class="form-control" type="text" id="pseudo" formControlName="pseudo" required="true"> 
       </div>
   
       <div class="form-group">
@@ -25,12 +25,12 @@
         <label for="password">Mot de passe</label>
         <input class="form-control" type="password" id="password" formControlName="password">
       </div>
-  
+
       <div class="form-group">
         <label for="confirmPassword">Confirmez le mot de passe</label>
         <input class="form-control" type="password" id="confirmPassword" formControlName="confirmPassword">
       </div>
- 
+      
       
       <div class="form-group">
         <label for="avatar">Avatar</label>
