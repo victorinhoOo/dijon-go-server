@@ -87,6 +87,7 @@ export class UserDAO {
     formData.append('tokenuser', user.TokenUser);
     formData.append('username', user.Username || '');
     formData.append('email', user.Email || '');
+    formData.append('oldpassword', user.OldPassword || '');
     formData.append('password', user.Password || '');   
     // Ajoute le fichier si disponible
     if (user.ProfilePic) {
