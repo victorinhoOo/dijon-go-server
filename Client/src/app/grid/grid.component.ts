@@ -1,6 +1,8 @@
-import { Component, AfterViewInit} from '@angular/core';
+import { Component, AfterViewInit, OnInit} from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
+import { WebsocketService } from '../websocket.service';
 
 @Component({
   selector: 'app-grid',
@@ -9,28 +11,37 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css'
 })
-export class GridComponent implements AfterViewInit{
+export class GridComponent implements AfterViewInit, OnInit{
 
-  private count:number;
+  private size:number;
 
-  public constructor(){
-    this.count = 0;
+  public constructor(private route: ActivatedRoute, private websocketService:WebsocketService){
+    this.size = 0
   }
 
+  public getSize():number{
+    return this.size-1;
+  }
+
+  ngOnInit(): void {
+    this.size = parseInt(this.route.snapshot.paramMap.get("size")!);
+  }
 
   ngAfterViewInit(): void {
-    let pawns = Array.from(document.getElementsByClassName("pawn"));
-    pawns.forEach(pawn=>{
-      pawn.addEventListener("click", ()=>this.click(pawn))
+    let stones = document.getElementsByClassName("stone");
+    let stonesArray = Array.from(stones);
+    stonesArray.forEach((stone)=>{
+      stone.addEventListener("click",()=>{
+        this.click(stone);
+      })
     })
   }
 
-  public click(pawn: Element):void{
-    let index: number = this.count % 2;
-    let colors = ["black", "white"];
-    pawn.setAttribute("style", "background-color: "+colors[index]+";")
-    this.count++;
+  public click(stone:any):void{
+    this.websocketService.placeStone(stone.id);
   }
+
+ 
 
 
 
