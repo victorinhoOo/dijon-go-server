@@ -6,7 +6,7 @@ footer {
 
 footer a, footer p {
     text-decoration: none;
-    color: #989795;
+    color: darkgray;
 }
 
 footer a:hover {
