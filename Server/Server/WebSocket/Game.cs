@@ -28,7 +28,7 @@ namespace WebSocket
         {
             this.player1 = player1;
             this.currentTurn = player1;
-            this.gameBoard = new GameBoard(9);
+            this.gameBoard = new GameBoard(19);
             this.logic = new GameLogic(this.gameBoard);
         }
 
