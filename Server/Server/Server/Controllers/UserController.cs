@@ -27,7 +27,7 @@ namespace Server.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginUserDTO loginUserDTO)
         {
-            IActionResult result = BadRequest(new { Message = "L'utilisateur n'existe pas" });
+            IActionResult result = BadRequest(new InvalidLoginException());
             try
             {
                 string token = userManager.Connect(loginUserDTO);
@@ -38,7 +38,7 @@ namespace Server.Controllers
             }
             catch (Exception ex)
             {
-                result = BadRequest(new { Message = ex.Message });
+                result = BadRequest(new InvalidLoginException(ex.Message));
             }
             return result;
         }

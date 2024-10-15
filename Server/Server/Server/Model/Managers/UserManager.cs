@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Server.Model.Data;
 using Server.Model.DTO;
+using Server.Model.Exception;
 using System.Security.Cryptography;
 using System.Text;
+using System;
+
 
 namespace Server.Model.Managers
 {
@@ -44,9 +47,9 @@ namespace Server.Model.Managers
                     result = tokenManager.CreateTokenUser(user); // si la connexion réussit, on génère un token
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                throw new Exception("Erreur lors de la connexion : " + ex.Message);
+                throw new ConnexionException(ex.Message);
             }
 
             return result;
@@ -61,13 +64,13 @@ namespace Server.Model.Managers
             // Valide les données d'inscription
             if (string.IsNullOrEmpty(registerUserDto.Username) || string.IsNullOrEmpty(registerUserDto.Email) || string.IsNullOrEmpty(registerUserDto.Password))
             {
-                throw new ArgumentException("Tous les champs doivent être remplis");
+                throw new FieldsRequiredException();
             }
 
             // Vérifie si l'utilisateur existe déjà
             if (userDAO.GetUserByUsername(registerUserDto.Username) != null)
             {
-                throw new ArgumentException("Ce nom d'utilisateur existe déjà");
+                throw new UserAlreadyExistsException();
             }
 
             // Créer un nouvel utilisateur pour l'insérer en bdd
@@ -85,9 +88,9 @@ namespace Server.Model.Managers
                 }
                 userDAO.Register(user);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                throw new Exception("Erreur lors de l'inscription : " + ex.Message);
+                throw new RegistrationException(ex.Message);
             }
 
         }
@@ -106,9 +109,9 @@ namespace Server.Model.Managers
                 {
                     if (!string.IsNullOrEmpty(updateUserDTO.Username))
                     {
-                        imageManager.RenameProfilePic(user.Username, updateUserDTO.Username); // Renomme l'image de profil sur le FTP (pour correspondre au nouveau nom d'utilisateur)
-                        user.Username = updateUserDTO.Username;
-                    }
+                            imageManager.RenameProfilePic(user.Username, updateUserDTO.Username); // Renomme l'image de profil sur le FTP (pour correspondre au nouveau nom d'utilisateur)
+                            user.Username = updateUserDTO.Username;
+                        }
                     if (!string.IsNullOrEmpty(updateUserDTO.Email))
                     {
                         user.Email = updateUserDTO.Email;
@@ -125,9 +128,9 @@ namespace Server.Model.Managers
                     // Enregistre les modifications en base de données 
                     userDAO.Update(user);
                 }
-                catch (Exception ex)
+                catch (System.Exception ex)
                 {
-                    throw new Exception("Erreur lors de la mise à jour de l'utilisateur : " + ex.Message);
+                    throw new UpdateUserException( ex.Message);
 
                 }
             }
