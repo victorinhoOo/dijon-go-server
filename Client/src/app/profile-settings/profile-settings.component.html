@@ -1,5 +1,5 @@
 <div class="container 5 ">
-<app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" ></app-popup>
+<app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ></app-popup>
 <h1 mat-dialog-title>Modifier son profil</h1>
 
 <form [formGroup]="ProfileForm" (ngSubmit)="onSubmit()" class="container mt-4">

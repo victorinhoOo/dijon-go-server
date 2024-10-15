@@ -112,7 +112,6 @@ export class RegisterComponent {
         next: (response: { message: string }) => {
           this.popupMessage = response.message;  // Aucune erreur
           this.popupTitle = 'Inscription réussie';
-          this.router.navigate(['/login']);
         },
         error: (err: HttpErrorResponse) => 
         {
@@ -135,6 +134,10 @@ export class RegisterComponent {
   public onImageSelected(image: File) {
     this.selectedImage = image;    
     this.registerForm.patchValue({ img: this.selectedImage });
+  }
+
+  public handlePopupClose(): void {
+    this.showPopup = false;
   }
 
 

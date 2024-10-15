@@ -188,4 +188,8 @@ export class ProfileSettingsComponent {
   onImageSelected(image: any) {
     this.selectedImage = image; 
   }
+
+  public handlePopupClose(): void {
+    this.showPopup = false;
+  }
 }

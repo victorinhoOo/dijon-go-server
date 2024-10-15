@@ -151,6 +151,7 @@ export class ConnexionComponent {
                 //affiche le message d'erreur du serveur
                 this.PopupTitle = 'Erreur :';
                 this.popupMessage = err.message;
+                this.ShowPopup = true; //ouverture de la pop up
                 
               }
             });
@@ -160,11 +161,16 @@ export class ConnexionComponent {
           //affiche le message d'erreur du serveur
           this.PopupTitle = 'Erreur :';
           this.PopupMessage = err.message;
+          this.ShowPopup = true; //ouverture de la pop up
          }
       });
 
     }
-    this.ShowPopup = true; //ouverture de la pop up
-  } 
+    
+  }
+
+  public handlePopupClose(): void {
+    this.showPopup = false;
+  }
 }
 

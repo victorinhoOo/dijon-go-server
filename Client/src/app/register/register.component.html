@@ -5,7 +5,7 @@
 <div class="register-container">
 
   
-  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" ></app-popup>
+  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ><a href="/login">Connectez-vous</a></app-popup>
 
     
     <form class="formStyle" [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
