@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UploadImageComponent } from '../upload-image/upload-image.component';
 import { UpdateUserDTO } from '../Model/DTO/UpdateUserDTO';
-import { AuthService } from '../Model/UserCookieService';
+import { UserCookieService } from '../Model/UserCookieService';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
 import { User } from '../Model/User';
@@ -68,11 +68,11 @@ export class ProfileSettingsComponent {
   /**
    * Initialise le composant en créant un objet UserDAO et en récupérant les informations de l'utilisateurice 
    */
-  constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<ProfileSettingsComponent>, private authService: AuthService, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<ProfileSettingsComponent>, private userCookieService: UserCookieService, private http: HttpClient) {
     this.userDAO = new UserDAO(this.http);
-    this.token = this.authService.getToken();
-    this.userPseudo = this.authService.getUser().Username;
-    this.userEmail = this.authService.getUser().Email;
+    this.token = this.userCookieService.getToken();
+    this.userPseudo = this.userCookieService.getUser().Username;
+    this.userEmail = this.userCookieService.getUser().Email;
     this.errorMessage = '';
   }
 
@@ -101,7 +101,7 @@ export class ProfileSettingsComponent {
           this.token,
           this.profileForm.value.pseudo,
           this.profileForm.value.email,
-          this.profileForm.value.password,
+          this.profileForm.value.pwd,
           this.selectedImage,
         );
       console.log(user);
@@ -113,7 +113,7 @@ export class ProfileSettingsComponent {
           // Met à jour les informations de l'utilisateur dans les cookies
           this.userDAO.GetUser(this.token).subscribe({
             next: (user: User) => {
-              this.authService.setUser(user);
+              this.userCookieService.setUser(user);
               window.location.reload();
             },
             error: (err) => {

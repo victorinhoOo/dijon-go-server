@@ -7,11 +7,12 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ConnexionComponent } from './connexion/connexion.component';
 import { ProfileComponent }  from './profile/profile.component'
 import { IndexComponent } from './index/index.component';
+import { FooterComponent } from "./footer/footer.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, GridComponent, RegisterComponent,UploadImageComponent,NavbarComponent,ProfileComponent,ConnexionComponent,IndexComponent ],
+  imports: [RouterOutlet, GridComponent, RegisterComponent, UploadImageComponent, NavbarComponent, ProfileComponent, ConnexionComponent, IndexComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 
@@ -33,6 +34,7 @@ export class AppComponent implements AfterViewInit{
 
   public changeLightState():void{
     if(this.state == "light"){
+      // Mode sombre
       document.body.style.background = "#302E2B";
       document.body.style.color = "white";
       document.getElementById("navbar-container")!.style.setProperty("background", "grey", "important");
@@ -42,9 +44,23 @@ export class AppComponent implements AfterViewInit{
       });
       (document.getElementById("logo") as HTMLImageElement).src = "renard_dark.png";
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard_dark.png";
+
+      // Modification des couleurs des liens du footer
+      const footerLinks = document.querySelectorAll("footer a");
+      footerLinks.forEach(link => {
+          (link as HTMLAnchorElement).style.color = "#989795";
+          (link as HTMLAnchorElement).addEventListener("mouseover", () => {
+              (link as HTMLAnchorElement).style.color = "white";
+          });
+          (link as HTMLAnchorElement).addEventListener("mouseout", () => {
+              (link as HTMLAnchorElement).style.color = "#989795";
+          });
+
+      });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
       this.state = "dark";
     }else{
+      // Mode Clair
       document.body.style.background = "#f5f5f5";
       document.body.style.color = "black";
       document.getElementById("navbar-container")!.style.setProperty("background", "#faf9fd", "important");
@@ -54,6 +70,18 @@ export class AppComponent implements AfterViewInit{
       });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface sombre";
       (document.getElementById("logo") as HTMLImageElement).src = "renard.png";
+
+      // Modification des couleurs des liens du footer
+      const footerLinks = document.querySelectorAll("footer a");
+        footerLinks.forEach(link => {
+            (link as HTMLAnchorElement).style.color = "darkgray";
+            (link as HTMLAnchorElement).addEventListener("mouseover", () => {
+                (link as HTMLAnchorElement).style.color = "black";
+            });
+            (link as HTMLAnchorElement).addEventListener("mouseout", () => {
+                (link as HTMLAnchorElement).style.color = "darkgray";
+            });
+        });
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
       this.state = "light"
     }

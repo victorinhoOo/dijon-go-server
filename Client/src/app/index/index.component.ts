@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { MatIcon } from '@angular/material/icon';
-import { AuthService } from '../Model/UserCookieService';
+import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
+import { PopupComponent } from '../popup/popup.component';
+import { GameDAO } from '../Model/DAO/GameDAO';
+import { HttpClient } from '@angular/common/http';
+import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [NavbarComponent, MatIcon],
+  imports: [NavbarComponent, MatIcon, PopupComponent],
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
@@ -20,6 +24,10 @@ export class IndexComponent implements OnInit {
    private userPseudo: string;
    private avatar: string; 
    private userRank: string;
+   private showPopup: boolean;
+   private popupContent: string;
+   private popupTitle: string;
+   private gameDAO: GameDAO;
 
    /**
     * Getter pour le lien d'affichage de l'avatar
@@ -34,18 +42,44 @@ export class IndexComponent implements OnInit {
     return this.userPseudo;
   }
 
+  /**
+   * Getter pour le rang de l'utilisateur
+   */
   public get UserRank(): string {
     return this.userRank;
   }
 
   /**
+   * Getter pour le titre du popup
+   */
+  public get ShowPopup(): boolean {
+    return this.showPopup;
+  }
+
+  /**
+   * Getter pour le titre du popup
+   */
+  public get PopupContent(): string {
+    return this.popupContent;
+  }
+
+  public get PopupTitle(): string {
+    return this.popupTitle;
+  }
+
+
+  /**
    * Initialisation du composant
   */
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private userCookieService: UserCookieService, private router: Router, private httpClient: HttpClient) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
     this.userPseudo = '';
     this.userRank = '9 dan';
+    this.showPopup = false;
+    this.popupContent = '';
+    this.popupTitle = '';
+    this.gameDAO = new GameDAO(httpClient);
   }
   
   // Méthode pour remplir le leaderboard avec des données fictives (todo:  remplacer par des données réelles)
@@ -74,18 +108,52 @@ export class IndexComponent implements OnInit {
    */
   public ngOnInit() {
     // Récupère le token utilisateur
-    this.token = this.authService.getToken();
+    this.token = this.userCookieService.getToken();
     //verfication du token utilisateur sinon redirection login
     if(!this.token)
     {
         this.router.navigate(['/login']);
     }
     //recuperation du pseudo de l'utilisateur
-    this.userPseudo = this.authService.getUser().Username;
+    this.userPseudo = this.userCookieService.getUser().Username;
 
     //recuperation de l'image de l'utilisateur à partir de son pseudo
     this.avatar += this.userPseudo; 
     
+    const joinGamesLink = document.getElementById('joinGames');
+    if (joinGamesLink) {
+      joinGamesLink.addEventListener('click', (event) => {
+        this.initializePopupContent();
+        this.showPopup = true;
+      });
+    }
     this.populateLeaderboard();
+  }
+
+  /**
+   * Initialise le contenu de la popup avec les parties disponibles
+   */
+  private initializePopupContent() {
+    this.gameDAO.GetAvailableGames().subscribe({
+      next: (games: GameInfoDTO[]) => {
+        this.popupContent = '';
+        games.forEach(game => {
+          this.popupContent += `<a href="/game/${game["id"]}">${game["title"]} ${game["size"]}x${game["size"]}</a>`;
+        });
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+  
+
+  public handlePopupClose(): void {
+    this.showPopup = false;
+  }
+ 
+
+  public openPopup() {
+    this.showPopup = true;
   }
 }
