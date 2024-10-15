@@ -79,7 +79,10 @@ namespace Server.Model.Managers
             };
             try
             {
-                imageManager.UploadProfilePic(registerUserDto.ProfilePic, user.Username); // Upload l'image de profil sur le FTP
+                if(registerUserDto.ProfilePic != null) // si une image a été sélectionné par l'utilisateur
+                {
+                    imageManager.UploadProfilePic(registerUserDto.ProfilePic, user.Username); // Upload l'image de profil sur le serveur
+                }
                 userDAO.Register(user);
             }
             catch (Exception ex)
@@ -132,6 +135,22 @@ namespace Server.Model.Managers
             {
                 throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
             }
+        }
+
+        /// <summary>
+        /// Renvoie l'utilisateur correspondant au token de connexion
+        /// </summary>
+        /// <param name="tokenUser">token de connexion de l'utilisateur</param>
+        /// <returns>L'utilisateur associé au token</returns>
+        /// <exception cref="UnauthorizedAccessException">Levée si le token est invalide</exception>
+        public User GetUser(string tokenUser)
+        {
+            User user = tokenManager.GetUserByToken(tokenUser);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
+            }
+            return user;
         }
 
         /// <summary>

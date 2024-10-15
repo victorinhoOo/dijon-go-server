@@ -20,5 +20,12 @@
         /// <param name="oldFileName">L'ancien nom du fichier</param>
         /// <param name="newFileName">Le nouveau nom du fichier</param>
         public void RenameProfilePic(string oldFileName, string newFileName);
+
+        /// <summary>
+        /// Récupère une photo de profil
+        /// </summary>
+        /// <param name="fileName">Nom du fichier à récupérer</param>
+        /// <returns>Le fichier récupéré</returns>
+        public byte[] GetProfilePic(string fileName);
     }
 }

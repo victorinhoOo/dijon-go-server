@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.Configure<FTPSettings>(builder.Configuration.GetSection("FTPSettings"));
+builder.Services.Configure<LocalImageSettings>(builder.Configuration.GetSection("LocalImageSettings"));
 
 // Injection de dépendances
 builder.Services.AddScoped<IDatabase, MySqlDatabase>(provider =>
@@ -21,13 +21,16 @@ builder.Services.AddScoped<IDatabase, MySqlDatabase>(provider =>
     var config = provider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
     return new MySqlDatabase(config.DefaultConnection);
 });
+builder.Services.AddScoped<IFileUploader, LocalFileUploader>(provider =>
+{
+    var imageSettings = provider.GetRequiredService<IOptions<LocalImageSettings>>().Value;
+    return new LocalFileUploader(imageSettings.ImageDirectory);
+});
 builder.Services.AddScoped<TokenManager>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<ImageManager>();
 builder.Services.AddScoped<IUserDAO, UserDAO>();
 builder.Services.AddScoped<ITokenDAO, TokenDAO>();
-builder.Services.AddScoped<IFileUploader, FtpUploader>();
-
 
 var app = builder.Build();
 
@@ -39,6 +42,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .SetIsOriginAllowed(origin => true));
 
 app.UseAuthorization();
 

@@ -1,0 +1,247 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 30px;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+.top-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.image-presentation {
+    flex: 1;
+}
+
+.image-presentation img {
+    width: 600px;
+    height: auto;
+}
+
+.first-text {
+    margin-top: 30px;
+    flex: 2;
+    font-size: 25px;
+    width: 700px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    background-color: #EFD089;
+    color: rgba(27, 27, 27, 0.884);
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    width: 400px;
+    height: 40px;
+    padding: 15px 30px;
+    margin: 10px 2px;
+    transition: background-color 0.1s ease;
+    box-shadow: 0px 6px 0px rgba(96, 74, 19, 0.8);
+}
+h1{
+    margin-top: 0;
+}
+
+.register-button:hover{
+    transform: scale(1.01);
+}
+
+.login-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f88e71;
+    color: rgba(27, 27, 27, 0.884);
+    font-weight: bold;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    width: 400px;
+    height: 40px;
+    box-shadow: 0px 6px 0px rgba(171, 87, 77, 0.8);
+}
+
+.login-button:hover{
+    transform: scale(1.01);
+}
+
+
+.button-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button-container p{
+    margin-left: 10px;
+}
+.presentation{
+    margin-top: 20px;
+    background-color: #FFF3E4;
+    color: black;
+    padding: 20px;
+    width: 80%;
+    border-radius: 6px;
+}
+
+.presentation p {
+    margin-left: 40px;
+    margin-right: 40px;
+    text-align: justify;
+}
+
+.presentation h2{
+    text-align: center;
+}
+
+.citation{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    margin-right: 40px;
+    margin-left: 40px;
+}
+
+.citation-text {
+    font-style: italic;
+    width: 50%;
+    text-align: justify;
+}
+
+.citation-author {
+    font-style: normal;
+}
+
+.citation img{
+    width: 150px;
+    height: 150px;
+    border-radius: 5%;
+    margin-right: 10px;
+}
+
+.citation-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+    .top-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-presentation img {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .first-text {
+        font-size: 22px;
+        width: 90%;
+    }
+
+    .register-button, .login-button {
+        width: 90%;
+        font-size: 18px;
+    }
+
+    .presentation {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .citation {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .citation img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .citation-text {
+        width: 100%;
+        margin-top: 20px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 767px) {
+    .main-container {
+        width: 90%;
+    }
+
+    .top-section {
+        flex-direction: column;
+        align-items: center;
+        width: 80%;
+    }
+
+    .image-presentation img {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .first-text {
+        font-size: 18px;
+        width: 100%;
+    }
+
+    .register-button, .login-button {
+        width: 90%;
+        font-size: 16px;
+    }
+
+    .presentation {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .presentation p {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .citation {
+        flex-direction: column;
+        align-items: center;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .citation img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .citation-text {
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+    }
+}
