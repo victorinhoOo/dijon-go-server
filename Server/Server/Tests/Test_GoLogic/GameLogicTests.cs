@@ -108,6 +108,48 @@ namespace Test_GoLogic
         }
 
         [Fact]
+        public void Ko_Rule_work()
+        {
+            var gameBoard = new GameBoard(9);
+            var gameLogic = new GameLogic(gameBoard);
+
+            gameLogic.PlaceStone(1, 2); // noir
+            gameLogic.PlaceStone(2, 2); // blanc
+            gameLogic.PlaceStone(2, 1); // noir
+            gameLogic.PlaceStone(2, 4); // blanc
+            gameLogic.PlaceStone(3, 2); // noir
+            gameLogic.PlaceStone(3, 3); // blanc
+            gameLogic.PlaceStone(8, 3); // noir
+            gameLogic.PlaceStone(1, 3); // blanc
+            gameLogic.PlaceStone(2, 3); // noir capture blanc en (2, 2)
+
+            // . : vide, @ : noir, O : blanc
+            // . . . . . . . . .
+            // . . @ O . . . . .
+            // . @ O . O . . . .
+            // . . @ O . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . @ . . . . .
+
+            // . : vide, @ : noir, O : blanc
+            // . . . . . . . . .
+            // . . @ O . . . . .
+            // . @ . @ O . . . .
+            // . . @ O . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . @ . . . . .
+
+            // Fait & Assert
+            Assert.Throws<InvalidOperationException>(() => gameLogic.PlaceStone(2, 2)); // bc refusé par la régle de ko
+        }
+
+        [Fact]
         public void CapturesOpponent_One_FullySurounded()
         {
             var gameBoard = new GameBoard(9);
