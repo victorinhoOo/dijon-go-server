@@ -121,7 +121,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #f8cbbe;
+    background-color: #fadbb5;
     padding: 20px;
     text-decoration: none;
     color: black;
@@ -135,7 +135,7 @@
 }
 
 .game-options a:hover {
-    background-color: #f7af9b;
+    background-color: #f1c690;
     transform: scale(1.02);
 }
 

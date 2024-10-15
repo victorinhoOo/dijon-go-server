@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { AuthService } from '../Model/UserCookieService';
+import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { User } from '../Model/User';
 
@@ -32,7 +32,7 @@ export class ConnexionComponent {
     this.connexionForm = value;
   }
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService,private router: Router) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private userCookieService: UserCookieService,private router: Router) {
     this.dao = new UserDAO(this.http);
   }
 
@@ -41,7 +41,7 @@ export class ConnexionComponent {
    */
   public ngOnInit(): void {
   // si je n'ai pas de token utilisateur alors je crée le formulaire de connexion
-  if(!this.authService.getToken())
+  if(!this.userCookieService.getToken())
   {
       this.connexionForm = this.fb.group({
         pseudo: ['', Validators.required],
@@ -71,7 +71,7 @@ export class ConnexionComponent {
       this.dao.LoginUser(loginUserDTO).subscribe({
         next: (response: { token: string }) => {
 
-          this.authService.setToken(response.token); // Stocke le token dans les cookies
+          this.userCookieService.setToken(response.token); // Stocke le token dans les cookies
           // Afficher un message de succès
           this.successMessage = 'Connexion réussie !';
           this.errorMessage = ''; // Réinitialise l'erreur
@@ -79,7 +79,7 @@ export class ConnexionComponent {
           //recuperation des infos l'utilisateur à partir de son token
           this.dao.GetUser(response.token).subscribe({
             next: (user: User) => {
-              this.authService.setUser(user);
+              this.userCookieService.setUser(user);
               // Redirige vers la page d'accueil
               this.router.navigate(['/index']);
             },

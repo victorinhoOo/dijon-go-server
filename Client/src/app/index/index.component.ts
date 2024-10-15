@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { MatIcon } from '@angular/material/icon';
-import { AuthService } from '../Model/UserCookieService';
+import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 
 @Component({
@@ -41,7 +41,7 @@ export class IndexComponent implements OnInit {
   /**
    * Initialisation du composant
   */
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private userCookieService: UserCookieService, private router: Router) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
     this.userPseudo = '';
@@ -74,14 +74,14 @@ export class IndexComponent implements OnInit {
    */
   public ngOnInit() {
     // Récupère le token utilisateur
-    this.token = this.authService.getToken();
+    this.token = this.userCookieService.getToken();
     //verfication du token utilisateur sinon redirection login
     if(!this.token)
     {
         this.router.navigate(['/login']);
     }
     //recuperation du pseudo de l'utilisateur
-    this.userPseudo = this.authService.getUser().Username;
+    this.userPseudo = this.userCookieService.getUser().Username;
 
     //recuperation de l'image de l'utilisateur à partir de son pseudo
     this.avatar += this.userPseudo; 
