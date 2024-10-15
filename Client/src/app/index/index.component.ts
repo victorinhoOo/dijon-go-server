@@ -138,7 +138,6 @@ export class IndexComponent implements OnInit {
       next: (games: GameInfoDTO[]) => {
         this.popupContent = '';
         games.forEach(game => {
-          this.popupTitle = 'Parties disponibles';
           this.popupContent += `<a href="/game/${game["id"]}">${game["title"]} ${game["size"]}x${game["size"]}</a>`;
         });
       },

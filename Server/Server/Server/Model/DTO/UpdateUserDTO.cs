@@ -8,7 +8,6 @@
         private string tokenuser;
         private string? username;
         private string? email;
-        private string oldpassword;
         private string? password;
         private IFormFile? profilePic;
 
@@ -36,10 +35,5 @@
         /// La nouvelle photo de profil de l'utilisateur connecté.
         /// </summary>
         public IFormFile? ProfilePic { get => profilePic; set => profilePic = value; }
-
-        /// <summary>
-        /// L'ancien mot de passe de l'utilisateur 
-        /// </summary>
-        public string Oldpassword { get => oldpassword; set => oldpassword = value; }
     }
 }
