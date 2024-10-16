@@ -29,8 +29,10 @@ builder.Services.AddScoped<IFileUploader, LocalFileUploader>(provider =>
 builder.Services.AddScoped<TokenManager>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<ImageManager>();
+builder.Services.AddScoped<GameManager>();
 builder.Services.AddScoped<IUserDAO, UserDAO>();
 builder.Services.AddScoped<ITokenDAO, TokenDAO>();
+builder.Services.AddScoped<IGameDAO, GameDAO>();
 
 var app = builder.Build();
 
