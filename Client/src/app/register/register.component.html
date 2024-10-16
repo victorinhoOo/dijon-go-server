@@ -5,7 +5,11 @@
 <div class="register-container">
 
   
-  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ><a href="/login">Connectez-vous</a></app-popup>
+  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" >
+    <div class="example-button-row">
+    <a href="profile" target="_blank" *ngIf="(RegisterSucces)">Connectez-vous ici</a>
+    </div>
+  </app-popup>
 
     
     <form class="formStyle" [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
@@ -29,6 +33,9 @@
       <div class="form-group">
         <label for="confirmPassword">Confirmez le mot de passe</label>
         <input class="form-control" type="password" id="confirmPassword" formControlName="confirmPassword">
+        <div *ngIf="(!ConfirmPwdIsGood)" class="text-danger">
+          Les mots de passe ne correspondent pas.
+        </div>
       </div>
       
       
