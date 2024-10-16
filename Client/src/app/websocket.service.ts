@@ -17,7 +17,6 @@ export class WebsocketService {
 
   public connectWebsocket(){
     this.websocket.onopen = ()=>{
-      this.websocket.send("0/Create:")
     }
 
     this.websocket.onmessage = (message)=>{
@@ -36,10 +35,22 @@ export class WebsocketService {
 
   }
 
+  public createGame():void{
+    if(this.websocket.OPEN){
+      this.websocket.send("0/Create:");
+    }
+    else{
+      console.log("not connected");
+    }
+  }
+
   public placeStone(coordinates:string){
     if(this.websocket.OPEN){
       this.websocket.send(`${this.idGame}Stone:${coordinates}`)
       console.log(`${this.idGame}Stone:${coordinates}`);
+    }
+    else{
+      console.log("not connected");
     }
   }
 

@@ -7,6 +7,7 @@ import { PopupComponent } from '../popup/popup.component';
 import { GameDAO } from '../Model/DAO/GameDAO';
 import { HttpClient } from '@angular/common/http';
 import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
+import { WebsocketService } from '../websocket.service';
 
 @Component({
   selector: 'app-index',
@@ -71,7 +72,7 @@ export class IndexComponent implements OnInit {
   /**
    * Initialisation du composant
   */
-  constructor(private userCookieService: UserCookieService, private router: Router, private httpClient: HttpClient) {
+  constructor(private userCookieService: UserCookieService, private router: Router, private httpClient: HttpClient, private websocketService:WebsocketService) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
     this.userPseudo = '';
@@ -126,6 +127,13 @@ export class IndexComponent implements OnInit {
         this.initializePopupContent();
         this.showPopup = true;
       });
+    }
+
+    let createGameLink = document.getElementById("create-game");
+    if(createGameLink){
+      createGameLink.addEventListener('click',()=>{
+        this.websocketService.createGame();
+      })
     }
     this.populateLeaderboard();
   }
