@@ -114,12 +114,10 @@ export class IndexComponent implements OnInit {
   /**
    * Initialisation du composant
    */
-  public ngOnInit() {
-    console.log(this.route.snapshot.paramMap.get('id'));
+  public async ngOnInit() {
     if(this.route.snapshot.paramMap.get('id')!=null){
-      this.connectWebSocket();
       let id = this.route.snapshot.paramMap.get('id');
-      alert(this.websocketService.getWs());
+      await this.websocketService.connectWebsocket();
       this.websocketService.joinGame(Number(id));
       this.router.navigate(["game"]);
     }
@@ -145,7 +143,9 @@ export class IndexComponent implements OnInit {
 
     let createGameLink = document.getElementById('create-game');
     if (createGameLink) {
-      createGameLink.addEventListener('click', () => {
+      createGameLink.addEventListener('click',async() => {
+        await this.websocketService.connectWebsocket();
+        console.log("ahaéhhh");
         this.websocketService.createGame();
         this.router.navigate(['game']);
       });
@@ -181,10 +181,14 @@ export class IndexComponent implements OnInit {
   }
 
   public joinGame():void{
-    alert("ok");
+    
   }
 
   public connectWebSocket(): void {
     this.websocketService.connectWebsocket();
+  }
+
+  public deconnectWebSocket():void{
+    this.websocketService.disconnectWebsocket();
   }
 }
