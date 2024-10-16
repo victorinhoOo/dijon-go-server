@@ -102,7 +102,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.tokenSubscription.unsubscribe(); // Se désabonner de l'Observable pour éviter les fuites de mémoire
   }
 
-    
 
   close(): void {
     this.isNavbarVisible = false;

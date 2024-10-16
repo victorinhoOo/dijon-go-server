@@ -124,8 +124,6 @@ export class AppComponent implements AfterViewInit{
   private checkScreenSize(): void {
     const screenWidth = window.innerWidth;
     this._isNavbarVisible = screenWidth >= 768;
-    
-   
   }
 
   // Écouter les changements de taille de l'écran
