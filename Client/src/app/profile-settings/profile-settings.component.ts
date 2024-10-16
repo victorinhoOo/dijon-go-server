@@ -31,6 +31,23 @@ export class ProfileSettingsComponent {
   private showPopup: boolean;   
   private popupMessage: string;   
   private popupTitle: string;
+  private oldPwdEmpty: boolean;
+  private confirmPwdIsGood :boolean;
+
+  /**
+   * Est vrai si le mdp et sa confirmation sont vrai
+   */
+  public get ConfirmPwdIsGood() :boolean
+  {
+    return this.confirmPwdIsGood;
+  }
+  /**
+   * renvoie si l'ancien mot de passe est vide ou non
+   */
+  public get OldPwdEmpty(): boolean
+  {
+     return this.oldPwdEmpty;
+  }
 
    /**
    * Getter pour l'ouverture de la popup
@@ -116,6 +133,9 @@ export class ProfileSettingsComponent {
     this.popupTitle = '';
     this.popupMessage = '';
     this.showPopup = false;
+    this.oldPwdEmpty = false;
+    this.confirmPwdIsGood = true;
+
   }
 
   /**
@@ -124,8 +144,9 @@ export class ProfileSettingsComponent {
   ngOnInit(): void {
     this.profileForm = this.fb.group({
       pseudo: [''],
-      oldpwd: ['',],
-      pwd: ['',],
+      oldpwd: ['',Validators.required],
+      pwd: [''],
+      Cpwd: [''],
       img: [null],
       email: ['']
     });
@@ -137,19 +158,20 @@ export class ProfileSettingsComponent {
    * Met ensuite à jour les informations de l'utilisateur dans les cookies puis ferme la popup
    */
   public onSubmit(): void {
-    if (this.profileForm.valid) 
+
+
+    if (this.profileForm.valid && this.ProfileForm.value.Cpwd == this.ProfileForm.value.pwd) 
       {
-        // Création d'un objet UpdateUserDTO avec les valeurs du formulaire
+        
         const user = new UpdateUserDTO
           (
             this.token,
             this.profileForm.value.pseudo,
             this.profileForm.value.email,
-          this.profileForm.value.oldpwd,
+            this.profileForm.value.oldpwd,
             this.profileForm.value.pwd,
             this.selectedImage,
           );
-        console.log(user);
         // Appel de la méthode du DAO pour mettre à jour l'utilisateur
         this.userDAO.UpdateUser(user).subscribe({
           next: (response) => {
@@ -166,6 +188,7 @@ export class ProfileSettingsComponent {
               error: (err: HttpErrorResponse) => {
                 this.PopupTitle = 'Erreur :';
                 this.popupMessage =  err.message;
+                this.ShowPopup = true;
               }
             });
           },
@@ -173,15 +196,27 @@ export class ProfileSettingsComponent {
             // En cas d'erreur
             this.PopupTitle = ' Erreur :';
             this.PopupMessage = err.message;
+            this.ShowPopup = true;
           }
         });
-  }
-   else {
-      // Si le formulaire est invalide
-      this.PopupTitle = "Erreur dans le formulaire"
-      this.PopupMessage = 'Formulaire non valide';
     }
-    this.ShowPopup = true;
+   else 
+   {
+
+      //check si l'ancien pwd etait vide 
+      if(this.profileForm.value.oldpwd == '')
+      {
+        this.oldPwdEmpty = true;
+      }
+
+      //check si le pwd et le confirm pwd sont identiques
+      if(this.ProfileForm.value.Cpwd != this.ProfileForm.value.pwd)
+      {
+        this.confirmPwdIsGood = false;
+      }
+      
+    }
+   
   }
 
   // Récupère l'image uploadée par l'utilisateur
@@ -189,6 +224,7 @@ export class ProfileSettingsComponent {
     this.selectedImage = image; 
   }
 
+  //fermeture du popup
   public handlePopupClose(): void {
     this.showPopup = false;
   }
