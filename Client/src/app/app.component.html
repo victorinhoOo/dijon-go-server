@@ -1,7 +1,12 @@
 <div id="app-component-container">
-    <app-navbar></app-navbar>
-
+    <app-navbar *ngIf="isNavbarVisible" (closeNavbar)="onCloseNavbar()"></app-navbar>
+    
   <div id="content-container">
-    <router-outlet></router-outlet>
+    
+    <router-outlet>
+
+      <app-hamburger-btn (toggleNavbar)="toggleNavbar()" ></app-hamburger-btn>
+      
+    </router-outlet>
   </div>
 </div>

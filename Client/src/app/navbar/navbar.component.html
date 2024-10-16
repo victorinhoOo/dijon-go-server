@@ -1,4 +1,13 @@
-<mat-sidenav-container id="navbar-container">
+<mat-sidenav-container id="navbar-container"  >
+  
+  <mat-sidenav  [mode]="'over'"   [opened]="IsNavbarVisible"  id="navbar-sidenav">
+  
+    <div id="closeBtn" (click)="close()">
+      <button mat-button >
+        <mat-icon id="reply" >close</mat-icon> 
+      </button>
+    </div>
+
   <mat-sidenav-content id="logo-container">
     <img src="renard.png" id="logo" alt="logo">
     DGS
@@ -53,6 +62,10 @@
       <mat-icon>help</mat-icon>
       Aide
     </button>
+
   </mat-sidenav-content>
+
   
+
+</mat-sidenav>
 </mat-sidenav-container>
