@@ -118,7 +118,7 @@ namespace Server.Model.Managers
                         }
                         else
                         {
-                            throw new System.Exception("Ce nom d'utilisateur est déjà pris");
+                            throw new UserAlreadyExistsException();
                         }
                     }
                     if (!string.IsNullOrEmpty(updateUserDTO.Email))
