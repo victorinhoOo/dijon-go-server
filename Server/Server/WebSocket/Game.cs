@@ -10,7 +10,9 @@ namespace WebSocket
         private Client player2;
         private Client currentTurn;
         private GameBoard gameBoard;
-        private GameLogic logic;    
+        private GameLogic logic;
+        private int size;
+        private int id;
 
         public bool IsFull
         {
@@ -23,12 +25,16 @@ namespace WebSocket
         public Client Player1 { get => player1; set => player1 = value; }
         public Client Player2 { get => player2; set => player2 = value; }
         public Client CurrentTurn { get => currentTurn; }
+        public int Size { get => size; set => size = value; }
+        public int Id { get => id; set => id = value; }
 
         public Game(Client player1)
         {
+            this.id = Server.Games.Count+1;
+            this.size = 19;
             this.player1 = player1;
             this.currentTurn = player1;
-            this.gameBoard = new GameBoard(19);
+            this.gameBoard = new GameBoard(this.size);
             this.logic = new GameLogic(this.gameBoard);
         }
 

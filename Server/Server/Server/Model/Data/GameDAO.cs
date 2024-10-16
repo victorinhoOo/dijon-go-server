@@ -21,7 +21,7 @@ public class GameDAO : IGameDAO
 
         database.Connect();
 
-        string query = "SELECT id, title, size FROM avalaiblegame;";
+        string query = "SELECT id, title, size FROM availablegame;";
 
         var dataTable = database.ExecuteQuery(query, null);
 
