@@ -8,11 +8,12 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
 import { User } from '../Model/User';
+import { PopupComponent } from '../popup/popup.component';
 
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, UploadImageComponent, HttpClientModule],
+  imports: [ReactiveFormsModule, CommonModule, UploadImageComponent, HttpClientModule, PopupComponent],
   templateUrl: './profile-settings.component.html',
   styleUrls: ['./profile-settings.component.css']
 })
@@ -25,9 +26,71 @@ export class ProfileSettingsComponent {
   private userDAO: UserDAO;
   private token: string;
   private selectedImage: any;
-  private errorMessage: string;
   private userPseudo: string;
   private userEmail: string;
+  private showPopup: boolean;   
+  private popupMessage: string;   
+  private popupTitle: string;
+  private oldPwdEmpty: boolean;
+  private confirmPwdIsGood :boolean;
+
+  /**
+   * Est vrai si le mdp et sa confirmation sont vrai
+   */
+  public get ConfirmPwdIsGood() :boolean
+  {
+    return this.confirmPwdIsGood;
+  }
+  /**
+   * renvoie si l'ancien mot de passe est vide ou non
+   */
+  public get OldPwdEmpty(): boolean
+  {
+     return this.oldPwdEmpty;
+  }
+
+   /**
+   * Getter pour l'ouverture de la popup
+   */
+    public get ShowPopup(): boolean {
+      return this.showPopup;
+    }
+    /**
+     * Setter pour l'ouverture de la popup
+     */
+    public set ShowPopup(value :boolean)
+    {
+      this.showPopup = value;
+    }
+    /**
+     * Getter pour le message d'erreur
+     */
+    public get PopupTitle(): string {
+      return this.popupTitle;
+    }
+
+    /**
+     * Setter pour le titre de la popup
+     */
+    public set PopupTitle(value: string)
+    {
+      this.popupTitle = value;
+    }
+
+    /**
+     * Getter pour le message de la popup
+     */
+    public get PopupMessage() : string
+    {
+      return this.popupMessage;
+    }
+    /**
+     * Setter pour le message de la popup
+     */
+    public set PopupMessage(value :string)
+    {
+      this.popupMessage = value;
+    }
 
   /**
    * Getter pour userPseudo
@@ -59,12 +122,6 @@ export class ProfileSettingsComponent {
     this.selectedImage = value;
     this.profileForm.patchValue({ img: this.selectedImage }); // Met à jour le formulaire avec l'image
   }
-
-  // Getter pour errorMessage
-  public get ErrorMessage(): string {
-    return this.errorMessage;
-  }
-
   /**
    * Initialise le composant en créant un objet UserDAO et en récupérant les informations de l'utilisateurice 
    */
@@ -73,7 +130,12 @@ export class ProfileSettingsComponent {
     this.token = this.userCookieService.getToken();
     this.userPseudo = this.userCookieService.getUser().Username;
     this.userEmail = this.userCookieService.getUser().Email;
-    this.errorMessage = '';
+    this.popupTitle = '';
+    this.popupMessage = '';
+    this.showPopup = false;
+    this.oldPwdEmpty = false;
+    this.confirmPwdIsGood = true;
+
   }
 
   /**
@@ -82,8 +144,9 @@ export class ProfileSettingsComponent {
   ngOnInit(): void {
     this.profileForm = this.fb.group({
       pseudo: [''],
-      oldpwd: ['',],
-      pwd: ['',],
+      oldpwd: ['',Validators.required],
+      pwd: [''],
+      Cpwd: [''],
       img: [null],
       email: ['']
     });
@@ -95,56 +158,74 @@ export class ProfileSettingsComponent {
    * Met ensuite à jour les informations de l'utilisateur dans les cookies puis ferme la popup
    */
   public onSubmit(): void {
-    if (this.profileForm.valid) {
-      // Création d'un objet UpdateUserDTO avec les valeurs du formulaire
-      const user = new UpdateUserDTO
-        (
-          this.token,
-          this.profileForm.value.pseudo,
-          this.profileForm.value.email,
-          this.profileForm.value.oldpwd,
-          this.profileForm.value.pwd,
-          this.selectedImage,
-        );
-      console.log(user);
-      // Appel de la méthode du DAO pour mettre à jour l'utilisateur
-      this.userDAO.UpdateUser(user).subscribe({
-        next: (response) => {
-          console.log('Mise à jour réussie :', response);
 
-          // Met à jour les informations de l'utilisateur dans les cookies
-          this.userDAO.GetUser(this.token).subscribe({
-            next: (user: User) => {
-              this.userCookieService.setUser(user);
-              window.location.reload();
-            },
-            error: (err) => {
-              this.errorMessage = 'Erreur lors de la récupération de l\'utilisateur:', err.message;
-            }
-          });
-        },
-        error: (err: HttpErrorResponse) => {
-          // En cas d'erreur
-          console.log('Erreur complète :', err);
-          // S'il y a un message d'erreur provenant du serveur
-          if (err.status === 400 && err.error && typeof err.error === 'object' && err.error.message) {
-            // Affiche le message d'erreur du serveur
-            this.errorMessage = err.error.message;
-          } else {
-            // Affiche un message d'erreur générique si le serveur ne fournit pas d'information détaillée
-            this.errorMessage = 'Une erreur est survenue lors de la mise à jour du profil';
+
+    if (this.profileForm.valid && this.ProfileForm.value.Cpwd == this.ProfileForm.value.pwd) 
+      {
+        
+        const user = new UpdateUserDTO
+          (
+            this.token,
+            this.profileForm.value.pseudo,
+            this.profileForm.value.email,
+            this.profileForm.value.oldpwd,
+            this.profileForm.value.pwd,
+            this.selectedImage,
+          );
+        // Appel de la méthode du DAO pour mettre à jour l'utilisateur
+        this.userDAO.UpdateUser(user).subscribe({
+          next: (response) => {
+            this.PopupTitle =" Succès :";
+            this.PopupMessage = "Les modifications ont bien été validées";
+
+
+            // Met à jour les informations de l'utilisateur dans les cookies
+            this.userDAO.GetUser(this.token).subscribe({
+              next: (user: User) => {
+                this.userCookieService.setUser(user);
+                window.location.reload();
+              },
+              error: (err: HttpErrorResponse) => {
+                this.PopupTitle = 'Erreur :';
+                this.popupMessage =  err.message;
+                this.ShowPopup = true;
+              }
+            });
+          },
+          error: (err: HttpErrorResponse) => {
+            // En cas d'erreur
+            this.PopupTitle = ' Erreur :';
+            this.PopupMessage = err.message;
+            this.ShowPopup = true;
           }
-        }
-      });
-    } else {
-      // Si le formulaire est invalide
-      this.errorMessage = 'Formulaire non valide';
+        });
     }
-    this.dialogRef.close();
+   else 
+   {
+
+      //check si l'ancien pwd etait vide 
+      if(this.profileForm.value.oldpwd == '')
+      {
+        this.oldPwdEmpty = true;
+      }
+
+      //check si le pwd et le confirm pwd sont identiques
+      if(this.ProfileForm.value.Cpwd != this.ProfileForm.value.pwd)
+      {
+        this.confirmPwdIsGood = false;
+      }
+      
+    }
+   
   }
 
   // Récupère l'image uploadée par l'utilisateur
   onImageSelected(image: any) {
     this.selectedImage = image; 
+  }
+
+  //fermeture du popup
+  public handlePopupClose(): void {
+    this.showPopup = false;
   }
 }

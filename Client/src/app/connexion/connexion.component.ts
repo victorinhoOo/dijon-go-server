@@ -3,15 +3,17 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatCardModule } from '@angular/material/card';
 import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
 import { UserDAO } from '../Model/DAO/UserDAO';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { User } from '../Model/User';
+import { PopupComponent } from '../popup/popup.component';
+
 
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule],
+  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, PopupComponent],
   templateUrl: './connexion.component.html',
   styleUrls: ['./connexion.component.css']
 })
@@ -20,20 +22,81 @@ import { User } from '../Model/User';
  */
 export class ConnexionComponent {
 
-  private errorMessage: string = ''; // Pour afficher les erreurs
-  private successMessage: string = ''; // Pour afficher les messages de succès
   private connexionForm: FormGroup | undefined;
   private dao: UserDAO;
+  private showPopup: boolean;   
+  private popupMessage: string;   
+  private popupTitle: string;
 
+    /**
+   * Getter pour le formulaire de connexion
+   */
   public get ConnexionForm(): FormGroup {
     return this.connexionForm!;
   }
+
+   /**
+   * Setter pour le message d'erreur
+   */
   public set ConnexionForm(value: FormGroup) {
     this.connexionForm = value;
   }
+   /**
+   * Getter pour l'ouverture de la popup
+   */
+    public get ShowPopup(): boolean {
+      return this.showPopup;
+    }
+    /**
+     * Setter pour l'ouverture de la popup
+     */
+    public set ShowPopup(value :boolean)
+    {
+      this.showPopup = value;
+    }
+    /**
+     * Getter pour le message d'erreur
+     */
+    public get PopupTitle(): string {
+      return this.popupTitle;
+    }
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private userCookieService: UserCookieService,private router: Router) {
+    /**
+     * Setter pour le titre de la popup
+     */
+    public set PopupTitle(value: string)
+    {
+      this.popupTitle = value;
+    }
+
+    /**
+     * Getter pour le message de la popup
+     */
+    public get PopupMessage() : string
+    {
+      return this.popupMessage;
+    }
+    /**
+     * Setter pour le message de la popup
+     */
+    public set PopupMessage(value :string)
+    {
+      this.popupMessage = value;
+    }
+    /**
+     * constructor de la page de connexion
+     * @param fb le createur de formulaire
+     * @param http l'adresse
+     * @param authService les informations d'authentification
+     * @param router le routage des pages
+     */
+  
+  constructor(private fb: FormBuilder, private http: HttpClient, private userCookieService: UserCookieService,private router: Router) 
+  {
     this.dao = new UserDAO(this.http);
+    this.popupTitle = '';
+    this.popupMessage = '';
+    this.showPopup = false;
   }
 
   /**
@@ -68,31 +131,46 @@ export class ConnexionComponent {
         this.ConnexionForm.value.pwd
       ); 
       // Essaye de se connecter
-      this.dao.LoginUser(loginUserDTO).subscribe({
-        next: (response: { token: string }) => {
-
-          this.userCookieService.setToken(response.token); // Stocke le token dans les cookies
-          // Afficher un message de succès
-          this.successMessage = 'Connexion réussie !';
-          this.errorMessage = ''; // Réinitialise l'erreur
-
-          //recuperation des infos l'utilisateur à partir de son token
-          this.dao.GetUser(response.token).subscribe({
-            next: (user: User) => {
-              this.userCookieService.setUser(user);
-              // Redirige vers la page d'accueil
-              this.router.navigate(['/index']);
-            },
-            error: (err) => {
-              this.errorMessage = 'Erreur lors de la récupération de l\'utilisateur:', err.message;
-            }
-          });
-        },
-        error: (err) => {
-          this.errorMessage = `Erreur lors de la connexion : ${err.message}`;
-          this.successMessage = ''; // Réinitialise le message de succès
-        }
+        this.dao.LoginUser(loginUserDTO).subscribe({
+        next: (response: {token: string}) => 
+          {
+            this.popupMessage = response.token;  // Aucune erreur
+            this.PopupTitle = 'Connexion réussie';
+            this.userCookieService.setToken(response.token); // Stocke le token dans les cookies
+            
+            //recuperation des infos l'utilisateur à partir de son token
+            this.dao.GetUser(response.token).subscribe({
+              next: (user: User) => 
+              {
+                this.userCookieService.setUser(user);
+                // Redirige vers la page d'accueil
+                this.router.navigate(['/index']);
+              },
+              error: (err: HttpErrorResponse) => 
+              {
+                //affiche le message d'erreur du serveur
+                this.PopupTitle = 'Erreur :';
+                this.popupMessage = err.message;
+                this.ShowPopup = true; //ouverture de la pop up
+                
+              }
+            });
+          },
+        error: (err: HttpErrorResponse) =>
+         {
+          //affiche le message d'erreur du serveur
+          this.PopupTitle = 'Erreur :';
+          this.PopupMessage = err.message;
+          this.ShowPopup = true; //ouverture de la pop up
+         }
       });
+
     }
-  }  
+    
+  }
+
+  public handlePopupClose(): void {
+    this.showPopup = false;
+  }
 }
+

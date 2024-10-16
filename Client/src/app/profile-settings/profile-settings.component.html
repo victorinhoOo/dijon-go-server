@@ -1,4 +1,5 @@
 <div class="container 5 ">
+<app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ></app-popup>
 <h1 mat-dialog-title>Modifier son profil</h1>
 
 <form [formGroup]="ProfileForm" (ngSubmit)="onSubmit()" class="container mt-4">
@@ -12,7 +13,12 @@
   <div class="form-group row mt-3">
     <label for="pwd" class="col-12 col-form-label">Ancien mot de passe :</label>
     <div class="col-12">
-      <input type="password" formControlName="oldpwd" id="oldpwd" class="form-control" />
+      <input type="password" formControlName="oldpwd" id="oldpwd" class="form-control" required  />
+
+      <!--s'affiche quand old pwd est vide a l'envoie du formulaire-->
+      <div *ngIf=(OldPwdEmpty) class="text-danger">
+        Ancien mot de passe est requis.
+      </div>
     </div>
   </div>
 
@@ -26,7 +32,10 @@
   <div class="form-group row mt-3">
     <label for="Cpwd" class="col-12 col-form-label">Confirmez le nouveau mot de passe :</label>
     <div class="col-12">
-      <input type="password"  id="Cpwd" class="form-control" />
+      <input type="password"  id="Cpwd" class="form-control" formControlName="Cpwd"/>
+    </div>
+    <div *ngIf="(!ConfirmPwdIsGood)" class="text-danger">
+      Les mots de passe ne correspondent pas.
     </div>
   </div>
 
@@ -43,7 +52,7 @@
 
   <div class="row mt-4">
     <div class="col-12 test">
-      <button type="submit" class="btn btn-block" [disabled]="!ProfileForm.valid" id="sub">
+      <button type="submit" class="btn btn-block"  id="sub">
         Modifier
       </button>
     </div>

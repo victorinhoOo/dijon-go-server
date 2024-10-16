@@ -84,11 +84,11 @@
 
                 database.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 // Annule la transaction en cas d'erreur
                 database.RollbackTransaction();
-                throw new Exception("An error occurred during token insertion and user update.", ex);
+                throw new System.Exception("An error occurred during token insertion and user update.", ex);
             }
             finally
             {
