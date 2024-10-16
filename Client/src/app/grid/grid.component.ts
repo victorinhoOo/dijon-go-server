@@ -24,7 +24,7 @@ export class GridComponent implements AfterViewInit, OnInit{
   }
 
   ngOnInit(): void {
-    this.size = parseInt(this.route.snapshot.paramMap.get("size")!);
+    this.size = 19;
   }
 
   ngAfterViewInit(): void {

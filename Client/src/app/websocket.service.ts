@@ -5,17 +5,22 @@ import { Injectable } from '@angular/core';
 })
 export class WebsocketService {
 
-  private websocket: WebSocket;
+  private websocket: WebSocket|null;
   private idGame: string;
 
   constructor() 
   {
-    this.websocket = new WebSocket("ws://10.211.55.3:7000/");
+    this.websocket = null;
     this.idGame=""
+  }
+
+  public getWs(){
+    return this.websocket;
   }
 
 
   public connectWebsocket(){
+    this.websocket = new WebSocket("ws://10.211.55.3:7000/");
     this.websocket.onopen = ()=>{
     }
 
@@ -36,7 +41,8 @@ export class WebsocketService {
   }
 
   public createGame():void{
-    if(this.websocket.OPEN){
+    alert(this.websocket);
+    if(this.websocket != null && this.websocket.OPEN){
       this.websocket.send("0/Create:");
     }
     else{
@@ -44,8 +50,18 @@ export class WebsocketService {
     }
   }
 
+  public joinGame(id:number):void{
+    alert(id);
+    if(this.websocket != null && this.websocket.OPEN){
+      this.websocket.send(`${id}/Join:`);
+    }
+    else{
+      console.log("not connected");
+    }
+  }
+
   public placeStone(coordinates:string){
-    if(this.websocket.OPEN){
+    if(this.websocket != null && this.websocket.OPEN){
       this.websocket.send(`${this.idGame}Stone:${coordinates}`)
       console.log(`${this.idGame}Stone:${coordinates}`);
     }
