@@ -31,9 +31,9 @@ namespace Server.Model.Images
                     file.CopyTo(fileStream);
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                throw new Exception($"Erreur lors de l'upload de la photo de profil : {ex.Message}", ex);
+                throw new System.Exception($"Erreur lors de l'upload de la photo de profil : {ex.Message}", ex);
             }
         }
 
@@ -62,9 +62,9 @@ namespace Server.Model.Images
                 }
 
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                throw new Exception($"Erreur lors du renommage de la photo de profil : {ex.Message}", ex);
+                throw new System.Exception($"Erreur lors du renommage de la photo de profil : {ex.Message}", ex);
             }
         }
 

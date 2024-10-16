@@ -74,9 +74,9 @@ namespace Server.Model.Images
                     throw new FileNotFoundException($"Aucune image de profil trouvée pour {oldFileName}.");
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                throw new Exception($"Erreur lors du renommage de l'image de profil sur le serveur FTP : {ex.Message}", ex);
+                throw new System.Exception($"Erreur lors du renommage de l'image de profil sur le serveur FTP : {ex.Message}", ex);
             }
             finally
             {
@@ -101,9 +101,9 @@ namespace Server.Model.Images
                     ftpClient.UploadBytes(fileBytes, remoteFilePath, FtpRemoteExists.Overwrite, true);
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                throw new Exception($"Erreur lors du téléversement des fichiers sur le serveur FTP : {ex.Message}", ex);
+                throw new System.Exception($"Erreur lors du téléversement des fichiers sur le serveur FTP : {ex.Message}", ex);
             }
             finally
             {
