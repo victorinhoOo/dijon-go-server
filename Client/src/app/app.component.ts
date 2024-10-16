@@ -23,7 +23,7 @@ export class AppComponent implements AfterViewInit{
   title = 'Client';
   private state: string;
 
-  public constructor(private websocketService:WebsocketService) {
+  public constructor() {
     this.state = 'light';
   }
 
@@ -32,7 +32,6 @@ export class AppComponent implements AfterViewInit{
     document.getElementById('state-button')!.addEventListener('click', () => {
       this.changeLightState();
     });
-    this.connectWebSocket();
   }
 
 
@@ -91,10 +90,4 @@ export class AppComponent implements AfterViewInit{
     }
     
   }
-
-  public connectWebSocket(): void {
-    this.websocketService.connectWebsocket();
-
-  }
-  
 }
