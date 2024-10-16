@@ -1,14 +1,18 @@
 <div class="main-container">
+    <app-popup [show]="ShowPopup"  [title]="PopupTitle" (onClose)="handlePopupClose()">
+        <div class="game-choice" [innerHTML]="PopupContent">            
+        </div>
+    </app-popup>
     <div class="player-info">
-        <img class="avatar" src="victor.jpg" alt="photo de profil de l'utilisateur">
-        <p class="pseudo">Victor</p>
+        <img class="avatar" src="{{ Avatar }}" alt="photo de profil">
+        <p class="pseudo">{{ UserPseudo }}</p>
     </div>
     <div class="top-section">
         <div class="rank">
             <img class="trophy-pic" src="trophy.png" alt="Trophy">
             <div class="rank-text">
                 <p class="rank-label">Classement</p>
-                <p class="rank-value">9 dan</p>
+                <p class="rank-value">{{UserRank}}</p>
             </div>
         </div>                
         <a class="last-game" href="">
@@ -25,7 +29,7 @@
             <img src="create.png" alt="Créer une partie">
             Créer une partie personnalisée
         </a>
-        <a href="">
+        <a id="joinGames">
             <img src="join.png" alt="Rejoindre une partie">
             Rejoindre une partie personnalisée
         </a>

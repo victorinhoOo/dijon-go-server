@@ -1,0 +1,52 @@
+<div class="container 5 ">
+<h1 mat-dialog-title>Modifier son profil</h1>
+
+<form [formGroup]="ProfileForm" (ngSubmit)="onSubmit()" class="container mt-4">
+  <div class="form-group row">
+    <label for="pseudo" class="col-12 col-form-label">Pseudo :</label>
+    <div class="col-12">
+      <input id="pseudo" formControlName="pseudo" class="form-control" placeholder="{{UserPseudo}}" />
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="pwd" class="col-12 col-form-label">Ancien mot de passe :</label>
+    <div class="col-12">
+      <input type="password" formControlName="oldpwd" id="oldpwd" class="form-control" />
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="pwd" class="col-12 col-form-label">Nouveau mot de passe :</label>
+    <div class="col-12">
+      <input type="password" formControlName="pwd" id="pwd" class="form-control" />
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="Cpwd" class="col-12 col-form-label">Confirmez le nouveau mot de passe :</label>
+    <div class="col-12">
+      <input type="password"  id="Cpwd" class="form-control" />
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="email" class="col-12 col-form-label">Email :</label>
+    <div class="col-12">
+      <input type="text"  id="email" class="form-control" formControlName="email" placeholder="{{UserEmail}}"/>
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+  <app-upload-image (imageSelected)="onImageSelected($event)"></app-upload-image>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 test">
+      <button type="submit" class="btn btn-block" [disabled]="!ProfileForm.valid" id="sub">
+        Modifier
+      </button>
+    </div>
+  </div>
+</form>
+</div>

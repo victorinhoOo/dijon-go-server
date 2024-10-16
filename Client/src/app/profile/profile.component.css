@@ -1,0 +1,33 @@
+.card-pos{
+    max-width: 60%; margin: 0 auto;
+    padding: 1%;
+    background-color: #FFF3E4;
+}
+#params{
+    margin-left: auto;
+    display: block;
+    padding-top: 5px;
+}
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.custom-dialog-container{
+    background-color: #FFF3E4;
+}
+.container{
+    color: black;
+}
+
+img{
+    border-radius:5%;
+}
+#params {
+    background-color: #FA7E5C !important;
+    border: none;
+  }
+
+  #params mat-icon {
+    color: white;
+  }

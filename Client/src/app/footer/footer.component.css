@@ -1,0 +1,14 @@
+footer {
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 0;
+}
+
+footer a, footer p {
+    text-decoration: none;
+    color: darkgray;
+}
+
+footer a:hover {
+    color: black;
+}

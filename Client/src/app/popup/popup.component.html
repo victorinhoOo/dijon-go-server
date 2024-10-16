@@ -1,0 +1,8 @@
+<div *ngIf="show" class="popup-overlay">
+  <div class="popup-content">
+    <h2>{{ title }}</h2> 
+    <p>{{ popupMessage }}</p> 
+    <ng-content></ng-content> 
+    <button id="CloseBtn" (click)="closePopup()">Fermer</button>
+  </div>
+</div>
