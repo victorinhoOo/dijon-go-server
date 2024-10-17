@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace WebSocket.Model
+namespace WebSocket.Model.DAO
 {
     /// <summary>
     /// Interface représentant une base de données.

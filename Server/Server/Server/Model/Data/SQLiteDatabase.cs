@@ -1,6 +1,7 @@
-﻿using System.Data;
-using System.Data.SQLite; 
+using System.Data;
 using System.Collections.Generic;
+using Microsoft.Data.Sqlite;
+using SQLitePCL;
 
 namespace Server.Model.Data
 {
@@ -10,18 +11,19 @@ namespace Server.Model.Data
     public class SQLiteDatabase : IDatabase
     {
         private string connectionString;
-        private SQLiteConnection connection;
-        private SQLiteTransaction transaction;
+        private SqliteConnection connection;
+        private SqliteTransaction transaction;
 
         public SQLiteDatabase(string connectionString)
         {
             this.connectionString = connectionString;
+            Batteries_V2.Init();
         }
 
         /// <inheritdoc/>
         public void Connect()
         {
-            connection = new SQLiteConnection(connectionString);
+            connection = new SqliteConnection(connectionString);
             connection.Open();
         }
 
@@ -66,7 +68,7 @@ namespace Server.Model.Data
         /// <inheritdoc/>
         public void ExecuteNonQuery(string query, Dictionary<string, object> parameters)
         {
-            using (var command = new SQLiteCommand(query, connection, transaction))
+            using (var command = new SqliteCommand(query, connection, transaction))
             {
                 if (parameters != null)
                 {
@@ -82,7 +84,7 @@ namespace Server.Model.Data
         /// <inheritdoc/>
         public DataTable ExecuteQuery(string query, Dictionary<string, object> parameters)
         {
-            using (var command = new SQLiteCommand(query, connection, transaction))
+            using (var command = new SqliteCommand(query, connection, transaction))
             {
                 if (parameters != null)
                 {
@@ -91,10 +93,10 @@ namespace Server.Model.Data
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
                 }
-                using (var adapter = new SQLiteDataAdapter(command))
+                using (var reader = command.ExecuteReader())
                 {
                     var result = new DataTable();
-                    adapter.Fill(result);
+                    result.Load(reader); // Remplit le DataTable avec les résultats du reader
                     return result;
                 }
             }

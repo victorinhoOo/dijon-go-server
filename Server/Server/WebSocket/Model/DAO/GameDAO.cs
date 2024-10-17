@@ -16,7 +16,7 @@ namespace WebSocket.Model.DAO
 
         public GameDAO()
         {
-            this.database = new SQLiteDatabase("Data Source=./Server/dgs.db");
+            this.database = new SQLiteDatabase("Data Source=../../../../Server/dgs.db");
 
         }
 

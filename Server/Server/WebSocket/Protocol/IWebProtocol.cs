@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebSocket
+namespace WebSocket.Protocol
 {
     /// <summary>
     /// Interface qui regroupe les méthodes principales d'un protocole web
@@ -21,7 +21,7 @@ namespace WebSocket
         /// Accepte la connexion d'un client 
         /// </summary>
         /// <returns>Renvoie la connexion du client connecté</returns>
-        public TcpClient AcceptClient(); 
+        public TcpClient AcceptClient();
 
         /// <summary>
         /// Initialisation des communications entre le client et le serveur 
