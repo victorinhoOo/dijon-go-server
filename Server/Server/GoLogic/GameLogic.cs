@@ -1,5 +1,8 @@
 ﻿namespace GoLogic
 {
+    /// <summary>
+    /// Gére les action et règles de base du go
+    /// </summary>
     public class GameLogic
     {
         #region attributs

@@ -60,22 +60,26 @@
             HashSet<Stone> visited = new HashSet<Stone>();
 
             // Explorez le tableau pour trouver des espaces vides entourés de pierres noires ou blanches
-            for (int x = 0; x < gameBoard.Size; x++)
+            for (int x = 0; x < gameBoard.Size; x++) // Parcourt toutes les lignes du plateau
             {
-                for (int y = 0; y < gameBoard.Size; y++)
+                for (int y = 0; y < gameBoard.Size; y++) // Parcourt toutes les colonnes du plateau
                 {
                     Stone stone = gameBoard.GetStone(x, y);
 
-                    if (stone.Color == StoneColor.Empty && !visited.Contains(stone))
+                    // Si la pierre est vide et n'a pas encore été visité
+                    if (stone.Color == StoneColor.Empty && !visited.Contains(stone)) 
                     {
+                        // Explore la zone vide à partir de cette pierre
                         var (owner, emptyArea) = ExploreTerritory(stone, visited);
 
                         if (owner == StoneColor.Black)
                         {
+                            // Ajoute la taille de la zone vide au territoire noir
                             blackTerritory += emptyArea.Count;
                         }
                         else if (owner == StoneColor.White)
                         {
+                            // Ajoute la taille de la zone vide au territoire blanc
                             whiteTerritory += emptyArea.Count;
                         }
                     }
@@ -86,8 +90,9 @@
         }
 
         /// <summary>
-        /// Explore récursivement une zone vide et déterminer son propriétaire
-        /// Le propriétaire est le joueur dont les pierres entourent complètement la zone vide
+        /// Explore récursivement une zone vide et détermine son propriétaire
+        /// Le propriétaire est le joueur dont les pierres entourent complètement la zone vide.
+        /// Si la zone vide touche le bord du plateau, elle est considérée comme non revendiquée.
         /// </summary>
         /// <param name="stone">La pierre à partir de laquelle explorer</param>
         /// <param name="visited">Emplacement visité par la recherche</param>
@@ -96,41 +101,55 @@
         {
             List<Stone> emptyArea = new List<Stone>();
             HashSet<StoneColor> borderingColors = new HashSet<StoneColor>();
-
             Queue<Stone> queue = new Queue<Stone>();
+
             queue.Enqueue(stone);
             visited.Add(stone);
 
             // Explore récursivement pour trouver une zone vide
             while (queue.Count > 0)
             {
-                Stone currentStone = queue.Dequeue();
-                emptyArea.Add(currentStone);
+                Stone currentStone = queue.Dequeue(); // Retire la première pierre de la file pour l'examiner
+                emptyArea.Add(currentStone); // Ajoute cette pierre à la zone vide en cours d'exploration
 
                 foreach (Stone neighbor in GetNeighbors(currentStone))
                 {
-                    if (!visited.Contains(neighbor))
+                    // Si cette pierre n'a pas encore été visitée
+                    if (!visited.Contains(neighbor)) 
                     {
-                        if (neighbor.Color == StoneColor.Empty)
+                        if (neighbor.Color == StoneColor.Empty) // Si la pierre voisine est vide, c'est un espace contigu
                         {
-                            queue.Enqueue(neighbor);
-                            visited.Add(neighbor);
+                            queue.Enqueue(neighbor); // Ajoute cette pierre à la file pour continuer l'exploration
+                            visited.Add(neighbor);   // Marque la pierre comme visitée pour éviter de la réexaminer
                         }
-                        else if (neighbor.Color == StoneColor.Black || neighbor.Color == StoneColor.White)
+                        else if (neighbor.Color != StoneColor.Empty)
                         {
+                            // Ajoute sa couleur à l'ensemble des couleurs bordantes (pour déterminer le propriétaire)
                             borderingColors.Add(neighbor.Color);
                         }
                     }
                 }
             }
 
-            // Détermine le propriétaire du territoire : s'il n'y a que des pierres noires ou blanches à la frontière
-            if (borderingColors.Count == 1)
+            // Pas de propriétaire si les couleurs sont mixtes ou la zone touche le bord
+            StoneColor resColor = StoneColor.Empty;
+            List<Stone> resArea = emptyArea;
+
+            // Si la zone vide touche le bord du plateau, c'est un territoire neutre
+            if (stone.X == 0 || stone.X == gameBoard.Size - 1 || stone.Y == 0 || stone.Y == gameBoard.Size - 1)
             {
-                return (borderingColors.Contains(StoneColor.Black) ? StoneColor.Black : StoneColor.White, emptyArea);
+                resColor = StoneColor.Empty; 
+                resArea = emptyArea;
             }
 
-            return (StoneColor.Empty, emptyArea);  // Pas de propriétaire si les couleurs sont mixtes
+            // Détermine le propriétaire du territoire : s'il n'y a que des pierres noires ou blanches à la frontière
+            else if (borderingColors.Count == 1)
+            {
+                resColor = borderingColors.Contains(StoneColor.Black) ? StoneColor.Black : StoneColor.White;
+                resArea = emptyArea;
+            }
+
+            return (resColor, resArea); 
         }
 
         /// <summary>
