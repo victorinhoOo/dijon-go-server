@@ -7,6 +7,8 @@ using Server.Model;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Server.Model.Images;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Tests.Users
 {
@@ -16,6 +18,8 @@ namespace Tests.Users
         ITokenDAO fakeTokenDAO;
         Mock<ImageManager> fakeImageManager;
         Mock<IFileUploader> fakeFileUploader;
+        Mock<ILogger<UserManager>> mockUserLogger;
+        Mock<ILogger<TokenManager>> mockTokenLogger;
         TokenManager tokenManager;
         UserManager userManager;
 
@@ -25,8 +29,10 @@ namespace Tests.Users
             fakeUserDAO = new FakeUserDAO();
             fakeFileUploader = new Mock<IFileUploader>();
             fakeImageManager = new Mock<ImageManager>(fakeFileUploader.Object);
-            tokenManager = new TokenManager(fakeTokenDAO);
-            userManager = new UserManager(fakeUserDAO, fakeImageManager.Object, tokenManager);
+            mockUserLogger = new Mock<ILogger<UserManager>>();
+            mockTokenLogger = new Mock<ILogger<TokenManager>>();
+            tokenManager = new TokenManager(fakeTokenDAO, mockTokenLogger.Object);
+            userManager = new UserManager(fakeUserDAO, fakeImageManager.Object, tokenManager, mockUserLogger.Object);
         }
 
         /// <summary>

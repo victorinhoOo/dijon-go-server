@@ -8,10 +8,12 @@ using System.Data;
 public class GameDAO : IGameDAO
 {
     private readonly IDatabase database;
+    private ILogger<GameDAO> logger;
 
-    public GameDAO(IDatabase database)
+    public GameDAO(IDatabase database, ILogger<GameDAO> logger)
     {
         this.database = database;
+        this.logger = logger;
     }
 
     /// <inheritdoc/>
@@ -38,7 +40,7 @@ public class GameDAO : IGameDAO
         }
 
         database.Disconnect();
-
+        logger.LogInformation("Liste des parties récupérée");
         return result;
     }
 }

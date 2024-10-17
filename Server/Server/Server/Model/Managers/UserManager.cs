@@ -14,12 +14,14 @@ namespace Server.Model.Managers
         private readonly IUserDAO userDAO;
         private readonly ImageManager imageManager;
         private readonly TokenManager tokenManager;
+        private ILogger<UserManager> logger;
 
-        public UserManager(IUserDAO userDAO, ImageManager imageManager, TokenManager tokenManager)
+        public UserManager(IUserDAO userDAO, ImageManager imageManager, TokenManager tokenManager, ILogger<UserManager> logger)
         {
             this.userDAO = userDAO;
             this.imageManager = imageManager;
             this.tokenManager = tokenManager;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -42,10 +44,12 @@ namespace Server.Model.Managers
                 if (userDAO.VerifyExists(user))
                 {
                     result = tokenManager.CreateTokenUser(user); // si la connexion réussit, on génère un token
+                    logger.LogInformation("Token: " + result + " créé pour l'utilisateur : " + loginUserDTO.Username);
                 }
             }
             catch (Exception ex)
             {
+                logger.LogError("Erreur lors de la connexion : " + ex.Message);
                 throw new Exception("Erreur lors de la connexion : " + ex.Message);
             }
 
@@ -61,12 +65,15 @@ namespace Server.Model.Managers
             // Valide les données d'inscription
             if (string.IsNullOrEmpty(registerUserDto.Username) || string.IsNullOrEmpty(registerUserDto.Email) || string.IsNullOrEmpty(registerUserDto.Password))
             {
-                throw new ArgumentException("Tous les champs doivent être remplis");
+                logger.LogError("Aucun champ n'a été modifié");
+                throw new ArgumentException("Aucun champ n'a été modifié");
             }
 
             // Vérifie si l'utilisateur existe déjà
             if (userDAO.GetUserByUsername(registerUserDto.Username) != null)
             {
+
+                logger.LogError("Ce nom d'utilisateur existe déjà");
                 throw new ArgumentException("Ce nom d'utilisateur existe déjà");
             }
 
@@ -83,10 +90,12 @@ namespace Server.Model.Managers
                 {
                     imageManager.UploadProfilePic(registerUserDto.ProfilePic, user.Username); // Upload l'image de profil sur le serveur
                 }
+                logger.LogInformation("Inscription de l'utilisateur : " + user.Username);
                 userDAO.Register(user);
             }
             catch (Exception ex)
             {
+                logger.LogError("Erreur lors de l'inscription : " + ex.Message);
                 throw new Exception("Erreur lors de l'inscription : " + ex.Message);
             }
 
@@ -115,6 +124,7 @@ namespace Server.Model.Managers
                         }
                         else
                         {
+                            logger.LogError("Ce nom d'utilisateur est déjà pris");
                             throw new Exception("Ce nom d'utilisateur est déjà pris");
                         }
                     }
@@ -133,15 +143,19 @@ namespace Server.Model.Managers
 
                     // Enregistre les modifications en base de données 
                     userDAO.Update(user);
+                    logger.LogInformation("Utilisateur mis à jour");
                 }
                 catch (Exception ex)
                 {
+                    logger.LogError("Erreur  : " + ex.Message);
                     throw new Exception("Erreur  : " + ex.Message);
 
                 }
             }
             else
             {
+
+                logger.LogError("Mot de passe invalide");
                 throw new UnauthorizedAccessException("Mot de passe invalide");
             }
         }
@@ -157,6 +171,7 @@ namespace Server.Model.Managers
             User user = tokenManager.GetUserByToken(tokenUser);
             if (user == null)
             {
+                logger.LogError("Utilisateur non trouvé, token invalide");
                 throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
             }
             return user;
@@ -187,7 +202,7 @@ namespace Server.Model.Managers
                 {
                     builder.Append(bytes[i].ToString("x2"));
                 }
-
+                logger.LogInformation("Mot de passe haché");
                 return builder.ToString();
             }
         }

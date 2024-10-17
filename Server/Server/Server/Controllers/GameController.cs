@@ -13,9 +13,11 @@ namespace Server.Controllers
     public class GameController: Controller
     {
         private readonly GameManager gameManager;
-        public GameController(GameManager gameManager)
+        private ILogger<GameController> logger;
+        public GameController(GameManager gameManager, ILogger<GameController> logger)
         {
             this.gameManager = gameManager;
+            this.logger = logger;
         }
 
 
@@ -31,10 +33,12 @@ namespace Server.Controllers
             {
                 List<GameInfoDTO> games = gameManager.GetAvailableGames();
                 result = Ok(new { Games = games });
+                logger.LogInformation("Liste des parties récupérée");
             }
             catch(Exception ex)
             {
                 result = BadRequest(new { Message = ex.Message });
+                logger.LogInformation("Erreur lors de la récupération de la liste des parties : " + ex.Message);
             }
             return result;
         }

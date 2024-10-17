@@ -10,10 +10,12 @@ namespace Server.Model.Managers
     public class TokenManager
     {
         private readonly ITokenDAO tokenDAO;
+        private ILogger<TokenManager> logger;
 
-        public TokenManager(ITokenDAO tokenDAO)
+        public TokenManager(ITokenDAO tokenDAO, ILogger<TokenManager> logger)
         {
             this.tokenDAO = tokenDAO;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace Server.Model.Managers
                 tokenBuilder.Append(b.ToString("x2"));
             }
             string token = tokenBuilder.ToString();
-
+            logger.LogInformation("Token généré : " + token);
             return token;
         }
 

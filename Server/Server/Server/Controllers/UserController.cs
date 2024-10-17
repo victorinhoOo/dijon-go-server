@@ -13,10 +13,12 @@ namespace Server.Controllers
     public class UserController : Controller
     {
         private readonly UserManager userManager;
+        private ILogger<UserController> logger;
 
-        public UserController(UserManager userManager)
+        public UserController(UserManager userManager, ILogger<UserController> logger)
         {
             this.userManager = userManager;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -33,11 +35,13 @@ namespace Server.Controllers
                 string token = userManager.Connect(loginUserDTO);
                 if (token != "")
                 {
+                    logger.LogInformation("Connexion réussie pour l'utilisateur " + loginUserDTO.Username);
                     result = Ok(new { Token = token });
                 }
             }
             catch (Exception ex)
             {
+                logger.LogError("Erreur lors de la connexion : " + ex.Message);
                 result = BadRequest(new { Message = ex.Message });
             }
             return result;
@@ -55,11 +59,13 @@ namespace Server.Controllers
             try
             {
                 userManager.Register(registerUserDTO);
+                logger.LogInformation("Inscription réussie pour l'utilisateur " + registerUserDTO.Username);
                 result = Ok(new { Message = "Inscription réussie" });
 
             }
             catch (Exception ex)
             {
+                logger.LogError("Erreur lors de l'inscription : " + ex.Message);
                 result = BadRequest(new { Message = ex.Message });
             }
             return result;
@@ -78,10 +84,12 @@ namespace Server.Controllers
             try
             {
                 userManager.UpdateUser(updateUserDTO);
+                logger.LogInformation("Mise à jour réussie pour l'utilisateur " + updateUserDTO.Username);
                 result = Ok(new { Message = "Mise à jour réussie" });
             }
             catch (Exception ex)
             {
+                logger.LogError("Erreur lors de la mise à jour : " + ex.Message);
                 result = BadRequest(new { Message = ex.Message });
             }
             return result;
@@ -99,10 +107,12 @@ namespace Server.Controllers
             try
             {
                 User user = userManager.GetUser(tokenUser);
+                logger.LogInformation("Récupération de l'utilisateur " + user.Username);
                 result = Ok(new { User = user });
             }
             catch (Exception ex)
             {
+                logger.LogError("Erreur lors de la récupération de l'utilisateur : " + ex.Message);
                 result = BadRequest(new { Message = ex.Message });
 
             }
