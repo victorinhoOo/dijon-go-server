@@ -28,6 +28,15 @@ export class RegisterComponent {
   private popupTitle: string;  
   private confirmPwdIsGood :boolean;
   private registerSucces :boolean; //l'inscription 
+  private isStrongPassword :boolean;
+
+  /**
+   * Verifie si le password est stong
+   */
+  public get IsStrongPassword() : boolean
+  {
+    return this.isStrongPassword;
+  }
 
   /**
    * Indique si l'inscription
@@ -97,6 +106,7 @@ export class RegisterComponent {
     this.showPopup = false;
     this.confirmPwdIsGood = true;
     this.registerSucces = false;
+    this.isStrongPassword = false;
   }
 
   /**
@@ -106,11 +116,13 @@ export class RegisterComponent {
     // Initialisation des variables
     this.registerForm = this.fb.group({
       pseudo: ['', Validators.required],
-      password: ['', Validators.required],
+      password: ['', [Validators.required,Validators.pattern("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")]], // 8 caractères, une maj, une min et 1 chiffre min
       email: ['', [Validators.required, Validators.email]],
       confirmPassword: ['', Validators.required],
       img: [null]
     });
+      //reinitialise les attributs au rechargement de la page d'inscription
+      this.InitializePwdForm();
   }
 
   /**
@@ -119,6 +131,10 @@ export class RegisterComponent {
    * Redirige l'utilisateur vers la page de connexion en cas de succès sinon affiche un message d'erreur dans un popup
    */
   public onSubmit(): void {
+
+    //reinitialise les attributs a chaque  nouvel envoie de formulaire
+    this.InitializePwdForm();
+
   //si le formulaire est correctement remplie
   if (this.registerForm.valid && this.registerForm.value.password == this.registerForm.value.confirmPassword ) 
       {
@@ -152,6 +168,11 @@ export class RegisterComponent {
       {
         this.confirmPwdIsGood = false;
       }
+      //verifie la validiter du format du password
+      if (this.registerForm.get('password')?.hasError('pattern')) 
+      {
+        this.isStrongPassword = false;
+      }
       this.registerSucces = false; //reinitialise le succe du formulaire si l'utilisateur reesaie de se register
     }
     this.ShowPopup = true; //ouverture pop up
@@ -170,5 +191,13 @@ export class RegisterComponent {
     this.showPopup = false;
   }
 
+    /**
+   * Inialise les attributs liés au password du formulaire
+   */
+    public  InitializePwdForm() :void
+    {
+      this.confirmPwdIsGood = true;
+      this.isStrongPassword = true;
+    }
 
 }
