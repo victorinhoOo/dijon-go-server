@@ -114,7 +114,7 @@ namespace Server.Model.Managers
             User user = tokenManager.GetUserByToken(updateUserDTO.Tokenuser);
 
             // Vérifie que  que le mot de passe est le bon pour l'utilisateur connecté (pour éviter les usurpations de compte)
-            if (this.VerifyPasswordMatchUser(updateUserDTO.Password, user.Password))
+            if (this.VerifyPasswordMatchUser(user.Username, updateUserDTO.Oldpassword))
             {
                 try
                 {
