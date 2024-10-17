@@ -6,7 +6,9 @@
         private GameBoard board;
         private List<Stone> moves = new List<Stone>();
         private StoneColor currentTurn;
-        
+        private bool isEndGame;
+        private bool skippedTurn;
+
         /// <summary>
         /// Le plateau de la partie
         /// </summary>
@@ -21,8 +23,13 @@
         /// Tour actuel, Noir ou Blanc
         /// </summary>
         public StoneColor CurrentTurn { get => currentTurn; set => currentTurn = value; }
+
+        /// <summary>
+        /// True si la partie est finie
+        /// </summary>
+        public bool IsEndGame { get => this.isEndGame; }
         #endregion attributs
-        
+
         /// <summary>
         /// Gére toute la logique et règles du jeu
         /// </summary>
@@ -39,7 +46,9 @@
         /// </summary>
         public void SkipTurn()
         {
+            if (this.skippedTurn) this.isEndGame = true;
             currentTurn = currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+            this.skippedTurn = true;
         }
         
         /// <summary>
@@ -52,6 +61,7 @@
         {
             try
             {
+                this.skippedTurn = false;
                 Stone stone = Board.Board[x, y]; // récupère la pierre aux coordonnées données
 
                 if (!IsValidMove(stone))
