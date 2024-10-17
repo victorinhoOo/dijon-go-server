@@ -6,10 +6,12 @@
     public class TokenDAO: ITokenDAO
     {
         private readonly IDatabase database;
+        private ILogger<TokenDAO> logger;
 
-        public TokenDAO(IDatabase database)
+        public TokenDAO(IDatabase database, ILogger<TokenDAO> logger)
         {
             this.database = database;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -39,6 +41,7 @@
             }
 
             database.Disconnect();
+            this.logger.LogInformation($"Le token {token} est associé à l'utilisateur {username}: {res}");
             return res;
         }
 
@@ -81,14 +84,15 @@
                     database.ExecuteNonQuery(updateUserQuery, updateParameters);
                     result = true;
                 }
-
+                logger.LogInformation($"Le token {token} a été inséré pour l'utilisateur {username}");
                 database.CommitTransaction();
             }
             catch (System.Exception ex)
             {
                 // Annule la transaction en cas d'erreur
                 database.RollbackTransaction();
-                throw new System.Exception("An error occurred during token insertion and user update.", ex);
+                logger.LogError("Une erreur a eu lieu pendant l'insertion du token:", ex);
+                throw new Exception("Une erreur a eu lieu pendant l'insertion du token:", ex);
             }
             finally
             {
@@ -138,7 +142,7 @@
             {
                 database.Disconnect();
             }
-
+            logger.LogInformation($"L'utilisateur {user.Username} est associé au token {token}");
             return user;
         }
     }

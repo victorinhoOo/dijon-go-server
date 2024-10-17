@@ -1,12 +1,9 @@
-﻿
-using System;
-
-namespace Server.Model.Exception
+﻿namespace Server.Model.Exceptions
 {
     /// <summary>
     /// Exception personnalisée levée lors des erreurs de connexion utilisateur.
     /// </summary>
-    public class ConnexionException : System.Exception
+    public class ConnexionException : Exception
     {
         /// <summary>
         /// Initialise une nouvelle instance de l'exception <see cref="ConnexionException"/> avec un message d'erreur spécifié.

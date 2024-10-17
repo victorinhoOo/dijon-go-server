@@ -1,6 +1,7 @@
 <div class="main-container">
     <app-popup [show]="ShowPopup"  [title]="PopupTitle" (onClose)="handlePopupClose()">
-        <div class="game-choice" [innerHTML]="PopupContent">            
+        <div class="game-choice" [innerHTML]="PopupContent">   
+                     
         </div>
     </app-popup>
     <div class="player-info">
@@ -11,7 +12,7 @@
         <div class="rank">
             <img class="trophy-pic" src="trophy.png" alt="Trophy">
             <div class="rank-text">
-                <p class="rank-label">Classement</p>
+                <p class="rank-label">Rang</p>
                 <p class="rank-value">{{UserRank}}</p>
             </div>
         </div>                
@@ -25,7 +26,7 @@
             <img src="matchmaking.png" alt="Matchmaking">
             Matchmaking en ligne
         </a>
-        <a href="">
+        <a id="create-game">
             <img src="create.png" alt="Créer une partie">
             Créer une partie personnalisée
         </a>

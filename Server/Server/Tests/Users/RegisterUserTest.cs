@@ -7,7 +7,9 @@ using Server.Model;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using Server.Model.Images;
-using Server.Model.Exception;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
+using Server.Model.Exceptions;
 
 namespace Tests.Users
 {
@@ -18,6 +20,7 @@ namespace Tests.Users
         Mock<ImageManager> fakeImageManager;
         Mock<TokenManager> fakeTokenManager;
         Mock<IFileUploader> fakeFileUploader;
+        Mock<ILogger<UserManager>> fakeLogger;
         UserManager userManager;
 
         public RegisterUserTest()
@@ -26,7 +29,8 @@ namespace Tests.Users
             fakeFileUploader = new Mock<IFileUploader>();
             fakeImageManager = new Mock<ImageManager>(fakeFileUploader.Object);
             fakeTokenManager = new Mock<TokenManager>();
-            userManager = new UserManager(fakeUserDAO, fakeImageManager.Object, fakeTokenManager.Object);
+            fakeLogger = new Mock<ILogger<UserManager>>();
+            userManager = new UserManager(fakeUserDAO, fakeImageManager.Object, fakeTokenManager.Object, fakeLogger.Object);
         }
 
         /// <summary>

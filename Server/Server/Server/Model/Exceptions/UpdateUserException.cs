@@ -1,4 +1,4 @@
-﻿namespace Server.Model.Exception
+﻿namespace Server.Model.Exceptions
 {
     using System;
 

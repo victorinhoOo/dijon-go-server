@@ -1,15 +1,17 @@
 ﻿using GoLogic;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using WebSocket.Model.DAO;
 
 namespace WebSocket
 {
     public class Interpreter
     {
-        
+        private GameDAO gameDAO;
+
         public Interpreter()
         {
-            
+            this.gameDAO = new GameDAO();
         }
 
         public string Interpret(string message, Client client)
@@ -67,7 +69,10 @@ namespace WebSocket
         private void CreateGame(Client client, ref string response, ref string type)
         {
             int id  = Server.Games.Count + 1;
-            Server.Games[id] = new Game(client);
+            Game newGame = new Game(client);
+            Server.Games[id] = newGame;
+            
+            this.gameDAO.InsertGame(newGame);
             Server.Games[id].Player1 = client;
             response = $"{id}/";
             type = "Send_";
@@ -77,6 +82,7 @@ namespace WebSocket
         {
             // exception
             Server.Games[idGame].AddPlayer(client);
+            this.gameDAO.DeleteGame(idGame);
             reponse = $"{idGame}/";
             type = "Send_";
         }
