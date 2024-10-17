@@ -112,22 +112,23 @@ namespace Server.Model.Managers
         {
             // Récupère l'utilisateur existant grâce à son token de connexion 
             User user = tokenManager.GetUserByToken(updateUserDTO.Tokenuser);
+
             // Vérifie que  que le mot de passe est le bon pour l'utilisateur connecté (pour éviter les usurpations de compte)
-            if (this.userDAO.VerifyExists(new User { Password = this.HashPassword(updateUserDTO.Oldpassword), Username = user.Username }))
+            if (this.VerifyPasswordMatchUser(user.Username, updateUserDTO.Oldpassword))
             {
                 try
                 {
                     //  applique les modifications souhaitées
-                    if (updateUserDTO.ProfilePic != null)
+                    if (updateUserDTO.ProfilePic != null) // l'utilisateur a renseigné une nouvelle photo
                     {
-                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); // une modification de la photo de profil entraine un upload qui écrase l'ancienne photo
+                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); 
                     }
-                    if (!string.IsNullOrEmpty(updateUserDTO.Username))
+                    if (!string.IsNullOrEmpty(updateUserDTO.Username)) // l'utilisateur a renseigné un nouveau nom d'utilisateur
                     {
                         if(this.userDAO.GetUserByUsername(updateUserDTO.Username) == null) // vérifie si le nom d'utilisateur n'est pas déjà pris
                         {
                             imageManager.RenameProfilePic(user.Username, updateUserDTO.Username); // Renomme l'image de profil sur le FTP (pour correspondre au nouveau nom d'utilisateur)
-                            user.Username = updateUserDTO.Username;
+                            user.Username = updateUserDTO.Username; 
                         }
                         else
                         {
@@ -161,6 +162,16 @@ namespace Server.Model.Managers
                 logger.LogError("Mot de passe invalide");
                 throw new UnauthorizedAccessException("Mot de passe invalide");
             }
+        }
+
+        // Vérifie que  que le mot de passe est le bon pour l'utilisateur connecté (pour éviter les usurpations de compte)
+        private bool VerifyPasswordMatchUser(string username, string password)
+        {
+            User user = new User();
+            user.Username = username;
+            user.Password = this.HashPassword(password);
+            return this.userDAO.VerifyExists(user);
+
         }
 
         /// <summary>
