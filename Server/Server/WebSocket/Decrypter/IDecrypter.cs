@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebSocket
+namespace WebSocket.Decrypter
 {
     public interface IDecrypter
     {
-        public byte[] Decrypt(byte[] bytes);   
+        public byte[] Decrypt(byte[] bytes);
     }
 }

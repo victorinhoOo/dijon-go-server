@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using System.Collections.Generic;
-using WebSocket.Model;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;
+using WebSocket.Model.DAO;
 
 namespace Server.Model.Data
 {

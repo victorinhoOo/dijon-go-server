@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebSocket.Exceptions;
 
-namespace WebSocket
+namespace WebSocket.Decrypter
 {
     public class WebSocketDecrypter : IDecrypter
     {
+        /// <inheritdoc/>
         public byte[] Decrypt(byte[] bytes)
         {
             byte[] decoded = bytes;
@@ -53,7 +55,7 @@ namespace WebSocket
                     Console.WriteLine("Mask error");
                 }
 
-                int opcode = (bytes[0] & 0b00001111);
+                int opcode = bytes[0] & 0b00001111;
                 if (opcode == 8) // Le message envoyé est un message de déconnexion 
                 {
                     ushort code = BitConverter.ToUInt16(new byte[] { decoded[1], decoded[0] }, 0); // Calcul du code de déconnexion

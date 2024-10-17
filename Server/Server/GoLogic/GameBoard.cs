@@ -1,5 +1,8 @@
 ﻿namespace GoLogic
 {
+    /// <summary>
+    /// Classe représentation du Goban
+    /// </summary>
     public class GameBoard
     {
         #region Attributs

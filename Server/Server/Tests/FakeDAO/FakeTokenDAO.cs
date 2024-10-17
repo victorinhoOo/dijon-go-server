@@ -35,7 +35,7 @@ namespace Server.Model.Data
             if (tokenEntry != null)
             {
                 // Retourne un utilisateur factice associé au token
-                user = new User(tokenEntry.IdToken, tokenEntry.Username, "hashedPassword", "email@example.com");
+                user = new User(tokenEntry.IdToken, tokenEntry.Username, "mdp", "email@example.com");
             }
             return user;
         }

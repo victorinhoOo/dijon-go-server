@@ -1,4 +1,4 @@
-﻿using System.Data; // Assurez-vous d'avoir ce package NuGet installé
+using System.Data;
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;

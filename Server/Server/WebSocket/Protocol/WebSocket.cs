@@ -6,8 +6,9 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using WebSocket.Decrypter;
 
-namespace WebSocket
+namespace WebSocket.Protocol
 {
     /// <summary>
     /// Classe qui permet de créer des connexions websocket
@@ -19,32 +20,32 @@ namespace WebSocket
 
         public WebSocket(string ipAdress, int port)
         {
-            this.listener = new TcpListener(IPAddress.Parse(ipAdress), port);
-            this.decrypter = new WebSocketDecrypter();
+            listener = new TcpListener(IPAddress.Parse(ipAdress), port);
+            decrypter = new WebSocketDecrypter();
         }
 
         /// <inheritdoc/>
         public void Start()
         {
-            this.listener.Start();
+            listener.Start();
         }
 
         /// <inheritdoc/>
         public TcpClient AcceptClient()
         {
-            return this.listener.AcceptTcpClient();
+            return listener.AcceptTcpClient();
         }
 
         /// <inheritdoc/>
         public byte[] BuildMessage(string message)
         {
-            byte[] charsBytes = Encoding.UTF8.GetBytes((message.ToCharArray())); // transformation du message en tableau d'octets
+            byte[] charsBytes = Encoding.UTF8.GetBytes(message.ToCharArray()); // transformation du message en tableau d'octets
             int messageLength = message.Length;
             int lengthIndicator = 0;
             byte[] length = new byte[] { };
             switch (messageLength)
             {
-                case <= 125:lengthIndicator = messageLength;break;
+                case <= 125: lengthIndicator = messageLength; break;
                 case <= 65535: // la trame contiendra 2 octets supplémentaires qui  indiqueront la longueur du message
                     {
                         lengthIndicator = 126;
@@ -62,9 +63,9 @@ namespace WebSocket
             List<byte> messageBytes = new List<byte>() { 129, Convert.ToByte(lengthIndicator) }; // préparation de la trame
             if (lengthIndicator == 126) // si la longueur du message est supérieure à 125 octets
             {
-                foreach(byte b in length)
+                foreach (byte b in length)
                 {
-                   messageBytes.Add(b);
+                    messageBytes.Add(b);
                 }
             }
             foreach (byte b in charsBytes)
@@ -77,7 +78,7 @@ namespace WebSocket
         /// <inheritdoc/>
         public byte[] DecryptMessage(byte[] bytes)
         {
-           return this.decrypter.Decrypt(bytes);
+            return decrypter.Decrypt(bytes);
         }
 
         /// <inheritdoc/>
@@ -109,14 +110,14 @@ namespace WebSocket
             byte[] codeBytes = BitConverter.GetBytes(Convert.ToInt16(code));
             Array.Reverse(codeBytes);
             List<byte> deconnectionBytes = new List<byte>() { 136, Convert.ToByte(codeBytes.Length) };
-            foreach(byte b in codeBytes)
+            foreach (byte b in codeBytes)
             {
                 deconnectionBytes.Add(b);
             }
             return deconnectionBytes.ToArray();
-            
+
         }
 
-        
+
     }
 }
