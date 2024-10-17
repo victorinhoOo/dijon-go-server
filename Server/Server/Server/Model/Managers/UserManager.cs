@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Server.Model.Data;
 using Server.Model.DTO;
+using Server.Model.Exceptions;
 using System.Security.Cryptography;
 using System.Text;
+using System;
+
 
 namespace Server.Model.Managers
 {
@@ -74,7 +77,7 @@ namespace Server.Model.Managers
             {
 
                 logger.LogError("Ce nom d'utilisateur existe déjà");
-                throw new ArgumentException("Ce nom d'utilisateur existe déjà");
+                throw new UserAlreadyExistsException();
             }
 
             // Créer un nouvel utilisateur pour l'insérer en bdd
@@ -93,7 +96,7 @@ namespace Server.Model.Managers
                 logger.LogInformation("Inscription de l'utilisateur : " + user.Username);
                 userDAO.Register(user);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 logger.LogError("Erreur lors de l'inscription : " + ex.Message);
                 throw new Exception("Erreur lors de l'inscription : " + ex.Message);
@@ -145,7 +148,7 @@ namespace Server.Model.Managers
                     userDAO.Update(user);
                     logger.LogInformation("Utilisateur mis à jour");
                 }
-                catch (Exception ex)
+                catch (System.Exception ex)
                 {
                     logger.LogError("Erreur  : " + ex.Message);
                     throw new Exception("Erreur  : " + ex.Message);

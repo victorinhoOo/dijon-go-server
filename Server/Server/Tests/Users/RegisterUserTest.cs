@@ -9,6 +9,7 @@ using System.Text;
 using Server.Model.Images;
 using Castle.Core.Logging;
 using Microsoft.Extensions.Logging;
+using Server.Model.Exceptions;
 
 namespace Tests.Users
 {
@@ -88,7 +89,7 @@ namespace Tests.Users
                 ProfilePic = null
             };
 
-            Assert.Throws<ArgumentException>(() => userManager.Register(registerUserDto));
+            Assert.Throws<UserAlreadyExistsException>(() => userManager.Register(registerUserDto));
         }
     }
 }

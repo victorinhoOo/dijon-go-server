@@ -87,7 +87,7 @@
                 logger.LogInformation($"Le token {token} a été inséré pour l'utilisateur {username}");
                 database.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 // Annule la transaction en cas d'erreur
                 database.RollbackTransaction();

@@ -5,7 +5,11 @@
 <div class="register-container">
 
   
-  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" ></app-popup>
+  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" >
+    <div>
+    <a href="/profile" target="_blank" *ngIf="(RegisterSucces)">Connectez-vous ici</a>
+    </div>
+  </app-popup>
 
     
     <form class="formStyle" [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
@@ -24,11 +28,19 @@
       <div class="form-group">
         <label for="password">Mot de passe</label>
         <input class="form-control" type="password" id="password" formControlName="password">
+         <!--s'affiche quand le pwd n'est pas sécurisé -->
+        <div *ngIf="(!IsStrongPassword)" class="text-danger">
+          Le mot de passe doit contenir 8 caractères avec au moins 1 majuscule, 1 minuscule et 1 chiffre
+        </div>
       </div>
 
       <div class="form-group">
         <label for="confirmPassword">Confirmez le mot de passe</label>
         <input class="form-control" type="password" id="confirmPassword" formControlName="confirmPassword">
+        <!--s'affiche quand le pwd n'est pas le meme que sa confirmation' -->
+        <div *ngIf="(!ConfirmPwdIsGood)" class="text-danger">
+          Les mots de passe ne correspondent pas.
+        </div>
       </div>
       
       

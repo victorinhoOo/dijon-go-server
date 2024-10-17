@@ -34,7 +34,7 @@ namespace Server.Model.Images
                     file.CopyTo(fileStream);
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 this.logger.LogError($"Erreur lors de l'upload de la photo de profil : {ex.Message}");
                 throw new Exception($"Erreur lors de l'upload de la photo de profil : {ex.Message}", ex);
