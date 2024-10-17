@@ -9,7 +9,6 @@ import { HttpClient } from '@angular/common/http';
 import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 import { WebsocketService } from '../websocket.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -182,10 +181,6 @@ export class IndexComponent implements OnInit {
 
   public openPopup() {
     this.showPopup = true;
-  }
-
-  public joinGame():void{
-    
   }
 
   public connectWebSocket(): void {

@@ -61,10 +61,19 @@ export class GridComponent implements AfterViewInit, OnInit{
         this.click(stone);
       })
     })
+
+    let passButton = document.getElementById("pass");
+    passButton?.addEventListener("click", ()=>{
+      this.skipTurn();
+    }) 
   }
 
   public click(stone:any):void{
     this.websocketService.placeStone(stone.id);
+  }
+
+  public skipTurn(){
+    this.websocketService.skipTurn();
   }
 
  
