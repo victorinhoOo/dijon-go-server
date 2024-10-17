@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Server.Model.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,8 @@ namespace WebSocket.Model.DAO
 
         public GameDAO()
         {
-            this.database = new MySqlDatabase("Server=localhost;Database=dgs;User=root;Password=''");
-            
+            this.database = new SQLiteDatabase("Data Source=./Server/dgs.db");
+
         }
 
         ///<inheritdoc/>
