@@ -1,7 +1,6 @@
-﻿using System.Data;
-using System.Collections.Generic;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using SQLitePCL;
+using System.Data;
 using WebSocket.Model.DAO;
 
 namespace Server.Model.Data
