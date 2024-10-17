@@ -31,16 +31,25 @@ export class ProfileSettingsComponent {
   private showPopup: boolean;   
   private popupMessage: string;   
   private popupTitle: string;
-  private oldPwdEmpty: boolean;
-  private confirmPwdIsGood :boolean;
+  private oldPwdEmpty: boolean; //si l'ancien pwd est vide
+  private confirmPwdIsGood :boolean; //si le pwd et = au confirm pwd
+  private isStrongPassword :boolean; //si le pwd est strong
 
-  /**
+    /**
    * Est vrai si le mdp et sa confirmation sont vrai
    */
-  public get ConfirmPwdIsGood() :boolean
+    public get ConfirmPwdIsGood() :boolean
+    {
+      return this.confirmPwdIsGood;
+    }
+  /**
+   * Verifie si le password est stong
+   */
+  public get IsStrongPassword() : boolean
   {
-    return this.confirmPwdIsGood;
+    return this.isStrongPassword;
   }
+
   /**
    * renvoie si l'ancien mot de passe est vide ou non
    */
@@ -135,6 +144,8 @@ export class ProfileSettingsComponent {
     this.showPopup = false;
     this.oldPwdEmpty = false;
     this.confirmPwdIsGood = true;
+    this.isStrongPassword = true;
+
 
   }
 
@@ -145,11 +156,13 @@ export class ProfileSettingsComponent {
     this.profileForm = this.fb.group({
       pseudo: [''],
       oldpwd: ['',Validators.required],
-      pwd: [''],
+      pwd: ['',[Validators.pattern("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")]], //8 caractères, une maj, une min et 1 chiffre min
       Cpwd: [''],
       img: [null],
       email: ['']
     });
+    //reinitialise les attributs pour si la page est rafraichie
+    this.InitializePwdForm();
   }
 
   /**
@@ -159,8 +172,10 @@ export class ProfileSettingsComponent {
    */
   public onSubmit(): void {
 
+  //reinitialise les attributs pour prochain nouveau envoie de formulaire
+  this.InitializePwdForm();
 
-    if (this.profileForm.valid && this.ProfileForm.value.Cpwd == this.ProfileForm.value.pwd) 
+    if (this.profileForm.valid && this.CheckIfConfirmPwdIsGood()) 
       {
         
         const user = new UpdateUserDTO
@@ -174,7 +189,7 @@ export class ProfileSettingsComponent {
           );
         // Appel de la méthode du DAO pour mettre à jour l'utilisateur
         this.userDAO.UpdateUser(user).subscribe({
-          next: (response) => {
+          next: () => {
             this.PopupTitle =" Succès :";
             this.PopupMessage = "Les modifications ont bien été validées";
 
@@ -200,23 +215,30 @@ export class ProfileSettingsComponent {
           }
         });
     }
-   else 
+   else //erreur dans le formulaire
    {
 
+    this.popupMessage = 'Formulaire non valide. Veuillez corriger les erreurs.';
+    this.popupTitle = 'Erreur :';
       //check si l'ancien pwd etait vide 
       if(this.profileForm.value.oldpwd == '')
       {
         this.oldPwdEmpty = true;
       }
 
-      //check si le pwd et le confirm pwd sont identiques
-      if(this.ProfileForm.value.Cpwd != this.ProfileForm.value.pwd)
-      {
-        this.confirmPwdIsGood = false;
-      }
-      
+      //verifie si le pwd est strong
+      if (this.profileForm.get('pwd')?.hasError('pattern'))
+        {
+          this.isStrongPassword = false;
+        }
+
+      //verfie la confirmation du pwd est incorrecte
+      if(!this.CheckIfConfirmPwdIsGood())
+        {
+          this.confirmPwdIsGood = false;
+        }
+      this.showPopup = true;
     }
-   
   }
 
   // Récupère l'image uploadée par l'utilisateur
@@ -227,5 +249,25 @@ export class ProfileSettingsComponent {
   //fermeture du popup
   public handlePopupClose(): void {
     this.showPopup = false;
+  }
+
+    /**
+   * Renvoie vrai si le password et confimpassword sont pareil
+   */
+  public CheckIfConfirmPwdIsGood() :boolean
+  {
+    let result = false;
+    if(this.profileForm.value.pwd == this.profileForm.value.Cpwd)
+      result = true;
+    return result;
+  }
+
+  /**
+   * Inialise les attributs liés au password du formulaire
+   */
+  public  InitializePwdForm() :void
+  {
+    this.confirmPwdIsGood = true;
+    this.isStrongPassword = true;
   }
 }

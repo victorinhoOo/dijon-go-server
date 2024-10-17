@@ -26,6 +26,11 @@
     <label for="pwd" class="col-12 col-form-label">Nouveau mot de passe :</label>
     <div class="col-12">
       <input type="password" formControlName="pwd" id="pwd" class="form-control" />
+
+       <!--s'affiche quand le pwd n'est pas sécurisé -->
+      <div *ngIf="(!IsStrongPassword)" class="text-danger">
+        Le mot de passe doit contenir 8 caractères avec au moins 1 majuscule, 1 minuscule et 1 chiffre
+      </div>
     </div>
   </div>
 
@@ -34,6 +39,7 @@
     <div class="col-12">
       <input type="password"  id="Cpwd" class="form-control" formControlName="Cpwd"/>
     </div>
+      <!--s'affiche quand le pwd n'est pas le meme que sa confirmation' -->
     <div *ngIf="(!ConfirmPwdIsGood)" class="text-danger">
       Les mots de passe ne correspondent pas.
     </div>
