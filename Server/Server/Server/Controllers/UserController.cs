@@ -25,7 +25,7 @@ namespace Server.Controllers
         /// <param name="loginUserDTO">Les informations de connexion de l'utilisateur.</param>
         /// <returns>Le résultat de la connexion.</returns>
         [HttpPost("Login")]
-        public IActionResult Login([FromForm] LoginUserDTO loginUserDTO)
+        public IActionResult Login([FromBody] LoginUserDTO loginUserDTO)
         {
             IActionResult result = BadRequest(new { Message = "L'utilisateur n'existe pas" });
             try
@@ -87,5 +87,26 @@ namespace Server.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Renvoie l'utilisateur correspondant au token de connexion.
+        /// </summary>
+        /// <param name="tokenUser">Token de connexion utilisateur</param>
+        /// <returns>L'utilisateur correspondant</returns>
+        [HttpGet("Get")]
+        public IActionResult GetUser(string tokenUser)
+        {
+            IActionResult result = BadRequest(new { Message = "Impossible de récupérer l'utilisateur" });
+            try
+            {
+                User user = userManager.GetUser(tokenUser);
+                result = Ok(new { User = user });
+            }
+            catch (Exception ex)
+            {
+                result = BadRequest(new { Message = ex.Message });
+
+            }
+            return result;
+        }
     }
 }
