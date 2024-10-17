@@ -1,4 +1,5 @@
 ﻿using GoLogic;
+using GoLogic.Score;
 using System.Text;
 using System.Text.Json;
 
@@ -11,6 +12,7 @@ namespace WebSocket
         private Client currentTurn;
         private GameBoard gameBoard;
         private GameLogic logic;
+        private ScoreRule score;
         private int size;
         private int id;
 
@@ -36,6 +38,7 @@ namespace WebSocket
             this.currentTurn = player1;
             this.gameBoard = new GameBoard(this.size);
             this.logic = new GameLogic(this.gameBoard);
+            this.score = new ChineseScoreRule(this.gameBoard);
         }
 
         public void AddPlayer(Client player2)
@@ -69,6 +72,17 @@ namespace WebSocket
                 sb.AppendLine($"{stone.X},{stone.Y},{stone.Color}");
             }
             return sb.ToString();
+        }
+
+        public (int,int) GetScore()
+        {
+            return this.score.CalculateScore();
+        }
+
+        public void SkipTurn()
+        {
+            this.logic.SkipTurn();
+            this.ChangeTurn();
         }
     }
 }

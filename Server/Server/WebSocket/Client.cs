@@ -14,6 +14,9 @@ namespace WebSocket
     {
         private TcpClient client;
         private NetworkStream stream;
+        private string token;
+
+        public string Token { get => token; set => token = value; } 
 
         public Client(TcpClient client)
         {

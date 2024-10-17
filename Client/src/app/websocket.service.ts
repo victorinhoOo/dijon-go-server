@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { UserCookieService } from './Model/UserCookieService';
 import { resolve } from 'path';
+import { User } from './Model/User';
 
 @Injectable({
   providedIn: 'root',
@@ -7,10 +9,12 @@ import { resolve } from 'path';
 export class WebsocketService {
   private websocket: WebSocket | null;
   private idGame: string;
+  private color: string;
 
-  constructor() {
+  constructor(private userCookieService: UserCookieService) {
     this.websocket = null;
     this.idGame = '';
+    this.color = "";
   }
 
   public getWs() {
@@ -29,7 +33,14 @@ export class WebsocketService {
         if (message.data.length <= 3) {
           this.idGame = message.data;
         } else if (message.data.includes('x,y,color')) {
-          this.updateBoard(message.data);
+          this.updateBoard(message.data.split("|")[0]);
+          this.updateScore(message.data.split("|")[1]);
+        }
+        else if(message.data.includes("Start")){
+          let pseudo = document.getElementById("pseudo-text");
+          pseudo!.innerHTML = message.data.split(':')[1];
+          let profilePic = document.getElementById("opponent-pic") as HTMLImageElement;
+          profilePic!.src = `https://localhost:7065/profile-pics/${pseudo!.innerText}`;
         }
         console.log(message.data);
       };
@@ -46,7 +57,9 @@ export class WebsocketService {
 
   public createGame(): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      this.websocket.send('0/Create:');
+      let userToken = this.userCookieService.getToken();
+      this.websocket.send(`0/Create:${userToken}`);
+      this.color = "black";
     } else {
       console.log('not connected');
     }
@@ -54,8 +67,18 @@ export class WebsocketService {
 
   public joinGame(id: number): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      this.websocket.send(`${id}/Join:`);
+      let userToken = this.userCookieService.getToken();
+      this.websocket.send(`${id}/Join:${userToken}`);
+      this.color = "white";
     } else {
+      console.log('not connected');
+    }
+  }
+
+  public skipTurn():void{
+    if (this.websocket != null && this.websocket.OPEN) {
+      this.websocket.send(`${this.idGame}Skip:`);
+    }else{
       console.log('not connected');
     }
   }
@@ -89,5 +112,22 @@ export class WebsocketService {
           break;
       }
     }
+  }
+
+
+  public updateScore(score:string):void{
+    let playerScore;
+    let opponentScore;
+    if(this.color == "black"){
+      playerScore = score.split(";")[0];
+      opponentScore = score.split(";")[1];
+    }
+    else{
+      playerScore = score.split(";")[1];
+      opponentScore = score.split(";")[0];
+    }
+
+    document.getElementById("opponent-score-value")!.innerHTML = opponentScore;
+    document.getElementById("player-score-value")!.innerHTML = playerScore;
   }
 }
