@@ -35,10 +35,10 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("C
 builder.Services.Configure<LocalImageSettings>(builder.Configuration.GetSection("LocalImageSettings"));
 
 // Injection de dépendances
-builder.Services.AddScoped<IDatabase, MySqlDatabase>(provider =>
+builder.Services.AddScoped<IDatabase, SQLiteDatabase>(provider =>
 {
     var config = provider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-    return new MySqlDatabase(config.DefaultConnection);
+    return new SQLiteDatabase(config.DefaultConnection);
 });
 
 builder.Services.AddScoped<IFileUploader, LocalFileUploader>(provider =>

@@ -60,13 +60,13 @@
                 var parameters = new Dictionary<string, object>
                 {
                     { "@token", token },
-                    { "@date", DateTime.Now }
+                    { "@date", DateTime.Now.ToString() }
                 };
 
                 database.ExecuteNonQuery(query, parameters);
 
                 // Récupère l'idToken généré après l'insertion
-                string selectTokenIdQuery = "SELECT LAST_INSERT_ID() as idToken";
+                string selectTokenIdQuery = "SELECT last_insert_rowid() as idToken";
                 var tokenResult = database.ExecuteQuery(selectTokenIdQuery, null);
 
                 if (tokenResult.Rows.Count > 0)
