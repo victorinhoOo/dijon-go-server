@@ -118,6 +118,10 @@ namespace Server.Model.Managers
                 try
                 {
                     //  applique les modifications souhaitées
+                    if (updateUserDTO.ProfilePic != null)
+                    {
+                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); // une modification de la photo de profil entraine un upload qui écrase l'ancienne photo
+                    }
                     if (!string.IsNullOrEmpty(updateUserDTO.Username))
                     {
                         if(this.userDAO.GetUserByUsername(updateUserDTO.Username) == null) // vérifie si le nom d'utilisateur n'est pas déjà pris
@@ -139,16 +143,12 @@ namespace Server.Model.Managers
                     {
                         user.Password = HashPassword(updateUserDTO.Password);
                     }
-                    if (updateUserDTO.ProfilePic != null)
-                    {
-                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); // une modification de la photo de profil entraine un upload qui écrase l'ancienne photo
-                    }
 
                     // Enregistre les modifications en base de données 
                     userDAO.Update(user);
                     logger.LogInformation("Utilisateur mis à jour");
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     logger.LogError("Erreur  : " + ex.Message);
                     throw new Exception("Erreur  : " + ex.Message);

@@ -1,4 +1,4 @@
 ﻿using WebSocket;
 
-Server server = new Server();
+WebSocket.Server server = new WebSocket.Server();
 server.Start();
