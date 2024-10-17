@@ -14,7 +14,7 @@ namespace WebSocket.Model.DAO
 
         public UserDAO()
         {
-            this.database = new SQLiteDatabase("Data Source=./Server/dgs.db");
+            this.database = new SQLiteDatabase("Data Source= ../../../../Server/dgs.db");
 
         }
         public string GetUsernameByToken(string token)
