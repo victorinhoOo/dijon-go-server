@@ -5,9 +5,8 @@ namespace Test_GoLogic
 {
     public class GameLogicTests
     {
-        //TODO: tester création de plus grand plateau
         [Fact]
-        public void Create_Board_Size()
+        public void Create_various_Board_Size()
         {
             // Organise
             int neuf = 9;
@@ -69,6 +68,26 @@ namespace Test_GoLogic
             Assert.Equal(StoneColor.Black, gameBoard.Board[0, 0].Color);
             Assert.Equal(StoneColor.Black, gameBoard.Board[1, 1].Color);
             Assert.Equal(StoneColor.Black, gameBoard.Board[2, 2].Color);
+        }
+
+        [Fact]
+        public void EngGame()
+        {
+            // Organise
+            var gameBoard = new GameBoard(9);
+            var gameLogic = new GameLogic(gameBoard);
+
+            // Fait
+            gameLogic.PlaceStone(1, 1); // pierre noire
+            gameLogic.PlaceStone(0, 0); // pierre blanche
+            gameLogic.SkipTurn(); // noir saute son tour
+            gameLogic.PlaceStone(2, 2); // devrait être blanc
+            gameLogic.SkipTurn(); // noir saute son tour
+            gameLogic.SkipTurn(); // blanc saute son tour
+
+            // Assert
+            Assert.Equal(StoneColor.White, gameBoard.Board[2, 2].Color);
+            Assert.True(gameLogic.IsEndGame);
         }
 
         [Fact]
