@@ -4,14 +4,16 @@
     position: relative;
 }
 
-
-
+#global-container{
+    margin-top: 70px;
+}
 
 #player, #opponent{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between ;
+    margin-top: 10px;
 }
 
 #player{
@@ -20,6 +22,7 @@
 
 #opponent{
     top: -60px;
+    margin-bottom: 10px;
 }
 
 
@@ -49,11 +52,25 @@
 #pass{
     margin-left: auto;
     margin-right: 15px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid transparent;
+}
+
+#pass:hover{
+    box-sizing: border-box;
+    border: 1px solid black;
+    cursor: pointer;
 }
 
 #cells-container{
     position: relative;
     border: 0.5px solid black;
+}
+
+#pass-icon{
+    margin-right: 3.22px;
 }
 
 .cell{
@@ -88,6 +105,7 @@
     position: absolute;
     display: flex;
     flex-direction: row;
+    width: 100%;
     bottom: 0;
     right: 0;
     left: 0;
@@ -95,8 +113,8 @@
 
 .cell-bottom{
     position: relative;
-    width: 32px;
-    height: 32px;
+    width: 33px;
+    height: 33px;
 }
 
 .bottom{
@@ -109,6 +127,11 @@
 .stone:hover{
     background-color: grey !important;
     opacity: 0.8 !important;
+}
+
+
+.score{
+    margin-left: 30px;
 }
 
 

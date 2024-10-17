@@ -1,8 +1,9 @@
 <div id="global-container">
   <div id="opponent">
-    <div class="pseudo">
-      <img src="/" alt="opponnent avatar" />
-      Adversaire
+    <div id="opponent-pseudo" class="pseudo">
+      <img id="opponent-pic" src="https://localhost:7065/profile-pics/default" alt="opponnent avatar" />
+      <span id="pseudo-text">En attente de l'adversaire...</span>
+      <span id="opponent-score" class="score">Score : <span id="opponent-score-value">0</span></span>
     </div>
     <div class="timer">60:00</div>
   </div>
@@ -43,12 +44,14 @@
   </div>
   <div id="player">
     <div class="pseudo">
-      <img src="/" alt="player avatar" />
-      Vous
+      <img src={{PlayerAvatar}} alt="player avatar" />
+      {{PlayerPseudo}}
+      <span id="player-score" class="score">Score : <span id="player-score-value">0</span></span>
     </div>
 
     <div id="pass">
-      <mat-icon>block</mat-icon>
+      <mat-icon id="pass-icon">block</mat-icon>
+      Passer
     </div>
 
     <div class="timer">60:00</div>
