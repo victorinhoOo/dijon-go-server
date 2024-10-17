@@ -53,6 +53,25 @@ namespace Test_GoLogic
         }
 
         [Fact]
+        public void Test_skipTurn()
+        {
+            // Organise
+            var gameBoard = new GameBoard(9);
+            var gameLogic = new GameLogic(gameBoard);
+
+            // Fait
+            gameLogic.PlaceStone(1, 1); // pierre noire
+            gameLogic.SkipTurn(); // blanc saute son tour
+            gameLogic.PlaceStone(2, 2); // devrait aussi être noire
+            gameLogic.SkipTurn(); // blanc saute son tour
+            gameLogic.PlaceStone(0, 0); // devrait aussi petre noire
+
+            Assert.Equal(StoneColor.Black, gameBoard.Board[0, 0].Color);
+            Assert.Equal(StoneColor.Black, gameBoard.Board[1, 1].Color);
+            Assert.Equal(StoneColor.Black, gameBoard.Board[2, 2].Color);
+        }
+
+        [Fact]
         public void PlaceStone_ValidMove_ReturnsTrue()
         {
             // Organise
