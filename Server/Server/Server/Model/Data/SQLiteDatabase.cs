@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using System.Data.SQLite; // Assurez-vous d'avoir ce package NuGet installé
+using System.Data.SQLite; 
 using System.Collections.Generic;
 
 namespace Server.Model.Data
