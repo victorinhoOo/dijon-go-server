@@ -19,7 +19,7 @@ export class WebsocketService {
 
   public connectWebsocket():Promise<void>{
     return new Promise((resolve, reject) => {
-      this.websocket = new WebSocket('ws://127.0.0.1:7000/'); //10.211.55.3
+      this.websocket = new WebSocket('ws:///10.211.55.3:7000/'); //10.211.55.3
       this.websocket.onopen = () => {
         console.log("connected");
         resolve();
@@ -40,8 +40,8 @@ export class WebsocketService {
     });
   }
 
-  public disconnectWebsocket(): void {
-    this.websocket?.close();
+  public disconnectWebsocket(){
+    this.websocket?.close(1000);
   }
 
   public createGame(): void {

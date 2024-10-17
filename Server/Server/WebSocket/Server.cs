@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,7 +20,7 @@ namespace WebSocket
 
         public Server()
         {
-            this.webSocket = new WebSocket("127.0.0.1", 7000); //10.211.55.3
+            this.webSocket = new WebSocket("10.211.55.3", 7000); //10.211.55.3
         }
 
 
@@ -127,6 +128,17 @@ namespace WebSocket
 
         private void DisconnectClient(Client client, DisconnectionException ex, ref bool endOfCommunication)
         {
+            foreach(var game in Server.Games)
+            {
+                if(game.Value.Player1 == client)
+                {
+                    game.Value.Player1 = null;
+                }
+                else if(game.Value.Player2 == client)
+                {
+                    game.Value.Player2 = null;
+                }
+            }
             byte[] deconnectionBytes = this.webSocket.BuildDeconnection(ex.Code);
             client.SendMessage(deconnectionBytes);
             Console.WriteLine(ex.Message + "\n");
