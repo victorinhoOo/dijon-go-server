@@ -4,14 +4,16 @@
     position: relative;
 }
 
-
-
+#global-container{
+    margin-top: 70px;
+}
 
 #player, #opponent{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between ;
+    margin-top: 10px;
 }
 
 #player{
@@ -20,6 +22,7 @@
 
 #opponent{
     top: -60px;
+    margin-bottom: 10px;
 }
 
 
