@@ -115,11 +115,15 @@ export class IndexComponent implements OnInit {
    * Initialisation du composant
    */
   public async ngOnInit() {
+
     if(this.route.snapshot.paramMap.get('id')!=null){
       let id = this.route.snapshot.paramMap.get('id');
       await this.websocketService.connectWebsocket();
       this.websocketService.joinGame(Number(id));
       this.router.navigate(["game"]);
+    }
+    else{
+      this.websocketService.disconnectWebsocket();
     }
     // Récupère le token utilisateur
     this.token = this.userCookieService.getToken();

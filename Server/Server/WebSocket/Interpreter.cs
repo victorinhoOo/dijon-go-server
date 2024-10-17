@@ -82,6 +82,7 @@ namespace WebSocket
         {
             // exception
             Server.Games[idGame].AddPlayer(client);
+            this.gameDAO.DeleteGame(idGame);
             reponse = $"{idGame}/";
             type = "Send_";
         }

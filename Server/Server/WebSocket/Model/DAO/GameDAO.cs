@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace WebSocket.Model.DAO
 {
-    public class GameDAO
+    /// <summary>
+    /// Gère les opérations CRUD liées aux parties disponibles en bdd
+    /// </summary>
+    public class GameDAO: IGameDAO
     {
         private IDatabase database;
 
@@ -16,6 +19,7 @@ namespace WebSocket.Model.DAO
             
         }
 
+        ///<inheritdoc/>
         public bool InsertGame(Game game)
         {
             this.database.Connect();
@@ -31,6 +35,19 @@ namespace WebSocket.Model.DAO
             res = true;
             this.database.Disconnect();
             return res;
+        }
+
+        ///<inheritdoc/>
+        public void DeleteGame(int id)
+        {
+            this.database.Connect();
+            string query = "delete from availablegame where id = @id;";
+            var parameters = new Dictionary<string, object>
+                {
+                    {"@id", id}
+                };
+            database.ExecuteNonQuery(query, parameters);
+            this.database.Disconnect();
         }
     }
 }
