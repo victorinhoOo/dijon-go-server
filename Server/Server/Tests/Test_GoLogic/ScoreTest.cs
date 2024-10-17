@@ -167,5 +167,19 @@ namespace Test_GoLogic
             // . . . . . . . . .
             // . : vide, @ : noir, O : blanc
         }
+
+        [Fact] //TODO: !!! Penser à le retier
+        public void No361bug()
+        {
+            GameBoard gameBoard = new GameBoard(9);
+            GameLogic gameLogic = new GameLogic(gameBoard);
+            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
+
+            gameLogic.PlaceStone(8, 8);
+            (int black, int white) = gameScore.CalculateScore();
+
+            Assert.Equal(1, black);
+            Assert.Equal(0, white);
+        }
     }
 }
