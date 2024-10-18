@@ -16,6 +16,17 @@ mat-sidenav-content{
     overflow: hidden;
 }
 
+.navBtn{
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    gap: 10px;
+    margin: auto;
+    width: 90%;
+    transition: background-color 0.1s ease;
+    align-items: center;
+    display: flex;
+}
 
 #logo-container{
     display: flex;
@@ -30,12 +41,10 @@ button{
     justify-content: flex-start;
     color: unset !important;
 }
-
 button:focus {
     outline: none;
     box-shadow: none;
 }
-
 
 #logo{
     width: 100px;
@@ -70,73 +79,91 @@ button:focus {
 
 #login-button{
     background-color: #FA7E5C;
-    margin: auto;
-    width: 90%;
     box-shadow: 0px 2px 0px rgba(129, 65, 58, 0.8);
-    transition: background-color 0.1s ease;
 }
 
 #register-button{
-    margin: auto;
-    width: 90%;
     background-color: #E4AF5A;
-    transition: background-color 0.1s ease;
     box-shadow: 0px 2px 0px rgba(108, 60, 17, 0.8);
 }
 
-#login-button:hover{
-    transform: scale(1.01);
+
+#login-button,
+#register-button {
+    margin: auto;
+    width: 90%;
+    transition: background-color 0.1s ease;
+    border-radius: 15px;
+    align-items: center;
+    text-align: center;
+    justify-content: center; 
+    gap: 10px; 
 }
 
+#login-button:hover,
 #register-button:hover{
     transform: scale(1.01);
 }
 
-
-@media (max-width: 768px) {
+@media  (max-width: 800px) {
+    
     mat-sidenav-container{
         width: 350px;
         height: 100%;
         color: black !important;
         transition: transform 0.5s ease-in-out;
     }
+
     #logo-container{
         display: none;
-    }
-    #navbar-sidenav {
-        width: 350px;
     }
 
     mat-sidenav.opened {
     transform: translateX(0);
     }   
 
-    #closeBtn {
-    display: flex;
-    color: red; 
-    margin-top: 5px;
-    margin-bottom: 20px;
+    mat-sidenav-content{
+        display: flex;
+        padding: auto !important;
+        margin: auto;
+    }
+    
+    #close{
+        font-size: 2em;
     }
 
-    #closeBtn button {
+    #closeBtn {
+        padding-top: 10px;
+        display: flex;
+        margin-bottom: 20px;
+        margin-left: 10px;
         font-size: 36px; 
         color: orange;
-        width: 100%; 
         background-color: transparent;
         border: none; 
     }
 
+    .centerBtn{
+        text-align: center;
+    }
 
+    .leftBtn{
+        font-size: 120%;
+    }
 
-  }
-
-  @media (min-width: 768px) {
-    #closeBtn{
-        display: none;
-
+    .icon{
+        padding-right: 0;
     }
     
-  }
+}
+
+@media (min-width: 799px)  {
+
+    #closeBtn{
+        display: none;
+    }
+
+}
 
   
   

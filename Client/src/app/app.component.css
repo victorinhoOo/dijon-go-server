@@ -22,6 +22,14 @@ app-navbar {
     margin-top: auto;
 }
 
+@media (max-width: 1024px) {
+    
+    app-navbar {
+        width: 35%;
+    }
+
+}
+
 
 
 
