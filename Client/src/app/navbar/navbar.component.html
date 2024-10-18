@@ -1,0 +1,66 @@
+<mat-sidenav-container id="navbar-container">
+  <mat-sidenav-content id="logo-container">
+    <img src="renard.png" id="logo" alt="logo">
+    DGS
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button mat-primary id="play-button">
+      <mat-icon>play_arrow</mat-icon>
+      Jouer
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button>
+      <mat-icon>replay</mat-icon>
+      Replay
+    </button>
+  </mat-sidenav-content>
+
+
+  <mat-sidenav-content>
+    <button mat-button>
+      <mat-icon>language</mat-icon>
+      Social
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content *ngIf="this.TokenUser != ''">
+    <button mat-button id="profile-button">
+      <mat-icon>person</mat-icon>
+      Mon compte
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content>
+    <button mat-button id="state-button">
+      <mat-icon>light_mode</mat-icon>
+      <span id="state">Interface sombre</span>
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content id="register-container" *ngIf="this.TokenUser == ''">
+    <button mat-button id="register-button">
+      <mat-icon>person_add</mat-icon>
+      Créer un compte
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content id="login-container" *ngIf="this.TokenUser == ''">
+    <button mat-button id="login-button" >
+      <mat-icon>login</mat-icon>
+      Se connecter
+    </button>
+  </mat-sidenav-content>
+
+  <mat-sidenav-content id="logout-container" *ngIf="this.TokenUser != ''">
+    <button mat-button id="logout-button">
+      <mat-icon>logout</mat-icon>
+      Déconnexion
+    </button>
+
+  </mat-sidenav-content>
+
+  
+</mat-sidenav-container>

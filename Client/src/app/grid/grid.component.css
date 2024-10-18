@@ -1,0 +1,137 @@
+#grid-container{
+    padding: 20px;
+    background-color: rgb(207, 156, 89);
+    position: relative;
+}
+
+#global-container{
+    margin-top: 70px;
+}
+
+#player, #opponent{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between ;
+    margin-top: 10px;
+}
+
+#player{
+    bottom: -60px;
+}
+
+#opponent{
+    top: -60px;
+    margin-bottom: 10px;
+}
+
+
+.pseudo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.pseudo img{
+    width: 50px;
+    margin-right: 5px;
+}
+
+.timer{
+    padding : 10px 15px
+}
+
+#player .timer{
+    border: 1px solid black
+}
+
+#opponent .timer{
+    border: 1px solid black
+}
+
+#pass{
+    margin-left: auto;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid transparent;
+}
+
+#pass:hover{
+    box-sizing: border-box;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+#cells-container{
+    position: relative;
+    border: 0.5px solid black;
+}
+
+#pass-icon{
+    margin-right: 3.22px;
+}
+
+.cell{
+    width: 30px;
+    height: 30px;
+    border: 0.5px solid black;
+    position: relative;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    
+}
+
+.stone{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    left: -50%;
+    top: -50%;
+    z-index: 3;
+}
+
+.stone.right{
+    left: unset;
+    right: -50%;
+}
+
+.row-bottom{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.cell-bottom{
+    position: relative;
+    width: 33px;
+    height: 33px;
+}
+
+.bottom{
+    top: unset;
+    bottom: -50%;
+}
+
+
+
+.stone:hover{
+    background-color: grey !important;
+    opacity: 0.8 !important;
+}
+
+
+.score{
+    margin-left: 30px;
+}
+
+

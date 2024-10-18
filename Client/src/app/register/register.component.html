@@ -1,0 +1,59 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<img src="renard.png" id="renardRegister" alt="Logo" class="logo">
+<div class="register-container">
+
+  
+  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" >
+    <div>
+    <a href="/profile" *ngIf="(RegisterSucces)">Connectez-vous ici</a>
+    </div>
+  </app-popup>
+
+    
+    <form class="formStyle" [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
+      <label id="Inscription">Inscription</label>
+  
+      <div class="form-group">        
+        <label for="pseudo">Pseudo</label>
+        <input class="form-control" type="text" id="pseudo" formControlName="pseudo" required="true"> 
+      </div>
+  
+      <div class="form-group">
+        <label for="email">Adresse email</label>
+        <input class="form-control" type="email" id="email" formControlName="email"> 
+      </div>
+    
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input class="form-control" type="password" id="password" formControlName="password">
+         <!--s'affiche quand le pwd n'est pas sécurisé -->
+        <div *ngIf="(!IsStrongPassword)" class="text-danger">
+          Le mot de passe doit contenir 8 caractères avec au moins 1 majuscule, 1 minuscule et 1 chiffre
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmez le mot de passe</label>
+        <input class="form-control" type="password" id="confirmPassword" formControlName="confirmPassword">
+        <!--s'affiche quand le pwd n'est pas le meme que sa confirmation' -->
+        <div *ngIf="(!ConfirmPwdIsGood)" class="text-danger">
+          Les mots de passe ne correspondent pas.
+        </div>
+      </div>
+      
+      
+      <div class="form-group">
+        <label for="avatar">Avatar</label>
+        <div class="input-group">
+          <app-upload-image  (imageSelected)="onImageSelected($event)"></app-upload-image>        
+        </div>
+
+      </div>
+      
+    
+      <button type="submit">S'inscrire</button>
+    </form>
+  </div>
+  

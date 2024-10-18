@@ -1,0 +1,67 @@
+<div class="container 5 ">
+<app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ></app-popup>
+<h1 mat-dialog-title>Modifier son profil</h1>
+
+<form [formGroup]="ProfileForm" (ngSubmit)="onSubmit()" class="container mt-4">
+  <div class="form-group row">
+    <label for="pseudo" class="col-12 col-form-label">Pseudo :</label>
+    <div class="col-12">
+      <input id="pseudo" formControlName="pseudo" class="form-control" placeholder="{{UserPseudo}}" />
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="pwd" class="col-12 col-form-label">Ancien mot de passe :</label>
+    <div class="col-12">
+      <input type="password" formControlName="oldpwd" id="oldpwd" class="form-control" required  />
+
+      <!--s'affiche quand old pwd est vide a l'envoie du formulaire-->
+      <div *ngIf=(OldPwdEmpty) class="text-danger">
+        Ancien mot de passe est requis.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="pwd" class="col-12 col-form-label">Nouveau mot de passe :</label>
+    <div class="col-12">
+      <input type="password" formControlName="pwd" id="pwd" class="form-control" />
+
+       <!--s'affiche quand le pwd n'est pas sécurisé -->
+      <div *ngIf="(!IsStrongPassword)" class="text-danger">
+        Le mot de passe doit contenir 8 caractères avec au moins 1 majuscule, 1 minuscule et 1 chiffre
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="Cpwd" class="col-12 col-form-label">Confirmez le nouveau mot de passe :</label>
+    <div class="col-12">
+      <input type="password"  id="Cpwd" class="form-control" formControlName="Cpwd"/>
+    </div>
+      <!--s'affiche quand le pwd n'est pas le meme que sa confirmation' -->
+    <div *ngIf="(!ConfirmPwdIsGood)" class="text-danger">
+      Les mots de passe ne correspondent pas.
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label for="email" class="col-12 col-form-label">Email :</label>
+    <div class="col-12">
+      <input type="text"  id="email" class="form-control" formControlName="email" placeholder="{{UserEmail}}"/>
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+  <app-upload-image (imageSelected)="onImageSelected($event)"></app-upload-image>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 test">
+      <button type="submit" class="btn btn-block"  id="sub">
+        Modifier
+      </button>
+    </div>
+  </div>
+</form>
+</div>
