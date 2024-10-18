@@ -11,8 +11,8 @@ namespace WebSocket
     /// </summary>
     public class Interpreter
     {
-        private GameDAO gameDAO;
-        private UserDAO userDAO;
+        private IGameDAO gameDAO;
+        private IUserDAO userDAO;
 
         /// <summary>
         /// Constructeur de la classe Interpreter
