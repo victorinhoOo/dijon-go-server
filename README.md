@@ -39,7 +39,11 @@ DGS propose les fonctionnalités suivantes :
 5) Ouvrez ensuite un terminal
 6) Saisissez la commande ```npm install```
 7) Enfin lancez le serveur angular : ```npm start```
-8) Félicitations ! Le client, l'api et le websocket sont désormais exécution, vous pouvez parcourir et utiliser le site à votre guise.
+8) Félicitations ! Le client, l'API et le websocket sont désormais exécution, vous pouvez parcourir et utiliser le site à votre guise.
+
+Note : Pour jouer une partie de Go en local, il vous faudra deux fenêtres avec deux comptes différents sur chacune des fenêtres, l'un des clients doit créer la partie, l'autre doit la rejoindre
+   
+:warning: L'utilisation de Microsoft Edge est à éviter en local, elle peut entraîner des problèmes de certificats invalides avec l'API.
 
 ## Captures d'écrans
 ![image](https://github.com/user-attachments/assets/b4639287-d222-4030-a35d-f165975056b5)
