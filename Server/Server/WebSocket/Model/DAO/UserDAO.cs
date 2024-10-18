@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebSocket.Model.DAO
 {
-    public class UserDAO
+    public class UserDAO : IUserDAO
     {
 
         private IDatabase database;
