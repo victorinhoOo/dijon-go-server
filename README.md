@@ -33,13 +33,13 @@ DGS propose les fonctionnalités suivantes :
    
    ![image](https://github.com/user-attachments/assets/5c8b88e1-3c87-4f57-93fa-7702662ec1b0)
  
-   ![image](https://github.com/user-attachments/assets/42718cca-24f5-4256-8d05-6c74ef5ee6e4)
+   ![image](https://github.com/user-attachments/assets/fab6f130-3e8a-4476-ac9b-ed7b3cb2ca88)
+
 4) Cliquer sur "Démarrer"
 5) Ouvrez ensuite un terminal
-6) Dans la console déplacez vous dans le répertoire client puis saisissez la commande ```npm install -g @angular/cli```
-7) Saisissez la commande ```npm install```
-8) Enfin lancez le serveur angular : ```npm start```
-9) Félicitations ! Le client, l'api et le websocket sont désormais exécution, vous pouvez parcourir et utiliser le site à votre guise.
+6) Saisissez la commande ```npm install```
+7) Enfin lancez le serveur angular : ```npm start```
+8) Félicitations ! Le client, l'api et le websocket sont désormais exécution, vous pouvez parcourir et utiliser le site à votre guise.
 
 ## Captures d'écrans
 ![image](https://github.com/user-attachments/assets/b4639287-d222-4030-a35d-f165975056b5)
