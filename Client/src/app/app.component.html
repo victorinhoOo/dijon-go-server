@@ -1,11 +1,16 @@
 <div id="app-component-container">
-    <app-navbar *ngIf="isNavbarVisible" (closeNavbar)="onCloseNavbar()"></app-navbar>
+    <app-navbar *ngIf="isNavbarVisible" (closeNavbar)="onCloseNavbar()" (changeColor)="onThemeChangeEvent($event)" >
+
+      
+    </app-navbar>
     
   <div id="content-container">
     
     <router-outlet>
 
-      <app-hamburger-btn (toggleNavbar)="toggleNavbar()" ></app-hamburger-btn>
+      <app-hamburger-btn (toggleNavbar)="toggleNavbar()"  ></app-hamburger-btn>
+
+      
       
     </router-outlet>
     

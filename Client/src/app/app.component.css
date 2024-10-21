@@ -26,6 +26,7 @@ app-navbar {
     
     app-navbar {
         width: 35%;
+        z-index: 1000;
     }
 
 }

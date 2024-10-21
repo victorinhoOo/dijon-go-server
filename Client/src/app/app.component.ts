@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy,ViewChild, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GridComponent } from './grid/grid.component';
 import { RegisterComponent } from './register/register.component';  
@@ -9,7 +9,6 @@ import { ProfileComponent }  from './profile/profile.component'
 import { IndexComponent } from './index/index.component';
 import { FooterComponent } from "./footer/footer.component";
 import { WebsocketService } from './websocket.service';
-
 import { CommonModule } from '@angular/common';
 import { HamburgerBtnComponent } from './hamburger-btn/hamburger-btn.component';
 import { HostListener } from '@angular/core';
@@ -24,9 +23,11 @@ import { HostListener } from '@angular/core';
 })
 export class AppComponent implements AfterViewInit{
 
+  @ViewChild(NavbarComponent) navbarComponent!: NavbarComponent;
+
   // Ajout d'une propriété pour gérer la visibilité de la navbar
   private _isNavbarVisible: boolean = false;
-
+  private isBlack: boolean;
   // Getter pour obtenir la visibilité de la navbar
   public get isNavbarVisible(): boolean {
     return this._isNavbarVisible;
@@ -35,23 +36,33 @@ export class AppComponent implements AfterViewInit{
   title = 'Client';
   private state: string;
 
-  public constructor(private websocketService:WebsocketService) {
-    this.state = 'light';
-    this.checkScreenSize();
+  // Getter pour l'attribut `state`
+  getState(): string {
+    return this.state;
   }
 
+  // Setter pour l'attribut `state`
+  setState(SetState: string): void {
+    this.state = SetState;
+  }
+  
 
+  public constructor(private websocketService:WebsocketService,private cdr: ChangeDetectorRef) {
+    this.state = 'light';
+    this.checkScreenSize();
+    this.isBlack = false;
+  }
+
+  
   public ngAfterViewInit(){
-    document.getElementById('state-button')!.addEventListener('click', () => {
-      this.changeLightState();
-    });
     this.connectWebSocket();
   }
 
 
   public changeLightState():void{
-    if(this.state == "light"){
+    if(this.isBlack == false){
       // Mode sombre
+      console.log("j'effectue le code css sombre");
       document.body.style.background = "#302E2B";
       document.body.style.color = "white";
       document.getElementById("navbar-container")!.style.setProperty("background", "grey", "important");
@@ -75,9 +86,11 @@ export class AppComponent implements AfterViewInit{
 
       });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
-      this.state = "dark";
+      this.cdr.detectChanges();
+      this.isBlack = true;
     }else{
       // Mode Clair
+      console.log("j'effectue le code css clair");
       document.body.style.background = "#f5f5f5";
       document.body.style.color = "black";
       document.getElementById("navbar-container")!.style.setProperty("background", "#faf9fd", "important");
@@ -100,8 +113,10 @@ export class AppComponent implements AfterViewInit{
             });
         });
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
-      this.state = "light"
+      this.isBlack = false;
     }
+    this.cdr.detectChanges();
+
     
   }
 
@@ -132,4 +147,23 @@ export class AppComponent implements AfterViewInit{
     this.checkScreenSize();
   }
 
+  public onThemeChange(states: string): void {
+    this.state = states; // Met à jour la propriété state avec la nouvelle valeur
+  }
+
+  /**
+   * Méthode appelée lorsque l'événement de changement de thème est déclenché.
+   * Elle met à jour l'état `isBlack` en fonction de la valeur de l'événement,
+   * et applique les changements de style correspondants en appelant `changeLightState`.
+   *
+   * @param $event - Un booléen indiquant si le thème sombre (true) ou clair (false) est activé.
+   */
+  public onThemeChangeEvent($event: boolean){
+  {
+      this.isBlack = $event;
+      console.log("Changement de thème :", this.isBlack);
+      this.changeLightState();
+    }   
+   
+  }
 }

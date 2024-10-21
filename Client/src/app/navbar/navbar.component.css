@@ -1,20 +1,16 @@
-mat-sidenav-container{
+#navbar-container{
     width: 100%;
     height: 100%;
-    color: black !important;
+    background-color: #faf9fd;
+    color: black;
+    
 }
 
-mat-sidenav{
-    width: 100%;
-    height: 100%;
-    color: black !important;
-}
-
-mat-sidenav-content{
+#navbar-sidenav{
     height: auto;
-    margin-top: 10px;
     overflow: hidden;
 }
+
 
 .navBtn{
     background-color: transparent;
@@ -35,11 +31,15 @@ mat-sidenav-content{
     font-weight: bold;
 }
 
+
+
 button{
     width: 100%;
     display: flex;
     justify-content: flex-start;
     color: unset !important;
+    
+    overflow: hidden;
 }
 button:focus {
     outline: none;
@@ -106,23 +106,31 @@ button:focus {
 }
 
 @media  (max-width: 800px) {
-    
-    mat-sidenav-container{
-        width: 350px;
-        height: 100%;
-        color: black !important;
-        transition: transform 0.5s ease-in-out;
+
+    #state-button{
+        z-index: 1000 !important;
+        color: black;
+    }
+    .navbar-container{
+        color: black;
     }
 
+    #navbar-container{
+        height: 100%; 
+        width: 75%;
+        position: fixed; /* Overlay */
+        top: 0;
+        left: 0;
+        overflow-x: hidden; 
+        transition: 0.5s; 
+        
+    }
+    
     #logo-container{
         display: none;
     }
 
-    mat-sidenav.opened {
-    transform: translateX(0);
-    }   
-
-    mat-sidenav-content{
+    .sidenav{
         display: flex;
         padding: auto !important;
         margin: auto;

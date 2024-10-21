@@ -1,6 +1,6 @@
-<mat-sidenav-container id="navbar-container"  >
+<div id="navbar-container"  >
   
-  <mat-sidenav  [mode]="'over'"   [opened]="IsNavbarVisible"  id="navbar-sidenav">
+  <div mode="'over'"   opened="IsNavbarVisible"  id="navbar-sidenav">
   
     <div id="closeBtn" (click)="close()">
           <mat-icon  >close</mat-icon> 
@@ -41,15 +41,15 @@
       </button>
     </div>
 
-    <mat-sidenav-content  class="sidenav">
-      <button mat-button class="navBtn" id="state-button">
+    <div class="sidenav">
+      <button  class="navBtn" id="state-button" (click)="switchTheme()" >
         <mat-icon>light_mode</mat-icon>
         <span id="state">Interface sombre</span>
       </button>
-    </mat-sidenav-content >
+    </div >
 
     <div class="sidenav" id="register-container" *ngIf="this.TokenUser == ''">
-        <button class="navBtn" id="register-button">
+        <button class="navBtn" id="register-button" >
           <mat-icon class="icon">person_add</mat-icon>
           Créer un compte
         </button>
@@ -57,12 +57,9 @@
 
   <div class="sidenav" id="login-container" *ngIf="this.TokenUser == ''">
     <button class="navBtn centerBtn" id="login-button">
-      
         <mat-icon class="icon" >login</mat-icon>
         Se connecter
-      
     </button>
-  
   </div>
 
   <div class="sidenav" id="logout-container" *ngIf="this.TokenUser != ''">
@@ -78,6 +75,5 @@
 
   
 
-</mat-sidenav>
-</mat-sidenav-container>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"></script>
+</div>
+</div>
