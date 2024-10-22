@@ -7,10 +7,12 @@ namespace Server.Model.Images
     public class LocalFileUploader : IFileUploader
     {
         private string profilePicsPath;
+        private ILogger<LocalFileUploader> logger;
 
-        public LocalFileUploader(string profilePicsPath)
+        public LocalFileUploader(string profilePicsPath, ILogger<LocalFileUploader> logger)
         {
             this.profilePicsPath = profilePicsPath;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -28,11 +30,13 @@ namespace Server.Model.Images
                 // Sauvegarde le fichier sur le disque local
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
+                    this.logger.LogInformation($"Upload de la photo de profil : {filePath}");
                     file.CopyTo(fileStream);
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
+                this.logger.LogError($"Erreur lors de l'upload de la photo de profil : {ex.Message}");
                 throw new Exception($"Erreur lors de l'upload de la photo de profil : {ex.Message}", ex);
             }
         }
@@ -59,11 +63,13 @@ namespace Server.Model.Images
 
                     // Renomme le fichier
                     File.Move(oldFilePath, newFilePath);
+                    this.logger.LogInformation($"Renommage de la photo de profil : {oldFilePath} -> {newFilePath}");
                 }
 
             }
             catch (Exception ex)
             {
+                this.logger.LogError($"Erreur lors du renommage de la photo de profil : {ex.Message}");
                 throw new Exception($"Erreur lors du renommage de la photo de profil : {ex.Message}", ex);
             }
         }

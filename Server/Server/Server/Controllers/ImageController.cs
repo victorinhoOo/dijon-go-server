@@ -11,10 +11,12 @@ namespace Server.Controllers
     public class ImageController : Controller
     {
         private ImageManager imageManager;
+        private ILogger<ImageController> logger;
 
-        public ImageController(ImageManager imageManager)
+        public ImageController(ImageManager imageManager, ILogger<ImageController> logger)
         {
             this.imageManager = imageManager;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -30,10 +32,12 @@ namespace Server.Controllers
             {
                 byte[] profilePic = imageManager.GetProfilePic(fileName);
                 result = File(profilePic, "image/png");
+                logger.LogInformation("Photo de profil récupérée : " + fileName);
             }
             catch (Exception ex)
             {
                 result = BadRequest(new { Message = ex.Message });
+                logger.LogError("Erreur lors de la récupération de la photo de profil : " + ex.Message);
             }
             return result;
         }

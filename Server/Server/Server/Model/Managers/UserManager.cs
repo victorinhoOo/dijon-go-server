@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Server.Model.Data;
 using Server.Model.DTO;
+using Server.Model.Exceptions;
 using System.Security.Cryptography;
 using System.Text;
+using System;
+
 
 namespace Server.Model.Managers
 {
@@ -14,12 +17,14 @@ namespace Server.Model.Managers
         private readonly IUserDAO userDAO;
         private readonly ImageManager imageManager;
         private readonly TokenManager tokenManager;
+        private ILogger<UserManager> logger;
 
-        public UserManager(IUserDAO userDAO, ImageManager imageManager, TokenManager tokenManager)
+        public UserManager(IUserDAO userDAO, ImageManager imageManager, TokenManager tokenManager, ILogger<UserManager> logger)
         {
             this.userDAO = userDAO;
             this.imageManager = imageManager;
             this.tokenManager = tokenManager;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -42,10 +47,12 @@ namespace Server.Model.Managers
                 if (userDAO.VerifyExists(user))
                 {
                     result = tokenManager.CreateTokenUser(user); // si la connexion réussit, on génère un token
+                    logger.LogInformation("Token: " + result + " créé pour l'utilisateur : " + loginUserDTO.Username);
                 }
             }
             catch (Exception ex)
             {
+                logger.LogError("Erreur lors de la connexion : " + ex.Message);
                 throw new Exception("Erreur lors de la connexion : " + ex.Message);
             }
 
@@ -61,13 +68,16 @@ namespace Server.Model.Managers
             // Valide les données d'inscription
             if (string.IsNullOrEmpty(registerUserDto.Username) || string.IsNullOrEmpty(registerUserDto.Email) || string.IsNullOrEmpty(registerUserDto.Password))
             {
-                throw new ArgumentException("Tous les champs doivent être remplis");
+                logger.LogError("Aucun champ n'a été modifié");
+                throw new ArgumentException("Aucun champ n'a été modifié");
             }
 
             // Vérifie si l'utilisateur existe déjà
             if (userDAO.GetUserByUsername(registerUserDto.Username) != null)
             {
-                throw new ArgumentException("Ce nom d'utilisateur existe déjà");
+
+                logger.LogError("Ce nom d'utilisateur existe déjà");
+                throw new UserAlreadyExistsException();
             }
 
             // Créer un nouvel utilisateur pour l'insérer en bdd
@@ -83,10 +93,12 @@ namespace Server.Model.Managers
                 {
                     imageManager.UploadProfilePic(registerUserDto.ProfilePic, user.Username); // Upload l'image de profil sur le serveur
                 }
+                logger.LogInformation("Inscription de l'utilisateur : " + user.Username);
                 userDAO.Register(user);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
+                logger.LogError("Erreur lors de l'inscription : " + ex.Message);
                 throw new Exception("Erreur lors de l'inscription : " + ex.Message);
             }
 
@@ -100,21 +112,27 @@ namespace Server.Model.Managers
         {
             // Récupère l'utilisateur existant grâce à son token de connexion 
             User user = tokenManager.GetUserByToken(updateUserDTO.Tokenuser);
+
             // Vérifie que  que le mot de passe est le bon pour l'utilisateur connecté (pour éviter les usurpations de compte)
-            if (this.userDAO.VerifyExists(new User { Password = this.HashPassword(updateUserDTO.Oldpassword), Username = user.Username }))
+            if (this.VerifyPasswordMatchUser(user.Username, updateUserDTO.Oldpassword))
             {
                 try
                 {
                     //  applique les modifications souhaitées
-                    if (!string.IsNullOrEmpty(updateUserDTO.Username))
+                    if (updateUserDTO.ProfilePic != null) // l'utilisateur a renseigné une nouvelle photo
+                    {
+                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); 
+                    }
+                    if (!string.IsNullOrEmpty(updateUserDTO.Username)) // l'utilisateur a renseigné un nouveau nom d'utilisateur
                     {
                         if(this.userDAO.GetUserByUsername(updateUserDTO.Username) == null) // vérifie si le nom d'utilisateur n'est pas déjà pris
                         {
                             imageManager.RenameProfilePic(user.Username, updateUserDTO.Username); // Renomme l'image de profil sur le FTP (pour correspondre au nouveau nom d'utilisateur)
-                            user.Username = updateUserDTO.Username;
+                            user.Username = updateUserDTO.Username; 
                         }
                         else
                         {
+                            logger.LogError("Ce nom d'utilisateur est déjà pris");
                             throw new Exception("Ce nom d'utilisateur est déjà pris");
                         }
                     }
@@ -126,24 +144,34 @@ namespace Server.Model.Managers
                     {
                         user.Password = HashPassword(updateUserDTO.Password);
                     }
-                    if (updateUserDTO.ProfilePic != null)
-                    {
-                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); // une modification de la photo de profil entraine un upload qui écrase l'ancienne photo
-                    }
 
                     // Enregistre les modifications en base de données 
                     userDAO.Update(user);
+                    logger.LogInformation("Utilisateur mis à jour");
                 }
                 catch (Exception ex)
                 {
+                    logger.LogError("Erreur  : " + ex.Message);
                     throw new Exception("Erreur  : " + ex.Message);
 
                 }
             }
             else
             {
+
+                logger.LogError("Mot de passe invalide");
                 throw new UnauthorizedAccessException("Mot de passe invalide");
             }
+        }
+
+        // Vérifie que  que le mot de passe est le bon pour l'utilisateur connecté (pour éviter les usurpations de compte)
+        private bool VerifyPasswordMatchUser(string username, string password)
+        {
+            User user = new User();
+            user.Username = username;
+            user.Password = this.HashPassword(password);
+            return this.userDAO.VerifyExists(user);
+
         }
 
         /// <summary>
@@ -157,6 +185,7 @@ namespace Server.Model.Managers
             User user = tokenManager.GetUserByToken(tokenUser);
             if (user == null)
             {
+                logger.LogError("Utilisateur non trouvé, token invalide");
                 throw new UnauthorizedAccessException("Utilisateur non trouvé, token invalide");
             }
             return user;
@@ -187,7 +216,7 @@ namespace Server.Model.Managers
                 {
                     builder.Append(bytes[i].ToString("x2"));
                 }
-
+                logger.LogInformation("Mot de passe haché");
                 return builder.ToString();
             }
         }

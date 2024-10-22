@@ -8,10 +8,12 @@ namespace Server.Model.Data
     public class UserDAO : IUserDAO
     {
         private readonly IDatabase database;
+        private readonly ILogger<UserDAO> logger;
 
-        public UserDAO(IDatabase database)
+        public UserDAO(IDatabase database, ILogger<UserDAO> logger)
         {
             this.database = database;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -35,6 +37,7 @@ namespace Server.Model.Data
             }
 
             database.Disconnect();
+            this.logger.LogInformation($"L'utilisateur {user.Username} existe: {res}");
             return res;
         }
 
@@ -56,6 +59,7 @@ namespace Server.Model.Data
             res = true;
 
             database.Disconnect();
+            logger.LogInformation($"L'utilisateur {user.Username} a été enregistré");
             return res;
         }
 
@@ -95,6 +99,7 @@ namespace Server.Model.Data
             res = true;
 
             database.Disconnect();
+            logger.LogInformation($"L'utilisateur {user.Username} a été mis à jour");
             return res;
         }
 
@@ -123,6 +128,7 @@ namespace Server.Model.Data
             }
 
             database.Disconnect();
+            logger.LogInformation($"Récupération de l'utilisateur {username}");
             return user;
         }
     }

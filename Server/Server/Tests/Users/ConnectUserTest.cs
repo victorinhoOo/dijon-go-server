@@ -3,6 +3,9 @@ using Server.Model.Managers;
 using Server.Model.Data;
 using Server.Model.DTO;
 using Server.Model;
+using Castle.Core.Logging;
+using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace Tests.Users
 {
@@ -15,13 +18,17 @@ namespace Tests.Users
         FakeTokenDAO fakeTokenDAO;
         TokenManager tokenManager;
         UserManager userManager;
+        Mock<ILogger<UserManager>> mockUserLogger;
+        Mock<ILogger<TokenManager>> mockTokenLogger;
 
         public ConnectUserTest()
         {
             fakeUserDAO = new FakeUserDAO();
             fakeTokenDAO = new FakeTokenDAO(); 
-            tokenManager = new TokenManager(fakeTokenDAO); 
-            userManager = new UserManager(fakeUserDAO, null, tokenManager); 
+            mockUserLogger = new Mock<ILogger<UserManager>>();
+            mockTokenLogger = new Mock<ILogger<TokenManager>>();
+            tokenManager = new TokenManager(fakeTokenDAO, mockTokenLogger.Object); 
+            userManager = new UserManager(fakeUserDAO, null, tokenManager, mockUserLogger.Object); 
         }
 
         /// <summary>

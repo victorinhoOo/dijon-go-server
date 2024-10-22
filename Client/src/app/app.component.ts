@@ -33,8 +33,8 @@ export class AppComponent implements AfterViewInit{
     return this._isNavbarVisible;
   }
 
-  title = 'Client';
   private state: string;
+
 
   // Getter pour l'attribut `state`
   getState(): string {
@@ -55,14 +55,15 @@ export class AppComponent implements AfterViewInit{
 
   
   public ngAfterViewInit(){
-    this.connectWebSocket();
+    document.getElementById('state-button')!.addEventListener('click', () => {
+      this.changeLightState();
+    });
   }
 
 
   public changeLightState():void{
     if(this.isBlack == false){
       // Mode sombre
-      console.log("j'effectue le code css sombre");
       document.body.style.background = "#302E2B";
       document.body.style.color = "white";
       document.getElementById("navbar-container")!.style.setProperty("background", "grey", "important");
@@ -90,7 +91,6 @@ export class AppComponent implements AfterViewInit{
       this.isBlack = true;
     }else{
       // Mode Clair
-      console.log("j'effectue le code css clair");
       document.body.style.background = "#f5f5f5";
       document.body.style.color = "black";
       document.getElementById("navbar-container")!.style.setProperty("background", "#faf9fd", "important");
@@ -118,11 +118,6 @@ export class AppComponent implements AfterViewInit{
     this.cdr.detectChanges();
 
     
-  }
-
-  public connectWebSocket(): void {
-    this.websocketService.connectWebsocket();
-
   }
   
   // Méthode pour basculer la visibilité de la navbar
@@ -159,11 +154,9 @@ export class AppComponent implements AfterViewInit{
    * @param $event - Un booléen indiquant si le thème sombre (true) ou clair (false) est activé.
    */
   public onThemeChangeEvent($event: boolean){
-  {
       this.isBlack = $event;
       console.log("Changement de thème :", this.isBlack);
       this.changeLightState();
-    }   
-   
-  }
+   }  
 }
+
