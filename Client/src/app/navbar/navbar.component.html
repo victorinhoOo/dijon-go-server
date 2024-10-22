@@ -1,66 +1,79 @@
-<mat-sidenav-container id="navbar-container">
-  <mat-sidenav-content id="logo-container">
-    <img src="renard.png" id="logo" alt="logo">
-    DGS
-  </mat-sidenav-content>
+<div id="navbar-container"  >
+  
+  <div mode="'over'"   opened="IsNavbarVisible"  id="navbar-sidenav">
+  
+    <div id="closeBtn" (click)="close()">
+          <mat-icon  >close</mat-icon> 
+    </div>
 
-  <mat-sidenav-content>
-    <button mat-button mat-primary id="play-button">
-      <mat-icon>play_arrow</mat-icon>
-      Jouer
+    <div id="logo-container">
+      <img src="renard.png" id="logo" alt="logo">
+      DGS
+    </div>
+
+    <div class="sidenav">
+      <button class="navBtn" mat-primary id="play-button">
+          <mat-icon>play_arrow</mat-icon>
+          Jouer
+      </button>
+    </div>
+
+    <div class="sidenav">
+      <button class="navBtn">
+          <mat-icon>replay</mat-icon>
+          Replay
+      </button>
+    </div>
+
+
+    <div class="sidenav">
+      <button class="navBtn">
+          <mat-icon>language</mat-icon>
+          Social
+      </button>
+    </div>
+
+    <div class="sidenav" *ngIf="this.TokenUser != ''">
+      <button class="navBtn" id="profile-button">
+          <mat-icon class="icon">person</mat-icon>
+          Mon compte
+        
+      </button>
+    </div>
+
+    <div class="sidenav">
+      <button  class="navBtn" id="state-button" (click)="switchTheme()" >
+        <mat-icon>light_mode</mat-icon>
+        <span id="state">Interface sombre</span>
+      </button>
+    </div >
+
+    <div class="sidenav" id="register-container" *ngIf="this.TokenUser == ''">
+        <button class="navBtn" id="register-button" >
+          <mat-icon class="icon">person_add</mat-icon>
+          Créer un compte
+        </button>
+    </div>
+
+  <div class="sidenav" id="login-container" *ngIf="this.TokenUser == ''">
+    <button class="navBtn centerBtn" id="login-button">
+        <mat-icon class="icon" >login</mat-icon>
+        Se connecter
     </button>
-  </mat-sidenav-content>
+  </div>
 
-  <mat-sidenav-content>
-    <button mat-button>
-      <mat-icon>replay</mat-icon>
-      Replay
+  <div class="sidenav" id="logout-container" *ngIf="this.TokenUser != ''">
+    <button class="navBtn centerBtn" id="logout-button">
+      <div>
+        <mat-icon>logout</mat-icon>
+        Déconnexion
+      </div>
     </button>
-  </mat-sidenav-content>
+    
 
-
-  <mat-sidenav-content>
-    <button mat-button>
-      <mat-icon>language</mat-icon>
-      Social
-    </button>
-  </mat-sidenav-content>
-
-  <mat-sidenav-content *ngIf="this.TokenUser != ''">
-    <button mat-button id="profile-button">
-      <mat-icon>person</mat-icon>
-      Mon compte
-    </button>
-  </mat-sidenav-content>
-
-  <mat-sidenav-content>
-    <button mat-button id="state-button">
-      <mat-icon>light_mode</mat-icon>
-      <span id="state">Interface sombre</span>
-    </button>
-  </mat-sidenav-content>
-
-  <mat-sidenav-content id="register-container" *ngIf="this.TokenUser == ''">
-    <button mat-button id="register-button">
-      <mat-icon>person_add</mat-icon>
-      Créer un compte
-    </button>
-  </mat-sidenav-content>
-
-  <mat-sidenav-content id="login-container" *ngIf="this.TokenUser == ''">
-    <button mat-button id="login-button" >
-      <mat-icon>login</mat-icon>
-      Se connecter
-    </button>
-  </mat-sidenav-content>
-
-  <mat-sidenav-content id="logout-container" *ngIf="this.TokenUser != ''">
-    <button mat-button id="logout-button">
-      <mat-icon>logout</mat-icon>
-      Déconnexion
-    </button>
-
-  </mat-sidenav-content>
+  </div>
 
   
-</mat-sidenav-container>
+
+</div>
+</div>
