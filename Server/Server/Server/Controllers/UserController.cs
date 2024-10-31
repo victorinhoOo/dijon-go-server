@@ -47,6 +47,27 @@ namespace Server.Controllers
             return result;
         }
 
+        [HttpPost("GoogleLogin")]
+        public async Task<IActionResult> GoogleLogin(string idToken)
+        {
+            IActionResult result = BadRequest(new InvalidLoginException());
+            try
+            {
+                string token = await userManager.GoogleConnect(idToken);
+                if (token != "")
+                {
+                    logger.LogInformation("Connexion réussie pour l'utilisateur Google");
+                    result = Ok(new { Token = token });
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Erreur lors de la connexion Google : " + ex.Message);
+                result = BadRequest(new { Message = ex.Message });
+            }
+            return result;
+        }
+
         /// <summary>
         /// Inscription d'un utilisateur.
         /// </summary>
