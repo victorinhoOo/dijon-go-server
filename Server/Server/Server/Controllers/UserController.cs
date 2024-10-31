@@ -47,6 +47,11 @@ namespace Server.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Connexion d'un utilisateur avec google
+        /// </summary>
+        /// <param name="idToken">Token de connexion Google de l'utilisateur souhaitant se connecter</param>
+        /// <returns>Le résultat de la connexion</returns>
         [HttpPost("GoogleLogin")]
         public async Task<IActionResult> GoogleLogin(string idToken)
         {
