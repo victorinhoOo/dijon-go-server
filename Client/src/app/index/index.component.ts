@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 import { WebsocketService } from '../websocket.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Renderer2 } from '@angular/core';
 
 @Component({
   selector: 'app-index',
@@ -77,7 +78,8 @@ export class IndexComponent implements OnInit {
     private httpClient: HttpClient,
     private websocketService: WebsocketService,
     private domSanitizer: DomSanitizer,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private renderer: Renderer2
   ) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
@@ -139,32 +141,31 @@ export class IndexComponent implements OnInit {
     const joinGamesLink = document.getElementById('joinGames');
     if (joinGamesLink) {
       joinGamesLink.addEventListener('click', (event) => {
+        this.initializeJoinGamePopupContent();
         this.showPopup = true;
-        this.initializePopupContent();
       });
     }
 
     let createGameLink = document.getElementById('create-game');
     if (createGameLink) {
       createGameLink.addEventListener('click',async() => {
-        await this.websocketService.connectWebsocket();
-        console.log("ahaéhhh");
-        this.websocketService.createGame();
-        this.router.navigate(['game']);
+        this.initializeCreateGamePopupContent();
+        this.showPopup = true;      
       });
     }
     this.populateLeaderboard();
   }
 
   /**
-   * Initialise le contenu de la popup avec les parties disponibles
+   * Initialise le contenu de la popup de liste des parties avec les parties disponibles
    */
-  private initializePopupContent() {
+  private initializeJoinGamePopupContent() {
+    this.popupContent = '';
+    this.popupTitle = 'Parties disponibles';
     this.gameDAO.GetAvailableGames().subscribe({
       next: (games: GameInfoDTO[]) => {
         let content = '';
         games.forEach((game) => {
-          this.popupTitle = 'Parties disponibles';
           content += `<a href="/${game["id"]}">${game['title']} ${game['size']}x${game['size']}</a>`;
         });
         this.popupContent = this.domSanitizer.bypassSecurityTrustHtml(content);
@@ -175,19 +176,62 @@ export class IndexComponent implements OnInit {
     });
   }
 
+  /**
+   * Initialise le contenu de la popup de création de partie avec un formulaire pour choisir ses paramètres
+   */
+  private initializeCreateGamePopupContent() {
+    this.popupTitle = 'Créer une partie';
+    this.popupContent = this.domSanitizer.bypassSecurityTrustHtml(
+      `<form id="create-game-form">
+          <label for="grid-size">Taille de la grille :</label>
+          <select id="grid-size" name="grid-size">
+              <option value="9">9x9</option>
+              <option value="13">13x13</option>
+              <option value="19" selected>19x19</option>
+          </select>
+          
+          <label for="rules">Règles du jeu :</label>
+          <select id="rules" name="rules">
+              <option value="chinoises">Chinoises</option>
+              <option value="japonaises">Japonaises</option>
+          </select>
+
+          <button type="submit" id="create-game-btn">Créer</button>
+      </form>`
+    );
+
+    // Initialise l'écouteur d'événements pour la soumission du formulaire
+    setTimeout(() => {
+        const form = document.getElementById('create-game-form') as HTMLFormElement;
+        if (form) {
+          console.log('oui');
+          form.addEventListener('submit', this.handleCreateGameSubmit.bind(this));
+        }
+    }, 0);
+  }
+
+  /**
+   * Gère la soumission du formulaire de création de partie
+   * @param event Événement de soumission du formulaire
+   */
+  private async handleCreateGameSubmit(event: Event) {
+    event.preventDefault(); // Empêche la soumission par défaut du formulaire
+
+    // Récupérer les valeurs des champs du formulaire
+    const gridSize = (document.getElementById('grid-size') as HTMLSelectElement).value;
+    const rules = (document.getElementById('rules') as HTMLSelectElement).value;
+
+    // Utilisez les valeurs récupérées pour créer la partie
+    console.log(`Taille de la grille sélectionnée : ${gridSize}`);
+    console.log(`Règles sélectionnées : ${rules}`);
+
+    // todo: gérer les paramètres
+    await this.websocketService.connectWebsocket();
+    this.websocketService.createGame();
+    this.router.navigate(['game']);
+}
+
   public handlePopupClose(): void {
     this.showPopup = false;
-  }
-
-  public openPopup() {
-    this.showPopup = true;
-  }
-
-  public connectWebSocket(): void {
-    this.websocketService.connectWebsocket();
-  }
-
-  public deconnectWebSocket():void{
-    this.websocketService.disconnectWebsocket();
   }
 }

@@ -164,9 +164,7 @@ export class ConnexionComponent {
           this.ShowPopup = true; //ouverture de la pop up
          }
       });
-
-    }
-    
+    }    
   }
 
   public handlePopupClose(): void {
