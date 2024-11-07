@@ -47,12 +47,13 @@ namespace Server.Model.Data
             bool res = false;
             database.Connect();
 
-            string query = "INSERT INTO user (username, hashPwd, email) VALUES (@username, @hashPwd, @email)";
+            string query = "INSERT INTO user (username, hashPwd, email) VALUES (@username, @hashPwd, @email, @elo)";
             var parameters = new Dictionary<string, object>
                 {
                     {"@username", user.Username},
                     {"@hashPwd", user.Password},
-                    {"@email", user.Email}
+                    {"@email", user.Email},
+                    {"@elo", 100} // Chaque nouveau joueur commence à 100 elo
                 };
 
             database.ExecuteNonQuery(query, parameters);

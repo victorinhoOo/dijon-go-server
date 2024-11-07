@@ -9,13 +9,15 @@
         private string username;
         private string password;
         private string email;
+        private int? elo;
 
-        public User(int id, string username, string password, string email)
+        public User(int id, string username, string password, string email, int elo)
         {
-            this.Id = id;
+            this.id = id;
             this.username = username;
             this.password = password;
             this.email = email;
+            this.elo = elo;
         }
 
         public User() { } // constructeur vide nécessaire pour la récupération depuis la bdd
