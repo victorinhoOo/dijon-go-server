@@ -24,6 +24,9 @@
 .shadow-container {
     box-shadow: 10px 10px 0px rgba(85, 70, 28, 0.5); /* Ajoute une ombre légère */   
 }
+.google-button{
+    width: 100%;
+}
 
 .row{
 

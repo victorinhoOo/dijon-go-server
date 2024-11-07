@@ -8,12 +8,13 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { User } from '../Model/User';
 import { PopupComponent } from '../popup/popup.component';
+import { GoogleConnexionComponent } from '../google-connexion/google-connexion.component';
 
 
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, PopupComponent],
+  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, PopupComponent, GoogleConnexionComponent],
   templateUrl: './connexion.component.html',
   styleUrls: ['./connexion.component.css']
 })
