@@ -1,7 +1,7 @@
 ﻿namespace GoLogic.Score
 {
     /// <summary>
-    /// Classe abstraite pour gérer les différents décompte de point
+    /// Classe abstraite pour gérer les différents décomptes de point
     /// </summary>
     public abstract class ScoreRule
     {
@@ -24,13 +24,13 @@
         /// <summary>
         /// Règles de décompte des points pour chaque joueur
         /// </summary>
-        /// <returns>Tuple d'entier correspondant aux scores noirs et blanc</returns>
+        /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public abstract (int blackStones, int whiteStones) CalculateScore();
 
         /// <summary>
-        /// Compte le nombres de pierres de chaque couleur sur le plateau
+        /// Compte les nombres de pierres de chaque couleur sur le plateau
         /// </summary>
-        /// <returns>Une tuple d'entier correspondants aux pierres noires et blanches</returns>
+        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
         public (int blackStones, int whiteStones) CountStones()
         {
             int blackStones = 0;

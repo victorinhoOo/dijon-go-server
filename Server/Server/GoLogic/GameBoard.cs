@@ -76,7 +76,7 @@
         }
         
         /// <summary>
-        /// Récupère l'instance de pierre aux coordonnées spécifié
+        /// Récupère l'instance de pierre aux coordonnées spécifiée
         /// </summary>
         /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
@@ -94,7 +94,7 @@
         /// <summary>
         /// Vérifie si une coordonnée (x, y) est dans les limites du tableau
         /// </summary>
-        /// <param name="x">position ligne x dans le plateau</param>
+        /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
         /// <returns>True si les coordonnées sont bonnes, False sinon</returns>
         public bool IsValidCoordinate(int x, int y)
