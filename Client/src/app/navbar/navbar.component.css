@@ -38,6 +38,7 @@ button:focus {
 
 #logout-container{
     display: flex;
+    width: 100%;
     height: auto;
     justify-content: flex-end;
     flex-direction: column;
