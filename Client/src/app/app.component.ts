@@ -47,7 +47,7 @@ export class AppComponent implements AfterViewInit{
   }
   
 
-  public constructor(private websocketService:WebsocketService,private cdr: ChangeDetectorRef) {
+  public constructor(private cdr: ChangeDetectorRef) {
     this.state = 'light';
     this.checkScreenSize();
     this.isBlack = false;

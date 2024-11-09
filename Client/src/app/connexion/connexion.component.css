@@ -25,6 +25,11 @@
     box-shadow: 10px 10px 0px rgba(85, 70, 28, 0.5); /* Ajoute une ombre légère */   
 }
 
+::ng-deep .custom-ok-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+}
+
 .row{
 
     margin-left: 8%;
