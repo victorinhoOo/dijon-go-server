@@ -8,12 +8,12 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { User } from '../Model/User';
 import Swal from 'sweetalert2';
-
+import { GoogleConnexionComponent } from '../google-connexion/google-connexion.component';
 
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule],
+  imports: [ReactiveFormsModule, MatCardModule, HttpClientModule, GoogleConnexionComponent],
   templateUrl: './connexion.component.html',
   styleUrls: ['./connexion.component.css']
 })
@@ -24,9 +24,6 @@ export class ConnexionComponent {
 
   private connexionForm: FormGroup | undefined;
   private dao: UserDAO;
-  private showPopup: boolean;
-  private popupMessage: string;
-  private popupTitle: string;
 
   /**
  * Getter pour le formulaire de connexion
@@ -42,44 +39,6 @@ export class ConnexionComponent {
     this.connexionForm = value;
   }
   /**
-  * Getter pour l'ouverture de la popup
-  */
-  public get ShowPopup(): boolean {
-    return this.showPopup;
-  }
-  /**
-   * Setter pour l'ouverture de la popup
-   */
-  public set ShowPopup(value: boolean) {
-    this.showPopup = value;
-  }
-  /**
-   * Getter pour le message d'erreur
-   */
-  public get PopupTitle(): string {
-    return this.popupTitle;
-  }
-
-  /**
-   * Setter pour le titre de la popup
-   */
-  public set PopupTitle(value: string) {
-    this.popupTitle = value;
-  }
-
-  /**
-   * Getter pour le message de la popup
-   */
-  public get PopupMessage(): string {
-    return this.popupMessage;
-  }
-  /**
-   * Setter pour le message de la popup
-   */
-  public set PopupMessage(value: string) {
-    this.popupMessage = value;
-  }
-  /**
    * constructor de la page de connexion
    * @param fb le createur de formulaire
    * @param http l'adresse
@@ -89,9 +48,6 @@ export class ConnexionComponent {
 
   constructor(private fb: FormBuilder, private http: HttpClient, private userCookieService: UserCookieService, private router: Router) {
     this.dao = new UserDAO(this.http);
-    this.popupTitle = '';
-    this.popupMessage = '';
-    this.showPopup = false;
   }
 
   /**

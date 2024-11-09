@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@types/google-one-tap": "^1.2.6",
     "ngx-cookie-service": "^18.0.0",
     "ngx-socket-io": "^4.7.0",
     "rxjs": "~7.8.0",
