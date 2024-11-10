@@ -28,6 +28,11 @@
     width: 100%;
 }
 
+::ng-deep .custom-ok-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+}
+
 .row{
 
     margin-left: 8%;
