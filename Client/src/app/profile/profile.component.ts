@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import  {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { User } from '../Model/User';
 
 @Component({
   selector: 'app-profile',
@@ -54,12 +55,11 @@ export class ProfileComponent {
     {
         this.router.navigate(['/login']);
     }
-
-    //recuperation de l'image de l'utilisateur à partir de son pseudo
+    // Récupère les informations de l'utilisateur pour l'affichage
     this.userPseudo = this.userCookieService.getUser().Username;
     this.userEmail = this.userCookieService.getUser().Email;
-    this.rank = "9 dan";
-    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo            
+    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;
+    this.rank = "9 dan";         
   }
 
   /**
@@ -72,7 +72,11 @@ export class ProfileComponent {
       panelClass: 'custom-dialog-container'
     });
     dialogRef.afterClosed().subscribe(result => {
-       
+      // Récupère les informations de l'utilisateur après la modification
+      this.userPseudo = this.userCookieService.getUser().Username;
+      this.userEmail = this.userCookieService.getUser().Email;
+      this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;
+      this.rank = "9 dan";
     });
   }
   
