@@ -103,7 +103,7 @@ export class ProfileSettingsComponent {
     this.profileForm = this.fb.group({
       pseudo: [''],
       oldpwd: ['', Validators.required],
-      pwd: ['', [Validators.pattern("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")]], //8 caractères, une maj, une min et 1 chiffre min
+      pwd: ['', [Validators.pattern("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")]], //8 caractères, une maj, une min et 1 chiffre minimum
       Cpwd: [''],
       img: [null],
       email: ['']
@@ -158,12 +158,15 @@ export class ProfileSettingsComponent {
         }
       });
     } else {
+      //verification de la saisie de l'ancien pwd
       if (this.profileForm.value.oldpwd === '') {
         this.oldPwdEmpty = true;
       }
+      //verification de la solidité du pwd
       if (this.profileForm.get('pwd')?.hasError('pattern')) {
         this.isStrongPassword = false;
       }
+      //verification de la confirmation du pwd
       if (!this.CheckIfConfirmPwdIsGood()) {
         this.confirmPwdIsGood = false;
       }
@@ -207,6 +210,6 @@ export class ProfileSettingsComponent {
    */
   public InitializePwdForm(): void {
     this.confirmPwdIsGood = true;
-    this.isStrongPassword = true;
+    this.isStrongPassword = false;
   }
 }
