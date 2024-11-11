@@ -23,19 +23,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
    @Output() changeColor: EventEmitter<boolean> = new EventEmitter<boolean>();
   // Attribut privé pour la visibilité de la navbar
   private isNavbarVisible: boolean = true;
-
-  
-  
-  private lightState: string;
   private tokenUser: string;
   private tokenSubscription!: Subscription;
+  private lightIsBlack: boolean
 
   public get TokenUser(): string {
     return this.tokenUser;
   }
 
   public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef) {
-    this.lightState = 'light';
+    this.lightIsBlack = false;
     this.isNavbarVisible = true;
     this.tokenUser = '';
   }
@@ -90,6 +87,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
       });
     }
     
+    if(stateButton)
+    {
+      stateButton.addEventListener("click", () => this.switchTheme())
+    }
+    
     
   }
 
@@ -116,20 +118,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Elle met à jour l'état `lightState` en fonction de l'état actuel, 
    * émet un événement pour notifier le changement de couleur et affiche le nouveau thème dans la console.
    */
-  public switchTheme(): void {
-    if (this.lightState == "light") {
-        this.lightState = "dark";
-        this.changeColor.emit(false);
-        console.log(true);
-
-    } else {
-        this.lightState = "light";
-        this.changeColor.emit(true);
-        console.log(false);
-
-    }
-
-    console.log(this.lightState,"valeur apres");
+  public switchTheme(): void 
+  {  
+      this.lightIsBlack = !this.lightIsBlack;
+      this.changeColor.emit(this.lightIsBlack);
   }
 
 }

@@ -39,36 +39,22 @@ export class AppComponent implements AfterViewInit{
     return this._isButtonClicked;
   }
 
-  private state: string;
-
-
-  // Getter pour l'attribut `state`
-  getState(): string {
-    return this.state;
-  }
-
-  // Setter pour l'attribut `state`
-  setState(SetState: string): void {
-    this.state = SetState;
-  }
-  
-
-  public constructor(private websocketService:WebsocketService,private cdr: ChangeDetectorRef) {
-    this.state = 'light';
+  public constructor(private websocketService:WebsocketService) 
+  {
     this.checkScreenSize();
     this.isBlack = false;
   }
 
   
-  public ngAfterViewInit(){
-    document.getElementById('state-button')!.addEventListener('click', () => {
-      this.changeLightState();
-    });
+  public ngAfterViewInit()
+  {
+    //initialisation des feuilles de styles
+   this.changeLightState();
   }
 
 
   public changeLightState():void{
-    if(this.isBlack == false){
+    if(this.isBlack){
       // Mode sombre
       document.body.style.background = "#302E2B";
       document.body.style.color = "white";
@@ -93,9 +79,8 @@ export class AppComponent implements AfterViewInit{
 
       });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
-      this.cdr.detectChanges();
-      this.isBlack = true;
-    }else{
+    }
+    else{
       // Mode Clair
       document.body.style.background = "#f5f5f5";
       document.body.style.color = "black";
@@ -119,11 +104,7 @@ export class AppComponent implements AfterViewInit{
             });
         });
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
-      this.isBlack = false;
     }
-    this.cdr.detectChanges();
-
-    
   }
   
   // Méthode pour basculer la visibilité de la navbar
@@ -150,10 +131,6 @@ export class AppComponent implements AfterViewInit{
     this.checkScreenSize();
   }
 
-  public onThemeChange(states: string): void {
-    this.state = states; // Met à jour la propriété state avec la nouvelle valeur
-  }
-
   /**
    * Méthode appelée lorsque l'événement de changement de thème est déclenché.
    * Elle met à jour l'état `isBlack` en fonction de la valeur de l'événement,
@@ -163,7 +140,6 @@ export class AppComponent implements AfterViewInit{
    */
   public onThemeChangeEvent($event: boolean){
       this.isBlack = $event;
-      console.log("Changement de thème :", this.isBlack);
       this.changeLightState();
    }  
 }
