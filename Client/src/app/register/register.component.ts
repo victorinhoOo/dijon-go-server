@@ -125,6 +125,6 @@ export class RegisterComponent {
 
   public InitializePwdForm(): void {
     this.confirmPwdIsGood = true;
-    this.isStrongPassword = true;
+    this.isStrongPassword = false;
   }
 }
