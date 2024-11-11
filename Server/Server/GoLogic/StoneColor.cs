@@ -3,7 +3,7 @@
     /// <summary>
     /// Enumération des différents états possibles des pierres
     /// </summary>
-    public enum StoneColor
+    public enum StoneColor //TODO: Renommer IshiStatus ou IntersectionStatus ou PointState
     {
         Black,
         White,
