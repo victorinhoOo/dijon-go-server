@@ -138,6 +138,15 @@ namespace WebSocket.Model
         {
             return score.CalculateScore();
         }
+        
+        /// <summary>
+        /// Récupère les pierres noires et blanches capturées
+        /// </summary>
+        /// <returns>Tuple d'entier des pierres noires et blanches</returns>
+        public (int, int) GetCapturedStone()
+        {
+            return (gameBoard.CapturedBlackStones, gameBoard.CapturedWhiteStones);
+        }
 
 
         /// <summary>

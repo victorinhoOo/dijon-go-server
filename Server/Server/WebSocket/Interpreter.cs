@@ -67,8 +67,9 @@ namespace WebSocket
 
                         game.PlaceStone(x, y); // pose de la pierre
                         (int, int) score = game.GetScore(); // récupération du score
+                        (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone(); // récupération des pierres capturées
                         game.ChangeTurn(); // changement de tour
-                        response = $"{idGame}/{game.StringifyGameBoard()}|{score.Item1};{score.Item2}";
+                        response = $"{idGame}/{game.StringifyGameBoard()}|{capturedBlackStones};{capturedWhiteStones}";
                         type = "Broadcast_";
                     }
                     catch (Exception e)
