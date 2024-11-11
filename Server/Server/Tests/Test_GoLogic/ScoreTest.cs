@@ -1,7 +1,7 @@
 ﻿using GoLogic;
 using GoLogic.Score;
 
-namespace Test_GoLogic
+namespace Tests.Test_GoLogic
 {
     public class ScoreTest
     {
@@ -44,7 +44,7 @@ namespace Test_GoLogic
         {
             GameBoard gameBoard = new GameBoard(9);
             GameLogic gameLogic = new GameLogic(gameBoard);
-            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
+            ScoreRule gameScore = new JapaneseScoreRule(gameBoard);
 
             gameLogic.PlaceStone(1, 2); // noir
             gameLogic.PlaceStone(2, 2); // blanc
@@ -69,8 +69,8 @@ namespace Test_GoLogic
 
             (int black, int white) = gameScore.CalculateScore();
             
-            Assert.Equal(6, black);
-            Assert.Equal(3, white);
+            Assert.Equal(1, black);
+            Assert.Equal(0, white);
         }
 
         [Fact]

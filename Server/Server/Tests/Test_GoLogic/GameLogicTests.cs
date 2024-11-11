@@ -1,7 +1,6 @@
 ﻿using GoLogic;
-using Org.BouncyCastle.Asn1.BC;
 
-namespace Test_GoLogic
+namespace Tests.Test_GoLogic
 {
     public class GameLogicTests
     {
