@@ -10,7 +10,7 @@
         /// <summary>
         /// Le plateau du jeu et ses pions
         /// </summary>
-        public GameBoard GameBoard { get => gameBoard; }
+        public GameBoard GameBoard { get => this.gameBoard; }
 
         /// <summary>
         /// Le calculateur de score selon les différentes règles
@@ -150,6 +150,41 @@
             }
 
             return (resColor, resArea); 
+        }
+        
+        /// <summary>
+        /// Retire toutes les pierres mortes du Goban
+        /// pour qu'elles ne soient pas considéré lors du calcul du score
+        /// </summary>
+        public void RemoveDeadStone()
+        {
+            HashSet<Stone> visited = new HashSet<Stone>();
+
+            for (int x = 0; x < GameBoard.Size; x++)
+            {
+                for (int y = 0; y < GameBoard.Size; y++)
+                {
+                    Stone stone = GameBoard.GetStone(x, y);
+
+                    // Ne vérifie que les pierres qui n'ont pas été visitée
+                    if (!visited.Contains(stone) && stone.Color != StoneColor.Empty)
+                    {
+                        // Explore autour pour vérifier si la pierre est morte
+                        (StoneColor owner, List<Stone> region) = ExploreTerritory(stone, visited);
+                        
+                        // Si le maitre de la région est de couleur opposée, la pierre est retiré
+                        StoneColor opponentColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+                        if (owner == opponentColor)
+                        {
+                            foreach (Stone deadStone in region)
+                            {
+                                // Retire les pierres mortes
+                                GameBoard.Board[deadStone.X, deadStone.Y].Color = StoneColor.Empty;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
