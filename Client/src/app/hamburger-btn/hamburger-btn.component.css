@@ -3,7 +3,7 @@
     
 }
 
-@media (max-width: 805px) {
+@media (max-width: 1024px) {
     .test-nav-mobile {
         display: block;
         margin: 0%;

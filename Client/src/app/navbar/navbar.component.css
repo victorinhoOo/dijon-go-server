@@ -11,9 +11,15 @@
     overflow: hidden;
 }
 
+.hovered:hover{
+    background-color: lightblue;
+    opacity: 0.6;
+    
+}
 
 .navBtn{
     background-color: transparent;
+    border-radius: 10px;    
     border: none;
     padding: 10px;
     gap: 10px;
@@ -22,10 +28,6 @@
     transition: background-color 0.1s ease;
     align-items: center;
     display: flex;
-}
-
-.sidenav button.navBtn:hover {
-    background-color: lightblue !important;
 }
 
 
@@ -165,13 +167,69 @@ button:focus {
     
 }
 
-@media (min-width: 805px)  {
+@media (min-width: 1025px)  {
 
     #closeBtn{
         display: none;
     }
 
 }
+/* Styles pour les écrans de 853px x 1280px Nest Hub Max*/
+@media (min-width: 853px) and (max-width: 1280px) and (max-height: 1280px) {
+    #navbar-container {
+        width: 60%;
+        left: 0;
+        height: 100%;
+        transition: 0.5s;
+    }
 
-  
-  
+    .sidenav {
+        padding: 15px;
+    }
+
+    #closeBtn {
+        font-size: 28px;
+        color: red;
+        margin-left: 15px;
+    }
+}
+
+/* Styles pour les écrans de 1024px x 600px Nest Hub*/
+@media (min-width: 1024px) and (max-width: 1280px) and (max-height: 600px) {
+    #navbar-container {
+        width: 80%;
+        left: 0;
+        height: 100%;
+        transition: 0.5s;
+    }
+
+    .sidenav {
+        padding: 20px;
+    }
+
+    #closeBtn {
+        font-size: 26px;
+        color: blue;
+        margin-left: 15px;
+    }
+}
+
+/* Styles pour les écrans de 1024px x 1366px ipad pro */
+@media (min-width: 1024px) and (max-width: 1366px) and (max-height: 1366px) {
+    #navbar-container {
+        width: 80%;
+        left: 0;
+        height: 100%;
+        transition: 0.5s;
+    }
+
+    .sidenav {
+        padding: 20px;
+    }
+
+    #closeBtn {
+        font-size: 26px;
+        color: blue;
+        margin-left: 15px;
+    }
+}

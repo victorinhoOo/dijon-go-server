@@ -27,10 +27,16 @@ export class AppComponent implements AfterViewInit{
 
   // Ajout d'une propriété pour gérer la visibilité de la navbar
   private _isNavbarVisible: boolean = false;
+  private _isButtonClicked: boolean = false;
   private isBlack: boolean;
   // Getter pour obtenir la visibilité de la navbar
   public get isNavbarVisible(): boolean {
     return this._isNavbarVisible;
+  }
+
+  // Getter pour obtenir la visibilité du menu hamburger
+  public get isButtonClicked(): boolean {
+    return this._isButtonClicked;
   }
 
   private state: string;
@@ -123,17 +129,19 @@ export class AppComponent implements AfterViewInit{
   // Méthode pour basculer la visibilité de la navbar
   public toggleNavbar(): void {
     this._isNavbarVisible = !this._isNavbarVisible;
+    this._isButtonClicked = !this._isNavbarVisible;
   }
 
    // Méthode pour gérer la fermeture de la navbar
    public onCloseNavbar(): void {
     this._isNavbarVisible = false;
+    this._isButtonClicked = true;
   }
   
   // Méthode pour vérifier la taille de l'écran et ajuster la navbar
   private checkScreenSize(): void {
     const screenWidth = window.innerWidth;
-    this._isNavbarVisible = screenWidth >= 768;
+    this._isNavbarVisible = screenWidth >= 1025;
   }
 
   // Écouter les changements de taille de l'écran
