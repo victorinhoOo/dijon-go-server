@@ -121,6 +121,7 @@ export class IndexComponent implements OnInit {
           html: content,
           showCloseButton: true,
           focusConfirm: false,
+          confirmButtonText: 'Fermer',
           customClass: {
             confirmButton: 'custom-ok-button'
           },

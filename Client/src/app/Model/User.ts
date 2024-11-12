@@ -10,9 +10,16 @@ export class User {
       this.email = email;
     }
 
+    /**
+     * Renvoi le nom d'utilisateur de l'utilisateur
+     */
     public get Username(): string {
         return this.username;
     }
+    
+    /**
+     * Renvoi l'email de l'utilisateur
+     */
     public get Email(): string {
         return this.email;
     }

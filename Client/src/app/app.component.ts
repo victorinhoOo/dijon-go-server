@@ -38,21 +38,26 @@ export class AppComponent implements AfterViewInit{
   public get isButtonClicked(): boolean {
     return this._isButtonClicked;
   }
-
+  
+  /**
+   * Construit l'application en initialisant la valeur du mode sombre
+   */
   public constructor(private cdr: ChangeDetectorRef) {
     this.checkScreenSize();
     this.isBlack = false;
   }
 
-  
+  /**
+   * Initialisation des écouteurs d'événements après le chargement de la page
+   */
   public ngAfterViewInit()
-  {
-    //initialisation des feuilles de styles
-   
+  {   
    this.isBlack = false;
   }
 
-
+  /**
+   * Réagit au clic sur le bouton de changement de mode (sombre ou clair)
+   */
   public changeLightState():void{
     if(this.isBlack){
       // Mode sombre

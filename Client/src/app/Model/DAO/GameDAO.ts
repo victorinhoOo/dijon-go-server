@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { GameInfoDTO } from '../DTO/GameInfoDTO';
+import { environment } from '../../environment';
 
+/**
+ * Gère les requêtes HTTP vers l'API concernant les parties de jeu
+ */
 export class GameDAO {
   /**
    * Constructeur de la classe GameDAO.
@@ -17,7 +21,7 @@ export class GameDAO {
   public GetAvailableGames(): Observable<GameInfoDTO[]> {
     return this.http
       .get<{ games: GameInfoDTO[] }>(
-        'https://localhost:7065/Games/Available-games'
+        `${environment.apiUrl}/Games/Available-games`
       )
       .pipe(map((response) => response.games));
   }

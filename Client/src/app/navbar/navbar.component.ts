@@ -16,6 +16,9 @@ import { Output,EventEmitter, } from '@angular/core';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
+/**
+ * Composant de la barre latérale
+ */
 export class NavbarComponent implements OnInit, OnDestroy {
 
    // Émettre un événement pour notifier la fermeture
@@ -27,6 +30,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private tokenSubscription!: Subscription;
   private lightIsBlack: boolean
 
+  /**
+   * Renvoi le token de l'utilisateur connecté
+   */
   public get TokenUser(): string {
     return this.tokenUser;
   }
@@ -37,6 +43,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.tokenUser = '';
   }
 
+  /**
+   * Initialisation du composant, récupère le token de l'utilisateur et s'abonne à ses changements
+   */
   public ngOnInit(): void {
     // Abonnement à l'Observable qui émet les changements du token
     this.tokenSubscription = this.userCookieService.getTokenObservable().subscribe(token => {
@@ -46,6 +55,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Initialise les écouteurs d'événements sur les différents boutons de la navbar
+   */
   private setupEventListeners(): void {
     const profileButton = document.getElementById("profile-button");
     const playButton = document.getElementById("play-button");
@@ -89,6 +101,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     
   }
 
+  /**
+   * Detruction de la page
+   */
   public ngOnDestroy(): void {
     this.tokenSubscription.unsubscribe(); // Se désabonner de l'Observable pour éviter les fuites de mémoire
   }
@@ -103,6 +118,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.closeNavbar.emit(); // Émettre l'événement pour signaler la fermeture
   }
 
+  /**
+   * Activation de la navbar pour les tablettes et mobiles
+   */
   private toggleNavbar(): void {
     this.isNavbarVisible = !this.isNavbarVisible;
   }
