@@ -41,5 +41,10 @@
         /// Renvoi ou permet de modifier l'id d'un utilisateur
         /// </summary>
         public int? Id { get => id; set => id = value; }
+
+        /// <summary>
+        /// Renvoi ou permet de modifier l'id d'un utilisateur
+        /// </summary>
+        public int? Elo { get => elo; set => elo = value; }
     }
 }

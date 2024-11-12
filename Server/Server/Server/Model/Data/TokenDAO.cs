@@ -112,7 +112,7 @@
             {
                 // on récupére l'utilisateur associé au token
                 string query = @"
-                SELECT u.idUser, u.username, u.email
+                SELECT u.idUser, u.username, u.email, u.elo
                 FROM user u
                 INNER JOIN tokenuser t ON u.idToken = t.idToken
                 WHERE t.token = @token";
@@ -129,12 +129,14 @@
                     int idUser = Convert.ToInt32(result.Rows[0]["idUser"]);
                     string username = result.Rows[0]["username"].ToString();
                     string email = result.Rows[0]["email"].ToString();
+                    int elo = Convert.ToInt32(result.Rows[0]["elo"]);
 
                     user = new User
                     {
                         Id = idUser,
                         Username = username,
-                        Email = email
+                        Email = email,
+                        Elo = elo,
                     };
                 }
             }
