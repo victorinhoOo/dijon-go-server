@@ -29,7 +29,6 @@ export class AppComponent implements AfterViewInit{
   private _isNavbarVisible: boolean = false;
   private _isButtonClicked: boolean = false;
   private isBlack: boolean;
-  private state: string;
   // Getter pour obtenir la visibilité de la navbar
   public get isNavbarVisible(): boolean {
     return this._isNavbarVisible;
@@ -40,18 +39,7 @@ export class AppComponent implements AfterViewInit{
     return this._isButtonClicked;
   }
 
-  // Getter pour l'attribut `state`
-  getState(): string {
-    return this.state;
-  }
-
-  // Setter pour l'attribut `state`
-  setState(SetState: string): void {
-    this.state = SetState;
-  }
-
   public constructor(private cdr: ChangeDetectorRef) {
-    this.state = 'light';
     this.checkScreenSize();
     this.isBlack = false;
   }
@@ -117,18 +105,27 @@ export class AppComponent implements AfterViewInit{
         });
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
     }
+    console.log("tesssst "+ this.isBlack);
   }
   
   // Méthode pour basculer la visibilité de la navbar
   public toggleNavbar(): void {
+    
+    
     this._isNavbarVisible = !this._isNavbarVisible;
     this._isButtonClicked = !this._isNavbarVisible;
+    if(this.isBlack){
+      console.log('le style est noir');
+      var textcolor = "#FFFFFF"
+      document.getElementById("navbar-container")!.style.backgroundColor = textcolor;
+    }
   }
 
    // Méthode pour gérer la fermeture de la navbar
    public onCloseNavbar(): void {
     this._isNavbarVisible = false;
     this._isButtonClicked = true;
+    this.changeLightState();
   }
   
   // Méthode pour vérifier la taille de l'écran et ajuster la navbar
@@ -153,6 +150,7 @@ export class AppComponent implements AfterViewInit{
   public onThemeChangeEvent($event: boolean){
       this.isBlack = $event;
       this.changeLightState();
+      
    }  
 }
 
