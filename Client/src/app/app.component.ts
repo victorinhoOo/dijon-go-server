@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy,ViewChild, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GridComponent } from './grid/grid.component';
 import { RegisterComponent } from './register/register.component';  
@@ -9,34 +9,66 @@ import { ProfileComponent }  from './profile/profile.component'
 import { IndexComponent } from './index/index.component';
 import { FooterComponent } from "./footer/footer.component";
 import { WebsocketService } from './websocket.service';
-
+import { CommonModule } from '@angular/common';
+import { HamburgerBtnComponent } from './hamburger-btn/hamburger-btn.component';
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, GridComponent, RegisterComponent, UploadImageComponent, NavbarComponent, ProfileComponent, ConnexionComponent, IndexComponent, FooterComponent],
+  imports: [RouterOutlet, GridComponent, RegisterComponent, UploadImageComponent, NavbarComponent, ProfileComponent, ConnexionComponent, IndexComponent, FooterComponent, CommonModule,HamburgerBtnComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 
 })
 export class AppComponent implements AfterViewInit{
-  title = 'Client';
-  private state: string;
 
-  public constructor() {
-    this.state = 'light';
+  @ViewChild(NavbarComponent) navbarComponent!: NavbarComponent;
+
+  // Ajout d'une propriété pour gérer la visibilité de la navbar
+  private _isNavbarVisible: boolean = false;
+  private isBlack: boolean;
+  // Getter pour obtenir la visibilité de la navbar
+  public get isNavbarVisible(): boolean {
+    return this._isNavbarVisible;
   }
 
+  private state: string;
 
+
+  // Getter pour l'attribut `state`
+  getState(): string {
+    return this.state;
+  }
+
+  // Setter pour l'attribut `state`
+  setState(SetState: string): void {
+    this.state = SetState;
+  }
+  
+  /**
+   * Construit l'application en initialisant la valeur du mode sombre
+   */
+  public constructor(private cdr: ChangeDetectorRef) {
+    this.state = 'light';
+    this.checkScreenSize();
+    this.isBlack = false;
+  }
+
+  /**
+   * Initialisation des écouteurs d'événements après le chargement de la page
+   */
   public ngAfterViewInit(){
     document.getElementById('state-button')!.addEventListener('click', () => {
       this.changeLightState();
     });
   }
 
-
+  /**
+   * Réagit au clic sur le bouton de changement de mode (sombre ou clair)
+   */
   public changeLightState():void{
-    if(this.state == "light"){
+    if(this.isBlack == false){
       // Mode sombre
       document.body.style.background = "#302E2B";
       document.body.style.color = "white";
@@ -61,7 +93,8 @@ export class AppComponent implements AfterViewInit{
 
       });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
-      this.state = "dark";
+      this.cdr.detectChanges();
+      this.isBlack = true;
     }else{
       // Mode Clair
       document.body.style.background = "#f5f5f5";
@@ -86,8 +119,50 @@ export class AppComponent implements AfterViewInit{
             });
         });
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
-      this.state = "light"
+      this.isBlack = false;
     }
+    this.cdr.detectChanges();
+
     
   }
+  
+  // Méthode pour basculer la visibilité de la navbar
+  public toggleNavbar(): void {
+    this._isNavbarVisible = !this._isNavbarVisible;
+  }
+
+   // Méthode pour gérer la fermeture de la navbar
+   public onCloseNavbar(): void {
+    this._isNavbarVisible = false;
+  }
+  
+  // Méthode pour vérifier la taille de l'écran et ajuster la navbar
+  private checkScreenSize(): void {
+    const screenWidth = window.innerWidth;
+    this._isNavbarVisible = screenWidth >= 768;
+  }
+
+  // Écouter les changements de taille de l'écran
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.checkScreenSize();
+  }
+
+  public onThemeChange(states: string): void {
+    this.state = states; // Met à jour la propriété state avec la nouvelle valeur
+  }
+
+  /**
+   * Méthode appelée lorsque l'événement de changement de thème est déclenché.
+   * Elle met à jour l'état `isBlack` en fonction de la valeur de l'événement,
+   * et applique les changements de style correspondants en appelant `changeLightState`.
+   *
+   * @param $event - Un booléen indiquant si le thème sombre (true) ou clair (false) est activé.
+   */
+  public onThemeChangeEvent($event: boolean){
+      this.isBlack = $event;
+      console.log("Changement de thème :", this.isBlack);
+      this.changeLightState();
+   }  
 }
+

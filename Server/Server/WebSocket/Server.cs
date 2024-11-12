@@ -178,11 +178,9 @@ namespace WebSocket
             this.SendMessage(game.Player1, bytes);
             this.SendMessage(game.Player2, bytes);
 
-            if (this.TestWin(game)) // Test si la partie est terminée
+            if (this.TestWin(game)) // Test si la partie est terminée et lance la gestion de fin de partie si c'est le cas
             {
-                byte[] endOfGameMessage = this.webSocket.BuildMessage($"{game.Id}/EndOfGame");
-                this.SendMessage(game.Player1, endOfGameMessage);
-                this.SendMessage(game.Player2, endOfGameMessage);
+                this.handleGameEnd(game);
             }
         }
 
@@ -190,7 +188,7 @@ namespace WebSocket
         /// <summary>
         /// Démarre une partie
         /// </summary>
-        private void StartGame(Game game) 
+        private void StartGame(Game game)
         {
             string p1 = this.interpreter.GetUsernameByToken(game.Player1.Token);
             string p2 = this.interpreter.GetUsernameByToken(game.Player2.Token);
@@ -198,6 +196,26 @@ namespace WebSocket
             byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{p1}"); // Envoi du nom du joueur à son adversaire
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
+        }
+
+        /// <summary>
+        /// Gère la fin de partie en récupérant le score final des deux joueurs et en renvoyant le gagnant aux deux joueurs 
+        /// </summary>
+        private void handleGameEnd(Game game)
+        {
+            (int,int) scores = game.GetScore();
+            int scorePlayer1 = scores.Item1;
+            int scorePlayer2 = scores.Item2;
+
+            bool player1won = scorePlayer1 >= scorePlayer2;
+            bool player2won = scorePlayer2 > scorePlayer1;
+
+            //todo: gérer le gain et la perte d'elo en fonction du résultat (dans l'interpreter)
+
+            byte[] endOfGameMessagePlayer1 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer1}-{scorePlayer2}|{player1won}");
+            byte[] endOfGameMessagePlayer2 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer2}-{scorePlayer1}|{player2won}");
+            this.SendMessage(game.Player1, endOfGameMessagePlayer1);
+            this.SendMessage(game.Player2, endOfGameMessagePlayer2);
         }
 
         /// <summary>

@@ -47,14 +47,25 @@ namespace Server.Model.Data
             bool res = false;
             database.Connect();
 
-            string query = "INSERT INTO user (username, hashPwd, email) VALUES (@username, @hashPwd, @email)";
+            // Adapter la requête SQL en fonction de la présence du mot de passe
+            string query;
             var parameters = new Dictionary<string, object>
-                {
-                    {"@username", user.Username},
-                    {"@hashPwd", user.Password},
-                    {"@email", user.Email}
-                };
+            {
+                {"@username", user.Username},
+                {"@email", user.Email}
+            };
 
+            if (!string.IsNullOrEmpty(user.Password)) // Gestion du stockage des comptes googles (sans mot de passe)
+            {
+                query = "INSERT INTO user (username, hashPwd, email) VALUES (@username, @hashPwd, @email)";
+                parameters.Add("@hashPwd", user.Password);
+            }
+            else
+            {
+                query = "INSERT INTO user (username, email) VALUES (@username, @email)";
+            }
+
+            // Exécution de la requête
             database.ExecuteNonQuery(query, parameters);
             res = true;
 
@@ -62,6 +73,7 @@ namespace Server.Model.Data
             logger.LogInformation($"L'utilisateur {user.Username} a été enregistré");
             return res;
         }
+
 
         /// <inheritdoc/>
         public bool Update(User user)
