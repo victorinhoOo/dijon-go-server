@@ -5,6 +5,7 @@ import { LoginUserDTO } from '../DTO/LoginUserDTO';
 import { UpdateUserDTO }from '../DTO/UpdateUserDTO';
 import { User } from '../User';
 import { HttpParams } from '@angular/common/http';
+import { environment } from '../../environment';
 
 /**
  * Gère les requêtes HTTP vers l'API pour la gestion des comptes utilisateurs
@@ -12,7 +13,7 @@ import { HttpParams } from '@angular/common/http';
 export class UserDAO {
   
   // URL de base pour les requêtes vers l'API utilisateur
-  private readonly url = 'https://localhost:7065/User/'; 
+  private readonly url = `${environment.apiUrl}/User/`;
 
   /**
    * Constructeur de la classe UserDAO.
