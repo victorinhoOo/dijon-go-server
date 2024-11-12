@@ -43,7 +43,10 @@ export class Interpreter {
       this.initIdGame(message);
     } else if (message.includes('x,y,color')) {
       this.updateTurn(message);
-    } else if (message.includes('Start')) {
+    } else if(message.includes("skipped")){
+      this.skipTurn();
+    }
+    else if (message.includes('Start')) {
       this.startGame(message);
     } else if (message.includes('EndOfGame')) {
       let data = message.split(":")[1].split("|")
@@ -115,6 +118,11 @@ export class Interpreter {
     this.updateHover();
   }
 
+  private skipTurn(){
+    this.game.changeTurn();
+    this.updateHover();
+  }
+
   private startGame(message: string): void {
     this.game.initCurrentTurn();
     let pseudo = document.getElementById('pseudo-text');
@@ -127,6 +135,8 @@ export class Interpreter {
   public setGame(game:Game){
     this.game = game;
   }
+
+ 
 
   public getPlayerColor():string{
     return this.game.getPlayerColor();
@@ -141,7 +151,6 @@ export class Interpreter {
     let stonesArray = Array.from(stones);
     if(this.game.isPlayerTurn()){
       document.getElementById("global-container")!.style.cursor = "pointer";
-      alert(document.getElementById("global-container")!.style.cursor);
       stonesArray.forEach((stone)=>{
         stone.classList.add("active");
       })
