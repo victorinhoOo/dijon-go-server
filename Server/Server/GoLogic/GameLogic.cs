@@ -65,7 +65,6 @@
 
             this.skippedTurn = false;
             Stone stone = Board.Board[x, y]; // récupère la pierre aux coordonnées données
-            //RemoveKo(); // retire les cases marquer Ko
 
             if (!IsValidMove(stone))
             {
@@ -76,8 +75,9 @@
                 Board.Board[x, y].Color = CurrentTurn; // place la pierre en changeant sa couleur de Empty à CurrentTurn
                 Moves.Add(new Stone(x, y, CurrentTurn)); // enregistre le coup
                 CapturesOpponent(stone); // vérifie et élimine les pierres capturées
+                RemoveKo(); // retire les cases marquer Ko
 
-                //ChecksGobanForKo(); // Marques les cases selon la règle de Ko
+                ChecksGobanForKo(); // Marques les cases selon la règle de Ko
                 CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black; // tour passe au joueur suivant
 
                 res = true;
@@ -159,17 +159,25 @@
             {
                 if (stone.Color == StoneColor.Empty)
                 {
-                    // Place la pierre temporairement pour la vérification de Ko
-                    Board.Board[stone.X, stone.Y].Color = opponentColor;
-
-                    if (IsKoViolation()) 
+                    if (true)
                     {
-                        Board.Board[stone.X, stone.Y].Color = StoneColor.Ko ; // Marque l'intersection
-                    }
+                        // Place la pierre temporairement pour la vérification de Ko
+                        Board.Board[stone.X, stone.Y].Color = opponentColor;
 
-                    Board.Board[stone.X, stone.Y].Color = StoneColor.Empty;
+                        if (IsKoViolation())
+                        {
+                            Board.Board[stone.X, stone.Y].Color = StoneColor.Ko; // Marque l'intersection
+                        }
+                        else
+                        {
+                            Board.Board[stone.X, stone.Y].Color = StoneColor.Empty;
+                        }
+                        
+                        
+                    }
+                    
                 }
-                
+                //Console.WriteLine(stone.Color);
             }
         }
         
