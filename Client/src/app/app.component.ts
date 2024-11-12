@@ -60,7 +60,7 @@ export class AppComponent implements AfterViewInit{
   public ngAfterViewInit()
   {
     //initialisation des feuilles de styles
-   this.changeLightState();
+   
    this.isBlack = false;
   }
 
