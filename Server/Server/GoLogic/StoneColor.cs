@@ -7,6 +7,7 @@
     {
         Black,
         White,
-        Empty
+        Empty,
+        Ko
     }
 }

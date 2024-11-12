@@ -61,27 +61,30 @@
         /// <returns>Vraie si la pierre a pu être placé, faux sinon</returns>
         public bool PlaceStone(int x, int y)
         {
-            try
-            {
-                this.skippedTurn = false;
-                Stone stone = Board.Board[x, y]; // récupère la pierre aux coordonnées données
+            bool res = false;
 
-                if (!IsValidMove(stone))
-                {
-                    throw new InvalidOperationException($"Move at ({x}, {y}) is not valid.");
-                }
+            this.skippedTurn = false;
+            Stone stone = Board.Board[x, y]; // récupère la pierre aux coordonnées données
+            //RemoveKo(); // retire les cases marquer Ko
+
+            if (!IsValidMove(stone))
+            {
+                throw new InvalidOperationException($"Move at ({x}, {y}) is not valid.");
+            }
+            else
+            {
                 Board.Board[x, y].Color = CurrentTurn; // place la pierre en changeant sa couleur de Empty à CurrentTurn
                 Moves.Add(new Stone(x, y, CurrentTurn)); // enregistre le coup
                 CapturesOpponent(stone); // vérifie et élimine les pierres capturées
+
+                //ChecksGobanForKo(); // Marques les cases selon la règle de Ko
                 CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black; // tour passe au joueur suivant
 
-                return true;
+                res = true;
             }
-            catch(Exception ex) 
-            {
-                Console.WriteLine(ex.Message);
-                throw new InvalidOperationException(ex.Message);
-            }
+            
+
+            return res;
         }
 
         /// <summary>
@@ -143,7 +146,47 @@
             Board.CopieBoard(); // On copie l'état du plateau actuel dans previousBoard
             return res; 
         }
+
+        /// <summary>
+        /// Marque Ko les cases du Goban
+        /// Une case est Ko si le coup remet le plateau dans son état précédent
+        /// On simule un coup pour chaque case
+        /// </summary>
+        public void ChecksGobanForKo()
+        {
+            StoneColor opponentColor = currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+            foreach (Stone stone in Board.Board)
+            {
+                if (stone.Color == StoneColor.Empty)
+                {
+                    // Place la pierre temporairement pour la vérification de Ko
+                    Board.Board[stone.X, stone.Y].Color = opponentColor;
+
+                    if (IsKoViolation()) 
+                    {
+                        Board.Board[stone.X, stone.Y].Color = StoneColor.Ko ; // Marque l'intersection
+                    }
+
+                    Board.Board[stone.X, stone.Y].Color = StoneColor.Empty;
+                }
+                
+            }
+        }
         
+        /// <summary>
+        /// Retire toutes les cases du Goban marquer Ko
+        /// </summary>
+        public void RemoveKo()
+        {
+            foreach (Stone stone in Board.Board)
+            {
+                if (stone.Color == StoneColor.Ko)
+                {
+                    stone.Color = StoneColor.Empty;
+                }
+            }
+        }
+
         /// <summary>
         /// Après avoir placé une pierre à (x, y), vérifie si des pierres adverses sont capturées.
         /// Les pierres capturées sont retirées du plateau (couleur Empty)
