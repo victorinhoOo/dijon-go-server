@@ -69,8 +69,44 @@ namespace Tests.Test_GoLogic
 
             (int black, int white) = gameScore.CalculateScore();
             
-            Assert.Equal(1, black);
+            Assert.Equal(2, black);
             Assert.Equal(0, white);
+        }
+
+        [Fact]
+        public void ScoreRule_Chinese2()
+        {
+            GameBoard gameBoard = new GameBoard(9);
+            GameLogic gameLogic = new GameLogic(gameBoard);
+            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
+
+            gameLogic.PlaceStone(0, 1); // noir
+            gameLogic.PlaceStone(0, 2); // blanc
+            gameLogic.PlaceStone(1, 1); // noir
+            gameLogic.PlaceStone(1, 2); // blanc
+            gameLogic.PlaceStone(1, 0); // noir
+            gameLogic.PlaceStone(2, 2); // blanc
+            gameLogic.PlaceStone(8, 0); // noir
+            gameLogic.PlaceStone(2, 1); // blanc
+            gameLogic.PlaceStone(8, 1); // noir
+            gameLogic.PlaceStone(2, 0); // blanc
+
+            // . @ O . . . . . .
+            // @ @ O . . . . . .
+            // O O O . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // @ @ . . . . . . .
+            // . : vide, @ : noir, O : blanc
+
+            (int black, int white) = gameScore.CalculateScore();
+
+            // TODO: décommenter ou retirer
+            //Assert.Equal(9, black);
+            //Assert.Equal(2, white);
         }
 
         [Fact]

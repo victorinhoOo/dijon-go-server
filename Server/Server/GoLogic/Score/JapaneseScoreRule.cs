@@ -14,7 +14,6 @@
         /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public override (int blackStones, int whiteStones) CalculateScore()
         {
-            RemoveDeadStone();
             (int territoryBlack, int territoryWhite) = FindTerritory();
             return (territoryBlack + GameBoard.CapturedWhiteStones, territoryWhite + GameBoard.CapturedBlackStones);
         }
