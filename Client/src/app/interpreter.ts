@@ -34,7 +34,7 @@ export class Interpreter {
    * @param message message envoyé par le serveur websocket
    * @param state définit l'état de la partie (en cours ou terminée)
    */
-  public interpret(message: string, state: { end: boolean }): void {
+  public interpret(message: string, state: { end: boolean, won: string, player1score: string, player2score: string}): void {
     if (message.length <= 3) {
       this.initIdGame(message);
     } else if (message.includes('x,y,color')) {
@@ -42,6 +42,12 @@ export class Interpreter {
     } else if (message.includes('Start')) {
       this.startGame(message);
     } else if (message.includes('EndOfGame')) {
+      let data = message.split(":")[1].split("|")
+      let scores = data[0].split("-");
+      state.player1score = scores[0];
+      state.player2score = scores[1];
+      state.won = data[1];
+      console.log(state.won)
       state.end = true;
     }
     console.log(message);

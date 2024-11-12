@@ -1,9 +1,4 @@
 <div class="main-container">
-    <app-popup [show]="ShowPopup"  [title]="PopupTitle" (onClose)="handlePopupClose()">
-        <div class="game-choice" [innerHTML]="PopupContent">   
-                     
-        </div>
-    </app-popup>
     <div class="player-info">
         <img class="avatar" src="{{ Avatar }}" alt="photo de profil">
         <p class="pseudo">{{ UserPseudo }}</p>
@@ -23,7 +18,7 @@
         </a>
     </div>
     <div class="game-options">
-        <a href="">
+        <a id="join-matchmaking">
             <img src="matchmaking.png" alt="Matchmaking">
             Matchmaking en ligne
         </a>

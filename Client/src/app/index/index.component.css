@@ -166,6 +166,7 @@
     color: black;
 }
 
+
 .leaderboard-section {
     text-align: center;
     margin-top: 10px;
@@ -232,21 +233,66 @@
     color: black;
 }
 
-::ng-deep .game-choice a {
+::ng-deep .game-choice {
     background-color: #FADBB5;
-    color: black;
-    width: 500px;
     border-radius: 10px;
     padding: 10px;
     display: block; 
     margin-bottom: 5px;
+    text-align: left;
+    cursor: pointer;
+}
+
+::ng-deep .game-choice a {
+    color: black;
     text-decoration: none;
     text-align: left;
 }
 
-::ng-deep .game-choice a:hover {
+::ng-deep .game-choice i {
+    margin-right: 20px;
+}
+
+::ng-deep .custom-ok-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .game-choice:hover {
     background-color: #F1C690;
 }
+
+::ng-deep #create-game-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    color: black;
+}
+
+::ng-deep #create-game-form select{
+    width: 500px;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+::ng-deep #create-game-form button{
+    background-color: #FA7E5C;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    width: 500px;
+}
+  
+  /* Ciblez l'animation spécifique de chargement */
+::ng-deep .swal2-popup .swal2-loading .swal2-loader {
+    border-color: #F3AD09 !important; /* Couleur de bordure */
+    border-left-color: transparent !important; /* Effet de rotation */
+    border-right-color: transparent !important;
+}
+  
 
 
 

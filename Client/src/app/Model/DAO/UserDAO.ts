@@ -5,6 +5,7 @@ import { LoginUserDTO } from '../DTO/LoginUserDTO';
 import { UpdateUserDTO }from '../DTO/UpdateUserDTO';
 import { User } from '../User';
 import { HttpParams } from '@angular/common/http';
+import { environment } from '../../environment';
 
 /**
  * Gère les requêtes HTTP vers l'API pour la gestion des comptes utilisateurs
@@ -12,7 +13,7 @@ import { HttpParams } from '@angular/common/http';
 export class UserDAO {
   
   // URL de base pour les requêtes vers l'API utilisateur
-  private readonly url = 'https://localhost:7065/User/'; 
+  private readonly url = `${environment.apiUrl}/User/`;
 
   /**
    * Constructeur de la classe UserDAO.
@@ -57,6 +58,16 @@ export class UserDAO {
       })
     );
   }
+
+  /**
+   * Envoie une requête POST pour se connecter avec Google
+   * @param idToken le token Google de l'utilisateur
+   */
+  public GoogleLogin(idToken: string) {
+    const params = new HttpParams().set('idToken', idToken);
+    return this.http.post<{ token: string }>(`${this.url}GoogleLogin`, null, { params });
+  }
+
 
   /**
    * Envoie une requête GET pour récupérer les informations de l'utilisateur

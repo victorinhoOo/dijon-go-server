@@ -12,14 +12,22 @@ export class User {
         this.elo = elo;
     }
 
+    /**
+     * Renvoi le nom d'utilisateur de l'utilisateur
+     */
     public get Username(): string {
         return this.username;
     }
-
+    
+    /**
+     * Renvoi l'email de l'utilisateur
+     */
     public get Email(): string {
         return this.email;
     }
-
+    /**
+     * revoie l'elo du joueur
+     */
     public get Elo(): number {
         return this.elo;
     }

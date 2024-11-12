@@ -24,6 +24,11 @@
     margin-bottom: 15px;
     
   }
+
+  ::ng-deep .custom-ok-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+  }
   
   label {
     display: block;

@@ -14,7 +14,6 @@ export class UserCookieService {
   private userKey = 'authUser';          // Clé pour le stockage de l'utilisateur
 
   private tokenSubject : BehaviorSubject<string>;
-
   constructor(private cookieService: CookieService) {
     this.tokenSubject = new BehaviorSubject<string>(this.getToken());
   }

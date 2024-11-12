@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { UserCookieService } from './Model/UserCookieService';
 import { Interpreter } from './interpreter';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { environment } from './environment';
+import { env } from 'process';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +21,7 @@ export class WebsocketService {
    * Constructeur du service
    * @param userCookieService Service permettant de récupérer les informations de l'utilisateur
    */
-  constructor(private userCookieService: UserCookieService) {
+  constructor(private userCookieService: UserCookieService, private router: Router,) {
     this.websocket = null;;
     this.interpreter = new Interpreter();
   }
@@ -28,17 +32,17 @@ export class WebsocketService {
    */
   public connectWebsocket(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.websocket = new WebSocket('ws:///127.0.0.1:7000/'); //10.211.55.3
+      this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/`); 
       this.websocket.onopen = () => {
         console.log('connected');
         resolve();
       };
 
       this.websocket.onmessage = (message) => {
-        let state = { end: false };
+        let state = { end: false, won: "false", player1score: '0', player2score: '0'};
         this.interpreter.interpret(message.data, state);
         if (state.end) {
-          this.endGame();
+          this.endGame(state.won, state.player1score, state.player2score);
         }
       };
 
@@ -48,10 +52,23 @@ export class WebsocketService {
     });
   }
 
-  private endGame(){
-    alert("end of game");
-    this.disconnectWebsocket
+  private endGame(won: string, player1score: string, player2score: string) {
+    this.disconnectWebsocket(); 
+    Swal.fire({
+      title: won === "True" ? 'Victoire ! 🎉' : 'Défaite 😞',
+      text: `Score final : ${player1score} - ${player2score}`,
+      icon: won === "True" ? 'success' : 'error',
+      confirmButtonText: 'Fermer',
+      customClass: {
+        confirmButton: 'custom-ok-button'
+      },
+    }).then(() => {
+      // Redirection vers l'index après la fermeture du popup
+      this.router.navigate(['/index']);
+    });
   }
+  
+  
 
 
   /**
