@@ -108,7 +108,6 @@ export class IndexComponent implements OnInit {
 
     const joinMatchmakingLink = document.getElementById('join-matchmaking');
     if (joinMatchmakingLink) {
-      console.log("1");
       joinMatchmakingLink.addEventListener('click', () => {
         this.initializeJoinMatchmakingPopup();
       } )
@@ -121,7 +120,6 @@ export class IndexComponent implements OnInit {
   private initializeJoinGamePopupContent() {
     this.gameDAO.GetAvailableGames().subscribe({
       next: (games: GameInfoDTO[]) => {
-        console.log(games);
         let content = '';
         games.forEach((game) => {
           content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}">${game["title"]} ${game["size"]}x${game["size"]}</a></div><br>`;
@@ -185,8 +183,6 @@ export class IndexComponent implements OnInit {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const { gridSize, rules } = result.value!;
-        console.log(`Taille de la grille sélectionnée : ${gridSize}`);
-        console.log(`Règles sélectionnées : ${rules}`);
 
         // Affichez un chargement avant la connexion
         Swal.fire({
@@ -227,7 +223,6 @@ export class IndexComponent implements OnInit {
           didOpen: () => {
             Swal.showLoading();
             //todo : recherche de partie
-            console.log("recherche de partie...")
           },
           willClose: () => {
             // todo : Arrêtez la recherche de partie si l'utilisateur ferme le popup

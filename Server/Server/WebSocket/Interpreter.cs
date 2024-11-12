@@ -92,7 +92,8 @@ namespace WebSocket
         private void CreateGame(Client client, string message, ref string response, ref string type)
         {
             int id = Server.Games.Count + 1; // Génération de l'id de la partie
-            Game newGame = new Game(client);
+            Game newGame = new Game();
+            newGame.AddPlayer(client);
             Server.Games[id] = newGame;
             gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
             client.Token = message.Split(":")[1];

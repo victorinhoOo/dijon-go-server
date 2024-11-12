@@ -27,30 +27,22 @@ export class AppComponent implements AfterViewInit{
 
   // Ajout d'une propriété pour gérer la visibilité de la navbar
   private _isNavbarVisible: boolean = false;
+  private _isButtonClicked: boolean = false;
   private isBlack: boolean;
   // Getter pour obtenir la visibilité de la navbar
   public get isNavbarVisible(): boolean {
     return this._isNavbarVisible;
   }
-
-  private state: string;
-
-
-  // Getter pour l'attribut `state`
-  getState(): string {
-    return this.state;
-  }
-
-  // Setter pour l'attribut `state`
-  setState(SetState: string): void {
-    this.state = SetState;
+  
+  // Getter pour obtenir la visibilité du menu hamburger
+  public get isButtonClicked(): boolean {
+    return this._isButtonClicked;
   }
   
   /**
    * Construit l'application en initialisant la valeur du mode sombre
    */
   public constructor(private cdr: ChangeDetectorRef) {
-    this.state = 'light';
     this.checkScreenSize();
     this.isBlack = false;
   }
@@ -58,17 +50,16 @@ export class AppComponent implements AfterViewInit{
   /**
    * Initialisation des écouteurs d'événements après le chargement de la page
    */
-  public ngAfterViewInit(){
-    document.getElementById('state-button')!.addEventListener('click', () => {
-      this.changeLightState();
-    });
+  public ngAfterViewInit()
+  {   
+   this.isBlack = false;
   }
 
   /**
    * Réagit au clic sur le bouton de changement de mode (sombre ou clair)
    */
   public changeLightState():void{
-    if(this.isBlack == false){
+    if(this.isBlack){
       // Mode sombre
       document.body.style.background = "#302E2B";
       document.body.style.color = "white";
@@ -93,9 +84,8 @@ export class AppComponent implements AfterViewInit{
 
       });
       (<HTMLButtonElement>document.getElementById("state")!).textContent = "Interface claire";
-      this.cdr.detectChanges();
-      this.isBlack = true;
-    }else{
+    }
+    else{
       // Mode Clair
       document.body.style.background = "#f5f5f5";
       document.body.style.color = "black";
@@ -119,37 +109,40 @@ export class AppComponent implements AfterViewInit{
             });
         });
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
-      this.isBlack = false;
     }
-    this.cdr.detectChanges();
-
-    
+    console.log("tesssst "+ this.isBlack);
   }
   
   // Méthode pour basculer la visibilité de la navbar
   public toggleNavbar(): void {
+    
+    
     this._isNavbarVisible = !this._isNavbarVisible;
+    this._isButtonClicked = !this._isNavbarVisible;
+    if(this.isBlack){
+      console.log('le style est noir');
+      var textcolor = "#FFFFFF"
+      document.getElementById("navbar-container")!.style.backgroundColor = textcolor;
+    }
   }
 
    // Méthode pour gérer la fermeture de la navbar
    public onCloseNavbar(): void {
     this._isNavbarVisible = false;
+    this._isButtonClicked = true;
+    this.changeLightState();
   }
   
   // Méthode pour vérifier la taille de l'écran et ajuster la navbar
   private checkScreenSize(): void {
     const screenWidth = window.innerWidth;
-    this._isNavbarVisible = screenWidth >= 768;
+    this._isNavbarVisible = screenWidth >= 1025;
   }
 
   // Écouter les changements de taille de l'écran
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.checkScreenSize();
-  }
-
-  public onThemeChange(states: string): void {
-    this.state = states; // Met à jour la propriété state avec la nouvelle valeur
   }
 
   /**
@@ -161,8 +154,8 @@ export class AppComponent implements AfterViewInit{
    */
   public onThemeChangeEvent($event: boolean){
       this.isBlack = $event;
-      console.log("Changement de thème :", this.isBlack);
       this.changeLightState();
+      
    }  
 }
 
