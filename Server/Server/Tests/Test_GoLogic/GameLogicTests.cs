@@ -226,7 +226,7 @@ namespace Tests.Test_GoLogic
             // . . . @ . . . . .
 
             Assert.Equal(StoneColor.Black, gameBoard.Board[2, 3].Color);
-            Assert.Equal(StoneColor.Empty, gameBoard.Board[2, 2].Color);
+            Assert.Equal(StoneColor.Ko, gameBoard.Board[2, 2].Color);
         }
 
         [Fact]

@@ -75,9 +75,9 @@
                 Board.Board[x, y].Color = CurrentTurn; // place la pierre en changeant sa couleur de Empty à CurrentTurn
                 Moves.Add(new Stone(x, y, CurrentTurn)); // enregistre le coup
                 CapturesOpponent(stone); // vérifie et élimine les pierres capturées
-                RemoveKo(); // retire les cases marquer Ko
+                // RemoveKo(); // retire les cases marquer Ko
 
-                ChecksGobanForKo(); // Marques les cases selon la règle de Ko
+                // ChecksGobanForKo(); // Marques les cases selon la règle de Ko //TODO: peut être déplacer
                 CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black; // tour passe au joueur suivant
 
                 res = true;
@@ -119,6 +119,8 @@
                     result = false; // Coup invalide (ne respecte pas la régle de ko)
                 }
             }
+            if (result) Board.CopieBoard(); // On copie l'état du plateau actuel dans previousBoard
+
             return result;
         }
 
@@ -143,7 +145,6 @@
                 }
             }
 
-            Board.CopieBoard(); // On copie l'état du plateau actuel dans previousBoard
             return res; 
         }
 
@@ -159,23 +160,17 @@
             {
                 if (stone.Color == StoneColor.Empty)
                 {
-                    if (true)
-                    {
-                        // Place la pierre temporairement pour la vérification de Ko
-                        Board.Board[stone.X, stone.Y].Color = opponentColor;
+                    // Place la pierre temporairement pour la vérification de Ko
+                    Board.Board[stone.X, stone.Y].Color = opponentColor;
 
-                        if (IsKoViolation())
-                        {
-                            Board.Board[stone.X, stone.Y].Color = StoneColor.Ko; // Marque l'intersection
-                        }
-                        else
-                        {
-                            Board.Board[stone.X, stone.Y].Color = StoneColor.Empty;
-                        }
-                        
-                        
+                    if (IsKoViolation())
+                    {
+                        Board.Board[stone.X, stone.Y].Color = StoneColor.Ko; // Marque l'intersection
                     }
-                    
+                    else
+                    {
+                        Board.Board[stone.X, stone.Y].Color = StoneColor.Empty;
+                    }
                 }
                 //Console.WriteLine(stone.Color);
             }
