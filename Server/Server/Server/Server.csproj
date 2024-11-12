@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentFTP" Version="50.1.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.10" />
     <PackageReference Include="MySql.Data" Version="9.0.0" />
     <PackageReference Include="Serilog" Version="4.0.2" />

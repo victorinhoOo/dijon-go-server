@@ -59,6 +59,16 @@ export class UserDAO {
   }
 
   /**
+   * Envoie une requête POST pour se connecter avec Google
+   * @param idToken le token Google de l'utilisateur
+   */
+  public GoogleLogin(idToken: string) {
+    const params = new HttpParams().set('idToken', idToken);
+    return this.http.post<{ token: string }>(`${this.url}GoogleLogin`, null, { params });
+  }
+
+
+  /**
    * Envoie une requête GET pour récupérer les informations de l'utilisateur
    * @param token token utilisateur
    * @returns Les informations de l'utilisateur sous forme d'objet

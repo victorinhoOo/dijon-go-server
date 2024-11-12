@@ -29,18 +29,29 @@ export class AppComponent implements AfterViewInit{
   private _isNavbarVisible: boolean = false;
   private _isButtonClicked: boolean = false;
   private isBlack: boolean;
+  private state: string;
   // Getter pour obtenir la visibilité de la navbar
   public get isNavbarVisible(): boolean {
     return this._isNavbarVisible;
   }
-
+  
   // Getter pour obtenir la visibilité du menu hamburger
   public get isButtonClicked(): boolean {
     return this._isButtonClicked;
   }
 
-  public constructor(private websocketService:WebsocketService) 
-  {
+  // Getter pour l'attribut `state`
+  getState(): string {
+    return this.state;
+  }
+
+  // Setter pour l'attribut `state`
+  setState(SetState: string): void {
+    this.state = SetState;
+  }
+
+  public constructor(private cdr: ChangeDetectorRef) {
+    this.state = 'light';
     this.checkScreenSize();
     this.isBlack = false;
   }
