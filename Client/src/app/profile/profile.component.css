@@ -3,7 +3,7 @@
     margin: 0 auto;
     padding: 1%;
     background-color: #FFF3E4;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 #params {
@@ -26,10 +26,6 @@
     color: black;
 }
 
-img {
-    border-radius: 5%;
-}
-
 #params {
     background-color: #FA7E5C !important;
     border: none;
@@ -46,13 +42,14 @@ img {
 
 .text-elo {
     font-weight: lighter;
-    margin-top: -15px;
+    margin-top: -10px;
 }
 
-.trophy-pic {
-    width: 80px;
+.trophy-pic 
+{
+    width: 60px;
     height: auto;
     margin-left: 5px;
     position: relative;
-    top: 18px;
+    top: 14px;
 }
