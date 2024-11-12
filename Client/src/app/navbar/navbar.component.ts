@@ -7,14 +7,14 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Output,EventEmitter } from '@angular/core';
+import { Output,EventEmitter, } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [MatSidenavModule, MatButtonModule, MatIconModule, NgIf,CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
 

@@ -8,7 +8,7 @@
 
     <div id="logo-container">
       <img src="renard.png" id="logo" alt="logo">
-      DGS
+      <span class="logo-text">DGS</span>
     </div>
 
     <div class="sidenav ">
@@ -48,7 +48,7 @@
       </button>
     </div >
 
-    <div class="sidenav" id="register-container" *ngIf="this.TokenUser == ''">
+    <div class="sidenav" id="register-div" *ngIf="this.TokenUser == ''">
         <button class="navBtn" id="register-button" >
           <mat-icon class="icon">person_add</mat-icon>
           Créer un compte
