@@ -85,13 +85,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       registerButton.addEventListener("click", () => {
         this.router.navigate(["register"]);
       });
-    }
-    
-    if(stateButton)
-    {
-      stateButton.addEventListener("click", () => this.switchTheme())
-    }
-    
+    }    
     
   }
 
