@@ -45,15 +45,15 @@ export class UserCookieService {
 
   // Méthode pour définir l'utilisateur
   public setUser(user: User): void {
-    const userData = JSON.stringify({ username: user.Username, email: user.Email });
+    const userData = JSON.stringify({ username: user.Username, email: user.Email, elo: user.Elo });
     this.cookieService.set(this.userKey, userData);
   }
 
   // Méthode pour obtenir l'utilisateur
   public getUser(): User {
     const userData = this.cookieService.get(this.userKey);
-    const { username, email } = JSON.parse(userData);
-    return new User(username, email); // Création d'un nouvel objet User
+    const { username, email, elo } = JSON.parse(userData);
+    return new User(username, email, elo, ); // Création d'un nouvel objet User
   }
 
   // Méthode pour supprimer l'utilisateur

@@ -65,10 +65,10 @@ export class UserDAO {
   **/
   public GetUser(token: string): Observable<User> {
     const params = new HttpParams().set('tokenUser', token);
-    return this.http.get<{ user: { username: string, email: string } }>(this.url + 'Get', { params }).pipe(
-      map((response: { user: { username: string, email: string } }) => {
+    return this.http.get<{ user: { username: string, email: string, elo: number } }>(this.url + 'Get', { params }).pipe(
+      map((response: { user: { username: string, email: string, elo: number } }) => {
         // Créé un nouvel objet User à partir de l'objet  renvoyé par le serveur
-        return new User(response.user.username, response.user.email);
+        return new User(response.user.username, response.user.email,response.user.elo);
       }),
       catchError(error => {
         return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));

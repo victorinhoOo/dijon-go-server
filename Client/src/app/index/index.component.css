@@ -62,6 +62,13 @@
     font-size: 24px;
     font-weight: bold;
 }
+.elo-value
+{
+    margin: 0;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
 
 .last-game {
     text-decoration: none;

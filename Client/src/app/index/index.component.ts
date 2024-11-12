@@ -25,11 +25,19 @@ export class IndexComponent implements OnInit {
   private userPseudo: string;
   private avatar: string;
   private userRank: string;
+  private elo: number;
   private showPopup: boolean;
   private popupContent: SafeHtml;
   private popupTitle: string;
   private gameDAO: GameDAO;
 
+    /**
+   * Getter pour l'affichage de l'elo
+   */
+  public get Elo(): number
+  {
+    return this.elo;
+  }
   /**
    * Getter pour le lien d'affichage de l'avatar
    */
@@ -77,17 +85,18 @@ export class IndexComponent implements OnInit {
     private httpClient: HttpClient,
     private websocketService: WebsocketService,
     private domSanitizer: DomSanitizer,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
     this.userPseudo = '';
-    this.userRank = '9 dan';
+    this.userRank = userCookieService.getUser().Rank;
     this.showPopup = false;
     this.popupContent = '';
     this.popupTitle = '';
     this.gameDAO = new GameDAO(httpClient);
-  }
+    this.elo = userCookieService.getUser().Elo;
+   }
 
   // Méthode pour remplir le leaderboard avec des données fictives (todo:  remplacer par des données réelles)
   private populateLeaderboard(): void {

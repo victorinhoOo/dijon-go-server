@@ -24,6 +24,15 @@ export class ProfileComponent {
   private userEmail: string;
   private rank: string;
   private avatar: string;
+  private elo: number;
+
+  /**
+ * Getter pour l'affichage de l'elo
+ */
+  public get Elo(): number
+  {
+    return this.elo;
+  }
 
   public get Avatar(): string {
     return this.avatar;
@@ -58,7 +67,8 @@ export class ProfileComponent {
     //recuperation de l'image de l'utilisateur à partir de son pseudo
     this.userPseudo = this.userCookieService.getUser().Username;
     this.userEmail = this.userCookieService.getUser().Email;
-    this.rank = "9 dan";
+    this.rank = this.userCookieService.getUser().Rank;
+    this.elo = this.userCookieService.getUser().Elo;
     this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo            
   }
 
