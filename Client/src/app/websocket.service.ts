@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { UserCookieService } from './Model/UserCookieService';
 import { Interpreter } from './interpreter';
+import { Game } from './Model/Game';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { environment } from './environment';
+import { env } from 'process';
 
 @Injectable({
   providedIn: 'root',
@@ -10,16 +15,17 @@ import { Interpreter } from './interpreter';
  */
 export class WebsocketService {
   private websocket: WebSocket | null;
-
+  private game: Game;
   private interpreter: Interpreter;
 
   /**
    * Constructeur du service
    * @param userCookieService Service permettant de récupérer les informations de l'utilisateur
    */
-  constructor(private userCookieService: UserCookieService) {
-    this.websocket = null;;
-    this.interpreter = new Interpreter();
+  constructor(private userCookieService: UserCookieService, private router: Router) {
+    this.websocket = null;
+    this.game = new Game();
+    this.interpreter = new Interpreter(this.game);
   }
 
 
@@ -28,17 +34,17 @@ export class WebsocketService {
    */
   public connectWebsocket(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.websocket = new WebSocket('ws:///127.0.0.1:7000/'); //10.211.55.3
+      this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/`); 
       this.websocket.onopen = () => {
         console.log('connected');
         resolve();
       };
 
       this.websocket.onmessage = (message) => {
-        let state = { end: false };
+        let state = { end: false, won: "false", player1score: '0', player2score: '0'};
         this.interpreter.interpret(message.data, state);
         if (state.end) {
-          this.endGame();
+          this.endGame(state.won, state.player1score, state.player2score);
         }
       };
 
@@ -48,10 +54,23 @@ export class WebsocketService {
     });
   }
 
-  private endGame(){
-    alert("end of game");
-    this.disconnectWebsocket
+  private endGame(won: string, player1score: string, player2score: string) {
+    this.disconnectWebsocket(); 
+    Swal.fire({
+      title: won === "True" ? 'Victoire ! 🎉' : 'Défaite 😞',
+      text: `Score final : ${player1score} - ${player2score}`,
+      icon: won === "True" ? 'success' : 'error',
+      confirmButtonText: 'Fermer',
+      customClass: {
+        confirmButton: 'custom-ok-button'
+      },
+    }).then(() => {
+      // Redirection vers l'index après la fermeture du popup
+      this.router.navigate(['/index']);
+    });
   }
+  
+  
 
 
   /**
@@ -67,6 +86,7 @@ export class WebsocketService {
    */
   public createGame(): void {
     if (this.websocket != null && this.websocket.OPEN) {
+      this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`0/Create:${userToken}`);
       this.interpreter.setColor('black');
@@ -82,6 +102,7 @@ export class WebsocketService {
    */
   public joinGame(id: number): void {
     if (this.websocket != null && this.websocket.OPEN) {
+      this.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`${id}/Join:${userToken}`);
       this.interpreter.setColor('white');
@@ -96,8 +117,10 @@ export class WebsocketService {
    */
   public skipTurn(): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      let idGame = this.interpreter.getIdGame();
-      this.websocket.send(`${idGame}Skip:`);
+      if(this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()){
+        let idGame = this.interpreter.getIdGame();
+        this.websocket.send(`${idGame}Skip:`);
+      }
     } else {
       console.log('not connected');
     }
@@ -111,11 +134,18 @@ export class WebsocketService {
    */
   public placeStone(coordinates: string) {
     if (this.websocket != null && this.websocket.OPEN) {
-      let idGame = this.interpreter.getIdGame();
-      this.websocket.send(`${idGame}Stone:${coordinates}`);
-      console.log(`${idGame}Stone:${coordinates}`);
+      if(this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()){
+        let idGame = this.interpreter.getIdGame();
+        this.websocket.send(`${idGame}Stone:${coordinates}`);
+        console.log(`${idGame}Stone:${coordinates}`);
+      }
     } else {
       console.log('not connected');
     }
+  }
+
+  public setPlayerColor(color:string){
+    this.game.setPlayerColor(color);
+    this.interpreter.setGame(this.game);
   }
 }

@@ -46,5 +46,25 @@ namespace Server.Model.Managers
         {
             return fileUploader.GetProfilePic(username);
         }
+
+        /// <summary> 
+        /// Télécharge une image et la transforme en IFormFile pour le stockage sur le serveur
+        /// </summary>
+        /// <param name="imageUrl">url de l'image</param>
+        /// <returns>Image sous format IFormFile</returns>
+        public async Task<IFormFile> DownloadImageAsIFormFile(string imageUrl)
+        {
+            using var client = new HttpClient();
+
+            // Récupérer le tableau d'octets de l'image
+            var responseBytes = await client.GetByteArrayAsync(imageUrl);
+
+            // Convertir le tableau d'octets en un stream
+            var imageStream = new MemoryStream(responseBytes);
+
+            // Créer et retourner le IFormFile
+            return new FormFile(imageStream, 0, imageStream.Length, "image", "image.jpg");
+        }
+
     }
 }

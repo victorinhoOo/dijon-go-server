@@ -1,15 +1,19 @@
+import { Game } from "./Model/Game";
+
 /**
  * Classe qui interprete les messages envoyés par le serveur websocket
  */
 export class Interpreter {
   private idGame: string;
   private color: string;
+  private game: Game
 
   /**
    * Constructeur de la classe
    */
-  constructor() {
+  constructor(game:Game) {
     this.idGame = '';
+    this.game = game;
     this.color = '';
   }
 
@@ -34,7 +38,7 @@ export class Interpreter {
    * @param message message envoyé par le serveur websocket
    * @param state définit l'état de la partie (en cours ou terminée)
    */
-  public interpret(message: string, state: { end: boolean }): void {
+  public interpret(message: string, state: { end: boolean, won: string, player1score: string, player2score: string}): void {
     if (message.length <= 3) {
       this.initIdGame(message);
     } else if (message.includes('x,y,color')) {
@@ -42,6 +46,12 @@ export class Interpreter {
     } else if (message.includes('Start')) {
       this.startGame(message);
     } else if (message.includes('EndOfGame')) {
+      let data = message.split(":")[1].split("|")
+      let scores = data[0].split("-");
+      state.player1score = scores[0];
+      state.player2score = scores[1];
+      state.won = data[1];
+      console.log(state.won)
       state.end = true;
     }
     console.log(message);
@@ -101,12 +111,45 @@ export class Interpreter {
     let score = message.split('|')[1];
     this.updateBoard(board);
     this.updateScore(score);
+    this.game.changeTurn();
+    this.updateHover();
   }
 
   private startGame(message: string): void {
+    this.game.initCurrentTurn();
     let pseudo = document.getElementById('pseudo-text');
     pseudo!.innerHTML = message.split(':')[1]; // Récupère le pseudo de l'adversaire pour l'afficher sur la page
     let profilePic = document.getElementById('opponent-pic') as HTMLImageElement;
     profilePic!.src = `https://localhost:7065/profile-pics/${pseudo!.innerText}`; // Récupère l'avatar de l'adversaire pour l'afficher sur la page
+    this.updateHover();
+  }
+
+  public setGame(game:Game){
+    this.game = game;
+  }
+
+  public getPlayerColor():string{
+    return this.game.getPlayerColor();
+  }
+
+  public getCurrentTurn():string{
+    return this.game.getCurrentTurn();
+  }
+
+  public updateHover(){
+    let stones = document.getElementsByClassName("stone");
+    let stonesArray = Array.from(stones);
+    if(this.game.isPlayerTurn()){
+      document.getElementById("global-container")!.style.cursor = "pointer";
+      alert(document.getElementById("global-container")!.style.cursor);
+      stonesArray.forEach((stone)=>{
+        stone.classList.add("active");
+      })
+    }else{
+      document.getElementById("global-container")!.style.cursor = "not-allowed";
+      stonesArray.forEach((stone)=>{
+        stone.classList.remove("active");
+      })
+    }
   }
 }

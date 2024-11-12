@@ -7,6 +7,10 @@ import { Component } from '@angular/core';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css'
 })
+
+/**
+ * Composant footer
+ */
 export class FooterComponent {
 
 }

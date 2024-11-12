@@ -6,28 +6,49 @@ import { Router } from '@angular/router';
 import { UserCookieService } from '../Model/UserCookieService';
 import { NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { Output,EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MatSidenavModule, MatButtonModule, MatIconModule, NgIf],
+  imports: [MatSidenavModule, MatButtonModule, MatIconModule, NgIf,CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
+/**
+ * Composant de la barre latérale
+ */
 export class NavbarComponent implements OnInit, OnDestroy {
+
+   // Émettre un événement pour notifier la fermeture
+   @Output() closeNavbar = new EventEmitter<void>();
+   @Output() changeColor: EventEmitter<boolean> = new EventEmitter<boolean>();
+  // Attribut privé pour la visibilité de la navbar
+  private isNavbarVisible: boolean = true;
+
+  
+  
   private lightState: string;
   private tokenUser: string;
   private tokenSubscription!: Subscription;
 
+  /**
+   * Renvoi le token de l'utilisateur connecté
+   */
   public get TokenUser(): string {
     return this.tokenUser;
   }
 
   public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef) {
     this.lightState = 'light';
+    this.isNavbarVisible = true;
     this.tokenUser = '';
   }
 
+  /**
+   * Initialisation du composant, récupère le token de l'utilisateur et s'abonne à ses changements
+   */
   public ngOnInit(): void {
     // Abonnement à l'Observable qui émet les changements du token
     this.tokenSubscription = this.userCookieService.getTokenObservable().subscribe(token => {
@@ -37,12 +58,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Initialise les écouteurs d'événements sur les différents boutons de la navbar
+   */
   private setupEventListeners(): void {
     const profileButton = document.getElementById("profile-button");
     const playButton = document.getElementById("play-button");
     const logoutButton = document.getElementById("logout-button");
     const loginButton = document.getElementById("login-button");
     const registerButton = document.getElementById("register-button");
+    const stateButton = document.getElementById("state-button");
 
     if (profileButton) {
       profileButton.addEventListener("click", () => {
@@ -76,9 +101,53 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.router.navigate(["register"]);
       });
     }
+    
+    
   }
 
+  /**
+   * Detruction de la page
+   */
   public ngOnDestroy(): void {
     this.tokenSubscription.unsubscribe(); // Se désabonner de l'Observable pour éviter les fuites de mémoire
   }
+
+  /**
+   * Méthode pour fermer la navbar 
+   * Elle met `isNavbarVisible` à false, 
+   * émet un événement pour notifier la fermeture
+   */
+  public close(): void {
+    this.isNavbarVisible = false;
+    this.closeNavbar.emit(); // Émettre l'événement pour signaler la fermeture
+  }
+
+  /**
+   * Activation de la navbar pour les tablettes et mobiles
+   */
+  private toggleNavbar(): void {
+    this.isNavbarVisible = !this.isNavbarVisible;
+  }
+
+  /**
+   * Méthode pour basculer entre le thème clair et le thème sombre.
+   * Elle met à jour l'état `lightState` en fonction de l'état actuel, 
+   * émet un événement pour notifier le changement de couleur et affiche le nouveau thème dans la console.
+   */
+  public switchTheme(): void {
+    if (this.lightState == "light") {
+        this.lightState = "dark";
+        this.changeColor.emit(false);
+        console.log(true);
+
+    } else {
+        this.lightState = "light";
+        this.changeColor.emit(true);
+        console.log(false);
+
+    }
+
+    console.log(this.lightState,"valeur apres");
+  }
+
 }
