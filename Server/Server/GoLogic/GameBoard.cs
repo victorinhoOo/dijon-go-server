@@ -15,12 +15,12 @@
         /// <summary>
         /// Tableau qui contient les pierres du plateau
         /// </summary>
-        public Stone[,] Board { get => this.board; set => this.board = value; }
+        public Stone[,] Board { get => this.board;}
         
         /// <summary>
         /// Le plateau dans l'état précédent
         /// </summary>
-        public Stone[,] PreviousBoard { get => this.previousBoard; set => this.previousBoard = value; }
+        public Stone[,] PreviousBoard { get => this.previousBoard;}
         
         /// <summary>
         /// La taille du plateau (size x size)

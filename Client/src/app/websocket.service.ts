@@ -3,6 +3,8 @@ import { UserCookieService } from './Model/UserCookieService';
 import { Interpreter } from './interpreter';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { environment } from './environment';
+import { env } from 'process';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +32,7 @@ export class WebsocketService {
    */
   public connectWebsocket(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.websocket = new WebSocket('ws:///127.0.0.1:7000/'); //10.211.55.3
+      this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/`); 
       this.websocket.onopen = () => {
         console.log('connected');
         resolve();

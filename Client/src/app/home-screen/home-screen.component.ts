@@ -8,6 +8,9 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './home-screen.component.html',
   styleUrl: './home-screen.component.css',
 })
+/**
+ * Composant de la page d'accueil
+ */
 export class HomeScreenComponent {
 
 }

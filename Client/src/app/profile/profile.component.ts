@@ -26,17 +26,30 @@ export class ProfileComponent {
   private rank: string;
   private avatar: string;
 
+  /**
+   * Renvoi l'avatar de l'utilisateur
+   */
   public get Avatar(): string {
     return this.avatar;
   }
+
+  /**
+   * Renvoi le pseudo de l'utilisateur
+   */
   public get UserPseudo(): string {
     return this.userPseudo;
   }
 
+  /**
+   * Renvoi le mail de l'utilisateur
+   */
   public get UserEmail(): string {
     return this.userEmail;
   }
 
+  /**
+   * Renvoi le rang de l'utilisateur
+   */
   public get Rank(): string {
     return this.rank;
   }
@@ -65,7 +78,7 @@ export class ProfileComponent {
   /**
    * Ouvre une popup profile settings pour modifier son profile 
    */
-  openDialog(): void {
+  public openDialog(): void {
     const dialogRef = this.dialog.open(ProfileSettingsComponent, {
       width: '80%',
       height: '85%',

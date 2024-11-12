@@ -15,6 +15,9 @@ import Swal from 'sweetalert2';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
+/**
+ * Composant de la page d'inscription
+ */
 export class RegisterComponent {
 
   private registerForm!: FormGroup;
@@ -23,18 +26,31 @@ export class RegisterComponent {
   private confirmPwdIsGood: boolean;
   private isStrongPassword: boolean;
 
+  /**
+   * Renvoi l'état du mot de passe
+   */
   public get IsStrongPassword(): boolean {
     return this.isStrongPassword;
   }
 
+  /**
+   * Permet de vérifier la concordance des deux mots de passes
+   * @returns True si les mots de passes concordent
+   */
   public get ConfirmPwdIsGood(): boolean {
     return this.confirmPwdIsGood;
   }
 
+  /**
+   * Renvoi le formulaire d'inscription
+   */
   public get RegisterForm(): FormGroup {
     return this.registerForm;
   }
 
+  /**
+   * Permet la modification du formulaire d'inscription
+   */
   public set RegisterForm(value: FormGroup) {
     this.registerForm = value;
   }
@@ -45,6 +61,9 @@ export class RegisterComponent {
     this.isStrongPassword = false;
   }
 
+  /**
+   * Initialisation de la page d'inscription avec l'initialisation du formulaire
+   */
   public ngOnInit(): void {
     this.registerForm = this.fb.group({
       pseudo: ['', Validators.required],
@@ -118,11 +137,18 @@ export class RegisterComponent {
     }
   }
 
+  /**
+   * Gère la sélection d'une image lors de l'inscription
+   * @param image Image sélectionnée
+   */
   public onImageSelected(image: File) {
     this.selectedImage = image;
     this.registerForm.patchValue({ img: this.selectedImage });
   }
 
+  /**
+   * Initalise l'état du mot de passe saisi dans le formulaire (par défaut le mot de passe est invalide)
+   */
   public InitializePwdForm(): void {
     this.confirmPwdIsGood = true;
     this.isStrongPassword = false;
