@@ -14,8 +14,6 @@ import { UserCookieService } from '../Model/UserCookieService';
 })
 export class GridComponent implements AfterViewInit, OnInit {
   private size: number;
-  private opponentAvatar: string;
-  private opponentPseudo: string;
   private playerAvatar: string;
   private playerPseudo: string;
 
@@ -32,8 +30,6 @@ export class GridComponent implements AfterViewInit, OnInit {
     private userCookieService: UserCookieService
   ) {
     this.size = 0;
-    this.opponentAvatar = '';
-    this.opponentPseudo = '';
     this.playerPseudo = this.userCookieService.getUser().Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;

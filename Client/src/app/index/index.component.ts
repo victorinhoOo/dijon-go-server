@@ -148,7 +148,6 @@ export class IndexComponent implements OnInit {
     if (createGameLink) {
       createGameLink.addEventListener('click',async() => {
         await this.websocketService.connectWebsocket();
-        console.log("ahaéhhh");
         this.websocketService.createGame();
         this.router.navigate(['game']);
       });

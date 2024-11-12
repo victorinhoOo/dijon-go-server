@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserCookieService } from './Model/UserCookieService';
 import { Interpreter } from './interpreter';
+import { Game } from './Model/Game';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { Interpreter } from './interpreter';
  */
 export class WebsocketService {
   private websocket: WebSocket | null;
-
+  private game: Game;
   private interpreter: Interpreter;
 
   /**
@@ -18,8 +19,9 @@ export class WebsocketService {
    * @param userCookieService Service permettant de récupérer les informations de l'utilisateur
    */
   constructor(private userCookieService: UserCookieService) {
-    this.websocket = null;;
-    this.interpreter = new Interpreter();
+    this.websocket = null;
+    this.game = new Game();
+    this.interpreter = new Interpreter(this.game);
   }
 
 
@@ -67,6 +69,7 @@ export class WebsocketService {
    */
   public createGame(): void {
     if (this.websocket != null && this.websocket.OPEN) {
+      this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`0/Create:${userToken}`);
       this.interpreter.setColor('black');
@@ -82,6 +85,7 @@ export class WebsocketService {
    */
   public joinGame(id: number): void {
     if (this.websocket != null && this.websocket.OPEN) {
+      this.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`${id}/Join:${userToken}`);
       this.interpreter.setColor('white');
@@ -96,8 +100,10 @@ export class WebsocketService {
    */
   public skipTurn(): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      let idGame = this.interpreter.getIdGame();
-      this.websocket.send(`${idGame}Skip:`);
+      if(this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()){
+        let idGame = this.interpreter.getIdGame();
+        this.websocket.send(`${idGame}Skip:`);
+      }
     } else {
       console.log('not connected');
     }
@@ -111,11 +117,18 @@ export class WebsocketService {
    */
   public placeStone(coordinates: string) {
     if (this.websocket != null && this.websocket.OPEN) {
-      let idGame = this.interpreter.getIdGame();
-      this.websocket.send(`${idGame}Stone:${coordinates}`);
-      console.log(`${idGame}Stone:${coordinates}`);
+      if(this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()){
+        let idGame = this.interpreter.getIdGame();
+        this.websocket.send(`${idGame}Stone:${coordinates}`);
+        console.log(`${idGame}Stone:${coordinates}`);
+      }
     } else {
       console.log('not connected');
     }
+  }
+
+  public setPlayerColor(color:string){
+    this.game.setPlayerColor(color);
+    this.interpreter.setGame(this.game);
   }
 }

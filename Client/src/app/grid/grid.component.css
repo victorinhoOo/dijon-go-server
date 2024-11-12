@@ -6,6 +6,7 @@
 
 #global-container{
     margin-top: 70px;
+    cursor: not-allowed;
 }
 
 #player, #opponent{
@@ -61,7 +62,6 @@
 #pass:hover{
     box-sizing: border-box;
     border: 1px solid black;
-    cursor: pointer;
 }
 
 #cells-container{
@@ -124,7 +124,7 @@
 
 
 
-.stone:hover{
+.active:hover{
     background-color: grey !important;
     opacity: 0.8 !important;
 }
