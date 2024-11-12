@@ -47,7 +47,7 @@ namespace Server.Model.Data
             bool res = false;
             database.Connect();
 
-            string query = "INSERT INTO user (username, hashPwd, email) VALUES (@username, @hashPwd, @email, @elo)";
+            string query = "INSERT INTO user (username, hashPwd, email, elo) VALUES (@username, @hashPwd, @email, @elo)";
             var parameters = new Dictionary<string, object>
                 {
                     {"@username", user.Username},
@@ -124,7 +124,8 @@ namespace Server.Model.Data
                 {
                     Username = result.Rows[0]["username"].ToString(),
                     Password = result.Rows[0]["hashPwd"].ToString(),
-                    Email = result.Rows[0]["email"].ToString()
+                    Email = result.Rows[0]["email"].ToString(),
+                    
                 };
             }
 
