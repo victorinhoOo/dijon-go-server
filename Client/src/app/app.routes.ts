@@ -15,6 +15,6 @@ export const routes: Routes = [
     {path:"register", component:RegisterComponent},
     {path:"game", component: GameScreenComponent},
     {path: "index", component: IndexComponent},
-    {path:"game", component: GameScreenComponent},
-    {path:":id", component: IndexComponent}
+    {path:"game/:size", component: GameScreenComponent},
+    {path:":id/:size", component: IndexComponent}
 ];
