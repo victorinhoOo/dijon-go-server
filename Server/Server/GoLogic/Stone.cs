@@ -36,11 +36,11 @@
         }
 
         /// <summary>
-        /// Instancie une pierre aux coordonnées et de la couleur spécifié
+        /// Instancie une pierre aux coordonnées et de la couleur spécifiée
         /// </summary>
         /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
-        /// <param name="color">la couleur Black, White ou Empty</param>
+        /// <param name="color">La couleur Black, White ou Empty</param>
         public Stone(int x, int y, StoneColor color)
         {
             this.x = x;

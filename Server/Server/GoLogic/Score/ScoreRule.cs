@@ -1,7 +1,7 @@
 ﻿namespace GoLogic.Score
 {
     /// <summary>
-    /// Classe abstraite pour gérer les différents décompte de point
+    /// Classe abstraite pour gérer les différents décomptes de point
     /// </summary>
     public abstract class ScoreRule
     {
@@ -10,7 +10,7 @@
         /// <summary>
         /// Le plateau du jeu et ses pions
         /// </summary>
-        public GameBoard GameBoard { get => gameBoard; }
+        public GameBoard GameBoard { get => this.gameBoard; }
 
         /// <summary>
         /// Le calculateur de score selon les différentes règles
@@ -24,13 +24,13 @@
         /// <summary>
         /// Règles de décompte des points pour chaque joueur
         /// </summary>
-        /// <returns>Tuple d'entier correspondant aux scores noirs et blanc</returns>
+        /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public abstract (int blackStones, int whiteStones) CalculateScore();
 
         /// <summary>
-        /// Compte le nombres de pierres de chaque couleur sur le plateau
+        /// Compte les nombres de pierres de chaque couleur sur le plateau
         /// </summary>
-        /// <returns>Une tuple d'entier correspondants aux pierres noires et blanches</returns>
+        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
         public (int blackStones, int whiteStones) CountStones()
         {
             int blackStones = 0;
@@ -150,6 +150,41 @@
             }
 
             return (resColor, resArea); 
+        }
+        
+        /// <summary>
+        /// Retire toutes les pierres mortes du Goban
+        /// pour qu'elles ne soient pas considéré lors du calcul du score
+        /// </summary>
+        public void RemoveDeadStone()
+        {
+            HashSet<Stone> visited = new HashSet<Stone>();
+
+            for (int x = 0; x < GameBoard.Size; x++)
+            {
+                for (int y = 0; y < GameBoard.Size; y++)
+                {
+                    Stone stone = GameBoard.GetStone(x, y);
+
+                    // Ne vérifie que les pierres qui n'ont pas été visitée
+                    if (!visited.Contains(stone) && stone.Color != StoneColor.Empty)
+                    {
+                        // Explore autour pour vérifier si la pierre est morte
+                        (StoneColor owner, List<Stone> region) = ExploreTerritory(stone, visited);
+                        
+                        // Si le maitre de la région est de couleur opposée, la pierre est retiré
+                        StoneColor opponentColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+                        if (owner == opponentColor)
+                        {
+                            foreach (Stone deadStone in region)
+                            {
+                                // Retire les pierres mortes
+                                GameBoard.Board[deadStone.X, deadStone.Y].Color = StoneColor.Empty;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

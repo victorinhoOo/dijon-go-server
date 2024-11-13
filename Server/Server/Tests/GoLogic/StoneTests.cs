@@ -1,6 +1,6 @@
 ﻿using GoLogic;
 
-namespace Test_GoLogic
+namespace Tests.Test_GoLogic
 {
     public class StoneTests
     {

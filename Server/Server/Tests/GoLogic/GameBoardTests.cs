@@ -1,6 +1,6 @@
 ﻿using GoLogic;
 
-namespace Test_GoLogic
+namespace Tests.Test_GoLogic
 {
     public class GameBoardTests
     {
@@ -65,7 +65,7 @@ namespace Test_GoLogic
             gameBoard.Board[0,0].Color = StoneColor.White;
             gameBoard.Board[1,1].Color = StoneColor.Black;
 
-            gameBoard.CopieBoard();
+            gameBoard.PreviousBoard = gameBoard.CopyBoard();
 
             Assert.Equal(StoneColor.White, gameBoard.PreviousBoard[0, 0].Color);
             Assert.Equal(StoneColor.Black, gameBoard.PreviousBoard[1, 1].Color);
