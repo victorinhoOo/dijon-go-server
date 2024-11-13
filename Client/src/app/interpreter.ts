@@ -154,9 +154,7 @@ export class Interpreter {
 
   public setGame(game:Game){
     this.game = game;
-  }
-
- 
+  } 
 
   public getPlayerColor():string{
     return this.game.getPlayerColor();

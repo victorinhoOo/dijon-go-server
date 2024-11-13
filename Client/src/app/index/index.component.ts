@@ -62,12 +62,13 @@ export class IndexComponent implements OnInit {
    * Initialise les informations utilisateurs, le leaderboard, et gère la création de parties
    */
   public async ngOnInit() {
-    if (this.route.snapshot.paramMap.get('id') != null && this.route.snapshot.paramMap.get('size') != null) {
+    if (this.route.snapshot.paramMap.get('id') != null && this.route.snapshot.paramMap.get('size') != null && this.route.snapshot.paramMap.get('rule') != null ) {
       let id = this.route.snapshot.paramMap.get('id');
       let size = this.route.snapshot.paramMap.get('size');
+      let rule = this.route.snapshot.paramMap.get('rule');
       await this.websocketService.connectWebsocket();
       this.websocketService.joinGame(Number(id));
-      this.router.navigate(['game', size]);
+      this.router.navigate(['game', size, rule]);
     } else {
       this.websocketService.disconnectWebsocket();
     }
@@ -116,7 +117,7 @@ export class IndexComponent implements OnInit {
         console.log(games);
         let content = '';
         games.forEach((game) => {
-          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}">${game["title"]} ${game["size"]}x${game["size"]}</a></div><br>`;
+          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}/${game["rule"]}">${game["title"]} ${game["size"]}x${game["size"]}</a></div><br>`;
         });
         Swal.fire({
           title: 'Parties disponibles',
@@ -159,8 +160,8 @@ export class IndexComponent implements OnInit {
           
           <label for="rules">Règles du jeu :</label>
           <select id="rules" name="rules" class="swal2-select">
-            <option value="chinoises">Chinoises</option>
-            <option value="japonaises">Japonaises</option>
+            <option value="c">Chinoises</option>
+            <option value="j">Japonaises</option>
           </select>
         </form>
       `,
@@ -193,9 +194,9 @@ export class IndexComponent implements OnInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createGame(gridSize);
+          this.websocketService.createGame(gridSize, rules);
           Swal.close(); // Ferme le chargement
-          this.router.navigate(['game', gridSize]);
+          this.router.navigate(['game', gridSize, rules]);
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur
           Swal.fire('Erreur', 'La connexion a échoué. Veuillez réessayer.', 'error');
