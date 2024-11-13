@@ -103,17 +103,21 @@
         }
         
         /// <summary>
-        /// Copie l'état de Board dans PreviousBoard
+        /// Renvoie une copie de l'état de Board
         /// </summary>
-        public void CopieBoard()
+        public Stone[,] CopyBoard()
         {
+            Stone[,] boardCopy = new Stone[this.size, this.size];
             for (int i = 0; i < Size; i++)
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    PreviousBoard[i, j].Color = Board[i, j].Color;  // Copie la couleur de la pierre à la même position
+                    StoneColor color = this.board[i, j].Color;
+                    boardCopy[i, j] = new Stone(i ,j, color);
                 }
             }
+
+            return boardCopy;
         }
     }
 }
