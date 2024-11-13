@@ -4,13 +4,6 @@
 <img src="renard.png" id="renardRegister" alt="Logo" class="logo">
 <div class="register-container">
 
-  
-  <app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" >
-    <div>
-    <a href="/profile" *ngIf="(RegisterSucces)">Connectez-vous ici</a>
-    </div>
-  </app-popup>
-
     
     <form class="formStyle" [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
       <label id="Inscription">Inscription</label>

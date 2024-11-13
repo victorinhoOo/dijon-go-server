@@ -1,5 +1,6 @@
 ﻿using GoLogic;
 using GoLogic.Score;
+using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using System.Text.Json;
 using ZstdSharp.Unsafe;
@@ -64,33 +65,36 @@ namespace WebSocket.Model
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        /// <param name="player1">Joueur qui créé la partie</param>
-        public Game(Client player1)
+        public Game(int size)
         {
-            id = Server.Games.Count + 1;
-            size = 19;
-            this.player1 = player1;
-            currentTurn = player1;
-            gameBoard = new GameBoard(size);
-            logic = new GameLogic(gameBoard);
-            score = new ChineseScoreRule(gameBoard);
+            this.id = Server.Games.Count + 1;
+            this.size = size;
+            this.gameBoard = new GameBoard(size);
+            this.logic = new GameLogic(gameBoard);
+            this.score = new ChineseScoreRule(gameBoard);
         }
 
 
         /// <summary>
         /// Ajouter un joueur à la partie
         /// </summary>
-        /// <param name="player2">Joueur à ajouter</param>
-        public void AddPlayer(Client player2)
+        /// <param name="player">Joueur à ajouter</param>
+        public void AddPlayer(Client player)
         {
-            if (this.player2 == null)
+            if (this.player1 == null)
             {
-                this.player2 = player2;
+                this.player1 = player;
+                this.currentTurn = player;
+            }
+            else if (this.player2 == null)
+            { 
+                this.player2 = player;
             }
             else
             {
-                // todo : throw exception
+                // throw exception
             }
+           
         }
 
 

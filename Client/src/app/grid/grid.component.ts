@@ -12,10 +12,11 @@ import { UserCookieService } from '../Model/UserCookieService';
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
 })
+/**
+ * Composant de la grille de jeu
+ */
 export class GridComponent implements AfterViewInit, OnInit {
   private size: number;
-  private opponentAvatar: string;
-  private opponentPseudo: string;
   private playerAvatar: string;
   private playerPseudo: string;
 
@@ -29,26 +30,49 @@ export class GridComponent implements AfterViewInit, OnInit {
 
   public constructor(
     private websocketService: WebsocketService,
-    private userCookieService: UserCookieService
+    private userCookieService: UserCookieService,
+    private route: ActivatedRoute
   ) {
     this.size = 0;
-    this.opponentAvatar = '';
-    this.opponentPseudo = '';
     this.playerPseudo = this.userCookieService.getUser().Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;
   }
 
+  /**
+   * Renvoi la taille de la grille
+   * @returns La taille de la grille
+   */
   public getSize(): number {
     return this.size - 1;
   }
 
-  ngOnInit(): void {
-    this.size = 19;
+  /**
+   * Initialisation du composant
+   */
+  public ngOnInit(): void {
+    this.size = Number(this.route.snapshot.paramMap.get('size'));
   }
 
-  ngAfterViewInit(): void {
-    let stones = document.getElementsByClassName('stone');
+  /**
+   * Mise en place des écouteurs d'événements sur les boutons, après l'initialisation complète de la page
+   */
+  public ngAfterViewInit(): void {
+    if(this.size < 11){
+      let cells = document.querySelectorAll('.cell, .cell-bottom');
+      let stones = document.getElementsByClassName('stone');
+      let arrayCells = Array.from(cells);
+      let arrayStones = Array.from(stones);
+      arrayCells.forEach((cell) => {
+        cell.classList.remove(cell.classList[0]);
+        cell.classList.add('bigger-cell');
+      });
+      arrayStones.forEach((stone) => {
+        stone.classList.remove('stone');
+        stone.classList.add('bigger-stone');
+      }); 
+    }
+    let stones = document.querySelectorAll('.stone, .bigger-stone');
     let stonesArray = Array.from(stones);
     stonesArray.forEach((stone) => {
       stone.addEventListener('click', () => {
@@ -62,10 +86,17 @@ export class GridComponent implements AfterViewInit, OnInit {
     });
   }
 
+  /**
+   * Gère le clique sur les intersections de la grille
+   * @param stone emplacement concerné par le clic
+   */
   public click(stone: any): void {
     this.websocketService.placeStone(stone.id);
   }
-
+  
+  /**
+   * Gère le clic sur le bouton "Passer", passe le tour du joueur
+   */
   public skipTurn() {
     this.websocketService.skipTurn();
   }
