@@ -28,6 +28,7 @@ export class ProfileComponent {
   private elo: number;
 
   /**
+<<<<<<< Updated upstream
  * Getter pour l'affichage de l'elo
  */
   public get Elo(): number
@@ -36,6 +37,8 @@ export class ProfileComponent {
   }
 
   /**
+=======
+>>>>>>> Stashed changes
    * Renvoi l'avatar de l'utilisateur
    */
   public get Avatar(): string {

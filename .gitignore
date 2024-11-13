@@ -398,3 +398,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 Client/src/app/environment.ts
+<<<<<<< Updated upstream
+=======
+/Server/Server/Server/dgs.db
+>>>>>>> Stashed changes
