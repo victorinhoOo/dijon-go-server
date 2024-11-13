@@ -195,10 +195,10 @@ namespace WebSocket
         /// </summary>
         private void StartGame(Game game)
         {
-            GameUserDTO user1 = this.gameManager.GetUserByToken(game.Player1.User.Token);
-            GameUserDTO user2 = this.gameManager.GetUserByToken(game.Player2.User.Token);
-            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{user2.Name}"); // Envoi du nom du joueur à son adversaire
-            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{user1.Name}"); // Envoi du nom du joueur à son adversaire
+            game.Player1.User = this.gameManager.GetUserByToken(game.Player1.User.Token);
+            game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
+            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
+            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
             this.started = true;
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
@@ -215,8 +215,13 @@ namespace WebSocket
             
             if(scorePlayer1 >= scorePlayer2)
             {
-                this.gameManager.UpdateEloUserByUserName(game.Player1.User, game.Player2.User);
+                this.gameManager.UpdateEloWinnerLooser(game.Player1.User, game.Player2.User);
             }
+            else
+            {
+                this.gameManager.UpdateEloWinnerLooser(game.Player2.User, game.Player1.User);
+            }
+        
             bool player1won = scorePlayer1 >= scorePlayer2;
             bool player2won = scorePlayer2 > scorePlayer1;
 

@@ -35,11 +35,12 @@ namespace WebSocket.Model
         /// <param name="winner"></param>
         /// <param name="looser"></param>
         /// <returns></returns>
-        public void UpdateEloUserByUserName(GameUserDTO winner, GameUserDTO looser)
+        public void UpdateEloWinnerLooser(GameUserDTO winner, GameUserDTO looser)
         {
-            this.userDAO.UpdateEloByToken(winner.Name, winner.Elo + 10);
-            this.userDAO.UpdateEloByToken(looser.Name, looser.Elo - 10);
-            
+            int initialWinnerElo = winner.Elo;
+            int initialLooserElo = looser.Elo;
+            this.userDAO.UpdateEloByToken(winner.Token, initialWinnerElo + 10);
+            this.userDAO.UpdateEloByToken(looser.Token, initialLooserElo - 10);         
         }
     }
 }
