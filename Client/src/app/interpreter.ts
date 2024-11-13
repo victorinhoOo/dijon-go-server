@@ -147,7 +147,7 @@ export class Interpreter {
   }
 
   public updateHover(){
-    let stones = document.getElementsByClassName("stone");
+    let stones = document.querySelectorAll(".stone, .bigger-stone");
     let stonesArray = Array.from(stones);
     if(this.game.isPlayerTurn()){
       document.getElementById("global-container")!.style.cursor = "pointer";

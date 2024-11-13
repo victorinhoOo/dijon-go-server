@@ -30,7 +30,8 @@ export class GridComponent implements AfterViewInit, OnInit {
 
   public constructor(
     private websocketService: WebsocketService,
-    private userCookieService: UserCookieService
+    private userCookieService: UserCookieService,
+    private route: ActivatedRoute
   ) {
     this.size = 0;
     this.playerPseudo = this.userCookieService.getUser().Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
@@ -50,14 +51,28 @@ export class GridComponent implements AfterViewInit, OnInit {
    * Initialisation du composant
    */
   public ngOnInit(): void {
-    this.size = 19;
+    this.size = Number(this.route.snapshot.paramMap.get('size'));
   }
 
   /**
    * Mise en place des écouteurs d'événements sur les boutons, après l'initialisation complète de la page
    */
   public ngAfterViewInit(): void {
-    let stones = document.getElementsByClassName('stone');
+    if(this.size < 11){
+      let cells = document.querySelectorAll('.cell, .cell-bottom');
+      let stones = document.getElementsByClassName('stone');
+      let arrayCells = Array.from(cells);
+      let arrayStones = Array.from(stones);
+      arrayCells.forEach((cell) => {
+        cell.classList.remove(cell.classList[0]);
+        cell.classList.add('bigger-cell');
+      });
+      arrayStones.forEach((stone) => {
+        stone.classList.remove('stone');
+        stone.classList.add('bigger-stone');
+      }); 
+    }
+    let stones = document.querySelectorAll('.stone, .bigger-stone');
     let stonesArray = Array.from(stones);
     stonesArray.forEach((stone) => {
       stone.addEventListener('click', () => {

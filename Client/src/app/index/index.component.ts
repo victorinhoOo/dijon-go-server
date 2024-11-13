@@ -49,7 +49,6 @@ export class IndexComponent implements OnInit {
     private router: Router,
     private httpClient: HttpClient,
     private websocketService: WebsocketService,
-
     private route: ActivatedRoute
   ) {
     this.avatar = 'https://localhost:7065/profile-pics/';
@@ -63,11 +62,12 @@ export class IndexComponent implements OnInit {
    * Initialise les informations utilisateurs, le leaderboard, et gère la création de parties
    */
   public async ngOnInit() {
-    if (this.route.snapshot.paramMap.get('id') != null) {
+    if (this.route.snapshot.paramMap.get('id') != null && this.route.snapshot.paramMap.get('size') != null) {
       let id = this.route.snapshot.paramMap.get('id');
+      let size = this.route.snapshot.paramMap.get('size');
       await this.websocketService.connectWebsocket();
       this.websocketService.joinGame(Number(id));
-      this.router.navigate(['game']);
+      this.router.navigate(['game', size]);
     } else {
       this.websocketService.disconnectWebsocket();
     }
@@ -116,7 +116,7 @@ export class IndexComponent implements OnInit {
         console.log(games);
         let content = '';
         games.forEach((game) => {
-          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}">${game["title"]} ${game["size"]}x${game["size"]}</a></div><br>`;
+          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}">${game["title"]} ${game["size"]}x${game["size"]}</a></div><br>`;
         });
         Swal.fire({
           title: 'Parties disponibles',
@@ -193,9 +193,9 @@ export class IndexComponent implements OnInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createGame();
+          this.websocketService.createGame(gridSize);
           Swal.close(); // Ferme le chargement
-          this.router.navigate(['game']);
+          this.router.navigate(['game', gridSize]);
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur
           Swal.fire('Erreur', 'La connexion a échoué. Veuillez réessayer.', 'error');
