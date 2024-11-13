@@ -6,10 +6,14 @@ import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { environment } from './environment';
 import { env } from 'process';
+import { UserDAO } from './Model/DAO/UserDAO';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { User } from './Model/User';
 
 @Injectable({
   providedIn: 'root',
 })
+
 /**
  * Service gérant la connexion au serveur websocket
  */
@@ -17,15 +21,17 @@ export class WebsocketService {
   private websocket: WebSocket | null;
   private game: Game;
   private interpreter: Interpreter;
+  private userDAO: UserDAO;
 
   /**
    * Constructeur du service
    * @param userCookieService Service permettant de récupérer les informations de l'utilisateur
    */
-  constructor(private userCookieService: UserCookieService, private router: Router) {
+  constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient) {
     this.websocket = null;
     this.game = new Game();
     this.interpreter = new Interpreter(this.game);
+    this.userDAO = new UserDAO(httpclient);
   }
 
 
@@ -56,18 +62,28 @@ export class WebsocketService {
 
   private endGame(won: string, player1score: string, player2score: string) {
     this.disconnectWebsocket(); 
-    Swal.fire({
-      title: won === "True" ? 'Victoire ! 🎉' : 'Défaite 😞',
-      text: `Score final : ${player1score} - ${player2score}`,
-      icon: won === "True" ? 'success' : 'error',
-      confirmButtonText: 'Fermer',
-      customClass: {
-        confirmButton: 'custom-ok-button'
-      },
-    }).then(() => {
-      // Redirection vers l'index après la fermeture du popup
-      this.router.navigate(['/index']);
-    });
+    // On récupère les nouvelles informations utilisateurs car elles ont été modifiés (elo)
+    this.userDAO.GetUser(this.userCookieService.getToken()).subscribe({
+    next: (user: User) => { 
+      this.userCookieService.setUser(user);
+      Swal.fire({
+        title: won === "True" ? 'Victoire ! 🎉' : 'Défaite 😞',
+        text: `Score final : ${player1score} - ${player2score}`,
+        html: `
+        <div class="elo-message">
+          Rang : ${user.Rank} <br> Nouvel elo : ${user.Elo}
+        </div>        
+        `,
+        icon: won === "True" ? 'success' : 'error',
+        confirmButtonText: 'Fermer',
+        customClass: {
+          confirmButton: 'custom-ok-button'
+        },
+      }).then(() => {
+        // Redirection vers l'index après la fermeture du popup
+        this.router.navigate(['/index']);
+      });
+    }})
   }
   
   

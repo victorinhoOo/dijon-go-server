@@ -19,6 +19,7 @@ namespace WebSocket.Model.DAO
             this.database = new SQLiteDatabase("Data Source= ../../../../Server/dgs.db");
 
         }
+        /// <inheritdoc/>
         public GameUserDTO GetUserByToken(string token)
         {
             GameUserDTO userResult = null;
@@ -56,6 +57,8 @@ namespace WebSocket.Model.DAO
             }
             return userResult;
         }
+
+        /// <inheritdoc/>
         public void UpdateEloByToken(string token, int newElo)
         {
             database.Connect();

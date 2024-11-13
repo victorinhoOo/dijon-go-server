@@ -13,17 +13,17 @@ namespace WebSocket.Model.DAO
     public interface IUserDAO
     {
         /// <summary>
-        /// Récupère le nom d'utilisateur associé à un token
+        /// Récupère l'utilisateur associé à un token
         /// </summary>
         /// <param name="token">Le token de l'utilisateur</param>
-        /// <returns>Le nom d'utilisateur associé au token</returns>
+        /// <returns>L'utilisateur associé au token</returns>
         public GameUserDTO GetUserByToken(string token);
         
         /// <summary>
-        /// update en bd la nouvelle valeur de l'elo du joueur a partir de son nom
+        /// Met à jour l'elo d'un utilisateur à partir de son token
         /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
+        /// <param name="token">Token de l'utilisateur</param>
+        /// <param name="elo">Le nouvel elo de l'utilisateur</param>
         public void UpdateEloByToken(string token, int elo);
     }
 }

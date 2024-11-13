@@ -9,6 +9,7 @@ import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 import { WebsocketService } from '../websocket.service';
 import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { User } from '../Model/User';
 
 @Component({
   selector: 'app-index',
@@ -63,8 +64,8 @@ export class IndexComponent implements OnInit {
     this.token = '';
     this.userPseudo = '';
     this.gameDAO = new GameDAO(httpClient);
-    this.elo = userCookieService.getUser().Elo;
-    this.userRank = userCookieService.getUser().Rank;
+    this.elo = this.userCookieService.getUser()!.Elo;
+    this.userRank = this.userCookieService.getUser()!.Rank;
   }
 
   /**
@@ -79,12 +80,20 @@ export class IndexComponent implements OnInit {
     } else {
       this.websocketService.disconnectWebsocket();
     }
+    this.userCookieService.getUserObservable().subscribe((user: User | null) => {
+      if (user) {
+        this.userPseudo = user.Username;
+        this.elo = user.Elo;
+        this.userRank = user.Rank;
+        this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}`;
+      }
+    });
+
+    // Vérifiez et gérez la connexion
     this.token = this.userCookieService.getToken();
     if (!this.token) {
       this.router.navigate(['/login']);
     }
-    this.userPseudo = this.userCookieService.getUser().Username;
-    this.avatar += this.userPseudo;
     this.populateLeaderboard();
   }
 

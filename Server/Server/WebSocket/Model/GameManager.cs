@@ -8,33 +8,35 @@ using WebSocket.Model.DTO;
 
 namespace WebSocket.Model
 {
+    /// <summary>
+    /// Gère les opérations lié aux parties
+    /// </summary>
     public class GameManager
     {
 
         private IUserDAO userDAO;
 
-        /// <summary>
-        /// contructeur du game manager
-        /// </summary>
         public GameManager() 
         {
             this.userDAO = new UserDAO();
         }
+
         /// <summary>
-        /// Récuppérer le pseudo du joueur à partir de son token
+        /// Récupère un utilisateur à partir de son token
         /// </summary>
         /// <param name="token">token du joueur</param>
-        /// <returns>le pseudo du joueur</returns>
+        /// <returns>l'utilisateur jouant la partie sous forme de GameUserDTO</returns>
+        /// 
         public GameUserDTO GetUserByToken(string token)
         {
             return userDAO.GetUserByToken(token);
         }
+
         /// <summary>
-        /// augmente l'elo du joueur de la partie
+        /// Modifie l'elo des deux joueurs en fonction du résultat et de leur différence de niveau
         /// </summary>
-        /// <param name="winner"></param>
-        /// <param name="looser"></param>
-        /// <returns></returns>
+        /// <param name="winner">L'utilisateur ayant gagné la partie</param>
+        /// <param name="looser">L'utilisateur ayant perdu la partie</param>
         public void UpdateEloWinnerLooser(GameUserDTO winner, GameUserDTO looser)
         {
             int initialWinnerElo = winner.Elo;

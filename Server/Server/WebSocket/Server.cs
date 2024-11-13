@@ -212,20 +212,22 @@ namespace WebSocket
             (int,int) scores = game.GetScore();
             int scorePlayer1 = scores.Item1;
             int scorePlayer2 = scores.Item2;
-            
-            if(scorePlayer1 >= scorePlayer2)
+            bool player1won = false;
+            bool player2won = false;
+
+            //Maj de l'elo en fonction du gagnant
+            //et renvoi à chaque joueur un bouléen indiquant si il a gagné ou non
+            if (scorePlayer1 >= scorePlayer2)
             {
                 this.gameManager.UpdateEloWinnerLooser(game.Player1.User, game.Player2.User);
+                player1won= true;
+                
             }
             else
             {
                 this.gameManager.UpdateEloWinnerLooser(game.Player2.User, game.Player1.User);
+                player2won= true;
             }
-        
-            bool player1won = scorePlayer1 >= scorePlayer2;
-            bool player2won = scorePlayer2 > scorePlayer1;
-
-            //todo: gérer le gain et la perte d'elo en fonction du résultat (dans l'interpreter)
 
             byte[] endOfGameMessagePlayer1 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer1}-{scorePlayer2}|{player1won}");
             byte[] endOfGameMessagePlayer2 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer2}-{scorePlayer1}|{player2won}");
