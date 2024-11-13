@@ -32,12 +32,8 @@ namespace WebSocket
         /// </summary>
         public Server()
         {
-<<<<<<< Updated upstream
             this.webSocket = new Protocol.WebSocket("127.0.0.1", 7000); //10.211.55.3
             this.gameManager = new GameManager();
-=======
-            this.webSocket = new Protocol.WebSocket("10.211.55.3", 7000); //10.211.55.3
->>>>>>> Stashed changes
         }
 
 
@@ -199,18 +195,11 @@ namespace WebSocket
         /// </summary>
         private void StartGame(Game game)
         {
-<<<<<<< Updated upstream
             GameUserDTO user1 = this.gameManager.GetUserByToken(game.Player1.User.Token);
             GameUserDTO user2 = this.gameManager.GetUserByToken(game.Player2.User.Token);
             byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{user2.Name}"); // Envoi du nom du joueur à son adversaire
             byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{user1.Name}"); // Envoi du nom du joueur à son adversaire
-=======
             this.started = true;
-            string p1 = this.interpreter.GetUsernameByToken(game.Player1.Token);
-            string p2 = this.interpreter.GetUsernameByToken(game.Player2.Token);
-            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{p2}"); // Envoi du nom du joueur à son adversaire
-            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{p1}"); // Envoi du nom du joueur à son adversaire
->>>>>>> Stashed changes
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
         }
@@ -223,23 +212,15 @@ namespace WebSocket
             (int,int) scores = game.GetScore();
             int scorePlayer1 = scores.Item1;
             int scorePlayer2 = scores.Item2;
-<<<<<<< Updated upstream
             
             if(scorePlayer1 >= scorePlayer2)
             {
                 this.gameManager.UpdateEloUserByUserName(game.Player1.User, game.Player2.User);
             }
-=======
-
->>>>>>> Stashed changes
             bool player1won = scorePlayer1 >= scorePlayer2;
             bool player2won = scorePlayer2 > scorePlayer1;
 
             //todo: gérer le gain et la perte d'elo en fonction du résultat (dans l'interpreter)
-<<<<<<< Updated upstream
-            
-=======
->>>>>>> Stashed changes
 
             byte[] endOfGameMessagePlayer1 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer1}-{scorePlayer2}|{player1won}");
             byte[] endOfGameMessagePlayer2 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer2}-{scorePlayer1}|{player2won}");
