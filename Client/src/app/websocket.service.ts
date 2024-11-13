@@ -84,11 +84,11 @@ export class WebsocketService {
   /**
    * Envoi un message de création de partie
    */
-  public createGame(size:number): void {
+  public createGame(size:number, rule:string): void {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0/Create:${userToken}-${size}`);
+      this.websocket.send(`0/Create:${userToken}-${size}_${rule}`);
       this.interpreter.setColor('black');
     } else {
       console.log('not connected');

@@ -1,3 +1,4 @@
+import { log } from "console";
 import { Game } from "./Model/Game";
 
 /**
@@ -75,6 +76,7 @@ export class Interpreter {
       let y = stoneData[1];
       let color = stoneData[2];
       let stone = document.getElementById(`${x}-${y}`);
+      this.discardKo(stone);
       switch (color) {
         case 'White':
           stone!.style.background = 'white';
@@ -85,8 +87,26 @@ export class Interpreter {
         case 'Empty':
           stone!.style.background = 'transparent';
           break;
+        case 'Ko':
+          this.drawKo(stone);
       }
     }
+  }
+
+  private discardKo(stone: HTMLElement | null):void{
+    if(stone != null){
+      stone.style.border = "none";
+      stone.style.borderRadius = "50%";
+    }
+
+  }
+
+  private drawKo(stone: HTMLElement | null):void{
+      stone!.style.borderRadius = "0";
+      stone!.style.border = "5px solid #A7001E";
+      stone!.style.boxSizing = "border-box";
+      stone!.style.background = "transparent";
+
   }
 
   /**
@@ -134,9 +154,7 @@ export class Interpreter {
 
   public setGame(game:Game){
     this.game = game;
-  }
-
- 
+  } 
 
   public getPlayerColor():string{
     return this.game.getPlayerColor();
