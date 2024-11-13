@@ -2,6 +2,7 @@
 using GoLogic.Score;
 using System.Text;
 using System.Text.Json;
+using ZstdSharp.Unsafe;
 
 namespace WebSocket.Model
 {
@@ -119,16 +120,22 @@ namespace WebSocket.Model
         /// <returns>état de la partie en string</returns>
         public string StringifyGameBoard()
         {
+            GameBoard copy = new GameBoard(gameBoard.Size);
+            copy.Board = gameBoard.CopyBoard();
+            CheckGobanForKo(copy);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("x,y,color");
-            foreach (Stone stone in gameBoard.Board)
+            foreach (Stone stone in copy.Board)
             {
                 sb.AppendLine($"{stone.X},{stone.Y},{stone.Color}");
             }
             return sb.ToString();
         }
 
-
+        private void CheckGobanForKo(GameBoard board)
+        {
+            logic.ChecksGobanForKo(board, logic.CurrentTurn);
+        }
 
         /// <summary>
         /// Récupérer le score de la partie
