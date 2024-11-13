@@ -64,13 +64,13 @@ namespace WebSocket.Model
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game()
+        public Game(int size)
         {
-            id = Server.Games.Count + 1;
-            size = 19;
-            gameBoard = new GameBoard(size);
-            logic = new GameLogic(gameBoard);
-            score = new ChineseScoreRule(gameBoard);
+            this.id = Server.Games.Count + 1;
+            this.size = size;
+            this.gameBoard = new GameBoard(size);
+            this.logic = new GameLogic(gameBoard);
+            this.score = new ChineseScoreRule(gameBoard);
         }
 
 

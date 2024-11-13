@@ -91,12 +91,14 @@ namespace WebSocket
         /// </summary>
         private void CreateGame(Client client, string message, ref string response, ref string type)
         {
+            string[] data = message.Split("-");
+            int size = Convert.ToInt16(data[1]);
             int id = Server.Games.Count + 1; // Génération de l'id de la partie
-            Game newGame = new Game();
+            Game newGame = new Game(size);
             newGame.AddPlayer(client);
             Server.Games[id] = newGame;
             gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
-            client.Token = message.Split(":")[1];
+            client.Token = data[0].Split(":")[1];
             Server.Games[id].Player1 = client; // Ajout du client en tant que joueur 1
             response = $"{id}/"; // Renvoi del'id de la partie créée
             type = "Send_";
