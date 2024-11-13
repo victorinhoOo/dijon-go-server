@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
 {
@@ -17,16 +18,16 @@ namespace WebSocket.Model.DAO
             this.database = new SQLiteDatabase("Data Source= ../../../../Server/dgs.db");
 
         }
-        public string GetUsernameByToken(string token)
+        public GameUserDTO GetUserByToken(string token)
         {
-            string usernameResult = null;
+            GameUserDTO userResult = null;
             database.Connect();
 
             try
             {
                 // on récupére l'utilisateur associé au token
                 string query = @"
-                SELECT u.idUser, u.username
+                SELECT u.idUser, u.username, u.elo
                 FROM user u
                 INNER JOIN tokenuser t ON u.idToken = t.idToken
                 WHERE t.token = @token";
@@ -40,14 +41,18 @@ namespace WebSocket.Model.DAO
 
                 if (result.Rows.Count > 0)
                 {
-                    usernameResult = result.Rows[0]["username"].ToString();
+                    userResult = new GameUserDTO
+                    {
+                        Name = result.Rows[0]["username"].ToString(),
+                        Elo = Convert.ToInt32(result.Rows[0]["elo"])
+                    };
                 }
             }
             finally
             {
                 database.Disconnect();
             }
-            return usernameResult;
+            return userResult;
         }
     }
 }

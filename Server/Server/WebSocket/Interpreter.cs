@@ -136,16 +136,5 @@ namespace WebSocket
             
         }
 
-
-        /// <summary>
-        /// Récuppérer le pseudo du joueur à partir de son token
-        /// </summary>
-        /// <param name="token">token du joueur</param>
-        /// <returns>le pseudo du joueur</returns>
-        public string GetUsernameByToken(string token)
-        {
-            return userDAO.GetUsernameByToken(token);
-        }
-
     }
 }

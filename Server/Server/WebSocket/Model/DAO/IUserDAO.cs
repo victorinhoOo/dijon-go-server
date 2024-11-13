@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
 {
@@ -16,6 +17,6 @@ namespace WebSocket.Model.DAO
         /// </summary>
         /// <param name="token">Le token de l'utilisateur</param>
         /// <returns>Le nom d'utilisateur associé au token</returns>
-        public string GetUsernameByToken(string token);
+        public GameUserDTO GetUserByToken(string token);
     }
 }
