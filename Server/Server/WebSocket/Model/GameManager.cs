@@ -25,9 +25,21 @@ namespace WebSocket.Model
         /// </summary>
         /// <param name="token">token du joueur</param>
         /// <returns>le pseudo du joueur</returns>
-        public GameUserDTO GetUsernameByToken(string token)
+        public GameUserDTO GetUserByToken(string token)
         {
             return userDAO.GetUserByToken(token);
+        }
+        /// <summary>
+        /// augmente l'elo du joueur de la partie
+        /// </summary>
+        /// <param name="winner"></param>
+        /// <param name="looser"></param>
+        /// <returns></returns>
+        public void UpdateEloUserByUserName(GameUserDTO winner, GameUserDTO looser)
+        {
+            this.userDAO.UpdateEloByToken(winner.Name, winner.Elo + 10);
+            this.userDAO.UpdateEloByToken(looser.Name, looser.Elo - 10);
+            
         }
     }
 }

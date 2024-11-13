@@ -11,14 +11,14 @@ namespace WebSocket.Model.DTO
     /// </summary>
     public class GameUserDTO
     {
-        /// <summary>
-        /// Get et Set le nom du joueur
-        /// </summary>
-        public string Name { get; set; }
+        private string name;
 
-        /// <summary>
-        /// Get et Set l'elo du jpoueur
-        /// </summary>
-        public int Elo { get; set; }
+        private int elo;
+
+        private string token;
+
+        public string Token { get => token; set => token = value; }
+        public string Name { get => name; set => name = value; }
+        public int Elo { get => elo; set => elo = value; }
     }
 }

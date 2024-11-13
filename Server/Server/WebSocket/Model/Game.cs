@@ -3,6 +3,7 @@ using GoLogic.Score;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using System.Text.Json;
+using WebSocket.Model.DTO;
 
 namespace WebSocket.Model
 {

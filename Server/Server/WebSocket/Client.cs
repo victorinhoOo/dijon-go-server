@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using WebSocket.Model.DTO;
 
 namespace WebSocket
 {
@@ -14,15 +15,20 @@ namespace WebSocket
     {
         private TcpClient client;
         private NetworkStream stream;
-        private string token;
+        private GameUserDTO user;
 
-        public string Token { get => token; set => token = value; } 
 
         public Client(TcpClient client)
         {
             this.client = client;
             this.stream = this.client.GetStream();
+            this.user = new GameUserDTO();
         }
+
+        /// <summary>
+        /// Récupère ou modifie l'utilisateur associé au client
+        /// </summary>
+        public GameUserDTO User { get => user; set => user = value; }
 
         /// <summary>
         /// Reçois un message du client

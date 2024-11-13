@@ -18,5 +18,12 @@ namespace WebSocket.Model.DAO
         /// <param name="token">Le token de l'utilisateur</param>
         /// <returns>Le nom d'utilisateur associé au token</returns>
         public GameUserDTO GetUserByToken(string token);
+        
+        /// <summary>
+        /// update en bd la nouvelle valeur de l'elo du joueur a partir de son nom
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public void UpdateEloByToken(string token, int elo);
     }
 }
