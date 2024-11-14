@@ -217,29 +217,31 @@
     color: #EBB840;
 }
 
-.game-choice{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 20px;
-    color: black;
+::ng-deep .flag{
+    margin-left: auto;
+    width: 25px;
+    height: 15px;
 }
 
 ::ng-deep .game-choice {
     background-color: #FADBB5;
     border-radius: 10px;
     padding: 10px;
-    display: block; 
     margin-bottom: 5px;
     text-align: left;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
 
 ::ng-deep .game-choice a {
     color: black;
     text-decoration: none;
     text-align: left;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 ::ng-deep .game-choice i {

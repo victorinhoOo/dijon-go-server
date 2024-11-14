@@ -117,7 +117,8 @@ export class IndexComponent implements OnInit {
         console.log(games);
         let content = '';
         games.forEach((game) => {
-          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}/${game["rule"]}">${game["title"]} ${game["size"]}x${game["size"]}</a></div><br>`;
+          let stringRule = game["rule"] == "j" ? `<img class="flag" src="japan.svg"/>` : `<img class="flag" src="china.svg"/>`
+          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}/${game["rule"]}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</a></div><br>`;
         });
         Swal.fire({
           title: 'Parties disponibles',
