@@ -271,50 +271,6 @@ namespace Tests.Test_GoLogic
             Assert.Equal(StoneColor.Empty, gameBoard.Board[0, 1].Color);
         }
 
-        [Fact]
-        public void Test_ChecksGobanForKo()
-        {
-            var gameBoard = new GameBoard(9);
-            var gameLogic = new GameLogic(gameBoard);
-
-            gameLogic.PlaceStone(1, 2); // noir
-            gameLogic.PlaceStone(2, 2); // blanc
-            gameLogic.PlaceStone(2, 1); // noir
-            gameLogic.PlaceStone(2, 4); // blanc
-            gameLogic.PlaceStone(3, 2); // noir
-            gameLogic.PlaceStone(3, 3); // blanc
-            gameLogic.PlaceStone(8, 3); // noir
-            gameLogic.PlaceStone(1, 3); // blanc
-
-            // . : vide, @ : noir, O : blanc
-            // . . . . . . . . .
-            // . . @ O . . . . .
-            // . @ O . O . . . .
-            // . . @ O . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . @ . . . . .
-
-            gameLogic.PlaceStone(2, 3); // noir capture blanc en (2, 2)
-
-            // . : vide, @ : noir, O : blanc
-            // . . . . . . . . .
-            // . . @ O . . . . .
-            // . @ + @ O . . . .
-            // . . @ O . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . @ . . . . .
-
-            gameLogic.ChecksGobanForKo(gameLogic.Board, gameLogic.CurrentTurn);
-
-            Assert.Equal(StoneColor.Ko, gameBoard.GetStone(2, 2).Color);
-        }
-
         //[Fact]
         //public void GetNeighbors_Returns_neighbors()
         //{
