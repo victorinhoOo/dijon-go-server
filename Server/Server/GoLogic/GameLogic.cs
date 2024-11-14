@@ -182,7 +182,7 @@
         public void CapturesOpponent(Stone placedStone)
         {
             // Récupère la couleur opposée au joueur courant
-            StoneColor opponentColor = currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+            StoneColor opponentColor = placedStone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
 
             // Vérifie les pierres voisines pour potentielle capture
             foreach (Stone neighbor in GetNeighbors(placedStone))
