@@ -20,7 +20,7 @@
         /// <summary>
         /// Le plateau dans l'état précédent
         /// </summary>
-        public Stone[,] PreviousBoard { get => this.previousBoard; set => this.PreviousBoard = value; }
+        public Stone[,] PreviousBoard { get => this.previousBoard; set => this.previousBoard = value; }
         
         /// <summary>
         /// La taille du plateau (size x size)

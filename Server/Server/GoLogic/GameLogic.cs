@@ -11,6 +11,7 @@
         private StoneColor currentTurn;
         private bool isEndGame;
         private bool skippedTurn;
+        private Stone previousStone;
 
         /// <summary>
         /// Le plateau de la partie
@@ -31,6 +32,11 @@
         /// True si la partie est finie
         /// </summary>
         public bool IsEndGame { get => this.isEndGame; }
+
+        /// <summary>
+        /// Coup précédemment joué
+        /// </summary>
+        public Stone PreviousStone { get => this.previousStone; }
         #endregion attributs
 
         /// <summary>
@@ -72,9 +78,9 @@
             }
             else
             {
-                Board.Board[x, y].Color = CurrentTurn; // place la pierre en changeant sa couleur de Empty à CurrentTurn
+                stone.Color = CurrentTurn; // place la pierre en changeant sa couleur de Empty à CurrentTurn
+                this.previousStone = stone;
                 Moves.Add(new Stone(x, y, CurrentTurn)); // enregistre le coup
-                CapturesOpponent(stone); // vérifie et élimine les pierres capturées
                 CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black; // tour passe au joueur suivant
 
                 res = true;
@@ -91,15 +97,20 @@
         /// <returns>True si le coup est valide, False sinon</returns>
         public bool IsValidMove(Stone stone)
         {
+            GameBoard boardCopy = new GameBoard(board.Size);
+            boardCopy.Board = board.CopyBoard();
+            boardCopy.PreviousBoard = board.PreviousBoard;
+            GameLogic logicCopy = new GameLogic(boardCopy);
             bool result = true;
+
             // Vérifie que le coup est dans les limites du plateau et que l'emplacement est vide
-            if (Board.Board[stone.X, stone.Y].Color != StoneColor.Empty || !Board.IsValidCoordinate(stone.X, stone.Y))
+            if (stone.Color != StoneColor.Empty || !Board.IsValidCoordinate(stone.X, stone.Y))
                 result = false;
 
             else
             {
                 // Place la pierre temporairement pour vérifier les libertés et les captures
-                Board.Board[stone.X, stone.Y].Color = CurrentTurn;
+                stone.Color = CurrentTurn;
 
                 // 1. Vérifie si la pierre a des libertés et capture des pierres adverses
                 // Vérifie si le coup entraînerait un "suicide" (pas de libertés)
@@ -110,13 +121,23 @@
                     result = false; // Coup invalidé (car suicide)
                 }
                 // 2. Vérifie la règle de Ko (empêche de répéter l'état précédent du plateau)
-                else if (IsKoViolation(Board))
+                else
                 {
-                    stone.Color = StoneColor.Empty; // Annule le coup
-                    result = false; // Coup invalide (ne respecte pas la régle de ko)
+                    CapturesOpponent(stone); // On execute la capture pour vérifier ko
+                    if (IsKoViolation(Board))
+                    {
+                        result = false; // Coup invalide (ne respecte pas la régle de ko)
+                        stone.Color = StoneColor.Empty; // Annule le coup
+                        Board.Board = boardCopy.CopyBoard(); // Récupère l'état initial du Goban
+                    }
+                    else // Coup valide
+                    {
+                        Board.PreviousBoard = boardCopy.CopyBoard();
+                    }
+                    
                 }
+
             }
-            if (result) Board.PreviousBoard = Board.CopyBoard(); // On copie l'état du plateau actuel dans previousBoard
 
             return result;
         }
@@ -145,33 +166,6 @@
             return res; 
         }
 
-        /// <summary>
-        /// Marque Ko les cases du Goban
-        /// Une case est Ko si le coup remet le plateau dans son état précédent
-        /// On simule un coup pour chaque case
-        /// </summary>
-        public void ChecksGobanForKo(GameBoard board, StoneColor currentTurn)
-        {
-            //StoneColor opponentColor = currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
-            foreach (Stone stone in board.Board)
-            {
-                if (stone.Color == StoneColor.Empty)
-                {
-                    // Place la pierre temporairement pour la vérification de Ko
-                    board.Board[stone.X, stone.Y].Color = currentTurn;
-
-                    if (IsKoViolation(board))
-                    {
-                        board.Board[stone.X, stone.Y].Color = StoneColor.Ko; // Marque l'intersection
-                    }
-                    else
-                    {
-                        board.Board[stone.X, stone.Y].Color = StoneColor.Empty;
-                    }
-                }
-            }
-        }
-        
         /// <summary>
         /// Après avoir placé une pierre à (x, y), vérifie si des pierres adverses sont capturées.
         /// Les pierres capturées sont retirées du plateau (couleur Empty)
@@ -324,7 +318,7 @@
         /// </summary>
         /// <param name="stone">La pierre dont on cherche les voisines</param>
         /// <returns>Liste des pierres voisines</returns>
-        private List<Stone> GetNeighbors(Stone stone)
+        public List<Stone> GetNeighbors(Stone stone)
         {
             List<Stone> neighbors = [];
 
