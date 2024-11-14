@@ -124,9 +124,9 @@ export class Interpreter {
     }
 
     document.getElementById('opponent-score-value')!.innerHTML =
-      'Score : ' + opponentScore;
+      'Prises : ' + opponentScore;
     document.getElementById('player-score-value')!.innerHTML =
-      'Score : ' + playerScore;
+      'Prises : ' + playerScore;
   }
 
   private updateTurn(message: string): void {
