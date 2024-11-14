@@ -24,7 +24,7 @@ namespace WebSocket.Model.DTO
         public string Token { get => token; set => token = value; }
 
         /// <summary>
-        /// Renvoi le nom d'utilisateur d'un utilisateur jouant une partie
+        /// Renvoi ou modifie le nom d'utilisateur d'un utilisateur jouant une partie
         /// </summary>
         public string Name { get => name; set => name = value; }
 
