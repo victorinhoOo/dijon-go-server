@@ -18,6 +18,7 @@ namespace WebSocket.Model
         private GameBoard gameBoard;
         private GameLogic logic;
         private ScoreRule score;
+        private string rule;
         private int size;
         private int id;
 
@@ -56,6 +57,9 @@ namespace WebSocket.Model
         public int Size { get => size; set => size = value; }
 
 
+        public string Rule { get => rule; set => rule = value; }
+
+
         /// <summary>
         /// Récupérer ou modifier l'identifiant de la partie
         /// </summary>
@@ -65,13 +69,20 @@ namespace WebSocket.Model
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game(int size)
+        public Game(int size, string rule)
         {
             this.id = Server.Games.Count + 1;
             this.size = size;
             this.gameBoard = new GameBoard(size);
             this.logic = new GameLogic(gameBoard);
-            this.score = new ChineseScoreRule(gameBoard);
+            this.rule = rule;
+            switch (this.rule)
+            {
+                case "c": this.score = new ChineseScoreRule(gameBoard);break;
+                case "j": this.score = new JapaneseScoreRule(gameBoard);break;
+            }
+            
+            
         }
 
 
