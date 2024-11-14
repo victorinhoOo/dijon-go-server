@@ -88,7 +88,7 @@ export class ProfileComponent {
       // Récupère les informations de l'utilisateur après la modification
       this.userPseudo = this.userCookieService.getUser().Username;
       this.userEmail = this.userCookieService.getUser().Email;
-      this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;
+      this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}?t=${new Date().getTime()}`; // cache-busting pour mettre à jour l'avatar
       this.rank = "9 dan";
     });
   }
