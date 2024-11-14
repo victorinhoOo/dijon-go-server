@@ -8,6 +8,7 @@
         private int id;
         private string title;
         private int size;
+        private string rule;
 
         /// <summary>
         /// L'id de la partie
@@ -23,5 +24,8 @@
         /// Taille de la grille de jeu
         /// </summary>
         public int Size { get => size; set => size = value; }
+
+
+        public string Rule { get => rule; set => rule = value; }
     }
 }
