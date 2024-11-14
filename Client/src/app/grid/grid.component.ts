@@ -17,6 +17,8 @@ import { UserCookieService } from '../Model/UserCookieService';
  */
 export class GridComponent implements AfterViewInit, OnInit {
   private size: number;
+
+  private rule: string;
   private playerAvatar: string;
   private playerPseudo: string;
 
@@ -37,6 +39,8 @@ export class GridComponent implements AfterViewInit, OnInit {
     this.playerPseudo = this.userCookieService.getUser().Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;
+
+    this.rule = '';
   }
 
   /**
@@ -52,6 +56,7 @@ export class GridComponent implements AfterViewInit, OnInit {
    */
   public ngOnInit(): void {
     this.size = Number(this.route.snapshot.paramMap.get('size'));
+    this.rule = String(this.route.snapshot.paramMap.get('rule'));
   }
 
   /**
@@ -79,6 +84,23 @@ export class GridComponent implements AfterViewInit, OnInit {
         this.click(stone);
       });
     });
+
+    let ruleText = document.getElementById('rule-text');
+    if(this.rule == 'c'){
+      ruleText!.append('chinoises')
+    }
+    if(this.rule == 'j'){
+      ruleText!.append('japonaises')
+    }
+
+    let ruleLink = document.getElementById('rule-icon') as HTMLAnchorElement;
+    if (this.rule === 'c') {
+      ruleLink!.href = "https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_chinoise";
+    }
+    if (this.rule === 'j') {
+      ruleLink!.href = "https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_japonaise";
+    }
+    
 
     let passButton = document.getElementById('pass');
     passButton?.addEventListener('click', () => {
