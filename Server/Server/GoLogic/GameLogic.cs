@@ -129,6 +129,14 @@
                         result = false; // Coup invalide (ne respecte pas la régle de ko)
                         stone.Color = StoneColor.Empty; // Annule le coup
                         Board.Board = boardCopy.CopyBoard(); // Récupère l'état initial du Goban
+                        if (this.CurrentTurn == StoneColor.White)
+                        {
+                            board.CapturedBlackStones -= 1;
+                        }
+                        else
+                        {
+                            board.CapturedWhiteStones -= 1;
+                        }
                     }
                     else // Coup valide
                     {
@@ -174,7 +182,7 @@
         public void CapturesOpponent(Stone placedStone)
         {
             // Récupère la couleur opposée au joueur courant
-            StoneColor opponentColor = placedStone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+            StoneColor opponentColor = currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
 
             // Vérifie les pierres voisines pour potentielle capture
             foreach (Stone neighbor in GetNeighbors(placedStone))
