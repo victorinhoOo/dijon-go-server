@@ -18,30 +18,41 @@ namespace GoLogic.Serializer
         /// <returns>Représentation du plateau avec les positions Ko marquées</returns>
         public string ChecksGobanForKo(GameLogic logic, StoneColor currentTurn)
         {
-            Stone koCase = new Stone(0, 0);
+            List<Stone> potentialKoPositions = new List<Stone>();
             GameBoard boardCopy = new GameBoard(logic.Board.Size);
-            boardCopy.Board = logic.Board.CopyBoard();
-            boardCopy.PreviousBoard = logic.Board.PreviousBoard;
-            GameLogic logicCopy = new GameLogic(boardCopy);
 
+            // Récupère tous les voisins vides de la pierre précédente
             foreach (Stone stone in logic.GetNeighbors(logic.PreviousStone))
             {
-                if (stone.Color == StoneColor.Empty) koCase = logic.Board.Board[stone.X, stone.Y];
-            }
+                if (stone.Color == StoneColor.Empty)
+                {
+                    // Pour chaque voisin vide, fait une nouvelle copie et teste
+                    boardCopy.Board = logic.Board.CopyBoard();
+                    boardCopy.PreviousBoard = logic.Board.PreviousBoard;
+                    GameLogic logicCopy = new GameLogic(boardCopy);
 
-            // Place la pierre dans une copie pour la vérification de Ko
-            boardCopy.Board[koCase.X, koCase.Y].Color = currentTurn;
-            logicCopy.CapturesOpponent(koCase);
-            bool isKoViolation = logicCopy.IsKoViolation(boardCopy);
+                    // Essaie de placer une pierre de la couleur du joueur actuel
+                    Stone testStone = boardCopy.Board[stone.X, stone.Y];
+                    testStone.Color = currentTurn;
+
+                    // Capture toutes les pierres adverses
+                    logicCopy.CapturesOpponent(testStone);
+
+                    // Vérifie si cela crée une situation de Ko
+                    if (logicCopy.IsKoViolation(boardCopy))
+                    {
+                        potentialKoPositions.Add(stone);
+                    }
+                }
+            }
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("x,y,color");
 
-            // Parcourt le plateau dans l'ordre des pierres
             foreach (Stone stone in logic.Board.Board)
             {
                 string color = stone.Color.ToString();
-                if (stone.X == koCase.X && stone.Y == koCase.Y && isKoViolation)
+                if (potentialKoPositions.Any(k => k.X == stone.X && k.Y == stone.Y))
                 {
                     color = "Ko";
                 }
