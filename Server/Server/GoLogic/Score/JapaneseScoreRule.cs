@@ -16,7 +16,7 @@
         {
             (int blackStones, int whiteStones) = CountStones();
             (int territoryBlack, int territoryWhite) = (0, 0);
-            if (blackStones + whiteStones > 0)
+            if (blackStones + whiteStones > 1)
             {
                 (territoryBlack, territoryWhite) = FindTerritory();
             }
