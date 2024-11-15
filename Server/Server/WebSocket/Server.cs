@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using WebSocket.Exceptions;
 using WebSocket.Model;
-using WebSocket.Model.DTO;
 using WebSocket.Protocol;
 
 

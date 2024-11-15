@@ -148,7 +148,7 @@ namespace Server.Controllers
         /// renvoie le leaderboard
         /// </summary>
         /// <returns>le nom et le classement des 5 meilleurs joueurs</returns>
-        [HttpGet("LeaderBoard")]
+        [HttpGet("Leaderboard")]
         public IActionResult GetLeardBoard()
         {
             IActionResult result = BadRequest(new { Message = "Impossible de récupérer le leaderboard" });
