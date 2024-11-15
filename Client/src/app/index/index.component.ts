@@ -10,6 +10,7 @@ import { WebsocketService } from '../websocket.service';
 import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { User } from '../Model/User';
+import { UserDAO } from '../Model/DAO/UserDAO';
 
 @Component({
   selector: 'app-index',
@@ -25,6 +26,7 @@ export class IndexComponent implements OnInit {
   private userRank: string;
   private elo: number;
   private gameDAO: GameDAO;
+  private userDAO: UserDAO;
 
     /**
    * Getter pour l'affichage de l'elo
@@ -66,6 +68,7 @@ export class IndexComponent implements OnInit {
     this.gameDAO = new GameDAO(httpClient);
     this.elo = this.userCookieService.getUser()!.Elo;
     this.userRank = this.userCookieService.getUser()!.Rank;
+    this.userDAO = new UserDAO(httpClient);
   }
 
   /**
@@ -240,25 +243,39 @@ export class IndexComponent implements OnInit {
       }
     })
   }
-
   /**
-   * Remplit le leaderboard avec les 5 joueurs les mieux classés du serveur
-   */
-  private populateLeaderboard(): void {
-    const leaderboard = document.querySelector('.leaderboard');
-    const fakeEntries = [
-      '1) Victor - 9 dan',
-      '2) Mathis - 7 dan',
-      '3) Clément -  2 dan',
-      '4) Louis - 1 kyu',
-      '5) Adam - 20 kyu',
-    ];
-    leaderboard!.innerHTML = '';
+ * Remplit le leaderboard avec les 5 joueurs ayant le meilleur Elo du serveur.
+ */
+private populateLeaderboard(): void {
+  this.userDAO.GetLeaderboard().subscribe({
+    next: (leaderboard: any) => {
+      // Accès à l'élément DOM pour le leaderboard
+      const leaderboardElement = document.querySelector('.leaderboard');
+    
+      if (!leaderboardElement) {
+        console.error('Leaderboard DOM introuvable.');
+        return;
+      }
+    
+      // Vidage du contenu actuel du leaderboard
+      leaderboardElement.innerHTML = '';
+      //remplissage d'un tableau
+      const topPlayers = Object.entries(leaderboard);
+      
+      //affichage de chaque joueur du leaderboard
+      topPlayers.forEach(([name, elo], index) => {
+        let userTop = new User(name,"",Number(elo)); //creation d'un user pour obtenir son rang
+        const rankString = `${index + 1}) ${name} - ${userTop.Rank}`;
+        const p = document.createElement('p');
+        p.textContent = rankString;
+        leaderboardElement.appendChild(p);
+      });
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération du leaderboard:', err);
+    }
+  });
+}
 
-    fakeEntries.forEach((entry) => {
-      const p = document.createElement('p');
-      p.textContent = entry;
-      leaderboard!.appendChild(p);
-    });
-  }
+  
 }
