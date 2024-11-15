@@ -47,7 +47,7 @@ export class UserCookieService {
 
   // Méthode pour définir l'utilisateur
   public setUser(user: User): void {
-    const userData = JSON.stringify({ username: user.Username, email: user.Email, elo: user.Elo });
+    const userData = JSON.stringify({ username: user.Username, email: user.Email });
     this.cookieService.set(this.userKey, userData);
     this.userSubject.next(user); // Mise à jour du BehaviorSubject pour notifier les abonnés
   }

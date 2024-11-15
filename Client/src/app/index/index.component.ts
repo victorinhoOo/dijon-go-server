@@ -24,17 +24,9 @@ export class IndexComponent implements OnInit {
   private userPseudo: string;
   private avatar: string;
   private userRank: string;
-  private elo: number;
   private gameDAO: GameDAO;
   private userDAO: UserDAO;
 
-    /**
-   * Getter pour l'affichage de l'elo
-   */
-  public get Elo(): number
-  {
-    return this.elo;
-  }
   /**
  * Getter pour le lien d'affichage de l'avatar
  */
@@ -66,7 +58,6 @@ export class IndexComponent implements OnInit {
     this.token = '';
     this.userPseudo = '';
     this.gameDAO = new GameDAO(httpClient);
-    this.elo = this.userCookieService.getUser()!.Elo;
     this.userRank = this.userCookieService.getUser()!.Rank;
     this.userDAO = new UserDAO(httpClient);
   }
@@ -86,7 +77,6 @@ export class IndexComponent implements OnInit {
     this.userCookieService.getUserObservable().subscribe((user: User | null) => {
       if (user) {
         this.userPseudo = user.Username;
-        this.elo = user.Elo;
         this.userRank = user.Rank;
         this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}`;
       }
