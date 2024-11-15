@@ -32,6 +32,7 @@ namespace WebSocket
         public Server()
         {
             this.webSocket = new Protocol.WebSocket("10.211.55.3", 7000); //10.211.55.3
+            this.gameManager = new GameManager();
         }
 
 

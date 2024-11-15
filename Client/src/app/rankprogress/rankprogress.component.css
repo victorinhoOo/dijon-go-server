@@ -1,0 +1,11 @@
+.progress-low{
+    color: red;
+}
+
+.progress-medium{
+    display: none;
+}
+
+.progress-high{
+    color: green;
+}
