@@ -96,7 +96,7 @@ namespace WebSocket
             newGame.AddPlayer(client);
             Server.Games[id] = newGame;
             gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
-            client.Token = message.Split(":")[1];
+            client.User.Token = message.Split(":")[1];
             Server.Games[id].Player1 = client; // Ajout du client en tant que joueur 1
             response = $"{id}/"; // Renvoi del'id de la partie créée
             type = "Send_";
@@ -109,7 +109,7 @@ namespace WebSocket
         /// </summary>
         private void JoinGame(Client client, string message, int idGame, ref string reponse, ref string type)
         {
-            client.Token = message.Split(":")[1]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profile
+            client.User.Token = message.Split(":")[1]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profile
             Server.Games[idGame].AddPlayer(client); // Ajout du client en tant que joueur 2
             gameDAO.DeleteGame(idGame); // Suppression de la partie de la liste des parties disponibles
             reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
@@ -134,17 +134,6 @@ namespace WebSocket
                 type = "Send_";
             }
             
-        }
-
-
-        /// <summary>
-        /// Récuppérer le pseudo du joueur à partir de son token
-        /// </summary>
-        /// <param name="token">token du joueur</param>
-        /// <returns>le pseudo du joueur</returns>
-        public string GetUsernameByToken(string token)
-        {
-            return userDAO.GetUsernameByToken(token);
         }
 
     }

@@ -7,14 +7,14 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Output,EventEmitter } from '@angular/core';
+import { Output,EventEmitter, } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [MatSidenavModule, MatButtonModule, MatIconModule, NgIf,CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],
 })
 /**
  * Composant de la barre latérale
@@ -26,12 +26,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
    @Output() changeColor: EventEmitter<boolean> = new EventEmitter<boolean>();
   // Attribut privé pour la visibilité de la navbar
   private isNavbarVisible: boolean = true;
-
-  
-  
-  private lightState: string;
   private tokenUser: string;
   private tokenSubscription!: Subscription;
+  private lightIsBlack: boolean
 
   /**
    * Renvoi le token de l'utilisateur connecté
@@ -41,7 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef) {
-    this.lightState = 'light';
+    this.lightIsBlack = false;
     this.isNavbarVisible = true;
     this.tokenUser = '';
   }
@@ -100,8 +97,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       registerButton.addEventListener("click", () => {
         this.router.navigate(["register"]);
       });
-    }
-    
+    }    
     
   }
 
@@ -134,20 +130,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Elle met à jour l'état `lightState` en fonction de l'état actuel, 
    * émet un événement pour notifier le changement de couleur et affiche le nouveau thème dans la console.
    */
-  public switchTheme(): void {
-    if (this.lightState == "light") {
-        this.lightState = "dark";
-        this.changeColor.emit(false);
-        console.log(true);
-
-    } else {
-        this.lightState = "light";
-        this.changeColor.emit(true);
-        console.log(false);
-
-    }
-
-    console.log(this.lightState,"valeur apres");
+  public switchTheme(): void 
+  {  
+      this.lightIsBlack = !this.lightIsBlack;
+      this.changeColor.emit(this.lightIsBlack);
   }
 
 }

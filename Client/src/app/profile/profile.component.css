@@ -1,33 +1,57 @@
-.card-pos{
-    max-width: 60%; margin: 0 auto;
+.card-pos {
+    max-width: 60%;
+    margin: 0 auto;
     padding: 1%;
     background-color: #FFF3E4;
+    padding-top: 10px;
 }
-#params{
+
+#params {
     margin-left: auto;
     display: block;
     padding-top: 5px;
 }
+
 .card-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.custom-dialog-container{
+
+.custom-dialog-container {
     background-color: #FFF3E4;
 }
-.container{
+
+.container {
     color: black;
 }
 
-img{
-    border-radius:5%;
-}
 #params {
     background-color: #FA7E5C !important;
     border: none;
-  }
+}
 
-  #params mat-icon {
+#params mat-icon {
     color: white;
-  }
+}
+
+.card-rank {
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+.text-elo {
+    font-weight: lighter;
+    margin-top: -10px;
+}
+
+.trophy-pic 
+{
+    display: inline-block;
+    width: 50px;
+    height: auto;
+    margin-left: 10px;
+    position: relative;
+    top: 0;
+    max-width: 100%;
+}
