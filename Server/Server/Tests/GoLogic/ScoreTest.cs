@@ -210,12 +210,12 @@ namespace Tests.Test_GoLogic
         {
             GameBoard gameBoard = new GameBoard(9);
             GameLogic gameLogic = new GameLogic(gameBoard);
-            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
+            ScoreRule gameScore = new JapaneseScoreRule(gameBoard);
 
             gameLogic.PlaceStone(8, 8);
             (int black, int white) = gameScore.CalculateScore();
 
-            Assert.Equal(1, black);
+            Assert.Equal(0, black);
             Assert.Equal(0, white);
         }
     }
