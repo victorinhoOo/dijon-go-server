@@ -47,9 +47,11 @@
 
 .trophy-pic 
 {
-    width: 60px;
+    display: inline-block;
+    width: 50px;
     height: auto;
-    margin-left: 5px;
+    margin-left: 10px;
     position: relative;
-    top: 14px;
+    top: 0;
+    max-width: 100%;
 }

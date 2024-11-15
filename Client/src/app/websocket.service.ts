@@ -71,7 +71,7 @@ export class WebsocketService {
         text: `Score final : ${player1score} - ${player2score}`,
         html: `
         <div class="elo-message">
-          Rang : ${user.Rank} <br> Nouvel elo : ${user.Elo}
+          Rang : ${user.Rank}
         </div>        
         `,
         icon: won === "True" ? 'success' : 'error',
