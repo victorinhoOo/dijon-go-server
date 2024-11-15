@@ -90,6 +90,8 @@ namespace Tests.Test_GoLogic
             gameLogic.PlaceStone(2, 1); // blanc
             gameLogic.PlaceStone(8, 1); // noir
             gameLogic.PlaceStone(2, 0); // blanc
+            gameLogic.SkipTurn();
+            gameLogic.PlaceStone(0, 0);
 
             // . @ O . . . . . .
             // @ @ O . . . . . .
@@ -104,9 +106,8 @@ namespace Tests.Test_GoLogic
 
             (int black, int white) = gameScore.CalculateScore();
 
-            // TODO: décommenter ou retirer
-            //Assert.Equal(9, black);
-            //Assert.Equal(2, white);
+            Assert.Equal(2, black);
+            Assert.Equal(9, white);
         }
 
         [Fact]
@@ -136,7 +137,7 @@ namespace Tests.Test_GoLogic
             gameLogic.PlaceStone(2, 6); // blanc
             gameLogic.PlaceStone(8, 4); // noir
 
-            // Capture du groupe de pierres blanches en plaçant un noir en (0, 4)
+            // Capture du groupe de pierres noirs en plaçant un blanc en (0, 4)
             gameLogic.PlaceStone(0, 4);
 
             // . . O @ . @ O . .

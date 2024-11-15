@@ -106,7 +106,7 @@
             queue.Enqueue(stone);
             visited.Add(stone);
 
-            // Explore récursivement pour trouver une zone vide
+            // Explore pour trouver une zone vide
             while (queue.Count > 0)
             {
                 Stone currentStone = queue.Dequeue(); // Retire la première pierre de la file pour l'examiner
@@ -122,7 +122,7 @@
                             queue.Enqueue(neighbor); // Ajoute cette pierre à la file pour continuer l'exploration
                             visited.Add(neighbor);   // Marque la pierre comme visitée pour éviter de la réexaminer
                         }
-                        else if (neighbor.Color != StoneColor.Empty)
+                        else
                         {
                             // Ajoute sa couleur à l'ensemble des couleurs bordantes (pour déterminer le propriétaire)
                             borderingColors.Add(neighbor.Color);
@@ -135,15 +135,7 @@
             StoneColor resColor = StoneColor.Empty;
             List<Stone> resArea = emptyArea;
 
-            // Si la zone vide touche le bord du plateau, c'est un territoire neutre
-            if (stone.X == 0 || stone.X == gameBoard.Size - 1 || stone.Y == 0 || stone.Y == gameBoard.Size - 1)
-            {
-                resColor = StoneColor.Empty; 
-                resArea = emptyArea;
-            }
-
-            // Détermine le propriétaire du territoire : s'il n'y a que des pierres noires ou blanches à la frontière
-            else if (borderingColors.Count == 1)
+            if (borderingColors.Count == 1)
             {
                 resColor = borderingColors.Contains(StoneColor.Black) ? StoneColor.Black : StoneColor.White;
                 resArea = emptyArea;
@@ -151,7 +143,9 @@
 
             return (resColor, resArea); 
         }
+
         
+
         /// <summary>
         /// Retire toutes les pierres mortes du Goban
         /// pour qu'elles ne soient pas considéré lors du calcul du score
