@@ -110,7 +110,20 @@ export class UserDAO {
       })
     );
   }
-  
+
+  /**
+   * Récupère le classement des 5 meilleurs joueurs via une requête GET.
+   * @returns Un Observable contenant un dictionnaire avec les noms et les Elos des joueurs.
+   */
+  public GetLeaderboard(): Observable<{ [username: string]: number }> {
+    return this.http.get<{ [username: string]: number }>((this.url) + 'Leaderboard').pipe(
+      map((response) => response),
+      catchError((error) =>
+        throwError(() => new Error(error.error?.message || 'Erreur lors de la récupération du leaderboard'))
+      )
+    );
+  }
+
 
 }
 

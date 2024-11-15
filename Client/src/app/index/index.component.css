@@ -185,6 +185,13 @@
     width: 200px;
     color: black;
 }
+.leaderboard p {
+    font-size: 18px;
+    margin: 0; /* Supprime les marges des paragraphes */
+    padding: 5px; /* Ajoute un léger padding pour l'espacement interne */
+    border-radius: 5px;
+    text-align: center; /* Centre horizontalement le texte */
+}
 
 .leaderboard p {
     font-size: 18px;
