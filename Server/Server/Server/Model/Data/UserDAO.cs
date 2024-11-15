@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Data;
+using System.Text;
 
 namespace Server.Model.Data
 {
@@ -146,5 +147,33 @@ namespace Server.Model.Data
             logger.LogInformation($"Récupération de l'utilisateur {username}");
             return user;
         }
+ 
+       public Dictionary<string, int> GetTop5Users()
+        {
+            Dictionary<string, int> topUsers = new Dictionary<string, int>();
+            database.Connect();
+
+            // Requête SQL pour obtenir le top 5 des utilisateurs selon leur score Elo
+            string query = "SELECT username, elo FROM user ORDER BY elo DESC LIMIT 5";
+            var result = database.ExecuteQuery(query, new Dictionary<string, object>());
+
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    string username = row["username"].ToString();
+                    int elo = Convert.ToInt32(row["elo"]);
+
+                    // ajout de l'utilisateur au leaderboard
+                    topUsers[username] = elo;
+                }
+            }
+
+            database.Disconnect();
+            logger.LogInformation("Récupération des 5 meilleurs utilisateurs (noms et Elo) dans un dictionnaire.");
+            return topUsers;
+        }
+
+
     }
 }
