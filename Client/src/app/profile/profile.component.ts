@@ -25,20 +25,8 @@ export class ProfileComponent {
   private userEmail: string;
   private rank: string;
   private avatar: string;
-  private elo: number;
 
   /**
-<<<<<<< Updated upstream
- * Getter pour l'affichage de l'elo
- */
-  public get Elo(): number
-  {
-    return this.elo;
-  }
-
-  /**
-=======
->>>>>>> Stashed changes
    * Renvoi l'avatar de l'utilisateur
    */
   public get Avatar(): string {
@@ -84,8 +72,7 @@ export class ProfileComponent {
     this.userPseudo = this.userCookieService.getUser()!.Username;
     this.userEmail = this.userCookieService.getUser()!.Email;
     this.rank = this.userCookieService.getUser()!.Rank;
-    this.elo = this.userCookieService.getUser()!.Elo;
-    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo            
+    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
   }
 
   /**
@@ -102,7 +89,7 @@ export class ProfileComponent {
       this.userPseudo = this.userCookieService.getUser()!.Username;
       this.userEmail = this.userCookieService.getUser()!.Email;
       this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;
-      this.rank = "9 dan";
+      this.rank = this.userCookieService.getUser()!.Rank;
     });
   }
   

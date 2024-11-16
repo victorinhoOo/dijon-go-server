@@ -147,8 +147,9 @@ namespace Server.Model.Data
             logger.LogInformation($"Récupération de l'utilisateur {username}");
             return user;
         }
- 
-       public Dictionary<string, int> GetTop5Users()
+
+        /// <inheritdoc/>
+        public Dictionary<string, int> GetTop5Users()
         {
             Dictionary<string, int> topUsers = new Dictionary<string, int>();
             database.Connect();

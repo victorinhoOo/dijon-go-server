@@ -34,9 +34,9 @@
         public User GetUserByUsername(string username);
 
         /// <summary>
-        /// renvoie la liste des 5 meilleurs joueurs du serveur
+        /// Renvoie la liste des 5 meilleurs joueurs du serveur
         /// </summary>
-        /// <returns>les 5 joueurs avec le plus d'elo</returns>
+        /// <returns>Dictionnaire contenant les 5 joueurs avec le plus d'elo et leur elo respectif</returns>
         public Dictionary<string, int> GetTop5Users();
     }
 }

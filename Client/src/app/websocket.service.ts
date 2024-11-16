@@ -67,7 +67,7 @@ export class WebsocketService {
     next: (user: User) => { 
       this.userCookieService.setUser(user);
       Swal.fire({
-        title: won === "True" ? 'Victoire ! 🎉' : 'Défaite 😞',
+        title: won === "True" ? 'Victoire ! 🌸' : 'Défaite 👺',
         text: `Score final : ${player1score} - ${player2score}`,
         html: `
         <div class="elo-message">
