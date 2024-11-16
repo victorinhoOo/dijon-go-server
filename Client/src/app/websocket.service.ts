@@ -111,6 +111,39 @@ export class WebsocketService {
     }
   }
 
+  /**
+   * Envoi un message de demande de matchmaking
+   */
+  public joinMatchmaking(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.websocket != null && this.websocket.OPEN) {
+        let userToken = this.userCookieService.getToken();
+        this.websocket.send(`0/Matchmaking:${userToken}`);
+        // Écouter les réponses spécifiques au matchmaking
+        const onMessageHandler = (event: MessageEvent) => {
+          const message = event.data;
+          if (message.startsWith("Matchmaking")) {
+            const status = message.split(":")[1];
+            if (status === "Found") {
+              // Adversaire trouvé
+              this.websocket?.removeEventListener("message", onMessageHandler); // Nettoyer le listener
+              resolve();
+            } else if (status === "Cancelled") {
+              // Matchmaking annulé
+              this.websocket?.removeEventListener("message", onMessageHandler);
+              reject("Matchmaking annulé par le serveur.");
+            }
+          }
+        };
+  
+        this.websocket.addEventListener("message", onMessageHandler);
+      } else {
+        reject("WebSocket non connecté.");
+      }
+    });
+  }
+  
+
 
   /**
    * Envoi un message de demande de skip de tour

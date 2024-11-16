@@ -42,6 +42,7 @@ namespace WebSocket
                 case "Stone": PlaceStone(client, idGame, message.Split(':')[1], ref response, ref type); break;
                 case "Create": CreateGame(client, message, ref response, ref type); break;
                 case "Join": JoinGame(client, message, idGame, ref response, ref type); break;
+                case "Matchmaking": Matchmaking(client, message, ref response, ref type); break;
                 case "Skip": Skip(client, idGame, ref response, ref type); break;
 
             }
@@ -109,12 +110,47 @@ namespace WebSocket
         /// </summary>
         private void JoinGame(Client client, string message, int idGame, ref string reponse, ref string type)
         {
-            client.Token = message.Split(":")[1]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profile
+            client.Token = message.Split(":")[1]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
             Server.Games[idGame].AddPlayer(client); // Ajout du client en tant que joueur 2
             gameDAO.DeleteGame(idGame); // Suppression de la partie de la liste des parties disponibles
             reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
             type = "Send_";
         }
+
+        private void Matchmaking(Client client, string message, ref string response, ref string type)
+        {
+            // Ajoute le joueur à la file d'attente
+            Server.WaitingPlayers.Enqueue(client);
+
+            // Si deux joueurs ou plus sont en attente, démarrez une partie
+            if (Server.WaitingPlayers.Count >= 2)
+            {
+                Client player1 = Server.WaitingPlayers.Dequeue();
+                Client player2 = Server.WaitingPlayers.Dequeue();
+
+                // Créé une nouvelle partie pour eux
+                int id = Server.Games.Count + 1;
+                Game newGame = new Game();
+                newGame.AddPlayer(player1);
+                newGame.AddPlayer(player2);
+
+                Server.Games[id] = newGame;
+
+                // Définir les joueurs
+                newGame.Player1 = player1;
+                newGame.Player2 = player2;
+                // todo
+                response = $"{id}/";
+                type = "Broadcast_";
+            }
+            else
+            {
+                // Informer le joueur qu'il est en attente d'un adversaire
+                response = "Waiting";
+                type = "Send_";
+            }
+        }
+
 
         /// <summary>
         /// Le joueur passe son tour

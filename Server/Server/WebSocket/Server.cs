@@ -19,6 +19,8 @@ namespace WebSocket
         private bool isRunning;
         private bool started;
         private static ConcurrentDictionary<int, Game> games = new ConcurrentDictionary<int, Game>();
+        private static Queue<Client> waitingPlayers = new Queue<Client>();
+
         private Interpreter interpreter;
 
         /// <summary>
@@ -27,11 +29,17 @@ namespace WebSocket
         public static ConcurrentDictionary<int, Game> Games { get => games; set => games = value; }
 
         /// <summary>
+        /// File contenant les joueurs en recherche de matchmaking
+        /// </summary>
+        public static Queue<Client> WaitingPlayers { get => waitingPlayers; set => waitingPlayers = value; }
+
+
+        /// <summary>
         /// Constructeur de la classe Server
         /// </summary>
         public Server()
         {
-            this.webSocket = new Protocol.WebSocket("10.211.55.3", 7000); //10.211.55.3
+            this.webSocket = new Protocol.WebSocket("127.0.0.1", 7000); //10.211.55.3
         }
 
 

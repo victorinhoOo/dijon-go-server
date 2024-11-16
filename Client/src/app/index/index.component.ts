@@ -212,8 +212,16 @@ export class IndexComponent implements OnInit {
           title: 'Recherche en cours...',
           text: 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...',
           showCloseButton: true,
-          didOpen: () => {
+          didOpen: async () => {
             Swal.showLoading();
+            try{
+              await this.websocketService.connectWebsocket();
+              this.websocketService.joinMatchmaking();
+            }
+            catch(error){
+              Swal.close(); // Ferme le chargement en cas d'erreur
+              Swal.fire('Erreur', 'La connexion a échoué. Veuillez réessayer.', 'error');
+            }
             //todo : recherche de partie
           },
           willClose: () => {
