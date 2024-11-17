@@ -58,6 +58,8 @@ namespace Tests.WebSocket
 
             PlayKoSituation(game);
             string mess = game.StringifyGameBoard();
+            test = test.Replace("\r\n", ";");
+            mess = mess.Replace("\n", ";");
             Assert.Equal(test, mess);
             
         }
