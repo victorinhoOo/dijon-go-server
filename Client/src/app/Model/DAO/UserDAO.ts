@@ -76,10 +76,10 @@ export class UserDAO {
   **/
   public GetUser(token: string): Observable<User> {
     const params = new HttpParams().set('tokenUser', token);
-    return this.http.get<{ user: { username: string, email: string } }>(this.url + 'Get', { params }).pipe(
-      map((response: { user: { username: string, email: string } }) => {
+    return this.http.get<{ user: { username: string, email: string, elo: number } }>(this.url + 'Get', { params }).pipe(
+      map((response: { user: { username: string, email: string, elo: number } }) => {
         // Créé un nouvel objet User à partir de l'objet  renvoyé par le serveur
-        return new User(response.user.username, response.user.email);
+        return new User(response.user.username, response.user.email,response.user.elo);
       }),
       catchError(error => {
         return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
@@ -110,7 +110,20 @@ export class UserDAO {
       })
     );
   }
-  
+
+  /**
+   * Récupère le classement des 5 meilleurs joueurs via une requête GET.
+   * @returns Un Observable contenant un dictionnaire avec les noms et les Elos des joueurs.
+   */
+  public GetLeaderboard(): Observable<{ [username: string]: number }> {
+    return this.http.get<{ [username: string]: number }>((this.url) + 'Leaderboard').pipe(
+      map((response) => response),
+      catchError((error) =>
+        throwError(() => new Error(error.error?.message || 'Erreur lors de la récupération du leaderboard'))
+      )
+    );
+  }
+
 
 }
 
