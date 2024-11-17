@@ -31,7 +31,7 @@ namespace WebSocket
         /// </summary>
         public Server()
         {
-            this.webSocket = new Protocol.WebSocket("10.211.55.3", 7000); //10.211.55.3
+            this.webSocket = new Protocol.WebSocket("127.0.0.1", 7000); //10.211.55.3
         }
 
 

@@ -95,40 +95,47 @@ export class GridComponent implements AfterViewInit, OnInit {
     });
   }
 
-  private initializeRulesInfo(): void{
+  private initializeRulesInfo(): void {
     let ruleText = document.getElementById('rule-text');
-    if(this.rule == 'c'){
-      ruleText!.append('chinoises')
+    if (this.rule == 'c') {
+      ruleText!.append('chinoises');
     }
-    if(this.rule == 'j'){
-      ruleText!.append('japonaises')
+    if (this.rule == 'j') {
+      ruleText!.append('japonaises');
     }
     let ruleButton = document.getElementById('rule-icon') as HTMLButtonElement;
-
+  
     ruleButton.addEventListener('click', () => {
       if (this.rule === 'c') {
         Swal.fire({
           title: 'Règles Chinoises',
-          text: 'Les règles chinoises se basent sur le territoire et les pierres posées.',
+          html: `
+            <p>Le calcul du score final pour les règles chinoises compte les territoires et les pierres posées.</p>
+            <a href="https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_chinoise" target="_blank" style="color: #007bff;">Plus d'informations</a>
+          `,
           icon: 'info',
           confirmButtonText: 'Ok',
           customClass: {
-            confirmButton: 'custom-ok-button'
+            confirmButton: 'custom-ok-button',
           },
         });
       } else if (this.rule === 'j') {
         Swal.fire({
           title: 'Règles Japonaises',
-          text: 'Les règles japonaises comptent les territoires et les pierres capturées.',
+          html: `
+            <p>Le calcul du score final pour les règles japonaises compte les territoires et les pierres capturées.</p>
+            <a href="https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_japonaise" target="_blank" style="color: #007bff;">Plus d'informations</a>
+          `,
           icon: 'info',
           confirmButtonText: 'Ok',
           customClass: {
-            confirmButton: 'custom-ok-button'
+            confirmButton: 'custom-ok-button',
           },
         });
       }
     });
   }
+  
 
   /**
    * Gère le clique sur les intersections de la grille

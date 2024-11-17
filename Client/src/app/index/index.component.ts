@@ -62,7 +62,7 @@ export class IndexComponent implements OnInit {
    * Initialise les informations utilisateurs, le leaderboard, et gère la création de parties
    */
   public async ngOnInit() {
-    if (this.route.snapshot.paramMap.get('id') != null && this.route.snapshot.paramMap.get('size') != null && this.route.snapshot.paramMap.get('rule') != null ) {
+    if (this.route.snapshot.paramMap.get('id') != null && this.route.snapshot.paramMap.get('size') != null && this.route.snapshot.paramMap.get('rule') != null) {
       let id = this.route.snapshot.paramMap.get('id');
       let size = this.route.snapshot.paramMap.get('size');
       let rule = this.route.snapshot.paramMap.get('rule');
@@ -104,22 +104,35 @@ export class IndexComponent implements OnInit {
       console.log("1");
       joinMatchmakingLink.addEventListener('click', () => {
         this.initializeJoinMatchmakingPopup();
-      } )
+      })
     }
   }
 
+
   /**
-   * Initialise le popup de liste des partie avec les différentes parties disponibles
+   * Initialise le popup de liste des parties avec les différentes parties disponibles
    */
   private initializeJoinGamePopupContent() {
     this.gameDAO.GetAvailableGames().subscribe({
       next: (games: GameInfoDTO[]) => {
         console.log(games);
         let content = '';
-        games.forEach((game) => {
-          let stringRule = game["rule"] == "j" ? `<img class="flag" src="japan.svg"/>` : `<img class="flag" src="china.svg"/>`
-          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}/${game["rule"]}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</a></div><br>`;
-        });
+
+        if (games.length === 0) {
+          // Si aucune partie n'est disponible
+          content = '<p>Aucune partie disponible pour le moment...</p>';
+        } else {
+          // Génére le contenu pour les parties disponibles
+          games.forEach((game) => {
+            let stringRule =
+              game["rule"] == "j"
+                ? `<img class="flag" src="japan.svg"/>`
+                : `<img class="flag" src="china.svg"/>`;
+            content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}/${game["rule"]}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</a></div><br>`;
+          });
+        }
+
+        // Afficher le popup
         Swal.fire({
           title: 'Parties disponibles',
           html: content,
@@ -127,12 +140,25 @@ export class IndexComponent implements OnInit {
           focusConfirm: false,
           confirmButtonText: 'Fermer',
           customClass: {
-            confirmButton: 'custom-ok-button'
+            confirmButton: 'custom-ok-button',
+          },
+        });
+      },
+      error: (err) => {
+        console.error("Erreur lors de la récupération des parties :", err);
+        Swal.fire({
+          title: 'Erreur',
+          text: 'Impossible de récupérer les parties disponibles.',
+          icon: 'error',
+          confirmButtonText: 'Fermer',
+          customClass: {
+            confirmButton: 'custom-ok-button',
           },
         });
       },
     });
   }
+
 
   /**
    * Initialise le popup de création de partie avec les différentes options
@@ -206,10 +232,10 @@ export class IndexComponent implements OnInit {
     });
   }
 
-    /**
-   * Initialise le popup de recherche de partie avec matchmaking en affichant un chargement en attendant l'attribution d'un adversaire
-   * Lorsque la partie est crée, redirige l'utilisateur vers celle-ci et ferme le chargement
-   */
+  /**
+ * Initialise le popup de recherche de partie avec matchmaking en affichant un chargement en attendant l'attribution d'un adversaire
+ * Lorsque la partie est crée, redirige l'utilisateur vers celle-ci et ferme le chargement
+ */
   private initializeJoinMatchmakingPopup() {
     this.gameDAO.GetAvailableGames().subscribe({
       next: (games: GameInfoDTO[]) => {
