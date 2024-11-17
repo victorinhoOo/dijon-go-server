@@ -37,7 +37,7 @@ export class GridComponent implements AfterViewInit, OnInit {
     private route: ActivatedRoute
   ) {
     this.size = 0;
-    this.playerPseudo = this.userCookieService.getUser().Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
+    this.playerPseudo = this.userCookieService.getUser()!.Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;
 
@@ -148,7 +148,38 @@ export class GridComponent implements AfterViewInit, OnInit {
   /**
    * Gère le clic sur le bouton "Passer", passe le tour du joueur
    */
-  public skipTurn() {
-    this.websocketService.skipTurn();
-  }
+/**
+ * Gère le clic sur le bouton "Passer", passe le tour du joueur après confirmation
+ */
+public skipTurn() {
+  Swal.fire({
+    title: 'Voulez-vous vraiment passer votre tour ?',
+    text: 'Un tour passé peut être synonyme de fin de partie.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Oui',
+    cancelButtonText: 'Non',
+    customClass: {
+      confirmButton: 'custom-yes-button',
+      cancelButton: 'custom-no-button'
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Passe le tour du joueur
+      this.websocketService.skipTurn();
+
+      // Affiche le message "Tour passé"
+      Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        icon: 'success'
+      }).fire({
+        title: 'Tour passé'
+      });
+    }
+  });
+}
+
 }

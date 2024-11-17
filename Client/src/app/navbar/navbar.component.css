@@ -1,178 +1,200 @@
-#navbar-container{
-    width: 100%;
-    height: 100%;
+::ng-deep #navbar-container{
+    width: 100% !important;
+    height: 100%!important;
     background-color: #faf9fd;
     color: black;
-    
 }
 
-#navbar-sidenav{
-    height: auto;
-    overflow: hidden;
+::ng-deep #navbar-sidenav{
+    height: auto !important;
+    overflow: hidden !important;
 }
 
+::ng-deep #navbar-container button {
 
-.navBtn{
-    background-color: transparent;
-    border: none;
-    padding: 10px;
-    gap: 10px;
-    margin: auto;
-    width: 90%;
-    transition: background-color 0.1s ease;
-    align-items: center;
-    display: flex;
-}
-
-#logo-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-weight: bold;
 }
 
 
-
-button{
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    color: unset !important;
-    
-    overflow: hidden;
-}
-button:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-#logo{
-    width: 100px;
-    height: 100px;
-}
-
-#logout-container{
-    display: flex;
-    width: 100%;
-    height: auto;
-    justify-content: flex-end;
-    flex-direction: column;
-    justify-self: flex-end;
+::ng-deep .navBtn{
+    all: unset !important;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 10px !important;
+    gap: 10px !important;
+    margin: auto !important;
+    width: 90% !important;
+    transition: background-color 0.1s ease !important;
+    align-items: center!important;
+    display: flex!important;
+    box-sizing: revert !important;
+    font-family: inherit !important;
+    box-sizing: border-box !important; /* Réinitialise le modèle de boîte */
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 13px !important;
 }
 
-#login-container{
-    display: flex;
-    height: auto;
-    justify-content: flex-end;
-    flex-direction: column;
-    overflow: visible;
+::ng-deep .hovered{
+    border-radius: 10px !important;
 }
 
-#register-container{
-    margin-top: 50px;
-    display: flex;
-    height: auto;
-    justify-content: flex-end;
-    flex-direction: column;
-    overflow: visible;
+::ng-deep .hovered:hover{
+    background-color: rgba(221, 223, 223, 0.756) !important;
+    cursor: pointer !important;
+}
+
+::ng-deep #logo-container{
+    all: unset !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    display: flex!important;
+    flex-direction: row!important;
+    align-items: center!important;
+    border: none !important;
+    padding: 10px !important;
+}
+
+::ng-deep .logo-text{
+    all: unset !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    display: flex!important;
+    flex-direction: row!important;
+    align-items: center!important;
+    box-sizing: border-box !important;
+}
+
+::ng-deep button{
+    justify-content: flex-start!important;
+
+    overflow: hidden!important;
+}
+::ng-deep button:focus {
+    outline: none!important;
+    box-shadow: none!important;
+}
+
+::ng-deep #logo{
+    width: 100px!important;
+    height: 100px!important;
+}
+
+::ng-deep #login-container{
+    display: flex!important;
+    height: auto!important;
+    justify-content: flex-end!important;
+    flex-direction: column!important;
+    overflow: visible!important;
     margin-bottom: 20px;
 }
 
-#login-button{
-    background-color: #FA7E5C;
-    box-shadow: 0px 2px 0px rgba(129, 65, 58, 0.8);
+::ng-deep #register-div{
+    margin-top: 50px!important;
+    display: flex!important;
+    height: auto!important;
+    justify-content: flex-end!important;
+    flex-direction: column!important;
+    overflow: visible!important;
+    margin-bottom: 20px!important;
 }
 
-#register-button{
-    background-color: #E4AF5A;
-    box-shadow: 0px 2px 0px rgba(108, 60, 17, 0.8);
+::ng-deep #login-button{
+    background-color: #FA7E5C!important;
+    box-shadow: 0px 2px 0px rgba(129, 65, 58, 0.8)!important;
+    margin-bottom: 10px !important;
 }
 
-
-#login-button,
-#register-button {
-    margin: auto;
-    width: 90%;
-    transition: background-color 0.1s ease;
-    border-radius: 15px;
-    align-items: center;
-    text-align: center;
-    justify-content: center; 
-    gap: 10px; 
+::ng-deep #register-button{
+    background-color: #E4AF5A!important;
+    box-shadow: 0px 2px 0px rgba(108, 60, 17, 0.8)!important;
 }
 
-#login-button:hover,
-#register-button:hover{
-    transform: scale(1.01);
+::ng-deep #login-button,
+::ng-deep #register-button {
+    margin: auto!important;
+    width: 90% !important;
+    transition: background-color 0.1s ease !important;
+    border-radius: 15px !important;
+    align-items: center !important;
+    text-align: center!important;
+    justify-content: center!important; 
+    gap: 10px!important; 
 }
 
-@media  (max-width: 800px) {
+::ng-deep #login-button:hover,
+::ng-deep #register-button:hover{
+    transform: scale(1.01)!important;
+    cursor:  pointer !important;
+}
 
-    #state-button{
-        z-index: 1000 !important;
-        color: black;
-    }
-    .navbar-container{
-        color: black;
-    }
+::ng-deep #closeBtn {
+    margin-top: 10px!important;
+    display: flex!important;
+    margin-bottom: 20px!important;
+    margin-left: 10px!important;
+    font-size: 36px!important; 
+    color: orange!important;
+    background-color: transparent!important;
+    border: none!important; 
+}
+
+@media  (max-width: 805px) {
 
     #navbar-container{
-        height: 100%; 
-        width: 75%;
-        position: fixed; /* Overlay */
-        top: 0;
-        left: 0;
-        overflow-x: hidden; 
-        transition: 0.5s; 
-        
+        height: 100%!important; 
+        width: 75%!important;
+        position: fixed !important; /* Overlay */
+        top: 0!important;
+        left: 0!important;
+        overflow-x: hidden!important; 
+        transition: 0.5s!important; 
     }
     
     #logo-container{
-        display: none;
+        display: none!important;
     }
 
     .sidenav{
-        display: flex;
+        display: flex!important;
         padding: auto !important;
-        margin: auto;
-    }
-    
-    #close{
-        font-size: 2em;
-    }
-
-    #closeBtn {
-        padding-top: 10px;
-        display: flex;
-        margin-bottom: 20px;
-        margin-left: 10px;
-        font-size: 36px; 
-        color: orange;
-        background-color: transparent;
-        border: none; 
-    }
-
-    .centerBtn{
-        text-align: center;
-    }
-
-    .leftBtn{
-        font-size: 120%;
-    }
-
-    .icon{
-        padding-right: 0;
+        margin: auto!important;
     }
     
 }
 
-@media (min-width: 799px)  {
-
+@media (min-width: 1025px)  {
     #closeBtn{
-        display: none;
+        display: none!important ;
     }
-
 }
 
-  
-  
+/* Styles pour les écrans de 853px x 1280px Nest Hub Max*/
+@media (min-width: 853px) and (max-width: 1280px) and (max-height: 1280px) {
+    #navbar-container  {
+        width: 60%!important;
+        left: 0!important;
+        height: 100%!important;
+        transition: 0.5s!important;
+    }
+}
+
+/* Styles pour les écrans de 1024px x 600px Nest Hub*/
+@media (min-width: 1024px) and (max-width: 1280px) and (max-height: 600px) {
+    #navbar-container {
+        width: 80%;
+        left: 0;
+        height: 100%;
+        transition: 0.5s;
+    }
+}
+
+/* Styles pour les écrans de 1024px x 1366px ipad pro */
+@media (min-width: 1024px) and (max-width: 1366px) and (max-height: 1366px) {
+    #navbar-container {
+        width: 80%;
+        left: 0;
+        height: 100%;
+        transition: 0.5s;
+    }
+}

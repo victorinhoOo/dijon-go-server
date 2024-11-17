@@ -89,8 +89,8 @@ export class ProfileSettingsComponent {
   constructor(private fb: FormBuilder, private userCookieService: UserCookieService, private http: HttpClient, private dialogRef: MatDialogRef<ProfileSettingsComponent>) {
     this.userDAO = new UserDAO(this.http);
     this.token = this.userCookieService.getToken();
-    this.userPseudo = this.userCookieService.getUser().Username;
-    this.userEmail = this.userCookieService.getUser().Email;
+    this.userPseudo = this.userCookieService.getUser()!.Username;
+    this.userEmail = this.userCookieService.getUser()!.Email;
     this.oldPwdEmpty = false;
     this.confirmPwdIsGood = true;
     this.isStrongPassword = true;

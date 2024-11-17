@@ -62,6 +62,13 @@
     font-size: 24px;
     font-weight: bold;
 }
+.elo-value
+{
+    margin: 0;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
 
 .last-game {
     text-decoration: none;
@@ -177,6 +184,13 @@
     text-align: justify;
     width: 200px;
     color: black;
+}
+.leaderboard p {
+    font-size: 18px;
+    margin: 0; /* Supprime les marges des paragraphes */
+    padding: 5px; /* Ajoute un léger padding pour l'espacement interne */
+    border-radius: 5px;
+    text-align: center; /* Centre horizontalement le texte */
 }
 
 .leaderboard p {

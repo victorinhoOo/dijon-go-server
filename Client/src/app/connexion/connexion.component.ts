@@ -55,7 +55,7 @@ export class ConnexionComponent {
    */
   public ngOnInit(): void {
     // si je n'ai pas de token utilisateur alors je crée le formulaire de connexion
-    if (!this.userCookieService.getToken()) {
+    if (this.userCookieService.getToken() == '') {
       this.connexionForm = this.fb.group({
         pseudo: ['', Validators.required],
         pwd: ['', Validators.required]

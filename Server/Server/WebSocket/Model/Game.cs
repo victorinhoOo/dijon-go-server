@@ -4,6 +4,7 @@ using GoLogic.Serializer;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using System.Text.Json;
+using WebSocket.Model.DTO;
 using ZstdSharp.Unsafe;
 
 namespace WebSocket.Model

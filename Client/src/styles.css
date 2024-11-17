@@ -10,3 +10,18 @@ body {
     margin: 0; 
     font-family: Roboto, "Helvetica Neue", sans-serif; 
 }
+
+/* Animation de fondu en apparition */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+}
+  
+.elo-message {
+    opacity: 0; /* Commence invisible */
+    animation: fadeIn 4s forwards; /* Animation de fondu */
+}
