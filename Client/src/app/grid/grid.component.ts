@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { WebsocketService } from '../websocket.service';
 import { UserCookieService } from '../Model/UserCookieService';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-grid',
@@ -85,6 +86,16 @@ export class GridComponent implements AfterViewInit, OnInit {
       });
     });
 
+    this.initializeRulesInfo();
+    
+
+    let passButton = document.getElementById('pass');
+    passButton?.addEventListener('click', () => {
+      this.skipTurn();
+    });
+  }
+
+  private initializeRulesInfo(): void{
     let ruleText = document.getElementById('rule-text');
     if(this.rule == 'c'){
       ruleText!.append('chinoises')
@@ -92,19 +103,30 @@ export class GridComponent implements AfterViewInit, OnInit {
     if(this.rule == 'j'){
       ruleText!.append('japonaises')
     }
+    let ruleButton = document.getElementById('rule-icon') as HTMLButtonElement;
 
-    let ruleLink = document.getElementById('rule-icon') as HTMLAnchorElement;
-    if (this.rule === 'c') {
-      ruleLink!.href = "https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_chinoise";
-    }
-    if (this.rule === 'j') {
-      ruleLink!.href = "https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_japonaise";
-    }
-    
-
-    let passButton = document.getElementById('pass');
-    passButton?.addEventListener('click', () => {
-      this.skipTurn();
+    ruleButton.addEventListener('click', () => {
+      if (this.rule === 'c') {
+        Swal.fire({
+          title: 'Règles Chinoises',
+          text: 'Les règles chinoises se basent sur le territoire et les pierres posées.',
+          icon: 'info',
+          confirmButtonText: 'Ok',
+          customClass: {
+            confirmButton: 'custom-ok-button'
+          },
+        });
+      } else if (this.rule === 'j') {
+        Swal.fire({
+          title: 'Règles Japonaises',
+          text: 'Les règles japonaises comptent les territoires et les pierres capturées.',
+          icon: 'info',
+          confirmButtonText: 'Ok',
+          customClass: {
+            confirmButton: 'custom-ok-button'
+          },
+        });
+      }
     });
   }
 

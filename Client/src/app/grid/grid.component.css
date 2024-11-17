@@ -164,6 +164,10 @@
 }
 
 #rule-icon {
+    text-decoration: none;
+    cursor: pointer;
+    background-color: inherit;
+    border: none;
     color: rgb(207, 156, 89);
     display: flex;
     align-items: center; /* Aligne l'icône avec le texte */
