@@ -1,7 +1,6 @@
 ﻿using GoLogic;
-using Org.BouncyCastle.Asn1.BC;
 
-namespace Test_GoLogic
+namespace Tests.Test_GoLogic
 {
     public class GameLogicTests
     {
@@ -139,7 +138,7 @@ namespace Test_GoLogic
 
             // Fait
             gameBoard.Board[1,0].Color = StoneColor.Black;
-            bool isKo = gameLogic.IsKoViolation();
+            bool isKo = gameLogic.IsKoViolation(gameBoard);
 
             // Assert
             Assert.False(isKo); // Initially, no Ko violation

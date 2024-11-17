@@ -1,9 +1,11 @@
 ﻿using GoLogic;
 using GoLogic.Score;
+using GoLogic.Serializer;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using System.Text.Json;
 using WebSocket.Model.DTO;
+using ZstdSharp.Unsafe;
 
 namespace WebSocket.Model
 {
@@ -17,7 +19,9 @@ namespace WebSocket.Model
         private Client currentTurn;
         private GameBoard gameBoard;
         private GameLogic logic;
+        private BoardSerializer boardSerializer;
         private ScoreRule score;
+        private string rule;
         private int size;
         private int id;
 
@@ -56,6 +60,9 @@ namespace WebSocket.Model
         public int Size { get => size; set => size = value; }
 
 
+        public string Rule { get => rule; set => rule = value; }
+
+
         /// <summary>
         /// Récupérer ou modifier l'identifiant de la partie
         /// </summary>
@@ -65,13 +72,21 @@ namespace WebSocket.Model
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game()
+        public Game(int size, string rule)
         {
-            id = Server.Games.Count + 1;
-            size = 19;
-            gameBoard = new GameBoard(size);
-            logic = new GameLogic(gameBoard);
-            score = new ChineseScoreRule(gameBoard);
+            this.id = Server.Games.Count + 1;
+            this.size = size;
+            this.gameBoard = new GameBoard(size);
+            this.logic = new GameLogic(gameBoard);
+            this.boardSerializer = new BoardSerializer(this.logic);
+            this.rule = rule;
+            switch (this.rule)
+            {
+                case "c": this.score = new ChineseScoreRule(gameBoard);break;
+                case "j": this.score = new JapaneseScoreRule(gameBoard);break;
+            }
+            
+            
         }
 
 
@@ -124,16 +139,8 @@ namespace WebSocket.Model
         /// <returns>état de la partie en string</returns>
         public string StringifyGameBoard()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("x,y,color");
-            foreach (Stone stone in gameBoard.Board)
-            {
-                sb.AppendLine($"{stone.X},{stone.Y},{stone.Color}");
-            }
-            return sb.ToString();
+            return boardSerializer.ChecksGobanForKo(logic, logic.CurrentTurn);
         }
-
-
 
         /// <summary>
         /// Récupérer le score de la partie
@@ -142,6 +149,15 @@ namespace WebSocket.Model
         public (int, int) GetScore()
         {
             return score.CalculateScore();
+        }
+        
+        /// <summary>
+        /// Récupère les pierres noires et blanches capturées
+        /// </summary>
+        /// <returns>Tuple d'entier des pierres noires et blanches</returns>
+        public (int, int) GetCapturedStone()
+        {
+            return (gameBoard.CapturedBlackStones, gameBoard.CapturedWhiteStones);
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using Server.Model.Data;
+using WebSocket.Model;
 
 namespace Tests.Users
 {
@@ -6,11 +7,11 @@ namespace Tests.Users
     {
 
         private IUserDAO fakeUserDAO;
-        private WebSocket.Model.GameManager gameManager;
+        private GameManager gameManager;
         public LeaderboardUserTest()
         {
             fakeUserDAO = new FakeUserDAO();
-            gameManager = new WebSocket.Model.GameManager();
+            gameManager = new GameManager();
         }
         // Test de la méthode GetTop5Users
         [Fact]

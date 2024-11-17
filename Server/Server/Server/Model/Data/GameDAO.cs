@@ -23,7 +23,7 @@ public class GameDAO : IGameDAO
 
         database.Connect();
 
-        string query = "SELECT id, title, size FROM availablegame;";
+        string query = "SELECT id, title, size, rule FROM availablegame;";
 
         var dataTable = database.ExecuteQuery(query, null);
 
@@ -34,7 +34,8 @@ public class GameDAO : IGameDAO
             {
                 Id = Convert.ToInt32(row["id"]),
                 Title = row["title"].ToString(),
-                Size = Convert.ToInt32(row["size"])
+                Size = Convert.ToInt32(row["size"]),
+                Rule = row["rule"].ToString()
             };
             result.Add(gameInfo);
         }
