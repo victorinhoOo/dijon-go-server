@@ -54,12 +54,10 @@ namespace Tests.GoLogic
             // . . . @ . . . . .
 
 
-            //BoardSerializer.ChecksGobanForKo(gameLogic, gameLogic.CurrentTurn);
             string mess = BoardSerializer.ChecksGobanForKo(gameLogic, gameLogic.CurrentTurn);
-            test.Replace("\r\n", ";");
-            mess.Replace("\n", ";");
+            test = test.Replace("\r\n", ";");
+            mess = mess.Replace("\n", ";");
             Assert.Equal(test, mess);
-
         }
     }
 }
