@@ -129,11 +129,23 @@ export class Interpreter {
       'Prises : ' + playerScore;
   }
 
+  private updateTimer(ms:string){
+    let timer = this.game.msToTimer(ms)
+    if(this.game.getPlayerColor() == this.game.getCurrentTurn()){
+      document.getElementById("player-timer")!.innerText = timer
+    }
+    else{
+      document.getElementById("opponent-timer")!.innerText = timer;
+    }
+  }
+
   private updateTurn(message: string): void {
     let board = message.split('|')[0];
-    let score = message.split('|')[1];
+    let score = message.split('|')[1].split("-")[0];
+    let timer = message.split('-')[1];
     this.updateBoard(board);
     this.updateScore(score);
+    this.updateTimer(timer)
     this.game.changeTurn();
     this.updateHover();
   }
@@ -150,6 +162,10 @@ export class Interpreter {
     let profilePic = document.getElementById('opponent-pic') as HTMLImageElement;
     profilePic!.src = `https://localhost:7065/profile-pics/${pseudo!.innerText}`; // Récupère l'avatar de l'adversaire pour l'afficher sur la page
     this.updateHover();
+    setInterval(()=>{
+        this.game.launchTimer();
+    }, 1000);
+
   }
 
   public setGame(game:Game){

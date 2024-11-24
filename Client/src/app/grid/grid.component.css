@@ -83,16 +83,16 @@
 }
 
 .bigger-cell{
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border: 0.5px solid black;
     position: relative;
 }
 
 .bigger-stone{
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     left: -50%;
     top: -50%;
