@@ -4,12 +4,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { WebsocketService } from '../websocket.service';
 import { UserCookieService } from '../Model/UserCookieService';
+import { CdTimerModule } from 'angular-cd-timer';
+import { ViewChild } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [NgFor, NgIf, MatIconModule],
+  imports: [NgFor, NgIf, MatIconModule, CdTimerModule],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
 })
@@ -18,7 +20,6 @@ import Swal from 'sweetalert2';
  */
 export class GridComponent implements AfterViewInit, OnInit {
   private size: number;
-
   private rule: string;
   private playerAvatar: string;
   private playerPseudo: string;
@@ -64,7 +65,7 @@ export class GridComponent implements AfterViewInit, OnInit {
    * Mise en place des écouteurs d'événements sur les boutons, après l'initialisation complète de la page
    */
   public ngAfterViewInit(): void {
-    if(this.size < 11){
+    if (this.size < 13) {
       let cells = document.querySelectorAll('.cell, .cell-bottom');
       let stones = document.getElementsByClassName('stone');
       let arrayCells = Array.from(cells);
@@ -76,7 +77,7 @@ export class GridComponent implements AfterViewInit, OnInit {
       arrayStones.forEach((stone) => {
         stone.classList.remove('stone');
         stone.classList.add('bigger-stone');
-      }); 
+      });
     }
     let stones = document.querySelectorAll('.stone, .bigger-stone');
     let stonesArray = Array.from(stones);
@@ -87,7 +88,6 @@ export class GridComponent implements AfterViewInit, OnInit {
     });
 
     this.initializeRulesInfo();
-    
 
     let passButton = document.getElementById('pass');
     passButton?.addEventListener('click', () => {
@@ -144,7 +144,7 @@ export class GridComponent implements AfterViewInit, OnInit {
   public click(stone: any): void {
     this.websocketService.placeStone(stone.id);
   }
-  
+
   /**
    * Gère le clic sur le bouton "Passer", passe le tour du joueur
    */

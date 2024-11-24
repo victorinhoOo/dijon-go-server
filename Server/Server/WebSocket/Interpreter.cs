@@ -65,11 +65,11 @@ namespace WebSocket
                         int x = Convert.ToInt32(coordinates.Split("-")[0]);
                         int y = Convert.ToInt32(coordinates.Split("-")[1]);
 
-                        game.PlaceStone(x, y); // pose de la pierre
+                        string timeRemaining = game.PlaceStone(x, y); // pose de la pierre
                         (int, int) score = game.GetScore(); // récupération du score
                         (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone(); // récupération des pierres capturées
                         game.ChangeTurn(); // changement de tour
-                        response = $"{idGame}/{game.StringifyGameBoard()}|{capturedBlackStones};{capturedWhiteStones}";
+                        response = $"{idGame}/{game.StringifyGameBoard()}|{capturedBlackStones};{capturedWhiteStones}-{timeRemaining.Split(',')[0]}";
                         type = "Broadcast_";
                     }
                     catch (Exception e)

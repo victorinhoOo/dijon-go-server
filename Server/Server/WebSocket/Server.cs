@@ -17,7 +17,6 @@ namespace WebSocket
     {
         private IWebProtocol webSocket;
         private bool isRunning;
-        private bool started;
         private static ConcurrentDictionary<int, Game> games = new ConcurrentDictionary<int, Game>();
         private Interpreter interpreter;
         private GameManager gameManager;
@@ -43,7 +42,6 @@ namespace WebSocket
         {
             this.webSocket.Start();
             this.isRunning = true;
-            this.started = false;
             Console.WriteLine("Server Started");
 
             while (isRunning)
@@ -135,7 +133,6 @@ namespace WebSocket
             client.SendMessage(deconnectionBytes);
             Console.WriteLine(ex.Message + "\n");
             endOfCommunication = true; // Fin de la communication
-            this.started = false;
         }
 
 
@@ -163,7 +160,7 @@ namespace WebSocket
                 this.BroadastMessage(game, responseBytes);
             }
             response = responseData;
-            if (game.IsFull && !this.started)
+            if (game.IsFull && !game.Started)
             {
                 this.StartGame(game);
             }
@@ -198,9 +195,9 @@ namespace WebSocket
             game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
             byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
             byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
-            this.started = true;
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
+            game.Start();
         }
 
         /// <summary>
