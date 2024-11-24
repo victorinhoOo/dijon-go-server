@@ -5,6 +5,8 @@ public class BasicTimer : ISystemTimer
     private TimeSpan totalTime;
     private DateTime startTime;
 
+    public TimeSpan TotalTime { get => totalTime; }
+
     public BasicTimer(TimeSpan totalTime)
     {
         this.totalTime = totalTime;
@@ -27,6 +29,6 @@ public class BasicTimer : ISystemTimer
 
     public bool HasTimeRemaining()
     {
-        return totalTime > DateTime.Now - startTime;
+        return totalTime > TimeSpan.Zero;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using GoLogic;
 using GoLogic.Score;
+using GoLogic.Timer;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using System.Text.Json;
@@ -18,9 +19,11 @@ namespace WebSocket.Model
         private GameBoard gameBoard;
         private GameLogic logic;
         private ScoreRule score;
+        private bool started;
         private string rule;
         private int size;
         private int id;
+        private TimerManager timerManager;
 
         /// <summary>
         /// Proprité qui indique si la partie est pleine
@@ -32,6 +35,8 @@ namespace WebSocket.Model
                 return player1 != null && player2 != null;
             }
         }
+
+        public bool Started { get { return this.started; } }
 
         /// <summary>
         /// Récupérer ou modifier le joueur 1
@@ -71,6 +76,7 @@ namespace WebSocket.Model
         /// </summary>
         public Game(int size, string rule)
         {
+            this.started = false;
             this.id = Server.Games.Count + 1;
             this.size = size;
             this.gameBoard = new GameBoard(size);
@@ -81,8 +87,12 @@ namespace WebSocket.Model
                 case "c": this.score = new ChineseScoreRule(gameBoard);break;
                 case "j": this.score = new JapaneseScoreRule(gameBoard);break;
             }
-            
-            
+        }
+
+        public void Start()
+        {
+            this.started = true;
+            this.timerManager = new TimerManager();
         }
 
 
@@ -114,9 +124,13 @@ namespace WebSocket.Model
         /// </summary>
         /// <param name="x">Coordonées en x de la pierre</param>
         /// <param name="y">Coordonnées en y de la pierre</param>
-        public void PlaceStone(int x, int y)
+        /// <returns>Temps restant du joueur précédent</returns>
+        public string PlaceStone(int x, int y)
         {
-            logic.PlaceStone(x, y);
+            this.timerManager.SwitchToNextPlayer();
+            string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
+            this.logic.PlaceStone(x, y);
+            return time;
         }
 
 
@@ -125,7 +139,7 @@ namespace WebSocket.Model
         /// </summary>
         public void ChangeTurn()
         {
-            currentTurn = currentTurn == player1 ? player2 : player1;
+            this.currentTurn = this.currentTurn == this.player1 ? this.player2 : this.player1;
         }
 
 
