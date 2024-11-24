@@ -32,5 +32,11 @@
         /// <param name="username">Le nom d'utilisateur.</param>
         /// <returns>L'utilisateur correspondant, ou null s'il n'existe pas.</returns>
         public User GetUserByUsername(string username);
+
+        /// <summary>
+        /// Renvoie la liste des 5 meilleurs joueurs du serveur
+        /// </summary>
+        /// <returns>Dictionnaire contenant les 5 joueurs avec le plus d'elo et leur elo respectif</returns>
+        public Dictionary<string, int> GetTop5Users();
     }
 }

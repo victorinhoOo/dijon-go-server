@@ -144,5 +144,28 @@ namespace Server.Controllers
             }
             return result;
         }
+        /// <summary>
+        /// Renvoi le leaderboard : les 5 meilleurs joueurs en terme d'elo
+        /// </summary>
+        /// <returns>le nom et le classement des 5 meilleurs joueurs</returns>
+        [HttpGet("Leaderboard")]
+        public IActionResult GetLeardBoard()
+        {
+            IActionResult result = BadRequest(new { Message = "Impossible de récupérer le leaderboard" });
+            try
+            {
+                //recuperation du leaderboard
+                Dictionary<string, int> leaderboard = this.userManager.GetLeaderBoard();
+                logger.LogInformation("Récupération de leaderboard " + leaderboard.Count);
+                result = Ok(leaderboard);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Erreur lors de la récupération du leaderboard: " + ex.Message);
+                result = BadRequest(new { Message = ex.Message });
+
+            }
+            return result;
+        }
     }
 }

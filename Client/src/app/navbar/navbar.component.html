@@ -3,38 +3,38 @@
   <div mode="'over'"   opened="IsNavbarVisible"  id="navbar-sidenav">
   
     <div id="closeBtn" (click)="close()">
-          <mat-icon  >close</mat-icon> 
+          <mat-icon>close</mat-icon> 
     </div>
 
     <div id="logo-container">
       <img src="renard.png" id="logo" alt="logo">
-      DGS
+      <span class="logo-text">DGS</span>
     </div>
 
-    <div class="sidenav">
-      <button class="navBtn" mat-primary id="play-button">
+    <div class="sidenav ">
+      <button class="navBtn hovered " mat-primary id="play-button">
           <mat-icon>play_arrow</mat-icon>
-          Jouer
+          Jouer 
       </button>
     </div>
 
-    <div class="sidenav">
-      <button class="navBtn">
+    <div class="sidenav ">
+      <button class="navBtn hovered">
           <mat-icon>replay</mat-icon>
           Replay
       </button>
     </div>
 
 
-    <div class="sidenav">
-      <button class="navBtn">
+    <div class="sidenav ">
+      <button class="navBtn hovered">
           <mat-icon>language</mat-icon>
           Social
       </button>
     </div>
 
-    <div class="sidenav" *ngIf="this.TokenUser != ''">
-      <button class="navBtn" id="profile-button">
+    <div class="sidenav " *ngIf="this.TokenUser != ''">
+      <button class="navBtn hovered" id="profile-button">
           <mat-icon class="icon">person</mat-icon>
           Mon compte
         
@@ -42,13 +42,13 @@
     </div>
 
     <div class="sidenav">
-      <button  class="navBtn" id="state-button" (click)="switchTheme()" >
+      <button  class="navBtn hovered" id="state-button" (click)="switchTheme()">
         <mat-icon>light_mode</mat-icon>
         <span id="state">Interface sombre</span>
       </button>
     </div >
 
-    <div class="sidenav" id="register-container" *ngIf="this.TokenUser == ''">
+    <div class="sidenav" id="register-div" *ngIf="this.TokenUser == ''">
         <button class="navBtn" id="register-button" >
           <mat-icon class="icon">person_add</mat-icon>
           Créer un compte
@@ -56,21 +56,17 @@
     </div>
 
   <div class="sidenav" id="login-container" *ngIf="this.TokenUser == ''">
-    <button class="navBtn centerBtn" id="login-button">
+    <button class="navBtn" id="login-button">
         <mat-icon class="icon" >login</mat-icon>
         Se connecter
     </button>
   </div>
 
-  <div class="sidenav" id="logout-container" *ngIf="this.TokenUser != ''">
-    <button class="navBtn centerBtn" id="logout-button">
-      <div>
+  <div class="sidenav "  *ngIf="this.TokenUser != ''">
+    <button class="navBtn hovered" id="logout-button">
         <mat-icon>logout</mat-icon>
         Déconnexion
-      </div>
     </button>
-    
-
   </div>
 
   

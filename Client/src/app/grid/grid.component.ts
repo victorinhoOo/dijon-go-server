@@ -38,7 +38,7 @@ export class GridComponent implements AfterViewInit, OnInit {
     private route: ActivatedRoute
   ) {
     this.size = 0;
-    this.playerPseudo = this.userCookieService.getUser().Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
+    this.playerPseudo = this.userCookieService.getUser()!.Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;
 
@@ -104,12 +104,15 @@ export class GridComponent implements AfterViewInit, OnInit {
       ruleText!.append('japonaises');
     }
     let ruleButton = document.getElementById('rule-icon') as HTMLButtonElement;
-
+  
     ruleButton.addEventListener('click', () => {
       if (this.rule === 'c') {
         Swal.fire({
           title: 'Règles Chinoises',
-          text: 'Les règles chinoises se basent sur le territoire et les pierres posées.',
+          html: `
+            <p>Le calcul du score final pour les règles chinoises compte les territoires et les pierres posées.</p>
+            <a href="https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_chinoise" target="_blank" style="color: #007bff;">Plus d'informations</a>
+          `,
           icon: 'info',
           confirmButtonText: 'Ok',
           customClass: {
@@ -119,7 +122,10 @@ export class GridComponent implements AfterViewInit, OnInit {
       } else if (this.rule === 'j') {
         Swal.fire({
           title: 'Règles Japonaises',
-          text: 'Les règles japonaises comptent les territoires et les pierres capturées.',
+          html: `
+            <p>Le calcul du score final pour les règles japonaises compte les territoires et les pierres capturées.</p>
+            <a href="https://fr.wikipedia.org/wiki/R%C3%A8gles_du_go#R%C3%A8gle_japonaise" target="_blank" style="color: #007bff;">Plus d'informations</a>
+          `,
           icon: 'info',
           confirmButtonText: 'Ok',
           customClass: {
@@ -129,6 +135,7 @@ export class GridComponent implements AfterViewInit, OnInit {
       }
     });
   }
+  
 
   /**
    * Gère le clique sur les intersections de la grille
@@ -141,7 +148,38 @@ export class GridComponent implements AfterViewInit, OnInit {
   /**
    * Gère le clic sur le bouton "Passer", passe le tour du joueur
    */
-  public skipTurn() {
-    this.websocketService.skipTurn();
-  }
+/**
+ * Gère le clic sur le bouton "Passer", passe le tour du joueur après confirmation
+ */
+public skipTurn() {
+  Swal.fire({
+    title: 'Voulez-vous vraiment passer votre tour ?',
+    text: 'Un tour passé peut être synonyme de fin de partie.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Oui',
+    cancelButtonText: 'Non',
+    customClass: {
+      confirmButton: 'custom-yes-button',
+      cancelButton: 'custom-no-button'
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Passe le tour du joueur
+      this.websocketService.skipTurn();
+
+      // Affiche le message "Tour passé"
+      Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        icon: 'success'
+      }).fire({
+        title: 'Tour passé'
+      });
+    }
+  });
+}
+
 }

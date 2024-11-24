@@ -25,14 +25,49 @@ app-navbar {
     margin-top: auto;
 }
 
-@media (max-width: 1024px) {
-    
+@media (max-width:1475px) {
     app-navbar {
-        width: 35%;
-        z-index: 1000;
+        width: 25%;
+        z-index: 1;
+    }
+    
+}
+@media (max-width:1366px) {
+    app-navbar {
+        width: 30%;
+        z-index: 1;
     }
 
 }
+@media (max-width:1260px) {
+    app-navbar {
+        width: 35%;
+        z-index: 1;
+    }
+
+}
+
+@media (max-width:1260px) {
+    app-navbar {
+        width: 50%;
+        z-index: 1;
+    }
+
+}
+
+@media (max-width: 1024px) {
+
+    app-navbar {
+        width: 100%;
+        z-index: 1000;
+    }
+    app-hamburger-btn{
+        position: static;
+    }
+
+}
+
+
 
 
 

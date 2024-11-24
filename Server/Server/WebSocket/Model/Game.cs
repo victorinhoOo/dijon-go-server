@@ -1,9 +1,11 @@
 ﻿using GoLogic;
 using GoLogic.Score;
+using GoLogic.Serializer;
 using GoLogic.Timer;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using System.Text.Json;
+using WebSocket.Model.DTO;
 using ZstdSharp.Unsafe;
 
 namespace WebSocket.Model
@@ -18,6 +20,7 @@ namespace WebSocket.Model
         private Client currentTurn;
         private GameBoard gameBoard;
         private GameLogic logic;
+        private BoardSerializer boardSerializer;
         private ScoreRule score;
         private bool started;
         private string rule;
@@ -81,6 +84,7 @@ namespace WebSocket.Model
             this.size = size;
             this.gameBoard = new GameBoard(size);
             this.logic = new GameLogic(gameBoard);
+            this.boardSerializer = new BoardSerializer(this.logic);
             this.rule = rule;
             switch (this.rule)
             {
@@ -149,21 +153,7 @@ namespace WebSocket.Model
         /// <returns>état de la partie en string</returns>
         public string StringifyGameBoard()
         {
-            GameBoard copy = new GameBoard(gameBoard.Size);
-            copy.Board = gameBoard.CopyBoard();
-            CheckGobanForKo(copy);
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("x,y,color");
-            foreach (Stone stone in copy.Board)
-            {
-                sb.AppendLine($"{stone.X},{stone.Y},{stone.Color}");
-            }
-            return sb.ToString();
-        }
-
-        private void CheckGobanForKo(GameBoard board)
-        {
-            logic.ChecksGobanForKo(board, logic.CurrentTurn);
+            return boardSerializer.ChecksGobanForKo(logic, logic.CurrentTurn);
         }
 
         /// <summary>

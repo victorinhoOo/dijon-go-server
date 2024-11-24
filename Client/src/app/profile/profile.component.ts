@@ -69,10 +69,10 @@ export class ProfileComponent {
         this.router.navigate(['/login']);
     }
     // Récupère les informations de l'utilisateur pour l'affichage
-    this.userPseudo = this.userCookieService.getUser().Username;
-    this.userEmail = this.userCookieService.getUser().Email;
-    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;
-    this.rank = "9 dan";         
+    this.userPseudo = this.userCookieService.getUser()!.Username;
+    this.userEmail = this.userCookieService.getUser()!.Email;
+    this.rank = this.userCookieService.getUser()!.Rank;
+    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
   }
 
   /**
@@ -86,10 +86,10 @@ export class ProfileComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       // Récupère les informations de l'utilisateur après la modification
-      this.userPseudo = this.userCookieService.getUser().Username;
-      this.userEmail = this.userCookieService.getUser().Email;
-      this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;
-      this.rank = "9 dan";
+      this.userPseudo = this.userCookieService.getUser()!.Username;
+      this.userEmail = this.userCookieService.getUser()!.Email;
+      this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}?t=${new Date().getTime()}`; // cache-busting pour mettre à jour l'avatar
+      this.rank = this.userCookieService.getUser()!.Rank;
     });
   }
   
