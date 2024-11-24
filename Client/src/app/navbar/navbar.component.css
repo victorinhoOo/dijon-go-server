@@ -1,7 +1,8 @@
 ::ng-deep #navbar-container{
     width: 100% !important;
     height: 100%!important;
-    background-color: #faf9fd !important;
+    background-color: #faf9fd;
+    color: black;
 }
 
 ::ng-deep #navbar-sidenav{

@@ -9,6 +9,8 @@ import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 import { WebsocketService } from '../websocket.service';
 import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { User } from '../Model/User';
+import { UserDAO } from '../Model/DAO/UserDAO';
 
 @Component({
   selector: 'app-index',
@@ -23,6 +25,7 @@ export class IndexComponent implements OnInit {
   private avatar: string;
   private userRank: string;
   private gameDAO: GameDAO;
+  private userDAO: UserDAO;
 
   /**
  * Getter pour le lien d'affichage de l'avatar
@@ -49,34 +52,43 @@ export class IndexComponent implements OnInit {
     private router: Router,
     private httpClient: HttpClient,
     private websocketService: WebsocketService,
-
     private route: ActivatedRoute
   ) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
     this.userPseudo = '';
-    this.userRank = '9 dan';
     this.gameDAO = new GameDAO(httpClient);
+    this.userRank = '';
+    this.userDAO = new UserDAO(httpClient);
   }
 
   /**
    * Initialise les informations utilisateurs, le leaderboard, et gère la création de parties
    */
   public async ngOnInit() {
-    if (this.route.snapshot.paramMap.get('id') != null) {
+    if (this.route.snapshot.paramMap.get('id') != null && this.route.snapshot.paramMap.get('size') != null && this.route.snapshot.paramMap.get('rule') != null) {
       let id = this.route.snapshot.paramMap.get('id');
+      let size = this.route.snapshot.paramMap.get('size');
+      let rule = this.route.snapshot.paramMap.get('rule');
       await this.websocketService.connectWebsocket();
       this.websocketService.joinGame(Number(id));
-      this.router.navigate(['game']);
+      this.router.navigate(['game', size, rule]);
     } else {
       this.websocketService.disconnectWebsocket();
     }
+    this.userCookieService.getUserObservable().subscribe((user: User | null) => {
+      if (user) {
+        this.userPseudo = user.Username;
+        this.userRank = this.userCookieService.getUser()!.Rank;
+        this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}`;
+      }
+    });
+
+    // Vérifiez et gérez la connexion
     this.token = this.userCookieService.getToken();
     if (!this.token) {
       this.router.navigate(['/login']);
     }
-    this.userPseudo = this.userCookieService.getUser().Username;
-    this.avatar += this.userPseudo;
     this.populateLeaderboard();
   }
 
@@ -102,20 +114,34 @@ export class IndexComponent implements OnInit {
     if (joinMatchmakingLink) {
       joinMatchmakingLink.addEventListener('click', () => {
         this.initializeJoinMatchmakingPopup();
-      } )
+      })
     }
   }
 
+
   /**
-   * Initialise le popup de liste des partie avec les différentes parties disponibles
+   * Initialise le popup de liste des parties avec les différentes parties disponibles
    */
   private initializeJoinGamePopupContent() {
     this.gameDAO.GetAvailableGames().subscribe({
       next: (games: GameInfoDTO[]) => {
         let content = '';
-        games.forEach((game) => {
-          content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}">${game["title"]} ${game["size"]}x${game["size"]}</a></div><br>`;
-        });
+
+        if (games.length === 0) {
+          // Si aucune partie n'est disponible
+          content = '<p>Aucune partie disponible pour le moment...</p>';
+        } else {
+          // Génére le contenu pour les parties disponibles
+          games.forEach((game) => {
+            let stringRule =
+              game["rule"] == "j"
+                ? `<img class="flag" src="japan.svg"/>`
+                : `<img class="flag" src="china.svg"/>`;
+            content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}/${game["rule"]}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</a></div><br>`;
+          });
+        }
+
+        // Afficher le popup
         Swal.fire({
           title: 'Parties disponibles',
           html: content,
@@ -123,12 +149,25 @@ export class IndexComponent implements OnInit {
           focusConfirm: false,
           confirmButtonText: 'Fermer',
           customClass: {
-            confirmButton: 'custom-ok-button'
+            confirmButton: 'custom-ok-button',
+          },
+        });
+      },
+      error: (err) => {
+        console.error("Erreur lors de la récupération des parties :", err);
+        Swal.fire({
+          title: 'Erreur',
+          text: 'Impossible de récupérer les parties disponibles.',
+          icon: 'error',
+          confirmButtonText: 'Fermer',
+          customClass: {
+            confirmButton: 'custom-ok-button',
           },
         });
       },
     });
   }
+
 
   /**
    * Initialise le popup de création de partie avec les différentes options
@@ -157,8 +196,8 @@ export class IndexComponent implements OnInit {
           
           <label for="rules">Règles du jeu :</label>
           <select id="rules" name="rules" class="swal2-select">
-            <option value="chinoises">Chinoises</option>
-            <option value="japonaises">Japonaises</option>
+            <option value="c">Chinoises</option>
+            <option value="j">Japonaises</option>
           </select>
         </form>
       `,
@@ -189,9 +228,9 @@ export class IndexComponent implements OnInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createGame();
+          this.websocketService.createGame(gridSize, rules);
           Swal.close(); // Ferme le chargement
-          this.router.navigate(['game']);
+          this.router.navigate(['game', gridSize, rules]);
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur
           Swal.fire('Erreur', 'La connexion a échoué. Veuillez réessayer.', 'error');
@@ -200,10 +239,10 @@ export class IndexComponent implements OnInit {
     });
   }
 
-    /**
-   * Initialise le popup de recherche de partie avec matchmaking en affichant un chargement en attendant l'attribution d'un adversaire
-   * Lorsque la partie est crée, redirige l'utilisateur vers celle-ci et ferme le chargement
-   */
+  /**
+ * Initialise le popup de recherche de partie avec matchmaking en affichant un chargement en attendant l'attribution d'un adversaire
+ * Lorsque la partie est crée, redirige l'utilisateur vers celle-ci et ferme le chargement
+ */
   private initializeJoinMatchmakingPopup() {
     this.gameDAO.GetAvailableGames().subscribe({
       next: (games: GameInfoDTO[]) => {
@@ -231,25 +270,39 @@ export class IndexComponent implements OnInit {
       }
     })
   }
-
   /**
-   * Remplit le leaderboard avec les 5 joueurs les mieux classés du serveur
-   */
-  private populateLeaderboard(): void {
-    const leaderboard = document.querySelector('.leaderboard');
-    const fakeEntries = [
-      '1) Victor - 9 dan',
-      '2) Mathis - 7 dan',
-      '3) Clément -  2 dan',
-      '4) Louis - 1 kyu',
-      '5) Adam - 20 kyu',
-    ];
-    leaderboard!.innerHTML = '';
+ * Remplit le leaderboard avec les 5 joueurs ayant le meilleur Elo du serveur.
+ */
+private populateLeaderboard(): void {
+  this.userDAO.GetLeaderboard().subscribe({
+    next: (leaderboard: any) => {
+      // Accès à l'élément DOM pour le leaderboard
+      const leaderboardElement = document.querySelector('.leaderboard');
+    
+      if (!leaderboardElement) {
+        console.error('Leaderboard DOM introuvable.');
+        return;
+      }
+    
+      // Vidage du contenu actuel du leaderboard
+      leaderboardElement.innerHTML = '';
+      //remplissage d'un tableau
+      const topPlayers = Object.entries(leaderboard);
+      
+      //affichage de chaque joueur du leaderboard
+      topPlayers.forEach(([name, elo], index) => {
+        let userTop = new User(name,"",Number(elo)); //creation d'un user pour obtenir son rang
+        const rankString = `${index + 1}) ${name} - ${userTop.Rank}`;
+        const p = document.createElement('p');
+        p.textContent = rankString;
+        leaderboardElement.appendChild(p);
+      });
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération du leaderboard:', err);
+    }
+  });
+}
 
-    fakeEntries.forEach((entry) => {
-      const p = document.createElement('p');
-      p.textContent = entry;
-      leaderboard!.appendChild(p);
-    });
-  }
+  
 }

@@ -68,8 +68,9 @@ namespace WebSocket
 
                         game.PlaceStone(x, y); // pose de la pierre
                         (int, int) score = game.GetScore(); // récupération du score
+                        (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone(); // récupération des pierres capturées
                         game.ChangeTurn(); // changement de tour
-                        response = $"{idGame}/{game.StringifyGameBoard()}|{score.Item1};{score.Item2}";
+                        response = $"{idGame}/{game.StringifyGameBoard()}|{capturedBlackStones};{capturedWhiteStones}";
                         type = "Broadcast_";
                     }
                     catch (Exception e)
@@ -92,12 +93,15 @@ namespace WebSocket
         /// </summary>
         private void CreateGame(Client client, string message, ref string response, ref string type)
         {
+            string settings = message.Split("-")[1];
+            int size = Convert.ToInt16(settings.Split("_")[0]);
+            string rule = settings.Split("_")[1];
             int id = Server.Games.Count + 1; // Génération de l'id de la partie
-            Game newGame = new Game();
+            Game newGame = new Game(size,rule);
             newGame.AddPlayer(client);
             Server.Games[id] = newGame;
             gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
-            client.Token = message.Split(":")[1];
+            client.User.Token = message.Split(":")[1].Split("-")[0];
             Server.Games[id].Player1 = client; // Ajout du client en tant que joueur 1
             response = $"{id}/"; // Renvoi del'id de la partie créée
             type = "Send_";
@@ -110,7 +114,7 @@ namespace WebSocket
         /// </summary>
         private void JoinGame(Client client, string message, int idGame, ref string reponse, ref string type)
         {
-            client.Token = message.Split(":")[1]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
+            client.User.Token = message.Split(":")[1].Split("-")[0]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
             Server.Games[idGame].AddPlayer(client); // Ajout du client en tant que joueur 2
             gameDAO.DeleteGame(idGame); // Suppression de la partie de la liste des parties disponibles
             reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
@@ -170,17 +174,6 @@ namespace WebSocket
                 type = "Send_";
             }
             
-        }
-
-
-        /// <summary>
-        /// Récuppérer le pseudo du joueur à partir de son token
-        /// </summary>
-        /// <param name="token">token du joueur</param>
-        /// <returns>le pseudo du joueur</returns>
-        public string GetUsernameByToken(string token)
-        {
-            return userDAO.GetUsernameByToken(token);
         }
 
     }

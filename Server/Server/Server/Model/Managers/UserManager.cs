@@ -256,6 +256,13 @@ namespace Server.Model.Managers
                 return builder.ToString();
             }
         }
-
+        /// <summary>
+        /// Récupère les 5 joueurs les mieux classés
+        /// </summary>
+        /// <returns>le nom et le classement des 5 meilleurs joueurs</returns>
+        public Dictionary<string, int> GetLeaderBoard()
+        {
+            return this.userDAO.GetTop5Users();
+        }
     }
 }

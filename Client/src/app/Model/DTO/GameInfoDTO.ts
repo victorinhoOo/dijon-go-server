@@ -6,11 +6,13 @@ export class GameInfoDTO {
     private id: number;
     private title: string;
     private size: number;
+    private rule: string;
 
-    constructor(id: number, title: string, size: number) {
+    constructor(id: number, title: string, size: number, rule: string) {
         this.id = id;
         this.title = title;
         this.size = size;
+        this.rule = rule;
     }
 
     /**
@@ -31,5 +33,9 @@ export class GameInfoDTO {
      */
     public Size(): number {
         return this.size;
+    }
+
+    public Rule(): string {
+        return this.rule;
     }
 }
