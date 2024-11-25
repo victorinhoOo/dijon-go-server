@@ -41,8 +41,7 @@ export class RankprogressComponent {
     this.color = 'progress-low';
     this.backColor ='progress-low-back';
     this.elo = this.userCookieService.getUser()!.Elo || 0;
-    this.targetProgress = this.progressRate(this.elo); //initialisation de la valeur cible de la barre
-    console.log("Progression : " + this.targetProgress + " Elo: " + this.elo);
+    this.targetProgress = this.progressRate(this.elo); //initialisation de le poucentage de progression 
   }
 
    /**

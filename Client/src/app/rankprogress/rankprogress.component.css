@@ -1,5 +1,8 @@
-.progress-low{
-    color: red;
+.progress-low .pinkLeaf{
+    display:none;
+}
+.progress-low {
+    margin-bottom:10px ;
 }
 
 .progress-medium{
@@ -7,5 +10,5 @@
 }
 
 .progress-high{
-    color: green;
+    margin-bottom:10px ;
 }
