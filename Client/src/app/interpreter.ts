@@ -1,5 +1,7 @@
 import { log } from "console";
 import { Game } from "./Model/Game";
+import { WebsocketService } from "./websocket.service";
+import Swal from "sweetalert2";
 
 /**
  * Classe qui interprete les messages envoyés par le serveur websocket
@@ -7,12 +9,13 @@ import { Game } from "./Model/Game";
 export class Interpreter {
   private idGame: string;
   private color: string;
-  private game: Game
+  private game: Game;
+  private matchmakingResolve: ((value: void) => void) | null = null;
 
   /**
    * Constructeur de la classe
    */
-  constructor(game:Game) {
+  constructor(game:Game, private websocketService: WebsocketService) {
     this.idGame = '';
     this.game = game;
     this.color = '';
@@ -40,6 +43,7 @@ export class Interpreter {
    * @param state définit l'état de la partie (en cours ou terminée)
    */
   public interpret(message: string, state: { end: boolean, won: string, player1score: string, player2score: string}): void {
+    console.log(message);
     if (message.length <= 3) {
       this.initIdGame(message);
     } else if (message.includes('x,y,color')) {
@@ -57,13 +61,41 @@ export class Interpreter {
       state.won = data[1];
       console.log(state.won)
       state.end = true;
+    } else if(message.includes("Create") || message.includes("Join")) {
+      if (this.matchmakingResolve) {
+        this.matchmakingResolve();
+        this.matchmakingResolve = null;
+      }
+      if(message.includes("Create")){
+        this.websocketService.createGame(19, "c", "matchmaking");
+      }
+      else {
+        let idGame = Number(message.split("/")[0]);
+        this.websocketService.joinGame(idGame, "matchmaking", "j", 19);
+      }
     }
-    console.log(message);
+    else if(message.includes("Timeout")){
+      Swal.close();
+      
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+
+      Toast.fire({
+        icon: 'error',
+        title: 'Aucun adversaire trouvé'
+      });
+    }
   }
 
   private initIdGame(message: string): void {
     this.idGame = message.split('/')[0];
   }
+
+  
 
   /**
    * Met à jour le plateau de jeu

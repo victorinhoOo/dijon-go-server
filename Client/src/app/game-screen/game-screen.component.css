@@ -10,3 +10,11 @@
     background-color: #F3AD09 !important;
     outline: none !important;
 }
+
+::ng-deep .flag{
+    margin-left: auto;
+    width: 25px;
+    height: 15px;
+    pointer-events: none;
+    flex-shrink: 0;
+}

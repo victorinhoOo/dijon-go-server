@@ -239,6 +239,8 @@
     margin-left: auto;
     width: 25px;
     height: 15px;
+    pointer-events: none;
+    flex-shrink: 0;
 }
 
 ::ng-deep .game-choice {
@@ -253,13 +255,18 @@
     flex-direction: row;
 }
 
-::ng-deep .game-choice a {
+::ng-deep .game-choice button {
     color: black;
     text-decoration: none;
     text-align: left;
     display: flex;
     align-items: center;
     width: 100%;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 15px;
 }
 
 ::ng-deep .game-choice i {
@@ -367,4 +374,54 @@
         margin-left: auto;
         margin-right: auto;
     }
+}
+
+::ng-deep .flag-container {
+    display: flex !important;
+    align-items: center !important;
+    margin-left: auto !important;
+}
+
+::ng-deep .flag {
+    width: 25px !important;
+    height: 15px !important;
+    pointer-events: none !important;
+    object-fit: contain !important;
+}
+
+::ng-deep .game-title {
+    flex: 1 !important;
+}
+
+::ng-deep .game-button {
+    color: black !important;
+    text-decoration: none !important;
+    text-align: left !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    cursor: pointer !important;
+    padding: 5px !important;
+    user-select: none !important;
+}
+
+::ng-deep .flag-container {
+    display: flex !important;
+    align-items: center !important;
+    margin-left: auto !important;
+    pointer-events: none !important;
+}
+
+::ng-deep .flag {
+    width: 25px !important;
+    height: 15px !important;
+    pointer-events: none !important;
+    object-fit: contain !important;
+    user-drag: none !important;
+    -webkit-user-drag: none !important;
+}
+
+::ng-deep .game-title {
+    flex: 1 !important;
+    pointer-events: none !important;
 }
