@@ -56,7 +56,6 @@ namespace WebSocket
         {
             this.webSocket.Start();
             this.isRunning = true;
-            this.started = false;
             Console.WriteLine("Server Started");
 
             while (isRunning)
@@ -212,6 +211,10 @@ namespace WebSocket
                 this.SendMessage(client, responseBytes);
             }
             response = responseData;
+            if (game.IsFull && !game.Started)
+            {
+                this.StartGame(game);
+            }
         }
 
         private void SendMessage(Client client, byte[] bytes)
@@ -243,9 +246,9 @@ namespace WebSocket
             game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
             byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
             byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
-            this.started = true;
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
+            game.Start();
         }
 
         /// <summary>

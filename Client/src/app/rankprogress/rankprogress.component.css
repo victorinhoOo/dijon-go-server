@@ -1,0 +1,14 @@
+.progress-low .pinkLeaf{
+    display:none;
+}
+.progress-low {
+    margin-bottom:10px ;
+}
+
+.progress-medium{
+    display: none;
+}
+
+.progress-high{
+    margin-bottom:10px ;
+}

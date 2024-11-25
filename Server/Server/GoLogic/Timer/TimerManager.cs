@@ -1,35 +1,67 @@
 ﻿namespace GoLogic.Timer;
 
+/// <summary>
+/// Classe qui gère l'exécution des timers
+/// </summary>
 public class TimerManager
 {
     private ISystemTimer blackPlayerTimer;
     private ISystemTimer whitePlayerTimer;
     private StoneColor currentPlayer;
 
-    public TimerManager(ISystemTimer blackTimer, ISystemTimer whiteTimer)
+    /// <summary>
+    /// Obtient ou définit le minuteur du joueur noir.
+    /// </summary>
+    public ISystemTimer BlackPlayerTimer { get => blackPlayerTimer; set => blackPlayerTimer = value; }
+
+    /// <summary>
+    /// Obtient ou définit le minuteur du joueur blanc.
+    /// </summary>
+    public ISystemTimer WhitePlayerTimer { get => whitePlayerTimer; set => whitePlayerTimer = value; }
+
+    public TimerManager()
     {
-        this.blackPlayerTimer = blackTimer;
-        this.whitePlayerTimer = whiteTimer;
+        this.currentPlayer = StoneColor.Black;
+        this.blackPlayerTimer = new BasicTimer(TimeSpan.FromMinutes(60));
+        this.whitePlayerTimer = new BasicTimer(TimeSpan.FromMinutes(60));
+        this.blackPlayerTimer.Start();
     }
 
+    /// <summary>
+    /// Change le minuteur pour le joueur suivant.
+    /// </summary>
     public void SwitchToNextPlayer()
     {
         if (currentPlayer == StoneColor.Black)
         {
-            blackPlayerTimer.Pause();
-            whitePlayerTimer.Resume();
-            currentPlayer = StoneColor.White;
+            this.blackPlayerTimer.Pause();
+            this.currentPlayer = StoneColor.White;
+            this.whitePlayerTimer.Resume();
         }
         else
         {
             whitePlayerTimer.Pause();
-            blackPlayerTimer.Resume();
             currentPlayer = StoneColor.Black;
+            blackPlayerTimer.Resume();
         }
     }
 
+    /// <summary>
+    /// Vérifie si le joueur a encore du temps restant.
+    /// </summary>
+    /// <param name="player">La couleur du joueur.</param>
+    /// <returns>Vrai si le joueur a encore du temps, sinon faux.</returns>
     public bool HasTimeRemaining(StoneColor player)
     {
         return player == StoneColor.Black ? blackPlayerTimer.HasTimeRemaining() : whitePlayerTimer.HasTimeRemaining();
+    }
+
+    /// <summary>
+    /// Obtient le minuteur du joueur précédent.
+    /// </summary>
+    /// <returns>Le minuteur du joueur précédent.</returns>
+    public ISystemTimer GetPreviousTimer()
+    {
+        return this.currentPlayer == StoneColor.Black ? this.whitePlayerTimer : this.blackPlayerTimer;
     }
 }
