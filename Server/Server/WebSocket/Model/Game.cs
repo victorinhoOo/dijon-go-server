@@ -1,9 +1,12 @@
 ﻿using GoLogic;
 using GoLogic.Score;
+using GoLogic.Serializer;
+using GoLogic.Timer;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using System.Text.Json;
 using WebSocket.Model.DTO;
+using ZstdSharp.Unsafe;
 
 namespace WebSocket.Model
 {
@@ -17,9 +20,13 @@ namespace WebSocket.Model
         private Client currentTurn;
         private GameBoard gameBoard;
         private GameLogic logic;
+        private BoardSerializer boardSerializer;
         private ScoreRule score;
+        private bool started;
+        private string rule;
         private int size;
         private int id;
+        private TimerManager timerManager;
 
         /// <summary>
         /// Proprité qui indique si la partie est pleine
@@ -31,6 +38,8 @@ namespace WebSocket.Model
                 return player1 != null && player2 != null;
             }
         }
+
+        public bool Started { get { return this.started; } }
 
         /// <summary>
         /// Récupérer ou modifier le joueur 1
@@ -56,6 +65,9 @@ namespace WebSocket.Model
         public int Size { get => size; set => size = value; }
 
 
+        public string Rule { get => rule; set => rule = value; }
+
+
         /// <summary>
         /// Récupérer ou modifier l'identifiant de la partie
         /// </summary>
@@ -65,13 +77,26 @@ namespace WebSocket.Model
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game()
+        public Game(int size, string rule)
         {
-            id = Server.Games.Count + 1;
-            size = 19;
-            gameBoard = new GameBoard(size);
-            logic = new GameLogic(gameBoard);
-            score = new ChineseScoreRule(gameBoard);
+            this.started = false;
+            this.id = Server.Games.Count + 1;
+            this.size = size;
+            this.gameBoard = new GameBoard(size);
+            this.logic = new GameLogic(gameBoard);
+            this.boardSerializer = new BoardSerializer(this.logic);
+            this.rule = rule;
+            switch (this.rule)
+            {
+                case "c": this.score = new ChineseScoreRule(gameBoard);break;
+                case "j": this.score = new JapaneseScoreRule(gameBoard);break;
+            }
+        }
+
+        public void Start()
+        {
+            this.started = true;
+            this.timerManager = new TimerManager();
         }
 
 
@@ -103,9 +128,13 @@ namespace WebSocket.Model
         /// </summary>
         /// <param name="x">Coordonées en x de la pierre</param>
         /// <param name="y">Coordonnées en y de la pierre</param>
-        public void PlaceStone(int x, int y)
+        /// <returns>Temps restant du joueur précédent</returns>
+        public string PlaceStone(int x, int y)
         {
-            logic.PlaceStone(x, y);
+            this.timerManager.SwitchToNextPlayer();
+            string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
+            this.logic.PlaceStone(x, y);
+            return time;
         }
 
 
@@ -114,7 +143,7 @@ namespace WebSocket.Model
         /// </summary>
         public void ChangeTurn()
         {
-            currentTurn = currentTurn == player1 ? player2 : player1;
+            this.currentTurn = this.currentTurn == this.player1 ? this.player2 : this.player1;
         }
 
 
@@ -124,16 +153,8 @@ namespace WebSocket.Model
         /// <returns>état de la partie en string</returns>
         public string StringifyGameBoard()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("x,y,color");
-            foreach (Stone stone in gameBoard.Board)
-            {
-                sb.AppendLine($"{stone.X},{stone.Y},{stone.Color}");
-            }
-            return sb.ToString();
+            return boardSerializer.ChecksGobanForKo(logic, logic.CurrentTurn);
         }
-
-
 
         /// <summary>
         /// Récupérer le score de la partie
@@ -142,6 +163,15 @@ namespace WebSocket.Model
         public (int, int) GetScore()
         {
             return score.CalculateScore();
+        }
+        
+        /// <summary>
+        /// Récupère les pierres noires et blanches capturées
+        /// </summary>
+        /// <returns>Tuple d'entier des pierres noires et blanches</returns>
+        public (int, int) GetCapturedStone()
+        {
+            return (gameBoard.CapturedBlackStones, gameBoard.CapturedWhiteStones);
         }
 
 

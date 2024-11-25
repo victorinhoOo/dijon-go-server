@@ -11,7 +11,7 @@
         /// <summary>
         /// Règles de décompte des points Chinoise
         /// </summary>
-        /// <returns>Tuple d'entier correspondant aux scores noirs et blanc</returns>
+        /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public override (int blackStones, int whiteStones) CalculateScore()
         {
             (int blackStones, int whiteStones) = CountStones();

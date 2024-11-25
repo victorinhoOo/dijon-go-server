@@ -257,7 +257,7 @@ namespace Server.Model.Managers
             }
         }
         /// <summary>
-        /// affiche le leardboard
+        /// Récupère les 5 joueurs les mieux classés
         /// </summary>
         /// <returns>le nom et le classement des 5 meilleurs joueurs</returns>
         public Dictionary<string, int> GetLeaderBoard()

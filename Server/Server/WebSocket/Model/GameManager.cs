@@ -53,7 +53,7 @@ namespace WebSocket.Model
         /// <param name="opponentElo">Elo de l'adversaire</param>
         /// <param name="result">Résultat du match (1 pour victoire, 0 pour défaite)</param>
         /// <returns>Le nouvel Elo du joueur</returns>
-        private int CalculateNewElo(int playerElo, int opponentElo, int result)
+        public int CalculateNewElo(int playerElo, int opponentElo, int result)
         {
             // Calcul de la probabilité de victoire
             double expectedScore = 1.0 / (1.0 + Math.Pow(10, (opponentElo - playerElo) / 400.0));

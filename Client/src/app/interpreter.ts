@@ -1,3 +1,4 @@
+import { log } from "console";
 import { Game } from "./Model/Game";
 
 /**
@@ -75,6 +76,7 @@ export class Interpreter {
       let y = stoneData[1];
       let color = stoneData[2];
       let stone = document.getElementById(`${x}-${y}`);
+      this.discardKo(stone);
       switch (color) {
         case 'White':
           stone!.style.background = 'white';
@@ -85,8 +87,26 @@ export class Interpreter {
         case 'Empty':
           stone!.style.background = 'transparent';
           break;
+        case 'Ko':
+          this.drawKo(stone);
       }
     }
+  }
+
+  private discardKo(stone: HTMLElement | null):void{
+    if(stone != null){
+      stone.style.border = "none";
+      stone.style.borderRadius = "50%";
+    }
+
+  }
+
+  private drawKo(stone: HTMLElement | null):void{
+      stone!.style.borderRadius = "0";
+      stone!.style.border = "5px solid #A7001E";
+      stone!.style.boxSizing = "border-box";
+      stone!.style.background = "transparent";
+
   }
 
   /**
@@ -104,16 +124,28 @@ export class Interpreter {
     }
 
     document.getElementById('opponent-score-value')!.innerHTML =
-      'Score : ' + opponentScore;
+      'Prises : ' + opponentScore;
     document.getElementById('player-score-value')!.innerHTML =
-      'Score : ' + playerScore;
+      'Prises : ' + playerScore;
+  }
+
+  private updateTimer(ms:string){
+    let timer = this.game.msToTimer(ms)
+    if(this.game.getPlayerColor() == this.game.getCurrentTurn()){
+      document.getElementById("player-timer")!.innerText = timer
+    }
+    else{
+      document.getElementById("opponent-timer")!.innerText = timer;
+    }
   }
 
   private updateTurn(message: string): void {
     let board = message.split('|')[0];
-    let score = message.split('|')[1];
+    let score = message.split('|')[1].split("-")[0];
+    let timer = message.split('-')[1];
     this.updateBoard(board);
     this.updateScore(score);
+    this.updateTimer(timer)
     this.game.changeTurn();
     this.updateHover();
   }
@@ -130,13 +162,15 @@ export class Interpreter {
     let profilePic = document.getElementById('opponent-pic') as HTMLImageElement;
     profilePic!.src = `https://localhost:7065/profile-pics/${pseudo!.innerText}`; // Récupère l'avatar de l'adversaire pour l'afficher sur la page
     this.updateHover();
+    setInterval(()=>{
+        this.game.launchTimer();
+    }, 1000);
+
   }
 
   public setGame(game:Game){
     this.game = game;
-  }
-
- 
+  } 
 
   public getPlayerColor():string{
     return this.game.getPlayerColor();
@@ -147,7 +181,7 @@ export class Interpreter {
   }
 
   public updateHover(){
-    let stones = document.getElementsByClassName("stone");
+    let stones = document.querySelectorAll(".stone, .bigger-stone");
     let stonesArray = Array.from(stones);
     if(this.game.isPlayerTurn()){
       document.getElementById("global-container")!.style.cursor = "pointer";

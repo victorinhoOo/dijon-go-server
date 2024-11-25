@@ -145,7 +145,7 @@ namespace Server.Controllers
             return result;
         }
         /// <summary>
-        /// renvoie le leaderboard
+        /// Renvoi le leaderboard : les 5 meilleurs joueurs en terme d'elo
         /// </summary>
         /// <returns>le nom et le classement des 5 meilleurs joueurs</returns>
         [HttpGet("Leaderboard")]

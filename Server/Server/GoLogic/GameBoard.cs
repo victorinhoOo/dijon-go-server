@@ -15,12 +15,12 @@
         /// <summary>
         /// Tableau qui contient les pierres du plateau
         /// </summary>
-        public Stone[,] Board { get => this.board;}
+        public Stone[,] Board { get => this.board; set => this.board = value; }
         
         /// <summary>
         /// Le plateau dans l'état précédent
         /// </summary>
-        public Stone[,] PreviousBoard { get => this.previousBoard;}
+        public Stone[,] PreviousBoard { get => this.previousBoard; set => this.previousBoard = value; }
         
         /// <summary>
         /// La taille du plateau (size x size)
@@ -76,7 +76,7 @@
         }
         
         /// <summary>
-        /// Récupère l'instance de pierre aux coordonnées spécifié
+        /// Récupère l'instance de pierre aux coordonnées spécifiée
         /// </summary>
         /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
@@ -94,7 +94,7 @@
         /// <summary>
         /// Vérifie si une coordonnée (x, y) est dans les limites du tableau
         /// </summary>
-        /// <param name="x">position ligne x dans le plateau</param>
+        /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
         /// <returns>True si les coordonnées sont bonnes, False sinon</returns>
         public bool IsValidCoordinate(int x, int y)
@@ -103,17 +103,21 @@
         }
         
         /// <summary>
-        /// Copie l'état de Board dans PreviousBoard
+        /// Renvoie une copie de l'état de Board
         /// </summary>
-        public void CopieBoard()
+        public Stone[,] CopyBoard()
         {
+            Stone[,] boardCopy = new Stone[this.size, this.size];
             for (int i = 0; i < Size; i++)
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    PreviousBoard[i, j].Color = Board[i, j].Color;  // Copie la couleur de la pierre à la même position
+                    StoneColor color = this.board[i, j].Color;
+                    boardCopy[i, j] = new Stone(i ,j, color);
                 }
             }
+
+            return boardCopy;
         }
     }
 }
