@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using WebSocket.Model;
 using WebSocket.Model.DAO;
+using WebSocket.Model.DTO;
 
 namespace WebSocket
 {
@@ -29,7 +30,7 @@ namespace WebSocket
         /// <param name="message">Message reçu</param>
         /// <param name="client">client qui expédie le message</param>
         /// <returns>la réponse du serveur au client</returns>
-        public string Interpret(string message, Client client)
+        public string Interpret(string message, Client client, string gameType)
         {
 
             int idGame = Convert.ToInt32(message.Split("/")[0]);
@@ -39,13 +40,12 @@ namespace WebSocket
             string response = "";
             switch (action)
             {
-                case "Stone": PlaceStone(client, idGame, message.Split(':')[1], ref response, ref type); break;
+                case "Stone": PlaceStone(client, idGame, message.Split(':')[1], gameType, ref response, ref type); break;
                 case "Create": CreateGame(client, message, ref response, ref type); break;
                 case "Join": JoinGame(client, message, idGame, ref response, ref type); break;
                 case "Matchmaking": Matchmaking(client, message, ref response, ref type); break;
-                case "Skip": Skip(client, idGame, ref response, ref type); break;
-
-            }
+                case "Skip": Skip(client, idGame, gameType, ref response, ref type); break;
+            }           
             return type + response;
 
         }
@@ -54,11 +54,19 @@ namespace WebSocket
         /// <summary>
         /// le joueur place une pierre sur le plateau
         /// </summary>
-        private void PlaceStone(Client player, int idGame, string coordinates, ref string response, ref string type)
+        private void PlaceStone(Client player, int idGame, string coordinates, string gameType, ref string response, ref string type)
         {
             if (idGame != 0)
             {
-                Game game = Server.Games[idGame];
+                Game game = null;
+                if(gameType == "custom")
+                {
+                    game = Server.Games[idGame];
+                }
+                else if (gameType == "matchmaking")
+                {
+                    game = Server.MatchmakingGames[idGame];
+                }
                 if (game.CurrentTurn == player) // si c'est le tour du joueur
                 {
                     try
@@ -96,15 +104,30 @@ namespace WebSocket
             string settings = message.Split("-")[1];
             int size = Convert.ToInt16(settings.Split("_")[0]);
             string rule = settings.Split("_")[1];
-            int id = Server.Games.Count + 1; // Génération de l'id de la partie
-            Game newGame = new Game(size,rule);
-            newGame.AddPlayer(client);
-            Server.Games[id] = newGame;
-            gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
-            client.User.Token = message.Split(":")[1].Split("-")[0];
-            Server.Games[id].Player1 = client; // Ajout du client en tant que joueur 1
-            response = $"{id}/"; // Renvoi del'id de la partie créée
-            type = "Send_";
+            string gameType = settings.Split("_")[2];
+            if(gameType == "custom") // la partie est personnalisée
+            {
+                int id = Server.Games.Count + 1; // Génération de l'id de la partie
+                Game newGame = new Game(size, rule);
+                newGame.AddPlayer(client);
+                Server.Games[id] = newGame;
+                gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
+                client.User.Token = message.Split(":")[1].Split("-")[0];
+                Server.Games[id].Player1 = client; // Ajout du client en tant que joueur 1
+                response = $"{id}/"; // Renvoi de l'id de la partie créée
+                type = "Send_";
+            }
+            else if (gameType == "matchmaking")
+            {
+                int id = Server.MatchmakingGames.Count + 1; // Génération de l'id de la partie
+                Game newGame = new Game(size, rule);
+                newGame.AddPlayer(client);
+                Server.MatchmakingGames[id] = newGame;
+                client.User.Token = message.Split(":")[1].Split("-")[0];
+                Server.MatchmakingGames[id].Player1 = client;
+                response = $"{id}/"; // Renvoi del'id de la partie créée
+                type = "Send_";
+            }
 
         }
 
@@ -114,43 +137,71 @@ namespace WebSocket
         /// </summary>
         private void JoinGame(Client client, string message, int idGame, ref string reponse, ref string type)
         {
-            client.User.Token = message.Split(":")[1].Split("-")[0]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
-            Server.Games[idGame].AddPlayer(client); // Ajout du client en tant que joueur 2
-            gameDAO.DeleteGame(idGame); // Suppression de la partie de la liste des parties disponibles
-            reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
-            type = "Send_";
-        }
+            string gameType = message.Split("*")[1];
+            if(gameType == "custom")
+            {
 
+                client.User.Token = message.Split("*")[0].Split(":")[1].Split("-")[0]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
+                Server.Games[idGame].AddPlayer(client); // Ajout du client en tant que joueur 2
+                gameDAO.DeleteGame(idGame); // Suppression de la partie de la liste des parties disponibles
+                reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
+                type = "Send_";
+            }
+            else if (gameType == "matchmaking")
+            {
+                client.User.Token = message.Split("*")[0].Split(":")[1].Split("-")[0];
+                Server.MatchmakingGames[idGame].AddPlayer(client);
+                reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
+                type = "Send_";
+            }
+        }
+        /// <summary>
+        /// Le joueur se met en recherche de partie
+        /// </summary>
         private void Matchmaking(Client client, string message, ref string response, ref string type)
         {
-            // Ajoute le joueur à la file d'attente
             Server.WaitingPlayers.Enqueue(client);
+            int nbMatchmakingGames = Server.MatchmakingGames.Count();
+            DateTime startTime = DateTime.Now;
+            const int TIMEOUT_SECONDS = 5;
 
-            // Si deux joueurs ou plus sont en attente, démarrez une partie
-            if (Server.WaitingPlayers.Count >= 2)
+            Client player1 = Server.WaitingPlayers.Peek();
+            if (client == player1)
             {
-                Client player1 = Server.WaitingPlayers.Dequeue();
-                Client player2 = Server.WaitingPlayers.Dequeue();
-
-                // Créé une nouvelle partie pour eux
-                int id = Server.Games.Count + 1;
-                Game newGame = new Game();
-                newGame.AddPlayer(player1);
-                newGame.AddPlayer(player2);
-
-                Server.Games[id] = newGame;
-
-                // Définir les joueurs
-                newGame.Player1 = player1;
-                newGame.Player2 = player2;
-                // todo
-                response = $"{id}/";
-                type = "Broadcast_";
+                // Le premier joueur attend avec un délai qui permet de vérifier périodiquement
+                // si un second joueur est arrivé
+                while (Server.WaitingPlayers.Count < 2) 
+                {
+                    if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
+                    {
+                        Server.WaitingPlayers.Dequeue(); // Retire le joueur de la file d'attente
+                        response = "0/Timeout";
+                        type = "Send_";
+                        return;
+                    }
+                    Thread.Sleep(100);
+                }
+                response = "0/Create:matchmaking";
+                type = "Send_";
             }
-            else
+            else 
             {
-                // Informer le joueur qu'il est en attente d'un adversaire
-                response = "Waiting";
+                // Le deuxième joueur a rejoint la file
+                while (Server.MatchmakingGames.Count == nbMatchmakingGames)
+                {
+                    if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
+                    {
+                        Server.WaitingPlayers.Dequeue(); // Retire le joueur de la file d'attente
+                        response = "0/Timeout";
+                        type = "Send_";
+                        return;
+                    }
+                    Thread.Sleep(100);
+                }              
+                Server.WaitingPlayers.Dequeue();
+                Server.WaitingPlayers.Dequeue();
+                string idGame = (Server.MatchmakingGames.Count()).ToString();
+                response = $"{idGame}/Join:matchmaking";
                 type = "Send_";
             }
         }
@@ -159,9 +210,21 @@ namespace WebSocket
         /// <summary>
         /// Le joueur passe son tour
         /// </summary>
-        private void Skip(Client client, int idGame, ref string response, ref string type)
+        private void Skip(Client client, int idGame, string gameType, ref string response, ref string type)
         {
-            Game game = Server.Games[idGame];
+            Game game = null;
+            if (gameType == "custom")
+            {
+                game = Server.Games[idGame];
+            }
+            else if (gameType == "matchmaking")
+            {
+                game = Server.MatchmakingGames[idGame];
+            }
+            if (gameType == "matchmaking")
+            {
+                game = Server.MatchmakingGames[idGame];
+            }
             if(client == game.CurrentTurn)
             {
                 game.SkipTurn();

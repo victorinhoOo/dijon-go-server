@@ -66,16 +66,7 @@ export class IndexComponent implements OnInit {
    * Initialise les informations utilisateurs, le leaderboard, et gère la création de parties
    */
   public async ngOnInit() {
-    if (this.route.snapshot.paramMap.get('id') != null && this.route.snapshot.paramMap.get('size') != null && this.route.snapshot.paramMap.get('rule') != null) {
-      let id = this.route.snapshot.paramMap.get('id');
-      let size = this.route.snapshot.paramMap.get('size');
-      let rule = this.route.snapshot.paramMap.get('rule');
-      await this.websocketService.connectWebsocket();
-      this.websocketService.joinGame(Number(id));
-      this.router.navigate(['game', size, rule]);
-    } else {
-      this.websocketService.disconnectWebsocket();
-    }
+    this.websocketService.disconnectWebsocket();
     this.userCookieService.getUserObservable().subscribe((user: User | null) => {
       if (user) {
         this.userPseudo = user.Username;
@@ -124,20 +115,21 @@ export class IndexComponent implements OnInit {
    */
   private initializeJoinGamePopupContent() {
     this.gameDAO.GetAvailableGames().subscribe({
-      next: (games: GameInfoDTO[]) => {
+      next: async (games: GameInfoDTO[]) => {
         let content = '';
 
         if (games.length === 0) {
-          // Si aucune partie n'est disponible
           content = '<p>Aucune partie disponible pour le moment...</p>';
         } else {
-          // Génére le contenu pour les parties disponibles
-          games.forEach((game) => {
-            let stringRule =
-              game["rule"] == "j"
-                ? `<img class="flag" src="japan.svg"/>`
-                : `<img class="flag" src="china.svg"/>`;
-            content += `<div class="game-choice"><i class="fas fa-play"></i><a href="/${game["id"]}/${game["size"]}/${game["rule"]}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</a></div><br>`;
+          await this.websocketService.connectWebsocket();
+          games.forEach((game, index) => {
+            let stringRule = game["rule"] == "j" 
+              ? `<img class="flag" src="japan.svg"/>` 
+              : `<img class="flag" src="china.svg"/>`;
+            content += `<div class="game-choice">
+              <i class="fas fa-play"></i>
+              <button id="game-${index}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</button>
+            </div><br>`;
           });
         }
 
@@ -151,6 +143,18 @@ export class IndexComponent implements OnInit {
           customClass: {
             confirmButton: 'custom-ok-button',
           },
+          didOpen: () => {
+            // Ajouter les event listeners après que le contenu soit injecté
+            games.forEach((game, index) => {
+              const button = document.getElementById(`game-${index}`);
+              if (button) {
+                button.addEventListener("click", () => {
+                  this.websocketService.joinGame(game["id"], "custom", game["rule"], game["size"]);
+                  Swal.close();
+                });
+              }
+            });
+          }
         });
       },
       error: (err) => {
@@ -228,9 +232,8 @@ export class IndexComponent implements OnInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createGame(gridSize, rules);
+          this.websocketService.createGame(gridSize, rules, "custom");
           Swal.close(); // Ferme le chargement
-          this.router.navigate(['game', gridSize, rules]);
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur
           Swal.fire('Erreur', 'La connexion a échoué. Veuillez réessayer.', 'error');
@@ -244,31 +247,29 @@ export class IndexComponent implements OnInit {
  * Lorsque la partie est crée, redirige l'utilisateur vers celle-ci et ferme le chargement
  */
   private initializeJoinMatchmakingPopup() {
-    this.gameDAO.GetAvailableGames().subscribe({
-      next: (games: GameInfoDTO[]) => {
-        // Affichez un chargement avant la connexion
-        Swal.fire({
-          title: 'Recherche en cours...',
-          text: 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...',
-          showCloseButton: true,
-          didOpen: async () => {
-            Swal.showLoading();
-            try{
-              await this.websocketService.connectWebsocket();
-              this.websocketService.joinMatchmaking();
-            }
-            catch(error){
-              Swal.close(); // Ferme le chargement en cas d'erreur
-              Swal.fire('Erreur', 'La connexion a échoué. Veuillez réessayer.', 'error');
-            }
-            //todo : recherche de partie
-          },
-          willClose: () => {
-            // todo : Arrêtez la recherche de partie si l'utilisateur ferme le popup
-          }
-        });
-      }
-    })
+    let matchFound = false;
+
+    Swal.fire({
+      title: 'Recherche en cours...',
+      text: 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...',
+      showCloseButton: false,
+      allowOutsideClick: false,
+      showCancelButton: false,
+      didOpen: async () => {
+        Swal.showLoading();
+        try {
+          await this.websocketService.connectWebsocket();
+          await this.websocketService.joinMatchmaking();
+          Swal.close();
+        } catch(error) {
+          Swal.fire({
+            title: 'Erreur', 
+            text: 'La recherche de partie a échoué. Veuillez réessayer.',
+            icon: 'error'
+          });
+        }
+      },
+    });
   }
   /**
  * Remplit le leaderboard avec les 5 joueurs ayant le meilleur Elo du serveur.

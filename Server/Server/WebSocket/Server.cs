@@ -18,7 +18,9 @@ namespace WebSocket
         private IWebProtocol webSocket;
         private bool isRunning;
         private bool started;
+        private string gameType;
         private static ConcurrentDictionary<int, Game> games = new ConcurrentDictionary<int, Game>();
+        private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
         private static Queue<Client> waitingPlayers = new Queue<Client>();
 
         private Interpreter interpreter;
@@ -28,11 +30,14 @@ namespace WebSocket
         /// </summary>
         public static ConcurrentDictionary<int, Game> Games { get => games; set => games = value; }
 
+        public static ConcurrentDictionary<int, Game> MatchmakingGames { get => matchmakingGames; set => matchmakingGames = value; }
+
+
         /// <summary>
         /// File contenant les joueurs en recherche de matchmaking
         /// </summary>
         public static Queue<Client> WaitingPlayers { get => waitingPlayers; set => waitingPlayers = value; }
-
+        
 
         /// <summary>
         /// Constructeur de la classe Server
@@ -144,6 +149,24 @@ namespace WebSocket
             Console.WriteLine(ex.Message + "\n");
             endOfCommunication = true; // Fin de la communication
             this.started = false;
+
+            // Si jamais le joueur est dans la file d'attente de matchmaking on le retire
+            if (Server.WaitingPlayers.Contains(client))
+            {
+                var tempQueue = new Queue<Client>();
+                while (Server.WaitingPlayers.Count > 0)
+                {
+                    var player = Server.WaitingPlayers.Dequeue();
+                    if (player != client)
+                    {
+                        tempQueue.Enqueue(player);
+                    }
+                }
+                while (tempQueue.Count > 0)
+                {
+                    Server.WaitingPlayers.Enqueue(tempQueue.Dequeue());
+                }
+            }
         }
 
 
@@ -153,28 +176,42 @@ namespace WebSocket
         private void TreatMessage(byte[] bytes, Client client, ref string message, ref string response)
         {
             byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
-            message = Encoding.UTF8.GetString(decryptedMessage);
-            response = this.interpreter.Interpret(message, client); // Interprétation du message reçu
-
+            message = Encoding.UTF8.GetString(decryptedMessage);        
+            if (message.Contains("custom"))
+            {
+                this.gameType = "custom";
+            }
+            else if (message.Contains("matchmaking"))
+            {
+                this.gameType = "matchmaking";
+            }
+            response = this.interpreter.Interpret(message, client, this.gameType); // Interprétation du message reçu
             string responseType = response.Split("_")[0]; // Récupération du type de réponse (Send ou Broadcast)
             string responseData = response.Split("_")[1]; // Récupération des données à envoyer
 
+
+
             int idGame = Convert.ToInt32(responseData.Split("/")[0]); // Id de la partie concernée
             byte[] responseBytes = this.webSocket.BuildMessage(responseData);
-            Game game = games[idGame];
+
+            if (!response.Contains("Create") && (!response.Contains("Timeout")))
+            {
+                Game game = this.gameType == "custom" ? games[idGame] : matchmakingGames[idGame];
+                if (game.IsFull && !this.started)
+                {
+                    this.StartGame(game);
+                }
+                if (responseType == "Broadcast")
+                {
+                    this.BroadastMessage(game, responseBytes);
+                }
+            }
+
             if (responseType == "Send")
             {
                 this.SendMessage(client, responseBytes);
             }
-            else if (responseType == "Broadcast")
-            {
-                this.BroadastMessage(game, responseBytes);
-            }
             response = responseData;
-            if (game.IsFull && !this.started)
-            {
-                this.StartGame(game);
-            }
         }
 
         private void SendMessage(Client client, byte[] bytes)
