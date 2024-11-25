@@ -227,7 +227,7 @@ namespace WebSocket
             this.SendMessage(game.Player1, bytes);
             this.SendMessage(game.Player2, bytes);
 
-            if (this.TestWin(game)) // Test si la partie est terminée et lance la gestion de fin de partie si c'est le cas
+            if (game.TestWin()) // Appel direct de la méthode TestWin() de l'objet Game
             {
                 this.handleGameEnd(game);
             }
