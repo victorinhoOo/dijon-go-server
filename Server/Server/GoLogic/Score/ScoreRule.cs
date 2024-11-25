@@ -70,7 +70,7 @@
                     if (stone.Color == StoneColor.Empty && !visited.Contains(stone)) 
                     {
                         // Explore la zone vide à partir de cette pierre
-                        var (owner, emptyArea) = ExploreTerritory(stone, visited);
+                        (StoneColor owner, List<Stone> emptyArea) = ExploreTerritory(stone, visited);
 
                         if (owner == StoneColor.Black)
                         {
@@ -144,41 +144,200 @@
             return (resColor, resArea); 
         }
 
-        
+        /// <summary>
+        /// Récupère récursivement les pierres voisines d'une pierre donnée et leurs libertées
+        /// </summary>
+        /// <param name="stone">La pierre dont on veut récupérer le groupe</param>
+        /// <param name="visited">Pierre visité lors de la recherche</param>
+        /// <param name="group">Le groupe de pierre</param>
+        /// <param name="liberties">les libertées du groupe</param>
+        private void CollectGroupAndLiberties(Stone stone, HashSet<Stone> visited, List<Stone> group, HashSet<Stone> liberties)
+        {
+            // si la pierre a déjà été visité on s'arrête
+            if (visited.Contains(stone)) return;
+            visited.Add(stone);
+
+            // si la pierre est Empty c'est une liberté
+            if (stone.Color == StoneColor.Empty)
+            {
+                liberties.Add(stone);
+                return;
+            }
+
+            StoneColor initialColor = group.FirstOrDefault()?.Color ?? stone.Color;
+            if (stone.Color == initialColor)
+            {
+                group.Add(stone);
+                foreach (Stone neighbor in GetNeighbors(stone))
+                {
+                    CollectGroupAndLiberties(neighbor, visited, group, liberties);
+                }
+            }
+        }
 
         /// <summary>
-        /// Retire toutes les pierres mortes du Goban
-        /// pour qu'elles ne soient pas considéré lors du calcul du score
+        /// Vérifie si une liberté constitue l'oeil d'un groupe
         /// </summary>
-        public void RemoveDeadStone()
+        /// <param name="liberty">la liberté à tester</param>
+        /// <param name="color">La couleur des pierres du groupe</param>
+        /// <returns>True si la liberté est un oeil, False sinon</returns>
+        private bool IsRealEye(Stone liberty, StoneColor color)
         {
-            HashSet<Stone> visited = new HashSet<Stone>();
+            bool res = true;
 
-            for (int x = 0; x < GameBoard.Size; x++)
+            // Tous les voisins directs doivent être de la même couleur
+            List<Stone> neighbors = GetNeighbors(liberty);
+            if (!neighbors.All(n => n.Color == color)) res = false;
+            else
             {
-                for (int y = 0; y < GameBoard.Size; y++)
-                {
-                    Stone stone = GameBoard.GetStone(x, y);
+                // Obtine les positions diagonales
+                int x = liberty.X;
+                int y = liberty.Y;
+                List<Stone> diagonals = new List<Stone>();
 
-                    // Ne vérifie que les pierres qui n'ont pas été visitée
-                    if (!visited.Contains(stone) && stone.Color != StoneColor.Empty)
+                int[][] diagonalOffsets = new int[][]
+                {
+                new int[] {-1, -1}, new int[] {-1, 1},
+                new int[] {1, -1}, new int[] {1, 1}
+                };
+
+                foreach (var offset in diagonalOffsets)
+                {
+                    int newX = x + offset[0];
+                    int newY = y + offset[1];
+                    
+                    // si les coordonnes sont valides (dans le Goban) on récupère la pierre 
+                    if (gameBoard.IsValidCoordinate(newX, newY))
                     {
-                        // Explore autour pour vérifier si la pierre est morte
-                        (StoneColor owner, List<Stone> region) = ExploreTerritory(stone, visited);
-                        
-                        // Si le maitre de la région est de couleur opposée, la pierre est retiré
-                        StoneColor opponentColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
-                        if (owner == opponentColor)
-                        {
-                            foreach (Stone deadStone in region)
-                            {
-                                // Retire les pierres mortes
-                                GameBoard.Board[deadStone.X, deadStone.Y].Color = StoneColor.Empty;
-                            }
-                        }
+                        diagonals.Add(gameBoard.GetStone(newX, newY));
+                    }
+                }
+
+                // Les pierres aux bords et coins nécessitent moins de diagonales contrôlées
+                bool isEdge = x == 0 || x == gameBoard.Size - 1 || y == 0 || y == gameBoard.Size - 1;
+                bool isCorner = (x == 0 || x == gameBoard.Size - 1) && (y == 0 || y == gameBoard.Size - 1);
+
+                int requiredDiagonals = isCorner ? 1 : (isEdge ? 2 : 3);
+                int controlledDiagonals = diagonals.Count(d => d.Color == color || d.Color == StoneColor.Empty);
+
+                res = controlledDiagonals >= requiredDiagonals;
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// Vérifie si un groupe est dans une situation de seki
+        /// </summary>
+        /// <param name="group">Le groupe à tester</param>
+        /// <param name="liberties">les libertées de ce groupe</param>
+        /// <returns></returns>
+        private bool IsSeki(List<Stone> group, HashSet<Stone> liberties)
+        {
+            bool res = false;
+
+            StoneColor color = group[0].Color;
+            StoneColor oppositeColor = color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+
+            // Pour chaque liberté, vérifiez si elle est partagée avec un groupe ennemi
+            foreach (Stone liberty in liberties)
+            {
+                List<Stone> neighbors = GetNeighbors(liberty);
+                var enemyNeighbors = neighbors.Where(n => n.Color == oppositeColor);
+
+                foreach (Stone enemyStone in enemyNeighbors)
+                {
+                    List<Stone> enemyGroup = new List<Stone>();
+                    HashSet<Stone> enemyLiberties = new HashSet<Stone>();
+                    HashSet<Stone> enemyVisited = new HashSet<Stone>();
+
+                    CollectGroupAndLiberties(enemyStone, enemyVisited, enemyGroup, enemyLiberties);
+
+                    // Si les deux groupes partagent les mêmes libertés vitales et ont peu de libertés
+                    var sharedLiberties = liberties.Intersect(enemyLiberties).ToList();
+                    if (sharedLiberties.Count >= 1 && liberties.Count <= 2 && enemyLiberties.Count <= 2)
+                    {
+                        res = true;
                     }
                 }
             }
+
+            return res;
+        }
+
+        /// <summary>
+        /// Détermine si un groupe de pierre est mort
+        /// </summary>
+        /// <param name="stone">La pierre initial du groupe à analyser</param>
+        /// <returns>Renvoie True si les pierres sont mortes False sinon</returns>
+        public bool IsGroupDead(Stone stone)
+        {
+            bool res = true;
+            if (stone.Color == StoneColor.Empty) res = false;
+
+            HashSet<Stone> visited = new HashSet<Stone>();
+            List<Stone> group = new List<Stone>();
+            HashSet<Stone> liberties = new HashSet<Stone>();
+
+            // Obtenez le groupe complet et ses libertés
+            CollectGroupAndLiberties(stone, visited, group, liberties);
+
+            // Vérifie pour les vraies yeux
+            var eyes = liberties.Where(l => IsRealEye(l, stone.Color)).ToList();
+            if (eyes.Count >= 2)
+            {
+                res = false; // Deux yeux = en vie
+            }
+
+            // vérifie si c'est une situation de seki
+            if (IsSeki(group, liberties))
+            {
+                res = false;
+            }
+
+            // Si le groupe n'a qu'une seule liberté mais qu'il n'est pas complètement entouré de pierres ennemies
+            if (liberties.Count == 1)
+            {
+                Stone liberty = liberties.First();
+                List<Stone> surroundingStones = GetNeighbors(liberty);
+                StoneColor oppositeColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+
+                // Si toutes les pierres environnantes ne sont pas de la couleur opposée, le groupe n'est peut-être pas mort
+                if (!surroundingStones.All(s => s.Color == oppositeColor || group.Contains(s)))
+                {
+                    res = false;
+                }
+            }
+
+            // Vérifiez si le groupe est en territoire ennemi
+            (int blackTerritory, int whiteTerritory) = FindTerritory();
+            foreach (Stone liberty in liberties)
+            {
+                List<Stone> libertyNeighbors = GetNeighbors(liberty);
+                StoneColor oppositeColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+
+                // Si la liberté a des voisins vides non contrôlés par l'adversaire
+                if (libertyNeighbors.Any(n => n.Color == StoneColor.Empty &&
+                    !liberties.Contains(n)))
+                {
+                    res = false;
+                }
+            }
+
+            // Si nous avons un oeil et le potentiel pour un autre
+            if (eyes.Count == 1)
+            {
+                foreach (Stone liberty in liberties.Where(l => !eyes.Contains(l)))
+                {
+                    List<Stone> potentialEyeNeighbors = GetNeighbors(liberty);
+                    if (potentialEyeNeighbors.Count(n => n.Color == stone.Color || liberties.Contains(n)) >= 3)
+                    {
+                        res = false;
+                    }
+                }
+            }
+
+            return res;
         }
 
         /// <summary>
