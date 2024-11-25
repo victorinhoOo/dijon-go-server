@@ -11,11 +11,12 @@ import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { User } from '../Model/User';
 import { UserDAO } from '../Model/DAO/UserDAO';
+import { RankprogressComponent } from "../rankprogress/rankprogress.component";
 
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [NavbarComponent, MatIcon, HttpClientModule],
+  imports: [NavbarComponent, MatIcon, HttpClientModule, RankprogressComponent],
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css'],
 })
