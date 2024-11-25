@@ -204,6 +204,11 @@ namespace WebSocket
                 {
                     this.BroadastMessage(game, responseBytes);
                 }
+                if (game.IsFull && !game.Started)
+                {
+                    this.StartGame(game);
+                }
+
             }
 
             if (responseType == "Send")
@@ -211,10 +216,6 @@ namespace WebSocket
                 this.SendMessage(client, responseBytes);
             }
             response = responseData;
-            if (game.IsFull && !game.Started)
-            {
-                this.StartGame(game);
-            }
         }
 
         private void SendMessage(Client client, byte[] bytes)
