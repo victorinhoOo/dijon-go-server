@@ -5,6 +5,9 @@
     color: black;
 }
 
+#logout-button{
+    margin-bottom:  40px;
+}
 ::ng-deep #navbar-sidenav{
     height: auto !important;
     overflow: hidden !important;
@@ -12,6 +15,11 @@
 
 ::ng-deep #navbar-container button {
 
+}
+
+::ng-deep .focus :focus-visible{
+    outline: 2px solid blue !important; /* Ajoute un contour bleu */
+    transition: outline 0.3s ease-in-out;
 }
 
 
