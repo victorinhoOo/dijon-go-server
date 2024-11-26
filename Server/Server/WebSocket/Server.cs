@@ -185,12 +185,13 @@ namespace WebSocket
                 this.gameType = "matchmaking";
             }
             response = this.interpreter.Interpret(message, client, this.gameType); // Interprétation du message reçu
-            string responseType = response.Split("_")[0]; // Récupération du type de réponse (Send ou Broadcast)
-            string responseData = response.Split("_")[1]; // Récupération des données à envoyer
+            string[] data = response.Split("_");
+            string responseType = data[0]; // Récupération du type de réponse (Send ou Broadcast)
+            string responseData = data[1]; // Récupération des données à envoyer
 
 
-
-            int idGame = Convert.ToInt32(responseData.Split("/")[0]); // Id de la partie concernée
+            string stringId = responseData.Split("-")[0];
+            int idGame = Convert.ToInt32(stringId); // Id de la partie concernée
             byte[] responseBytes = this.webSocket.BuildMessage(responseData);
 
             if (!response.Contains("Create") && (!response.Contains("Timeout")))

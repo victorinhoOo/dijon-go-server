@@ -1,4 +1,5 @@
 ﻿using GoLogic;
+using System.Globalization;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using WebSocket.Model;
@@ -32,19 +33,17 @@ namespace WebSocket
         /// <returns>la réponse du serveur au client</returns>
         public string Interpret(string message, Client client, string gameType)
         {
-
-            int idGame = Convert.ToInt32(message.Split("/")[0]);
-            message = message.Split("/")[1];
-            string action = message.Split(":")[0]; // action à effectuer
+            string[] data = message.Split("-");
+            string action = data[1]; // action à effectuer
             string type = ""; // type de réponse (send ou broadcast)
             string response = "";
             switch (action)
             {
-                case "Stone": PlaceStone(client, idGame, message.Split(':')[1], gameType, ref response, ref type); break;
-                case "Create": CreateGame(client, message, ref response, ref type); break;
-                case "Join": JoinGame(client, message, idGame, ref response, ref type); break;
-                case "Matchmaking": Matchmaking(client, message, ref response, ref type); break;
-                case "Skip": Skip(client, idGame, gameType, ref response, ref type); break;
+                case "Stone": PlaceStone(client, data, gameType, ref response, ref type); break;
+                case "Create": CreateGame(client, data, ref response, ref type); break;
+                case "Join": JoinGame(client, data, ref response, ref type); break;
+                case "Matchmaking": Matchmaking(client, ref response, ref type); break;
+                case "Skip": Skip(client, data, gameType, ref response, ref type); break;
             }           
             return type + response;
 
@@ -54,8 +53,10 @@ namespace WebSocket
         /// <summary>
         /// le joueur place une pierre sur le plateau
         /// </summary>
-        private void PlaceStone(Client player, int idGame, string coordinates, string gameType, ref string response, ref string type)
+        private void PlaceStone(Client player, string[] data, string gameType, ref string response, ref string type)
         {
+            string stringId = data[0];
+            int idGame = Convert.ToInt16(stringId);
             if (idGame != 0)
             {
                 Game game = null;
@@ -71,25 +72,24 @@ namespace WebSocket
                 {
                     try
                     {
-                        int x = Convert.ToInt32(coordinates.Split("-")[0]);
-                        int y = Convert.ToInt32(coordinates.Split("-")[1]);
+                        int x = Convert.ToInt32(data[2]);
+                        int y = Convert.ToInt32(data[3]);
 
                         string timeRemaining = game.PlaceStone(x, y); // pose de la pierre
-                        (int, int) score = game.GetScore(); // récupération du score
                         (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone(); // récupération des pierres capturées
                         game.ChangeTurn(); // changement de tour
-                        response = $"{idGame}/{game.StringifyGameBoard()}|{capturedBlackStones};{capturedWhiteStones}-{timeRemaining.Split(',')[0]}";
+                        response = $"{idGame}-{game.StringifyGameBoard()}-{capturedBlackStones}-{capturedWhiteStones}-{timeRemaining.Split(',')[0]}";
                         type = "Broadcast_";
                     }
                     catch (Exception e)
                     {
-                        response = $"{idGame}/Error:{e.Message}";
+                        response = $"{idGame}-Error-{e.Message}";
                         type = "Send_";
                     }
                 }
                 else // si ce n'est pas le tour du joueur
                 {
-                    response = $"{idGame}/Not your turn";
+                    response = $"{idGame}-Not your turn";
                     type = "Send_";
                 }
             }
@@ -99,12 +99,11 @@ namespace WebSocket
         /// <summary>
         /// Le joueur créé une partie 
         /// </summary>
-        private void CreateGame(Client client, string message, ref string response, ref string type)
+        private void CreateGame(Client client, string[] data, ref string response, ref string type)
         {
-            string settings = message.Split("-")[1];
-            int size = Convert.ToInt16(settings.Split("_")[0]);
-            string rule = settings.Split("_")[1];
-            string gameType = settings.Split("_")[2];
+            int size = Convert.ToInt16(data[3]);
+            string rule = data[4];
+            string gameType = data[5];
             if(gameType == "custom") // la partie est personnalisée
             {
                 int id = Server.Games.Count + 1; // Génération de l'id de la partie
@@ -112,9 +111,9 @@ namespace WebSocket
                 newGame.AddPlayer(client);
                 Server.Games[id] = newGame;
                 gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
-                client.User.Token = message.Split(":")[1].Split("-")[0];
+                client.User.Token = data[2];
                 Server.Games[id].Player1 = client; // Ajout du client en tant que joueur 1
-                response = $"{id}/"; // Renvoi de l'id de la partie créée
+                response = $"{id}-"; // Renvoi de l'id de la partie créée
                 type = "Send_";
             }
             else if (gameType == "matchmaking")
@@ -123,9 +122,9 @@ namespace WebSocket
                 Game newGame = new Game(size, rule);
                 newGame.AddPlayer(client);
                 Server.MatchmakingGames[id] = newGame;
-                client.User.Token = message.Split(":")[1].Split("-")[0];
+                client.User.Token = data[2];
                 Server.MatchmakingGames[id].Player1 = client;
-                response = $"{id}/"; // Renvoi del'id de la partie créée
+                response = $"{id}-"; // Renvoi del'id de la partie créée
                 type = "Send_";
             }
 
@@ -135,30 +134,32 @@ namespace WebSocket
         /// <summary>
         /// Le joueur rejoint une partie
         /// </summary>
-        private void JoinGame(Client client, string message, int idGame, ref string reponse, ref string type)
+        private void JoinGame(Client client, string[] data, ref string reponse, ref string type)
         {
-            string gameType = message.Split("*")[1];
+            string stringId = data[0];
+            int idGame = Convert.ToInt16(stringId);
+            string gameType = data[3];
             if(gameType == "custom")
             {
 
-                client.User.Token = message.Split("*")[0].Split(":")[1].Split("-")[0]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
+                client.User.Token = data[2]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
                 Server.Games[idGame].AddPlayer(client); // Ajout du client en tant que joueur 2
                 gameDAO.DeleteGame(idGame); // Suppression de la partie de la liste des parties disponibles
-                reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
+                reponse = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";
             }
             else if (gameType == "matchmaking")
             {
-                client.User.Token = message.Split("*")[0].Split(":")[1].Split("-")[0];
+                client.User.Token = data[2];
                 Server.MatchmakingGames[idGame].AddPlayer(client);
-                reponse = $"{idGame}/"; // Renvoi de l'id de la partie rejointe 
+                reponse = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";
             }
         }
         /// <summary>
         /// Le joueur se met en recherche de partie
         /// </summary>
-        private void Matchmaking(Client client, string message, ref string response, ref string type)
+        private void Matchmaking(Client client, ref string response, ref string type)
         {
             Server.WaitingPlayers.Enqueue(client);
             int nbMatchmakingGames = Server.MatchmakingGames.Count();
@@ -175,13 +176,13 @@ namespace WebSocket
                     if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
                     {
                         Server.WaitingPlayers.Dequeue(); // Retire le joueur de la file d'attente
-                        response = "0/Timeout";
+                        response = "0-Timeout";
                         type = "Send_";
                         return;
                     }
                     Thread.Sleep(100);
                 }
-                response = "0/Create:matchmaking";
+                response = "0-Create-matchmaking";
                 type = "Send_";
             }
             else 
@@ -192,7 +193,7 @@ namespace WebSocket
                     if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
                     {
                         Server.WaitingPlayers.Dequeue(); // Retire le joueur de la file d'attente
-                        response = "0/Timeout";
+                        response = "0-Timeout";
                         type = "Send_";
                         return;
                     }
@@ -201,7 +202,7 @@ namespace WebSocket
                 Server.WaitingPlayers.Dequeue();
                 Server.WaitingPlayers.Dequeue();
                 string idGame = (Server.MatchmakingGames.Count()).ToString();
-                response = $"{idGame}/Join:matchmaking";
+                response = $"{idGame}-Join-matchmaking";
                 type = "Send_";
             }
         }
@@ -210,8 +211,10 @@ namespace WebSocket
         /// <summary>
         /// Le joueur passe son tour
         /// </summary>
-        private void Skip(Client client, int idGame, string gameType, ref string response, ref string type)
+        private void Skip(Client client, string[] data, string gameType, ref string response, ref string type)
         {
+            string stringId = data[0];
+            int idGame = Convert.ToInt16(stringId);
             Game game = null;
             if (gameType == "custom")
             {
@@ -229,11 +232,11 @@ namespace WebSocket
             {
                 game.SkipTurn();
                 type = "Broadcast_";
-                response = $"{idGame}/Turn skipped";
+                response = $"{idGame}-Turn skipped";
             }
             else
             {
-                response = $"{idGame}/Not your turn";
+                response = $"{idGame}-Not your turn";
                 type = "Send_";
             }
             
