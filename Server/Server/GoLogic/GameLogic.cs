@@ -6,8 +6,7 @@
     public class GameLogic
     {
         #region attributs
-        private GameBoard board;
-        private List<Stone> moves = new List<Stone>();
+        private GameBoard goban;
         private StoneColor currentTurn;
         private bool isEndGame;
         private bool skippedTurn;
@@ -16,12 +15,7 @@
         /// <summary>
         /// Le plateau de la partie
         /// </summary>
-        public GameBoard Board { get => this.board; set => this.board = value; }
-        
-        /// <summary>
-        /// pour le replay, moves = [(1, 1, Black), (2, 2, White), ...]
-        /// </summary>
-        public List<Stone> Moves { get => this.moves; set => this.moves = value;  }
+        public GameBoard Goban { get => this.goban; set => this.goban = value; }
         
         /// <summary>
         /// Tour actuel, Noir ou Blanc
@@ -45,7 +39,7 @@
         /// <param name="board">Le tableau contenant les pierres</param>
         public GameLogic(GameBoard board)
         {
-            this.board = board;
+            this.goban = board;
             this.currentTurn = StoneColor.Black;
         }
 
@@ -70,7 +64,7 @@
             bool res = false;
 
             this.skippedTurn = false;
-            Stone stone = Board.Board[x, y]; // récupère la pierre aux coordonnées données
+            Stone stone = Goban.Board[x, y]; // récupère la pierre aux coordonnées données
 
             if (!IsValidMove(stone))
             {
@@ -80,7 +74,6 @@
             {
                 stone.Color = CurrentTurn; // place la pierre en changeant sa couleur de Empty à CurrentTurn
                 this.previousStone = stone;
-                Moves.Add(new Stone(x, y, CurrentTurn)); // enregistre le coup
                 CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black; // tour passe au joueur suivant
 
                 res = true;
@@ -97,14 +90,14 @@
         /// <returns>True si le coup est valide, False sinon</returns>
         public bool IsValidMove(Stone stone)
         {
-            GameBoard boardCopy = new GameBoard(board.Size);
-            boardCopy.Board = board.CopyBoard();
-            boardCopy.PreviousBoard = board.PreviousBoard;
+            GameBoard boardCopy = new GameBoard(goban.Size);
+            boardCopy.Board = goban.CopyBoard();
+            boardCopy.PreviousBoard = goban.PreviousBoard;
             GameLogic logicCopy = new GameLogic(boardCopy);
             bool result = true;
 
             // Vérifie que le coup est dans les limites du plateau et que l'emplacement est vide
-            if (stone.Color != StoneColor.Empty || !Board.IsValidCoordinate(stone.X, stone.Y))
+            if (stone.Color != StoneColor.Empty || !Goban.IsValidCoordinate(stone))
                 result = false;
 
             else
@@ -124,23 +117,23 @@
                 else
                 {
                     CapturesOpponent(stone); // On execute la capture pour vérifier ko
-                    if (IsKoViolation(Board))
+                    if (IsKoViolation(Goban))
                     {
                         result = false; // Coup invalide (ne respecte pas la régle de ko)
                         stone.Color = StoneColor.Empty; // Annule le coup
-                        Board.Board = boardCopy.CopyBoard(); // Récupère l'état initial du Goban
+                        Goban.Board = boardCopy.CopyBoard(); // Récupère l'état initial du Goban
                         if (this.CurrentTurn == StoneColor.White)
                         {
-                            board.CapturedBlackStones -= 1;
+                            goban.CapturedBlackStones -= 1;
                         }
                         else
                         {
-                            board.CapturedWhiteStones -= 1;
+                            goban.CapturedWhiteStones -= 1;
                         }
                     }
                     else // Coup valide
                     {
-                        Board.PreviousBoard = boardCopy.CopyBoard();
+                        Goban.PreviousBoard = boardCopy.CopyBoard();
                     }
                     
                 }
@@ -164,7 +157,7 @@
             {
                 for (int j = 0; j < board.Size; j++)
                 {
-                    if (!board.Board[i, j].Equals(Board.PreviousBoard[i, j]))
+                    if (!board.Board[i, j].Equals(Goban.PreviousBoard[i, j]))
                     {
                         res = false; // Les plateaux ne sont pas identiques pas de violation de Ko
                     }
@@ -289,11 +282,11 @@
             }
             if (currentTurn == StoneColor.Black)
             {
-                Board.CapturedWhiteStones += group.Count;
+                Goban.CapturedWhiteStones += group.Count;
             }
             else
             {
-                Board.CapturedBlackStones += group.Count;
+                Goban.CapturedBlackStones += group.Count;
             }
         }
 
@@ -307,7 +300,7 @@
         /// <returns>Liste de Pierre de même couleur toutes adjacentes</returns>
         private List<Stone> FindGroup(Stone stone, HashSet<Stone> visited, List<Stone> group, StoneColor initialStoneColor)
         {
-            if (visited.Contains(stone) || !Board.IsValidCoordinate(stone.X, stone.Y) || stone.Color != initialStoneColor)
+            if (visited.Contains(stone) || !Goban.IsValidCoordinate(stone) || stone.Color != initialStoneColor)
             {
                 return group;
             }
@@ -331,12 +324,12 @@
             List<Stone> neighbors = [];
 
             // Récupère les coordonnées des Pierres voisines
-            foreach (var (x, y) in stone.GetNeighborsCoordinate())
+            foreach ((int x, int y) in stone.GetNeighborsCoordinate())
             {
                 // Si les coordonnées sont correctes, on ajoute la pierre correspondante
-                if (Board.IsValidCoordinate(y, x))
+                if (Goban.IsValidCoordinate(y, x))
                 {
-                    neighbors.Add(Board.GetStone(x, y));
+                    neighbors.Add(Goban.GetStone(x, y));
                 }
             }
 

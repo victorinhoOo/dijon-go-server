@@ -19,7 +19,7 @@ namespace GoLogic.Serializer
         public string ChecksGobanForKo(GameLogic logic, StoneColor currentTurn)
         {
             List<Stone> potentialKoPositions = new List<Stone>();
-            GameBoard boardCopy = new GameBoard(logic.Board.Size);
+            GameBoard boardCopy = new GameBoard(logic.Goban.Size);
 
             // Récupère tous les voisins vides de la pierre précédente
             foreach (Stone stone in logic.GetNeighbors(logic.PreviousStone))
@@ -27,8 +27,8 @@ namespace GoLogic.Serializer
                 if (stone.Color == StoneColor.Empty)
                 {
                     // Pour chaque voisin vide, fait une nouvelle copie et teste
-                    boardCopy.Board = logic.Board.CopyBoard();
-                    boardCopy.PreviousBoard = logic.Board.PreviousBoard;
+                    boardCopy.Board = logic.Goban.CopyBoard();
+                    boardCopy.PreviousBoard = logic.Goban.PreviousBoard;
                     GameLogic logicCopy = new GameLogic(boardCopy);
 
                     // Essaie de placer une pierre de la couleur du joueur actuel
@@ -49,7 +49,7 @@ namespace GoLogic.Serializer
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("x,y,color");
 
-            foreach (Stone stone in logic.Board.Board)
+            foreach (Stone stone in logic.Goban.Board)
             {
                 string color = stone.Color.ToString();
                 if (potentialKoPositions.Any(k => k.X == stone.X && k.Y == stone.Y))

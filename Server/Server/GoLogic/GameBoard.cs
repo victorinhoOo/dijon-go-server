@@ -88,7 +88,7 @@
             {
                 return board[x, y];
             }
-            throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of bounds for the board size.");
+            throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of bounds for the goban size.");
         }
 
         /// <summary>
@@ -101,9 +101,19 @@
         {
             return x >= 0 && y >= 0 && x < Size && y < Size;
         }
+
+        /// <summary>
+        /// Vérifie si une pierre est dans les limites du tableau
+        /// </summary>
+        /// <param name="stone">La pierre à vérifié</param>
+        /// <returns>True si les coordonnées sont bonnes, False sinon</returns>
+        public bool IsValidCoordinate(Stone stone)
+        {
+            return IsValidCoordinate(stone.X, stone.Y);
+        }
         
         /// <summary>
-        /// Renvoie une copie de l'état de Board
+        /// Renvoie une copie de l'état de Goban
         /// </summary>
         public Stone[,] CopyBoard()
         {
