@@ -34,7 +34,7 @@ export class Interpreter {
    * @returns l'id du jeu
    */
   public getIdGame(): string {
-    return `${this.idGame}/`;
+    return this.idGame;
   }
 
   /**
@@ -67,10 +67,11 @@ export class Interpreter {
         this.matchmakingResolve = null;
       }
       if(message.includes("Create")){
-        this.websocketService.createGame(19, "c", "matchmaking");
+        this.websocketService.createGame(19, "j", "matchmaking");
       }
       else {
-        let idGame = Number(message.split("/")[0]);
+        let stringId = message.split("-")[0]
+        let idGame = Number(stringId);
         this.websocketService.joinGame(idGame, "matchmaking", "j", 19);
       }
     }
@@ -92,7 +93,7 @@ export class Interpreter {
   }
 
   private initIdGame(message: string): void {
-    this.idGame = message.split('/')[0];
+    this.idGame = message.split('-')[0];
   }
 
   
@@ -148,11 +149,11 @@ export class Interpreter {
     let playerScore;
     let opponentScore;
     if (this.color == 'black') { 
-      playerScore = score.split(';')[0];
-      opponentScore = score.split(';')[1];
-    } else {
       playerScore = score.split(';')[1];
       opponentScore = score.split(';')[0];
+    } else {
+      playerScore = score.split(';')[0];
+      opponentScore = score.split(';')[1];
     }
 
     document.getElementById('opponent-score-value')!.innerHTML =
@@ -172,9 +173,10 @@ export class Interpreter {
   }
 
   private updateTurn(message: string): void {
-    let board = message.split('|')[0];
-    let score = message.split('|')[1].split("-")[0];
-    let timer = message.split('-')[1];
+    let data = message.split('-');
+    let board = data[1];
+    let score = `${data[2]};${data[3]}`;
+    let timer = data[4];
     this.updateBoard(board);
     this.updateScore(score);
     this.updateTimer(timer)

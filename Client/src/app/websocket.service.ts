@@ -113,7 +113,7 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0/Create:${userToken}-${size}_${rule}_${type}`);
+      this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}`);
       this.interpreter.setColor('black');
       this.router.navigate(['game', size, rule]);
     } else {
@@ -130,7 +130,7 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`${id}/Join:${userToken}*${type}`);
+      this.websocket.send(`${id}-Join-${userToken}-${type}`);
       this.interpreter.setColor('white');
       this.router.navigate(['game', size, rule]);
     } else {
@@ -150,7 +150,7 @@ export class WebsocketService {
         (this.interpreter as any).matchmakingResolve = resolve;
         
         // Envoi de la demande de matchmaking
-        this.websocket.send(`0/Matchmaking:${userToken}`);
+        this.websocket.send(`0-Matchmaking`);
       } else {
         reject(new Error('Non connecté au websocket'));
       }
@@ -165,7 +165,7 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
-        this.websocket.send(`${idGame}Skip:`);
+        this.websocket.send(`${idGame}-Skip`);
       }
     } else {
       console.log('not connected');
@@ -182,8 +182,8 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
-        this.websocket.send(`${idGame}Stone:${coordinates}`);
-        console.log(`${idGame}Stone:${coordinates}`);
+        this.websocket.send(`${idGame}-Stone-${coordinates}`);
+        console.log(`${idGame}-Stone-${coordinates}`);
       }
     } else {
       console.log('not connected');
