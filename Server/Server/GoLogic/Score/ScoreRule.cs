@@ -36,12 +36,12 @@
             int blackStones = 0;
             int whiteStones = 0;
 
-            for (int i = 0; i < GameBoard.Size; i++)
+            for (int i = 0; i < this.gameBoard.Size; i++)
             {
-                for (int j = 0; j < GameBoard.Size; j++)
+                for (int j = 0; j < this.gameBoard.Size; j++)
                 {
-                    if (GameBoard.Board[i, j].Color == StoneColor.Black) blackStones++;
-                    if (GameBoard.Board[i, j].Color == StoneColor.White) whiteStones++;
+                    if (this.gameBoard.Board[i, j].Color == StoneColor.Black) blackStones++;
+                    if (this.gameBoard.Board[i, j].Color == StoneColor.White) whiteStones++;
                 }
             }
 
@@ -243,7 +243,7 @@
             foreach (Stone liberty in liberties)
             {
                 List<Stone> neighbors = GetNeighbors(liberty);
-                var enemyNeighbors = neighbors.Where(n => n.Color == oppositeColor);
+                List<Stone> enemyNeighbors = neighbors.Where(n => n.Color == oppositeColor).ToList();
 
                 foreach (Stone enemyStone in enemyNeighbors)
                 {
@@ -254,7 +254,7 @@
                     CollectGroupAndLiberties(enemyStone, enemyVisited, enemyGroup, enemyLiberties);
 
                     // Si les deux groupes partagent les mêmes libertés vitales et ont peu de libertés
-                    var sharedLiberties = liberties.Intersect(enemyLiberties).ToList();
+                    List<Stone> sharedLiberties = liberties.Intersect(enemyLiberties).ToList();
                     if (sharedLiberties.Count >= 1 && liberties.Count <= 2 && enemyLiberties.Count <= 2)
                     {
                         res = true;
@@ -283,7 +283,7 @@
             CollectGroupAndLiberties(stone, visited, group, liberties);
 
             // Vérifie pour les vraies yeux
-            var eyes = liberties.Where(l => IsRealEye(l, stone.Color)).ToList();
+            List<Stone> eyes = liberties.Where(l => IsRealEye(l, stone.Color)).ToList();
             if (eyes.Count >= 2)
             {
                 res = false; // Deux yeux = en vie
@@ -350,7 +350,7 @@
             List<Stone> neighbors = new List<Stone>();
 
             // Récupère les coordonnées des Pierres voisines à partir des coordonnées de la pierre actuelle
-            foreach (var (nx, ny) in stone.GetNeighborsCoordinate())
+            foreach ((int nx, int ny) in stone.GetNeighborsCoordinate())
             {
                 // Si les coordonnées sont correctes, ajoutez la pierre correspondante
                 if (gameBoard.IsValidCoordinate(nx, ny))
