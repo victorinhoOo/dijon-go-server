@@ -1,5 +1,8 @@
 ﻿namespace GoLogic
 {
+    /// <summary>
+    /// Classe représente les pierres ET les intersection du plateau
+    /// </summary>
     public class Stone
     {
         #region attributs
@@ -20,7 +23,7 @@
         /// <summary>
         /// Couleur de la pierre Black, White ou Empty
         /// </summary>
-        public StoneColor Color { get => this.color; set => this.color = value; }
+        public StoneColor Color { get => this.color; }
         #endregion attributs
 
         /// <summary>
@@ -49,9 +52,27 @@
         }
 
         /// <summary>
+        /// Change la couleur de la pierre à celle spécifié
+        /// </summary>
+        /// <param name="color">La couleur spécifié</param>
+        public void ChangeColor(StoneColor color) 
+        {
+            this.color = color;
+        }
+
+        /// <summary>
+        /// Copie la couleur de la pierre spécifié
+        /// </summary>
+        /// <param name="stone">La pierre dont on copie la couleur</param>
+        public void CopyStoneColor(Stone stone)
+        {
+            this.color = stone.Color;
+        }
+
+        /// <summary>
         /// Compare les attributs de 2 objets Stone
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">la pierre auquel se comparer</param>
         /// <returns>Renvoie vrai si les 2 ont les mêmes attributs</returns>
         public bool Equals(Stone other)
         {
