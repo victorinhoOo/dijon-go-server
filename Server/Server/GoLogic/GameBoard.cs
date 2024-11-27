@@ -15,17 +15,17 @@
         /// <summary>
         /// Tableau qui contient les pierres du plateau
         /// </summary>
-        public Stone[,] Board { get => this.board; set => this.board = value; }
+        public Stone[,] Board { get => this.board; }
         
         /// <summary>
         /// Le plateau dans l'état précédent
         /// </summary>
-        public Stone[,] PreviousBoard { get => this.previousBoard; set => this.previousBoard = value; }
+        public Stone[,] PreviousBoard { get => this.previousBoard; }
         
         /// <summary>
         /// La taille du plateau (size x size)
         /// </summary>
-        public int Size => this.size;
+        public int Size { get => this.size; }
 
         /// <summary>
         /// Pierre noire qui ont été capturée
@@ -69,8 +69,8 @@
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    Board[i, j] = new Stone(i, j); // Initialise les pierres Empty 
-                    PreviousBoard[i, j] = new Stone(i, j);
+                    this.board[i, j] = new Stone(i, j); // Initialise les pierres Empty 
+                    this.previousBoard[i, j] = new Stone(i, j);
                 }
             }
         }
@@ -115,7 +115,7 @@
         /// <summary>
         /// Renvoie une copie de l'état de Goban
         /// </summary>
-        public Stone[,] CopyBoard()
+        public Stone[,] CopyThisBoard()
         {
             Stone[,] boardCopy = new Stone[this.size, this.size];
             for (int i = 0; i < Size; i++)
@@ -128,6 +128,36 @@
             }
 
             return boardCopy;
+        }
+
+        /// <summary>
+        /// Copie le plateau en paramétre dans board du GameBoard
+        /// </summary>
+        /// <param name="boardToCopy">le plateau à copier</param>
+        public void CopyToBoard(Stone[,] boardToCopy)
+        {
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    this.board[i, j].CopyStoneColor(boardToCopy[i, j]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copie le plateau en paramétre dans previousBoard du GameBoard
+        /// </summary>
+        /// <param name="boardToCopy"></param>
+        public void CopyToPreviousBoard(Stone[,] boardToCopy)
+        {
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    this.previousBoard[i, j].CopyStoneColor(boardToCopy[i, j]);
+                }
+            }
         }
     }
 }
