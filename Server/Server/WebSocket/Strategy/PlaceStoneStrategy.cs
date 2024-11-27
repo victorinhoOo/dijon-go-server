@@ -38,7 +38,7 @@ namespace WebSocket.Strategy
                         string timeRemaining = game.PlaceStone(x, y); // pose de la pierre
                         (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone(); // récupération des pierres capturées
                         game.ChangeTurn(); // changement de tour
-                        response = $"{idGame}-{game.StringifyGameBoard()}-{capturedBlackStones}-{capturedWhiteStones}-{timeRemaining.Split(',')[0]}";
+                        response = $"{idGame}-Stone-{game.StringifyGameBoard()}-{capturedBlackStones}-{capturedWhiteStones}-{timeRemaining.Split(',')[0]}";
                         type = "Broadcast_";
                     }
                     catch (Exception e)

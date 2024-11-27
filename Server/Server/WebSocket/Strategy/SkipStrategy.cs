@@ -34,7 +34,7 @@ namespace WebSocket.Strategy
             {
                 game.SkipTurn();
                 type = "Broadcast_";
-                response = $"{idGame}-Turn skipped";
+                response = $"{idGame}-Skipped";
             }
             else
             {
