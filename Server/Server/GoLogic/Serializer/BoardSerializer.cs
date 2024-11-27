@@ -27,13 +27,13 @@ namespace GoLogic.Serializer
                 if (stone.Color == StoneColor.Empty)
                 {
                     // Pour chaque voisin vide, fait une nouvelle copie et teste
-                    boardCopy.Board = logic.Goban.CopyBoard();
-                    boardCopy.PreviousBoard = logic.Goban.PreviousBoard;
+                    boardCopy.CopyToBoard(logic.Goban.Board);
+                    boardCopy.CopyToPreviousBoard(logic.Goban.PreviousBoard);
                     GameLogic logicCopy = new GameLogic(boardCopy);
 
                     // Essaie de placer une pierre de la couleur du joueur actuel
                     Stone testStone = boardCopy.Board[stone.X, stone.Y];
-                    testStone.Color = currentTurn;
+                    testStone.ChangeColor(currentTurn);
 
                     // Capture toutes les pierres adverses
                     logicCopy.CapturesOpponent(testStone);
