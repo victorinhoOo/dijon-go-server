@@ -53,12 +53,13 @@
 
 .rank-label {
     margin: 0;
+    margin-top: 15px;
+    margin-bottom: 0;
     font-size: 20px;
 }
 
 .rank-value {
     margin: 0;
-    margin-top: 5px;
     font-size: 24px;
     font-weight: bold;
     display: flex;
