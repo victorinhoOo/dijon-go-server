@@ -9,24 +9,33 @@ using WebSocket.Model;
 namespace WebSocket.Strategy
 {
     /// <summary>
-    /// Le joueur passe son tour
+    /// Stratégie permettant à un joueur de passer son tour dans une partie
     /// </summary>
+    /// <remarks>
+    /// Cette stratégie vérifie :
+    /// - Si c'est bien le tour du joueur
+    /// - Le type de partie (personnalisée ou matchmaking)
+    /// </remarks>
     public class SkipStrategy : IStrategy
     {
-        public void execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        /// <summary>
+        /// Exécute l'action de passer le tour
+        /// </summary>
+        /// <param name="player">Le joueur qui souhaite passer son tour</param>
+        /// <param name="data">Tableau contenant l'ID de la partie</param>
+        /// <param name="gameType">Type de partie ("custom" ou "matchmaking")</param>
+        /// <param name="response">Message de réponse à renvoyer (modifié par référence)</param>
+        /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
+        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
         {
             string stringId = data[0];
             int idGame = Convert.ToInt16(stringId);
             Game game = null;
             if (gameType == "custom")
             {
-                game = Server.Games[idGame];
+                game = Server.CustomGames[idGame];
             }
             else if (gameType == "matchmaking")
-            {
-                game = Server.MatchmakingGames[idGame];
-            }
-            if (gameType == "matchmaking")
             {
                 game = Server.MatchmakingGames[idGame];
             }

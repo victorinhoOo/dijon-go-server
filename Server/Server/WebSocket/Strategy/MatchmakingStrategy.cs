@@ -8,56 +8,87 @@ using System.Threading.Tasks;
 namespace WebSocket.Strategy
 {
     /// <summary>
-    /// Le joueur se met en recherche de partie
+    /// Stratégie de matchmaking permettant de mettre en relation deux joueurs pour une partie.
+    /// Cette classe gère la file d'attente et la création/jointure des parties multijoueurs.
     /// </summary>
     public class MatchmakingStrategy : IStrategy
     {
-        public void execute(Client player, string[] data, string gameType, ref string response, ref string type)
-        {
-            Server.WaitingPlayers.Enqueue(player);
-            int nbMatchmakingGames = Server.MatchmakingGames.Count();
-            DateTime startTime = DateTime.Now;
-            const int TIMEOUT_SECONDS = 5;
+        /// <summary>
+        /// File contenant les joueurs en recherche de matchmaking
+        /// </summary>
+        private static readonly Queue<Client> waitingPlayers = new Queue<Client>();
 
-            Client player1 = Server.WaitingPlayers.Peek();
-            if (player == player1)
+        /// <summary>
+        /// Temps en secondes au bout duquel le matchmaking s'annule 
+        /// </summary>
+        const int TIMEOUT_SECONDS = 20;
+
+        /// <summary>
+        /// Exécute la logique de matchmaking pour un joueur.
+        /// </summary>
+        /// <param name="player">Le client/joueur qui demande le matchmaking</param>
+        /// <param name="data">Données additionnelles (non utilisées)</param>
+        /// <param name="gameType">Type de partie demandée (ici "matchmaking")</param>
+        /// <param name="response">Réponse à envoyer au client (modifiée par référence)</param>
+        /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
+        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        {
+            waitingPlayers.Enqueue(player);
+            int initialNbMatchmakingGames = Server.MatchmakingGames.Count();
+            bool timeout = false;
+
+            Client player1 = waitingPlayers.Peek();
+            if (player == player1) // Le joueur qui rejoint est le premier joueur
             {
-                // Le premier joueur attend avec un délai qui permet de vérifier périodiquement
-                // si un second joueur est arrivé
-                while (Server.WaitingPlayers.Count < 2)
+                // Attente du second joueur
+                timeout = WaitForCondition(() => waitingPlayers.Count >= 2);
+                if (!timeout)
                 {
-                    if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
-                    {
-                        Server.WaitingPlayers.Dequeue(); // Retire le joueur de la file d'attente
-                        response = "0-Timeout";
-                        type = "Send_";
-                        return;
-                    }
-                    Thread.Sleep(100);
+                    response = "0-Create-matchmaking";
                 }
-                response = "0-Create-matchmaking";
-                type = "Send_";
             }
-            else
+            else // le joueur qui rejoint est le deuxième joueur
             {
-                // Le deuxième joueur a rejoint la file
-                while (Server.MatchmakingGames.Count == nbMatchmakingGames)
+                // Attente de la création de la partie
+                timeout = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames);
+                if (!timeout)
                 {
-                    if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
-                    {
-                        Server.WaitingPlayers.Dequeue(); // Retire le joueur de la file d'attente
-                        response = "0-Timeout";
-                        type = "Send_";
-                        return;
-                    }
-                    Thread.Sleep(100);
+                    waitingPlayers.Dequeue();
+                    waitingPlayers.Dequeue();
+                    string idGame = Server.MatchmakingGames.Count().ToString();
+                    response = $"{idGame}-Join-matchmaking";
                 }
-                Server.WaitingPlayers.Dequeue();
-                Server.WaitingPlayers.Dequeue();
-                string idGame = (Server.MatchmakingGames.Count()).ToString();
-                response = $"{idGame}-Join-matchmaking";
-                type = "Send_";
             }
+
+            if (timeout) // Si on a attendu mais que personne n'a rejoint au bout de TIMEOUT_SECONDS
+            {
+                waitingPlayers.Dequeue();
+                response = "0-Timeout";
+            }
+            type = "Send_";
+        }
+
+        /// <summary>
+        /// Attend qu'une condition soit remplie pendant une durée maximale définie par TIMEOUT_SECONDS.
+        /// </summary>
+        /// <param name="condition">Délégué représentant la condition à vérifier périodiquement</param>
+        /// <returns>
+        /// true si le délai d'attente a expiré avant que la condition ne soit remplie,
+        /// false si la condition a été remplie avant l'expiration du délai
+        /// </returns>
+        private bool WaitForCondition(Func<bool> condition)
+        {
+            bool timeout = false;
+            DateTime startTime = DateTime.Now;
+            while (!condition() && !timeout)
+            {
+                if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
+                {
+                    timeout = true;
+                }
+                Thread.Sleep(100);
+            }
+            return timeout;
         }
     }
 }

@@ -19,24 +19,21 @@ namespace WebSocket
         private bool isRunning;
         private bool started;
         private string gameType;
-        private static ConcurrentDictionary<int, Game> games = new ConcurrentDictionary<int, Game>();
+        private static ConcurrentDictionary<int, Game> customGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
-        private static Queue<Client> waitingPlayers = new Queue<Client>();
-
+  
         private Interpreter interpreter;
         private GameManager gameManager;
-        /// <summary>
-        /// Dictionnaire qui contient les parties en cours
-        /// </summary>
-        public static ConcurrentDictionary<int, Game> Games { get => games; set => games = value; }
 
+        /// <summary>
+        /// Dictionnaire qui contient les parties personnalisées en cours
+        /// </summary>
+        public static ConcurrentDictionary<int, Game> CustomGames { get => customGames; set => customGames = value; }
+
+        /// <summary>
+        /// Dictionnaire qui contient les parties de matchmaking en cours
+        /// </summary>
         public static ConcurrentDictionary<int, Game> MatchmakingGames { get => matchmakingGames; set => matchmakingGames = value; }
-
-
-        /// <summary>
-        /// File contenant les joueurs en recherche de matchmaking
-        /// </summary>
-        public static Queue<Client> WaitingPlayers { get => waitingPlayers; set => waitingPlayers = value; }
         
 
         /// <summary>
@@ -132,7 +129,7 @@ namespace WebSocket
         /// </summary>
         private void DisconnectClient(Client client, DisconnectionException ex, ref bool endOfCommunication)
         {
-            foreach (var game in Server.Games)
+            foreach (var game in Server.CustomGames)
             {
                 if (game.Value.Player1 == client)
                 {
@@ -148,24 +145,6 @@ namespace WebSocket
             Console.WriteLine(ex.Message + "\n");
             endOfCommunication = true; // Fin de la communication
             this.started = false;
-
-            // Si jamais le joueur est dans la file d'attente de matchmaking on le retire
-            if (Server.WaitingPlayers.Contains(client))
-            {
-                var tempQueue = new Queue<Client>();
-                while (Server.WaitingPlayers.Count > 0)
-                {
-                    var player = Server.WaitingPlayers.Dequeue();
-                    if (player != client)
-                    {
-                        tempQueue.Enqueue(player);
-                    }
-                }
-                while (tempQueue.Count > 0)
-                {
-                    Server.WaitingPlayers.Enqueue(tempQueue.Dequeue());
-                }
-            }
         }
 
 
@@ -196,7 +175,7 @@ namespace WebSocket
 
             if (!response.Contains("Create") && (!response.Contains("Timeout")))
             {
-                Game game = this.gameType == "custom" ? games[idGame] : matchmakingGames[idGame];
+                Game game = this.gameType == "custom" ? customGames[idGame] : matchmakingGames[idGame];
                 if (responseType == "Broadcast")
                 {
                     this.BroadastMessage(game, responseBytes);
