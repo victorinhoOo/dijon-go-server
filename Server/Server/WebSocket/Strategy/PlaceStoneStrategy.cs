@@ -9,11 +9,19 @@ using WebSocket.Model;
 namespace WebSocket.Strategy
 {
     /// <summary>
-    /// le joueur place une pierre sur le plateau
+    /// Stratégie permettant à un joueur de placer une pierre sur le plateau.
     /// </summary>
     public class PlaceStoneStrategy : IStrategy
     {
-        public void execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        /// <summary>
+        /// Exécute la stratégie de placement d'une pierre.
+        /// </summary>
+        /// <param name="player">Le client (joueur) qui effectue l'action</param>
+        /// <param name="data">Tableau contenant les données de l'action [idGame, x, y]</param>
+        /// <param name="gameType">Type de partie ("custom" ou "matchmaking")</param>
+        /// <param name="response">Message de réponse à envoyer aux clients (modifié par référence)</param>
+        /// <param name="type">Type de réponse ("Broadcast_" ou "Send_") (modifié par référence)</param>
+        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
         {
             string stringId = data[0];
             int idGame = Convert.ToInt16(stringId);
@@ -22,7 +30,7 @@ namespace WebSocket.Strategy
                 Game game = null;
                 if (gameType == "custom")
                 {
-                    game = Server.Games[idGame];
+                    game = Server.CustomGames[idGame];
                 }
                 else if (gameType == "matchmaking")
                 {

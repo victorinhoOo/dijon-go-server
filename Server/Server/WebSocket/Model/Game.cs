@@ -80,7 +80,7 @@ namespace WebSocket.Model
         public Game(int size, string rule)
         {
             this.started = false;
-            this.id = Server.Games.Count + 1;
+            this.id = Server.CustomGames.Count + 1;
             this.size = size;
             this.gameBoard = new GameBoard(size);
             this.logic = new GameLogic(gameBoard);

@@ -43,7 +43,7 @@ namespace WebSocket
             string action = data[1]; // action à effectuer
             string type = ""; // type de réponse (send ou broadcast)
             string response = "";
-            this.strategies[action].execute(client, data, gameType, ref response, ref type);
+            this.strategies[action].Execute(client, data, gameType, ref response, ref type);
             return type + response;
 
         }
