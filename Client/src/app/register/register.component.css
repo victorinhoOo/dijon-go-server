@@ -25,7 +25,6 @@
 
   ::ng-deep .custom-ok-button{
     background-color: #FA7E5C !important;
-    outline: none !important;
   }
   
   label {
@@ -33,6 +32,11 @@
     margin-bottom: 5px;
     font-weight: bold;
   }
+
+  ::ng-deep .focus :focus{
+    outline: 2px solid blue !important; /* Ajoute un contour bleu */
+    transition: outline 0.3s ease-in-out;
+}
   
   input[type="text"],
   input[type="email"],

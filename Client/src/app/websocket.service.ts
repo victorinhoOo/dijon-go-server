@@ -30,7 +30,7 @@ export class WebsocketService {
   constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient) {
     this.websocket = null;
     this.game = new Game();
-    this.interpreter = new Interpreter(this.game);
+    this.interpreter = new Interpreter(this.game, this);
     this.userDAO = new UserDAO(httpclient);
   }
 
@@ -109,12 +109,13 @@ export class WebsocketService {
   /**
    * Envoi un message de création de partie
    */
-  public createGame(size: number, rule: string): void {
+  public createGame(size: number, rule: string, type:string): void {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0/Create:${userToken}-${size}_${rule}`);
+      this.websocket.send(`0/Create:${userToken}-${size}_${rule}_${type}`);
       this.interpreter.setColor('black');
+      this.router.navigate(['game', size, rule]);
     } else {
       console.log('not connected');
     }
@@ -125,15 +126,35 @@ export class WebsocketService {
    * Envoi un message de demande de rejoindre une partie
    * @param id Identifiant de la partie à rejoindre
    */
-  public joinGame(id: number): void {
+  public joinGame(id: number, type:string, rule:string, size:number): void {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`${id}/Join:${userToken}`);
+      this.websocket.send(`${id}/Join:${userToken}*${type}`);
       this.interpreter.setColor('white');
+      this.router.navigate(['game', size, rule]);
     } else {
       console.log('not connected');
     }
+  }
+
+  /**
+   * Envoi un message de demande de matchmaking
+   */
+  public joinMatchmaking(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.websocket != null && this.websocket.OPEN) {
+        let userToken = this.userCookieService.getToken();
+        
+        // Stocker la Promise resolve pour l'utiliser dans l'interpreteur
+        (this.interpreter as any).matchmakingResolve = resolve;
+        
+        // Envoi de la demande de matchmaking
+        this.websocket.send(`0/Matchmaking:${userToken}`);
+      } else {
+        reject(new Error('Non connecté au websocket'));
+      }
+    });
   }
 
 

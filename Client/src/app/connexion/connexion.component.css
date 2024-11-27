@@ -5,6 +5,11 @@
     border-radius: 8px;
 }
 
+::ng-deep .focus :focus-visible{
+    outline: 2px solid blue !important; /* Ajoute un contour bleu */
+    transition: outline 0.3s ease-in-out;
+}
+
 .d-flex {
     display: flex;
 }
@@ -30,7 +35,6 @@
 
 ::ng-deep .custom-ok-button{
     background-color: #FA7E5C !important;
-    outline: none !important;
 }
 
 .row{
@@ -59,8 +63,4 @@
     border: none;
     box-shadow: none; 
     background-color: #FA7E5C;
-}
-
-#submit:focus {
-    outline: none; 
 }
