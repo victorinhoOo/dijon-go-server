@@ -69,12 +69,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (profileButton) {
       profileButton.addEventListener("click", () => {
         this.router.navigate(["profile"]);
+        this.close();
       });
     }
 
     if (playButton) {
       playButton.addEventListener("click", () => {
         this.router.navigate(["index"]);
+        this.close();
       });
     }
 
@@ -84,18 +86,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.userCookieService.deleteUser();
         this.router.navigate([""]);  // Redirection vers la page d'accueil
         this.cdr.detectChanges();    // Force la mise à jour du composant
+        this.close();
       });
     }
 
     if(loginButton){
       loginButton.addEventListener("click", () => {
         this.router.navigate(["login"]);
+        this.close();
       });
     }
 
     if(registerButton){
       registerButton.addEventListener("click", () => {
         this.router.navigate(["register"]);
+        this.close();
       });
     }    
     
