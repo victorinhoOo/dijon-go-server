@@ -189,6 +189,11 @@ export class WebsocketService {
     }
   }
 
+
+  /**
+   * Définie la couleur du joueur
+   * @param color Couleur du joueur 
+   */
   public setPlayerColor(color: string) {
     this.game.setPlayerColor(color);
     this.interpreter.setGame(this.game);

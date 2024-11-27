@@ -2,7 +2,9 @@ import { IStrategy } from './IStrategy';
 import { Game } from '../Model/Game';
 import { WebsocketService } from '../websocket.service';
 
-
+/**
+ * Implémentation de la stratégie de matchmaking
+ */
 export class MatchmakingStrategy implements IStrategy {
     private matchmakingResolve: ((value: void) => void) | null = null;
 

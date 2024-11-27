@@ -10,7 +10,6 @@ import { StartStrategy } from "./Strategy/StartStrategy";
 import { TimeoutStrategy } from "./Strategy/TimeoutStrategy";
 import { UpdateTurnStrategy } from "./Strategy/UpdateTurnStrategy";
 
-import Swal from "sweetalert2";
 
 /**
  * Classe qui interprete les messages envoyés par le serveur websocket
@@ -58,6 +57,10 @@ export class Interpreter {
     return this.game.getCurrentTurn();
   }
 
+  /**
+   * Récupère la stratégie de matchmaking
+   * @returns la stratégie de matchmaking
+   */
   public getMatchMakingStrategy(){
     return (this.strategies.get("Join") as MatchmakingStrategy);
   }
