@@ -69,7 +69,8 @@ export class WebsocketService {
   private endGame(won: string, player1score: string, player2score: string) {
     this.disconnectWebsocket();
     // On récupère les nouvelles informations utilisateurs car elles ont été modifiées (elo)
-    this.userDAO.GetUser(this.userCookieService.getToken()).subscribe({
+    let token = this.userCookieService.getToken();
+    this.userDAO.GetUser(token).subscribe({
       next: (user: User) => {
         this.userCookieService.setUser(user);
         console.log(player1score);
@@ -113,8 +114,7 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0/Create:${userToken}-${size}_${rule}_${type}`);
-      this.interpreter.setColor('black');
+      this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}`);
       this.router.navigate(['game', size, rule]);
     } else {
       console.log('not connected');
@@ -130,8 +130,7 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`${id}/Join:${userToken}*${type}`);
-      this.interpreter.setColor('white');
+      this.websocket.send(`${id}-Join-${userToken}-${type}`);
       this.router.navigate(['game', size, rule]);
     } else {
       console.log('not connected');
@@ -147,10 +146,10 @@ export class WebsocketService {
         let userToken = this.userCookieService.getToken();
         
         // Stocker la Promise resolve pour l'utiliser dans l'interpreteur
-        (this.interpreter as any).matchmakingResolve = resolve;
+        (this.interpreter.getMatchMakingStrategy() as any).matchmakingResolve = resolve;
         
         // Envoi de la demande de matchmaking
-        this.websocket.send(`0/Matchmaking:${userToken}`);
+        this.websocket.send(`0-Matchmaking`);
       } else {
         reject(new Error('Non connecté au websocket'));
       }
@@ -165,7 +164,7 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
-        this.websocket.send(`${idGame}Skip:`);
+        this.websocket.send(`${idGame}-Skip`);
       }
     } else {
       console.log('not connected');
@@ -182,14 +181,19 @@ export class WebsocketService {
     if (this.websocket != null && this.websocket.OPEN) {
       if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
-        this.websocket.send(`${idGame}Stone:${coordinates}`);
-        console.log(`${idGame}Stone:${coordinates}`);
+        this.websocket.send(`${idGame}-Stone-${coordinates}`);
+        console.log(`${idGame}-Stone-${coordinates}`);
       }
     } else {
       console.log('not connected');
     }
   }
 
+
+  /**
+   * Définie la couleur du joueur
+   * @param color Couleur du joueur 
+   */
   public setPlayerColor(color: string) {
     this.game.setPlayerColor(color);
     this.interpreter.setGame(this.game);
