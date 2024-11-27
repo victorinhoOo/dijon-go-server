@@ -42,7 +42,9 @@ export class Game {
     let totalSeconds = Math.floor(totalMs/1000);
     let minutes = Math.floor(totalSeconds/60);
     let seconds = totalSeconds % 60;
-    let result = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+    let stringMiniutes = minutes.toString().padStart(2,'0');
+    let stringSeconds = seconds.toString().padStart(2,'0');
+    let result = `${stringMiniutes}:${stringSeconds}`;
     return result;
 
   }
