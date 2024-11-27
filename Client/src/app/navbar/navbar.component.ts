@@ -24,6 +24,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
    // Émettre un événement pour notifier la fermeture
    @Output() closeNavbar = new EventEmitter<void>();
    @Output() changeColor: EventEmitter<boolean> = new EventEmitter<boolean>();
+   
   // Attribut privé pour la visibilité de la navbar
   private isNavbarVisible: boolean = true;
   private tokenUser: string;
@@ -69,12 +70,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (profileButton) {
       profileButton.addEventListener("click", () => {
         this.router.navigate(["profile"]);
+        if (!this.isPC())
+          this.close();
       });
     }
 
     if (playButton) {
       playButton.addEventListener("click", () => {
         this.router.navigate(["index"]);
+        if (!this.isPC())
+          this.close();
       });
     }
 
@@ -84,18 +89,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.userCookieService.deleteUser();
         this.router.navigate([""]);  // Redirection vers la page d'accueil
         this.cdr.detectChanges();    // Force la mise à jour du composant
+        if (!this.isPC())
+          this.close();
       });
     }
 
     if(loginButton){
       loginButton.addEventListener("click", () => {
         this.router.navigate(["login"]);
+        if (!this.isPC())
+          this.close();
       });
     }
 
     if(registerButton){
       registerButton.addEventListener("click", () => {
         this.router.navigate(["register"]);
+        if (!this.isPC())
+          this.close();
       });
     }    
     
@@ -134,6 +145,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   {  
       this.lightIsBlack = !this.lightIsBlack;
       this.changeColor.emit(this.lightIsBlack);
+  }
+  public isPC(): boolean {
+    return window.innerWidth >= 1025; // Définir la largeur pour le mode téléphone
   }
 
 }
