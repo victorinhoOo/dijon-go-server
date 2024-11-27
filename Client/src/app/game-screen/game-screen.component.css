@@ -10,3 +10,13 @@
     background-color: #F3AD09 !important;
     outline: none !important;
 }
+
+@media (max-width:750px){
+    #game-screen-container
+    {  
+        padding-left: 30%;
+        padding-right: 30%;
+    }
+  
+      
+}
