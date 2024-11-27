@@ -110,7 +110,6 @@ export class AppComponent implements AfterViewInit{
         });
       //(document.getElementById("renardRegister") as HTMLImageElement).src = "renard.png";
     }
-    console.log("tesssst "+ this.isBlack);
   }
   
   // Méthode pour basculer la visibilité de la navbar
@@ -120,7 +119,6 @@ export class AppComponent implements AfterViewInit{
     this._isNavbarVisible = !this._isNavbarVisible;
     this._isButtonClicked = !this._isNavbarVisible;
     if(this.isBlack){
-      console.log('le style est noir');
       var textcolor = "#FFFFFF"
       document.getElementById("navbar-container")!.style.backgroundColor = textcolor;
     }
