@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebSocket.Model;
 
-namespace Tests.GoLogic
+namespace Tests.Test_GoLogic
 {
     public class SerializerTest
     {

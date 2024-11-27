@@ -62,10 +62,10 @@ namespace Tests.Test_GoLogic
         public void CopieBoard_copieCorrectly()
         {
             var gameBoard = new GameBoard(9);
-            gameBoard.Board[0,0].Color = StoneColor.White;
-            gameBoard.Board[1,1].Color = StoneColor.Black;
+            gameBoard.Board[0,0].ChangeColor(StoneColor.White);
+            gameBoard.Board[1, 1].ChangeColor(StoneColor.Black);
 
-            gameBoard.PreviousBoard = gameBoard.CopyBoard();
+            gameBoard.CopyToPreviousBoard(gameBoard.Board);
 
             Assert.Equal(StoneColor.White, gameBoard.PreviousBoard[0, 0].Color);
             Assert.Equal(StoneColor.Black, gameBoard.PreviousBoard[1, 1].Color);
@@ -79,7 +79,7 @@ namespace Tests.Test_GoLogic
 
             GameBoard gameboard2 = new GameBoard(9);
 
-            gameboard2.Board = gameBoard.CopyBoard();
+            gameboard2.CopyToBoard(gameBoard.Board);
 
             gameLogic.PlaceStone(0, 0); // noir
             gameLogic.PlaceStone(1, 1); // blanc
