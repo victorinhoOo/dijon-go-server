@@ -115,7 +115,6 @@ export class WebsocketService {
       this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}`);
-      this.interpreter.setColor('black');
       this.router.navigate(['game', size, rule]);
     } else {
       console.log('not connected');
@@ -132,7 +131,6 @@ export class WebsocketService {
       this.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`${id}-Join-${userToken}-${type}`);
-      this.interpreter.setColor('white');
       this.router.navigate(['game', size, rule]);
     } else {
       console.log('not connected');
@@ -148,7 +146,7 @@ export class WebsocketService {
         let userToken = this.userCookieService.getToken();
         
         // Stocker la Promise resolve pour l'utiliser dans l'interpreteur
-        (this.interpreter as any).matchmakingResolve = resolve;
+        (this.interpreter.getMatchMakingStrategy() as any).matchmakingResolve = resolve;
         
         // Envoi de la demande de matchmaking
         this.websocket.send(`0-Matchmaking`);

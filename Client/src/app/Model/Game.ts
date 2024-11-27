@@ -65,4 +65,21 @@ export class Game {
         document.getElementById("opponent-timer")!.innerText = timer;
     }
   }
+
+
+  public updateHover(){
+    let stones = document.querySelectorAll(".stone, .bigger-stone");
+    let stonesArray = Array.from(stones);
+    if(this.isPlayerTurn()){
+      document.getElementById("global-container")!.style.cursor = "pointer";
+      stonesArray.forEach((stone)=>{
+        stone.classList.add("active");
+      })
+    }else{
+      document.getElementById("global-container")!.style.cursor = "not-allowed";
+      stonesArray.forEach((stone)=>{
+        stone.classList.remove("active");
+      })
+    }
+}
 }
