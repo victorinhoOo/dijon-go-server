@@ -1,3 +1,4 @@
+using GoLogic.Goban;
 using System.Text;
 
 namespace GoLogic.Serializer
@@ -19,27 +20,26 @@ namespace GoLogic.Serializer
         public string ChecksGobanForKo(GameLogic logic, StoneColor currentTurn)
         {
             List<Stone> potentialKoPositions = new List<Stone>();
-            GameBoard boardCopy = new GameBoard(logic.Goban.Size);
+            //GameBoard boardCopy = new GameBoard(logic.Goban.Size);
 
             // Récupère tous les voisins vides de la pierre précédente
-            foreach (Stone stone in logic.GetNeighbors(logic.PreviousStone))
+            foreach (Stone stone in logic.Goban.GetNeighbors(logic.PreviousStone))
             {
                 if (stone.Color == StoneColor.Empty)
                 {
                     // Pour chaque voisin vide, fait une nouvelle copie et teste
-                    boardCopy.CopyToBoard(logic.Goban.Board);
-                    boardCopy.CopyToPreviousBoard(logic.Goban.PreviousBoard);
-                    GameLogic logicCopy = new GameLogic(boardCopy);
+                    IBoard boardCopy = logic.Goban.Clone();
+                    CaptureManager captureManagerCopy = new CaptureManager(boardCopy);
+                    Stone stoneCopy = boardCopy.GetStone(stone.X, stone.Y);
 
                     // Essaie de placer une pierre de la couleur du joueur actuel
-                    Stone testStone = boardCopy.Board[stone.X, stone.Y];
-                    testStone.ChangeColor(currentTurn);
+                    stoneCopy.ChangeColor(currentTurn);
 
                     // Capture toutes les pierres adverses
-                    logicCopy.CapturesOpponent(testStone);
+                    captureManagerCopy.CapturesOpponent(stoneCopy);
 
                     // Vérifie si cela crée une situation de Ko
-                    if (logicCopy.IsKoViolation(boardCopy))
+                    if (boardCopy.IsKoViolation())
                     {
                         potentialKoPositions.Add(stone);
                     }
@@ -49,14 +49,18 @@ namespace GoLogic.Serializer
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("x,y,color");
 
-            foreach (Stone stone in logic.Goban.Board)
+            for (int i = 0; i < logic.Goban.Size; i++)
             {
-                string color = stone.Color.ToString();
-                if (potentialKoPositions.Any(k => k.X == stone.X && k.Y == stone.Y))
+                for (int j = 0; j < logic.Goban.Size; j++)
                 {
-                    color = "Ko";
+                    Stone stone = logic.Goban.GetStone(i, j);
+                    string color = stone.Color.ToString();
+                    if (potentialKoPositions.Any(k => k.X == stone.X && k.Y == stone.Y))
+                    {
+                        color = "Ko";
+                    }
+                    sb.AppendLine($"{stone.X},{stone.Y},{color}");
                 }
-                sb.AppendLine($"{stone.X},{stone.Y},{color}");
             }
 
             return sb.ToString();
