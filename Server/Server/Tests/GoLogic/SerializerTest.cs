@@ -1,4 +1,5 @@
-﻿using GoLogic;
+﻿using GoLogic.Goban;
+using GoLogic;
 using GoLogic.Serializer;
 using System;
 using System.Collections.Generic;
@@ -7,10 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using WebSocket.Model;
 
-namespace Tests.GoLogic
+namespace Tests.Test_GoLogic
 {
     public class SerializerTest
     {
+        /// <summary>
+        /// Ne fonctionne que sur la pipeline
+        /// A cause de la gestion des \n de gitHub
+        /// </summary>
         [Fact]
         public void Test_SerialisationWithKo()
         {
@@ -54,7 +59,7 @@ namespace Tests.GoLogic
             // . . . @ . . . . .
 
 
-            string mess = BoardSerializer.ChecksGobanForKo(gameLogic, gameLogic.CurrentTurn);
+            string mess = BoardSerializer.StringifyGoban(gameLogic, gameLogic.CurrentTurn);
             test = test.Replace("\r\n", ";");
             mess = mess.Replace("\n", ";");
             Assert.Equal(test, mess);
