@@ -1,4 +1,6 @@
-﻿namespace GoLogic.Score
+﻿using GoLogic.Goban;
+
+namespace GoLogic.Score
 {
     /// <summary>
     /// Classe abstraite pour gérer les différents décomptes de point
@@ -40,8 +42,8 @@
             {
                 for (int j = 0; j < this.gameBoard.Size; j++)
                 {
-                    if (this.gameBoard.Board[i, j].Color == StoneColor.Black) blackStones++;
-                    if (this.gameBoard.Board[i, j].Color == StoneColor.White) whiteStones++;
+                    if (this.gameBoard.GetStone(i, j).Color == StoneColor.Black) blackStones++;
+                    if (this.gameBoard.GetStone(i, j).Color == StoneColor.White) whiteStones++;
                 }
             }
 
