@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace GoLogic
 {
+    /// <inheritdoc/>
     public class MoveValidator : IMoveValidator
     {
         private IBoard goban;
@@ -38,7 +39,6 @@ namespace GoLogic
             else
             {
                 // Place la pierre dans une copie pour vérifier les libertés et les captures
-
                 stoneCopy.ChangeColor(boardCopy.CurrentTurn);
 
                 // 1. Vérifie si la pierre a des libertés et capture des pierres adverses
