@@ -1,4 +1,6 @@
-﻿namespace GoLogic.Score
+﻿using GoLogic.Goban;
+
+namespace GoLogic.Score
 {
     /// <summary>
     /// Classe pour gérer le décompte des points

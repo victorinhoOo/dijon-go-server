@@ -1,4 +1,5 @@
 ﻿using GoLogic;
+using GoLogic.Goban;
 using GoLogic.Score;
 using GoLogic.Serializer;
 using GoLogic.Timer;
