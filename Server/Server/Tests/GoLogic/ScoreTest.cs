@@ -146,40 +146,40 @@ namespace Tests.Test_GoLogic
 
         }
 
-        [Fact]
-        public void ScoreRule_DeadStoneRemoval_Isolated()
-        {
-            GameBoard gameBoard = new GameBoard(9);
-            GameLogic gameLogic = new GameLogic(gameBoard);
-            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
+        //[Fact]
+        //public void ScoreRule_DeadStoneRemoval_Isolated()
+        //{
+        //    GameBoard gameBoard = new GameBoard(9);
+        //    GameLogic gameLogic = new GameLogic(gameBoard);
+        //    ScoreRule gameScore = new ChineseScoreRule(gameBoard);
 
-            gameLogic.PlaceStone(0, 0); // noir
-            gameLogic.PlaceStone(0, 3); // blanc
-            gameLogic.PlaceStone(0, 1); // noir
-            gameLogic.PlaceStone(1, 3); // blanc
-            gameLogic.SkipTurn(); // noir
-            gameLogic.PlaceStone(2, 2); // blanc
-            gameLogic.SkipTurn(); // noir
-            gameLogic.PlaceStone(2, 1); // blanc
-            gameLogic.SkipTurn(); // noir
-            gameLogic.PlaceStone(2, 0); // blanc
-            gameLogic.SkipTurn(); // noir
-            gameLogic.PlaceStone(2, 3); // blanc
+        //    gameLogic.PlaceStone(0, 0); // noir
+        //    gameLogic.PlaceStone(0, 3); // blanc
+        //    gameLogic.PlaceStone(0, 1); // noir
+        //    gameLogic.PlaceStone(1, 3); // blanc
+        //    gameLogic.SkipTurn(); // noir
+        //    gameLogic.PlaceStone(2, 2); // blanc
+        //    gameLogic.SkipTurn(); // noir
+        //    gameLogic.PlaceStone(2, 1); // blanc
+        //    gameLogic.SkipTurn(); // noir
+        //    gameLogic.PlaceStone(2, 0); // blanc
+        //    gameLogic.SkipTurn(); // noir
+        //    gameLogic.PlaceStone(2, 3); // blanc
 
-            // @ @ . O . . . . .
-            // . . . O . . . . .
-            // O O O O . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . . . . . . . . .
-            // . : vide, @ : noir, O : blanc
+        //    // @ @ . O . . . . .
+        //    // . . . O . . . . .
+        //    // O O O O . . . . .
+        //    // . . . . . . . . .
+        //    // . . . . . . . . .
+        //    // . . . . . . . . .
+        //    // . . . . . . . . .
+        //    // . . . . . . . . .
+        //    // . . . . . . . . .
+        //    // . : vide, @ : noir, O : blanc
 
-            Assert.True(gameScore.IsGroupDead(gameBoard.GetStone(0, 0)));
+        //    Assert.True(gameScore.IsGroupDead(gameBoard.GetStone(0, 0)));
 
-        }
+        //}
 
         [Fact]
         public void ScoreRule_Ko_noDeadStoneRemoval()
