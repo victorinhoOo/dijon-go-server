@@ -8,7 +8,7 @@ namespace GoLogic.Score
     /// </summary>
     public class ChineseScoreRule : ScoreRule
     {
-        public ChineseScoreRule(GameBoard gameBoard) : base(gameBoard) { }
+        public ChineseScoreRule(IBoard gameBoard) : base(gameBoard) { }
 
         /// <summary>
         /// Règles de décompte des points Chinoise
@@ -16,6 +16,7 @@ namespace GoLogic.Score
         /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public override (int blackStones, int whiteStones) CalculateScore()
         {
+            RemoveDeadStones();
             (int blackStones, int whiteStones) = CountStones();
             (int territoryBlack, int territoryWhite) = FindTerritory();
 
