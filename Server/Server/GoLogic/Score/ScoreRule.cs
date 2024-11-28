@@ -114,7 +114,7 @@ namespace GoLogic.Score
                 Stone currentStone = queue.Dequeue(); // Retire la première pierre de la file pour l'examiner
                 emptyArea.Add(currentStone); // Ajoute cette pierre à la zone vide en cours d'exploration
 
-                foreach (Stone neighbor in GetNeighbors(currentStone))
+                foreach (Stone neighbor in this.gameBoard.GetNeighbors(currentStone))
                 {
                     // Si cette pierre n'a pas encore été visitée
                     if (!visited.Contains(neighbor)) 
@@ -170,7 +170,7 @@ namespace GoLogic.Score
             if (stone.Color == initialColor)
             {
                 group.Add(stone);
-                foreach (Stone neighbor in GetNeighbors(stone))
+                foreach (Stone neighbor in this.gameBoard.GetNeighbors(stone))
                 {
                     CollectGroupAndLiberties(neighbor, visited, group, liberties);
                 }
@@ -188,7 +188,7 @@ namespace GoLogic.Score
             bool res = true;
 
             // Tous les voisins directs doivent être de la même couleur
-            List<Stone> neighbors = GetNeighbors(liberty);
+            List<Stone> neighbors = this.gameBoard.GetNeighbors(liberty);
             if (!neighbors.All(n => n.Color == color)) res = false;
             else
             {
@@ -244,7 +244,7 @@ namespace GoLogic.Score
             // Pour chaque liberté, vérifiez si elle est partagée avec un groupe ennemi
             foreach (Stone liberty in liberties)
             {
-                List<Stone> neighbors = GetNeighbors(liberty);
+                List<Stone> neighbors = this.gameBoard.GetNeighbors(liberty);
                 List<Stone> enemyNeighbors = neighbors.Where(n => n.Color == oppositeColor).ToList();
 
                 foreach (Stone enemyStone in enemyNeighbors)
@@ -274,94 +274,116 @@ namespace GoLogic.Score
         /// <returns>Renvoie True si les pierres sont mortes False sinon</returns>
         public bool IsGroupDead(Stone stone)
         {
-            bool res = true;
-            if (stone.Color == StoneColor.Empty) res = false;
+            if (stone.Color == StoneColor.Empty) return false;
 
+            var (group, liberties) = GetGroupAndLiberties(stone);
+            List<Stone> eyes = GetRealEyes(liberties, stone.Color);
+
+            // Check various life conditions
+            if (HasTwoEyes(eyes) ||
+                IsSeki(group, liberties) ||
+                HasPotentialLife(liberties, group, stone.Color) ||
+                HasPotentialSecondEye(eyes, liberties, stone.Color))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Récupère un groupe de pierres et ses libertés à partir d'une pierre donnée
+        /// </summary>
+        /// <param name="stone">La pierre initiale</param>
+        /// <returns>Un tuple contenant le groupe de pierres et ses libertés</returns>
+        private (List<Stone> group, HashSet<Stone> liberties) GetGroupAndLiberties(Stone stone)
+        {
             HashSet<Stone> visited = new HashSet<Stone>();
             List<Stone> group = new List<Stone>();
             HashSet<Stone> liberties = new HashSet<Stone>();
 
-            // Obtenez le groupe complet et ses libertés
             CollectGroupAndLiberties(stone, visited, group, liberties);
-
-            // Vérifie pour les vraies yeux
-            List<Stone> eyes = liberties.Where(l => IsRealEye(l, stone.Color)).ToList();
-            if (eyes.Count >= 2)
-            {
-                res = false; // Deux yeux = en vie
-            }
-
-            // vérifie si c'est une situation de seki
-            if (IsSeki(group, liberties))
-            {
-                res = false;
-            }
-
-            // Si le groupe n'a qu'une seule liberté mais qu'il n'est pas complètement entouré de pierres ennemies
-            if (liberties.Count == 1)
-            {
-                Stone liberty = liberties.First();
-                List<Stone> surroundingStones = GetNeighbors(liberty);
-                StoneColor oppositeColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
-
-                // Si toutes les pierres environnantes ne sont pas de la couleur opposée, le groupe n'est peut-être pas mort
-                if (!surroundingStones.All(s => s.Color == oppositeColor || group.Contains(s)))
-                {
-                    res = false;
-                }
-            }
-
-            // Vérifiez si le groupe est en territoire ennemi
-            (int blackTerritory, int whiteTerritory) = FindTerritory();
-            foreach (Stone liberty in liberties)
-            {
-                List<Stone> libertyNeighbors = GetNeighbors(liberty);
-                StoneColor oppositeColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
-
-                // Si la liberté a des voisins vides non contrôlés par l'adversaire
-                if (libertyNeighbors.Any(n => n.Color == StoneColor.Empty &&
-                    !liberties.Contains(n)))
-                {
-                    res = false;
-                }
-            }
-
-            // Si nous avons un oeil et le potentiel pour un autre
-            if (eyes.Count == 1)
-            {
-                foreach (Stone liberty in liberties.Where(l => !eyes.Contains(l)))
-                {
-                    List<Stone> potentialEyeNeighbors = GetNeighbors(liberty);
-                    if (potentialEyeNeighbors.Count(n => n.Color == stone.Color || liberties.Contains(n)) >= 3)
-                    {
-                        res = false;
-                    }
-                }
-            }
-
-            return res;
+            return (group, liberties);
         }
 
         /// <summary>
-        /// Obtient les pierres voisines d'une pierre donnée
+        /// Identifie les vrais yeux parmi les libertés d'un groupe
         /// </summary>
-        /// <param name="stone">La pierre dont on cherche les voisins</param>
-        /// <returns>Liste des pierres voisines</returns>
-        private List<Stone> GetNeighbors(Stone stone)
+        /// <param name="liberties">Les libertés à analyser</param>
+        /// <param name="color">La couleur du groupe</param>
+        /// <returns>Liste des libertés qui sont de vrais yeux</returns>
+        private List<Stone> GetRealEyes(HashSet<Stone> liberties, StoneColor color)
         {
-            List<Stone> neighbors = new List<Stone>();
+            return liberties.Where(l => IsRealEye(l, color)).ToList();
+        }
 
-            // Récupère les coordonnées des Pierres voisines à partir des coordonnées de la pierre actuelle
-            foreach ((int nx, int ny) in stone.GetNeighborsCoordinate())
+        /// <summary>
+        /// Vérifie si un groupe possède deux yeux ou plus
+        /// </summary>
+        /// <param name="eyes">Liste des yeux du groupe</param>
+        /// <returns>Vrai si le groupe a au moins deux yeux</returns>
+        private bool HasTwoEyes(List<Stone> eyes)
+        {
+            return eyes.Count >= 2;
+        }
+
+        /// <summary>
+        /// Évalue si un groupe a une possibilité de vie en analysant ses libertés
+        /// </summary>
+        /// <param name="liberties">Les libertés du groupe</param>
+        /// <param name="group">Le groupe de pierres</param>
+        /// <param name="color">La couleur du groupe</param>
+        /// <returns>Vrai si le groupe a un potentiel de vie</returns>
+        private bool HasPotentialLife(HashSet<Stone> liberties, List<Stone> group, StoneColor color)
+        {
+            // Vérifie la condition d'une seule liberté
+            if (liberties.Count == 1)
             {
-                // Si les coordonnées sont correctes, ajoutez la pierre correspondante
-                if (gameBoard.IsValidCoordinate(nx, ny))
+                Stone liberty = liberties.First();
+                List<Stone> surroundingStones = this.gameBoard.GetNeighbors(liberty);
+                StoneColor oppositeColor = color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+
+                if (!surroundingStones.All(s => s.Color == oppositeColor || group.Contains(s)))
                 {
-                    neighbors.Add(gameBoard.GetStone(nx, ny));
+                    return true;
                 }
             }
 
-            return neighbors;
+            // Vérifie la condition de territoire
+            foreach (Stone liberty in liberties)
+            {
+                List<Stone> libertyNeighbors = this.gameBoard.GetNeighbors(liberty);
+                if (libertyNeighbors.Any(n => n.Color == StoneColor.Empty && !liberties.Contains(n)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
+
+        /// <summary>
+        /// Évalue si un groupe avec un œil peut potentiellement former un second œil
+        /// </summary>
+        /// <param name="eyes">Liste des yeux existants</param>
+        /// <param name="liberties">Les libertés du groupe</param>
+        /// <param name="color">La couleur du groupe</param>
+        /// <returns>Vrai si un second œil est possible</returns>
+        private bool HasPotentialSecondEye(List<Stone> eyes, HashSet<Stone> liberties, StoneColor color)
+        {
+            if (eyes.Count != 1) return false;
+
+            foreach (Stone liberty in liberties.Where(l => !eyes.Contains(l)))
+            {
+                List<Stone> potentialEyeNeighbors = this.gameBoard.GetNeighbors(liberty);
+                if (potentialEyeNeighbors.Count(n => n.Color == color || liberties.Contains(n)) >= 3)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }
