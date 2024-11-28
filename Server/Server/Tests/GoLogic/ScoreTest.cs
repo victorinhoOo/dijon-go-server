@@ -375,6 +375,80 @@ namespace Tests.Test_GoLogic
             Assert.Equal(StoneColor.Empty, gameBoard.GetStone(1, 4).Color);
         }
 
+        [Fact]
+        public void Correct_Score_RemovedDeadStone_Chinese()
+        {
+            GameBoard gameBoard = new GameBoard(9);
+            GameLogic gameLogic = new GameLogic(gameBoard);
+            ScoreRule gameScore = new ChineseScoreRule(gameBoard);
+
+            gameLogic.PlaceStone(0, 2); // noir
+            gameLogic.PlaceStone(0, 3); // blanc
+            gameLogic.PlaceStone(1, 0); // noir
+            gameLogic.PlaceStone(1, 3); // blanc
+            gameLogic.PlaceStone(1, 1); // noir
+            gameLogic.PlaceStone(2, 2); // blanc
+            gameLogic.PlaceStone(1, 2); // noir
+            gameLogic.PlaceStone(2, 1); // blanc
+            gameLogic.PlaceStone(8, 0); // noir
+            gameLogic.PlaceStone(2, 0); // blanc
+            gameLogic.PlaceStone(8, 1); // noir
+            gameLogic.PlaceStone(2, 3); // blanc
+
+            // . . @ O . . . . .
+            // @ @ @ O . . . . .
+            // O O O O . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // @ @ . . . . . . .
+            // . : vide, @ : noir, O : blanc
+
+            (int black, int white) = gameScore.CalculateScore();
+
+            Assert.Equal(2, black);
+            Assert.Equal(12, white);
+        }
+
+        [Fact]
+        public void Correct_Score_RemovedDeadStone_Japanese()
+        {
+            GameBoard gameBoard = new GameBoard(9);
+            GameLogic gameLogic = new GameLogic(gameBoard);
+            ScoreRule gameScore = new JapaneseScoreRule(gameBoard);
+
+            gameLogic.PlaceStone(0, 2); // noir
+            gameLogic.PlaceStone(0, 3); // blanc
+            gameLogic.PlaceStone(1, 0); // noir
+            gameLogic.PlaceStone(1, 3); // blanc
+            gameLogic.PlaceStone(1, 1); // noir
+            gameLogic.PlaceStone(2, 2); // blanc
+            gameLogic.PlaceStone(1, 2); // noir
+            gameLogic.PlaceStone(2, 1); // blanc
+            gameLogic.PlaceStone(8, 0); // noir
+            gameLogic.PlaceStone(2, 0); // blanc
+            gameLogic.PlaceStone(8, 1); // noir
+            gameLogic.PlaceStone(2, 3); // blanc
+
+            // . . @ O . . . . .
+            // @ @ @ O . . . . .
+            // O O O O . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // . . . . . . . . .
+            // @ @ . . . . . . .
+            // . : vide, @ : noir, O : blanc
+
+            (int black, int white) = gameScore.CalculateScore();
+
+            Assert.Equal(0, black);
+            Assert.Equal(6, white);
+        }
+
         [Fact] //TODO: !!! Penser à le retier
         public void No361bug()
         {
