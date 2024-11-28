@@ -109,13 +109,13 @@
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
         /// <param name="color">Couleur de la pierre</param>
-        public void ChangeStoneColor(int x, int y, StoneColor color)
+        public void PlaceStone(Stone stone, StoneColor color)
         {
-            if (!IsValidCoordinate(x, y))
-                throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of bounds for the goban size.");
+            if (!IsValidCoordinate(stone.X, stone.Y))
+                throw new ArgumentOutOfRangeException($"Coordinates ({stone.X}, {stone.Y}) are out of bounds for the goban size.");
 
             CopyToPreviousBoard(this.board);
-            this.board[x, y] = new Stone(x, y, color);
+            stone.ChangeColor(color);
         }
 
         /// <summary>

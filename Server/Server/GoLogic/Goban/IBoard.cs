@@ -12,7 +12,7 @@ namespace GoLogic.Goban
     public interface IBoard
     {
         /// <summary>
-        /// Gets the size of the board (width/height)
+        /// Récupère la taille du plateau
         /// </summary>
         int Size { get; }
 
@@ -34,32 +34,32 @@ namespace GoLogic.Goban
         /// <summary>
         /// Gets the stone at the specified coordinates
         /// </summary>
-        /// <param name="x">X coordinate</param>
-        /// <param name="y">Y coordinate</param>
-        /// <returns>The stone at the specified position</returns>
+        /// <param name="x">coordonnées X</param>
+        /// <param name="y">coordonnées X</param>
+        /// <returns>La pierre aux coordoonées spécifié</returns>
         Stone GetStone(int x, int y);
 
         /// <summary>
-        /// Places a stone at the specified coordinates
+        /// Change la couleur de la pierre aux coordonnés spécifié
         /// </summary>
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
-        /// <param name="color">Color of the stone to place</param>
+        /// <param name="color">Couleur de la pierre à placer</param>
         /// <returns>A new board state with the stone placed</returns>
-        void ChangeStoneColor(int x, int y, StoneColor color);
+        void PlaceStone(Stone stone, StoneColor color);
 
         /// <summary>
-        /// Checks if the coordinates are within the board boundaries
+        /// Vérifie si les coordonnées sont correct
         /// </summary>
-        /// <param name="x">X coordinate</param>
-        /// <param name="y">Y coordinate</param>
-        /// <returns>True if coordinates are valid, false otherwise</returns>
+        /// <param name="x">coordonnées X</param>
+        /// <param name="y">coordonnées Y</param>
+        /// <returns>True si les coordonnées sont correct, false sinon</returns>
         bool IsValidCoordinate(int x, int y);
 
         /// <summary>
-        /// Creates a deep copy of the current board state
+        /// Créer une copie complete de IBoard
         /// </summary>
-        /// <returns>A new instance of IBoard with the same state</returns>
+        /// <returns>Une nouvelle instance de IBoard avec les même valeurs</returns>
         IBoard Clone();
 
         /// <summary>
