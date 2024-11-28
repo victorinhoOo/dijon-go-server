@@ -8,10 +8,10 @@ namespace GoLogic
     public class GameLogic
     {
         #region attributs
-        private IBoard goban;
         private bool isEndGame;
         private bool skippedTurn;
         private Stone? previousStone;
+        private IBoard goban;
         private IMoveValidator moveValidator;
         private CaptureManager captureManager;
 
@@ -76,7 +76,7 @@ namespace GoLogic
             }
             else
             {
-                this.goban.ChangeStoneColor(stone.X, stone.Y, CurrentTurn); // place la pierre en changeant sa couleur de Empty à CurrentTurn
+                this.goban.PlaceStone(stone, CurrentTurn); // place la pierre en changeant sa couleur de Empty à CurrentTurn
                 stone = this.goban.GetStone(x,y);
                 this.captureManager.CapturesOpponent(stone);
                 this.previousStone = stone;

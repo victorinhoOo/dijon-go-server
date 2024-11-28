@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace GoLogic
 {
+    /// <summary>
+    /// Gére la capture des pierres du plateau
+    /// </summary>
     public class CaptureManager
     {
         private IBoard goban;
@@ -97,7 +100,7 @@ namespace GoLogic
         public bool CheckCapture(Stone stone)
         {
             // Récupère la couleur opposée au joueur courant
-            StoneColor opponentColor = this.goban.CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+            StoneColor opponentColor = stone.Color == StoneColor.Black ? StoneColor.White : StoneColor.Black;
             bool captured = false;
 
             // Pour chacun des voisin (pierre adjacente) on vérifie s'ils ont des libertées
