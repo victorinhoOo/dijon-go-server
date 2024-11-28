@@ -1,4 +1,5 @@
 ﻿using GoLogic.Goban;
+using System.Collections.Generic;
 
 namespace GoLogic.Score
 {
@@ -7,18 +8,18 @@ namespace GoLogic.Score
     /// </summary>
     public abstract class ScoreRule
     {
-        private readonly GameBoard gameBoard;
+        private readonly IBoard gameBoard;
 
         /// <summary>
         /// Le plateau du jeu et ses pions
         /// </summary>
-        public GameBoard GameBoard { get => this.gameBoard; }
+        public IBoard GameBoard { get => this.gameBoard; }
 
         /// <summary>
         /// Le calculateur de score selon les différentes règles
         /// </summary>
         /// <param name="gameBoard">Le plateau du jeu</param>
-        public ScoreRule(GameBoard gameBoard)
+        public ScoreRule(IBoard gameBoard)
         {
             this.gameBoard = gameBoard;
         }
@@ -385,5 +386,45 @@ namespace GoLogic.Score
             return false;
         }
 
+        /// <summary>
+        /// Identifie et retire les pierres mortes du plateau
+        /// </summary>
+        public void RemoveDeadStones()
+        {
+            HashSet<Stone> processedStones = new HashSet<Stone>();
+
+            // Parcours toutes les pierres du plateau
+            for (int x = 0; x < GameBoard.Size; x++)
+            {
+                for (int y = 0; y < GameBoard.Size; y++)
+                {
+                    Stone stone = GameBoard.GetStone(x, y);
+
+                    // Saute si l'intersection est vide ou déjà visité
+                    if (stone.Color == StoneColor.Empty || processedStones.Contains(stone))
+                        continue;
+
+                    // Si le groupe est mort, on récupère toutes ses pierres et on les retire
+                    if (IsGroupDead(stone))
+                    {
+                        (List <Stone> deadGroup, HashSet <Stone> _) = GetGroupAndLiberties(stone);
+                        foreach (Stone deadStone in deadGroup)
+                        {
+                            deadStone.ChangeColor(StoneColor.Empty);
+                            processedStones.Add(deadStone);
+                        }
+                    }
+                    else
+                    {
+                        // Marque les pierres du groupe vivant comme traitées
+                        var (livingGroup, _) = GetGroupAndLiberties(stone);
+                        foreach (var livingStone in livingGroup)
+                        {
+                            processedStones.Add(livingStone);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
