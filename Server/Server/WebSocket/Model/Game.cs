@@ -154,7 +154,7 @@ namespace WebSocket.Model
         /// <returns>état de la partie en string</returns>
         public string StringifyGameBoard()
         {
-            return boardSerializer.ChecksGobanForKo(logic, logic.CurrentTurn);
+            return boardSerializer.StringifyGoban(logic, logic.CurrentTurn);
         }
 
         /// <summary>
