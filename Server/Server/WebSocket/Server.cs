@@ -109,7 +109,7 @@ namespace WebSocket
         /// <summary>
         /// Vérifie si le message reçu est une demande de handshake
         /// </summary>
-        private bool MessageIsHandshakeRequest(string message)
+        public bool MessageIsHandshakeRequest(string message)
         {
             return Regex.IsMatch(message, "^GET");
         }
@@ -221,8 +221,8 @@ namespace WebSocket
         {
             game.Player1.User = this.gameManager.GetUserByToken(game.Player1.User.Token);
             game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
-            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
-            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
+            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
+            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
             game.Start();
@@ -253,8 +253,8 @@ namespace WebSocket
                 player2won= true;
             }
 
-            byte[] endOfGameMessagePlayer1 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer1}-{scorePlayer2}|{player1won}");
-            byte[] endOfGameMessagePlayer2 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer2}-{scorePlayer1}|{player2won}");
+            byte[] endOfGameMessagePlayer1 = this.webSocket.BuildMessage($"{game.Id}-EndOfGame-{scorePlayer1}-{scorePlayer2}-{player1won}");
+            byte[] endOfGameMessagePlayer2 = this.webSocket.BuildMessage($"{game.Id}-EndOfGame-{scorePlayer2}-{scorePlayer1}-{player2won}");
             this.SendMessage(game.Player1, endOfGameMessagePlayer1);
             this.SendMessage(game.Player2, endOfGameMessagePlayer2);
         }

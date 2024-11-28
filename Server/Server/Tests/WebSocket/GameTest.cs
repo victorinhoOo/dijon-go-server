@@ -8,7 +8,7 @@ using WebSocket;
 using System.Net.Sockets;
 using GoLogic;
 
-namespace Tests.WebSocket
+namespace Tests.WebSockets
 {
     public class GameTest
     {
