@@ -186,8 +186,8 @@ namespace Tests.Test_GoLogic
             var gameLogic = new GameLogic(gameBoard);
 
             // Fait
-            //gameBoard.GetStone(1,0).ChangeColor(StoneColor.Black);
-            gameBoard.ChangeStoneColor(1, 0, StoneColor.Black);
+            gameLogic.PlaceStone(1, 2); // noir
+            gameLogic.PlaceStone(2, 2); // blanc
             bool isKo = gameBoard.IsKoViolation();
 
             // Assert
