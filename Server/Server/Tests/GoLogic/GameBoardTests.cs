@@ -1,4 +1,5 @@
 ﻿using GoLogic;
+using GoLogic.Goban;
 
 namespace Tests.Test_GoLogic
 {
@@ -17,7 +18,7 @@ namespace Tests.Test_GoLogic
             {
                 for (int j = 0; j < size; j++)
                 {
-                    Assert.Equal(StoneColor.Empty, gameBoard.Board[i, j].Color);
+                    Assert.Equal(StoneColor.Empty, gameBoard.GetStone(i, j).Color);
                 }
             }
         }
@@ -62,13 +63,14 @@ namespace Tests.Test_GoLogic
         public void CopieBoard_copieCorrectly()
         {
             var gameBoard = new GameBoard(9);
-            gameBoard.Board[0,0].ChangeColor(StoneColor.White);
-            gameBoard.Board[1, 1].ChangeColor(StoneColor.Black);
+            var gameLogic = new GameLogic(gameBoard);
+            gameLogic.PlaceStone(0, 0);
+            gameLogic.PlaceStone(1, 1);
 
-            gameBoard.CopyToPreviousBoard(gameBoard.Board);
+            IBoard gameBoard2  = gameBoard.Clone();
 
-            Assert.Equal(StoneColor.White, gameBoard.PreviousBoard[0, 0].Color);
-            Assert.Equal(StoneColor.Black, gameBoard.PreviousBoard[1, 1].Color);
+            Assert.Equal(StoneColor.Black, gameBoard.GetStone(0, 0).Color);
+            Assert.Equal(StoneColor.White, gameBoard.GetStone(1, 1).Color);
         }
 
         [Fact]
@@ -77,15 +79,13 @@ namespace Tests.Test_GoLogic
             var gameBoard = new GameBoard(9);
             var gameLogic = new GameLogic(gameBoard);
 
-            GameBoard gameboard2 = new GameBoard(9);
-
-            gameboard2.CopyToBoard(gameBoard.Board);
+            IBoard gameboard2 = gameBoard.Clone();
 
             gameLogic.PlaceStone(0, 0); // noir
             gameLogic.PlaceStone(1, 1); // blanc
 
-            Assert.NotEqual(StoneColor.Black, gameboard2.Board[0, 0].Color);
-            Assert.NotEqual(StoneColor.White, gameboard2.Board[1, 1].Color);
+            Assert.NotEqual(StoneColor.Black, gameboard2.GetStone(0, 0).Color);
+            Assert.NotEqual(StoneColor.White, gameboard2.GetStone(1, 1).Color);
 
         }
     }

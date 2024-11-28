@@ -1,4 +1,5 @@
-﻿using GoLogic;
+﻿using GoLogic.Goban;
+using GoLogic;
 using GoLogic.Serializer;
 using System;
 using System.Collections.Generic;
