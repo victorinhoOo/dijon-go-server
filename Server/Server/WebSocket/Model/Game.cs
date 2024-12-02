@@ -23,6 +23,7 @@ namespace WebSocket.Model
         private int size;
         private int id;
         private TimerManager timerManager;
+        private GameManager gameManager;
 
         /// <summary>
         /// Proprité qui indique si la partie est pleine
@@ -86,6 +87,7 @@ namespace WebSocket.Model
             this.gameBoard = new GameBoard(size);
             this.logic = new GameLogic(gameBoard);
             this.boardSerializer = new BoardSerializer(this.logic);
+            this.gameManager = new GameManager();
             this.rule = rule;
             switch (this.rule)
             {
@@ -101,6 +103,7 @@ namespace WebSocket.Model
         {
             this.started = true;
             this.timerManager = new TimerManager();
+            this.gameManager.InsertGame(this);
         }
 
 
@@ -133,6 +136,7 @@ namespace WebSocket.Model
             this.timerManager.SwitchToNextPlayer();
             string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
             this.logic.PlaceStone(x, y);
+            this.gameManager.InsertGameState(this);
             return time;
         }
 
@@ -185,12 +189,19 @@ namespace WebSocket.Model
 
 
         /// <summary>
-        /// Test si la partie est terminée
+        /// Test si la partie est terminée, si elle est terminée déclenche l'insertion des coups et la mise à jour de la partie en bdd 
         /// </summary>
         /// <returns>True si la partie est terminée, False sinon</returns>
         public bool TestWin()
         {
-            return logic.IsEndGame;
+            bool result = false;
+            if (logic.IsEndGame)
+            {
+                result = true;
+                gameManager.TransferMovesToSql(this);
+                gameManager.UpdateGame(this);
+            }
+            return result;
         }
     }
 }

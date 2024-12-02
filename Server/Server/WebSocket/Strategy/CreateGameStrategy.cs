@@ -38,7 +38,7 @@ namespace WebSocket.Strategy
                 Game newGame = new Game(size, rule);
                 newGame.AddPlayer(player);
                 Server.CustomGames[id] = newGame;
-                gameDAO.InsertGame(newGame); // Ajout de la partie dans le dictionnaire des parties
+                gameDAO.InsertAvailableGame(newGame); // Ajout de la partie dans le dictionnaire des parties
                 player.User.Token = data[2];
                 Server.CustomGames[id].Player1 = player; // Ajout du client en tant que joueur 1
                 response = $"{id}-"; // Renvoi de l'id de la partie créée

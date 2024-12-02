@@ -1,10 +1,4 @@
 ﻿using Server.Model.Data;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
@@ -45,6 +39,7 @@ namespace WebSocket.Model.DAO
                 {
                     userResult = new GameUserDTO
                     {
+                        Id = Convert.ToInt32(result.Rows[0]["idUser"]),
                         Name = result.Rows[0]["username"].ToString(),
                         Elo = Convert.ToInt32(result.Rows[0]["elo"]),
                         Token = token
@@ -84,7 +79,5 @@ namespace WebSocket.Model.DAO
                 database.Disconnect();
             }
         }
-
-
     }
 }
