@@ -2,7 +2,7 @@
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
-
+**Dijon Go Server est une application web qui permet aux passionnés de Go de se retrouver et de jouer des parties en ligne.**
 
 DGS propose les fonctionnalités suivantes :
 
