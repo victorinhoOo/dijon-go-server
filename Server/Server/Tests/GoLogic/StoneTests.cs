@@ -1,4 +1,5 @@
 ﻿using GoLogic;
+using GoLogic.Goban;
 
 namespace Tests.Test_GoLogic
 {

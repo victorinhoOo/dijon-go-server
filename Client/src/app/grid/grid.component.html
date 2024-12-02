@@ -24,7 +24,7 @@
               class="cell"
               *ngFor="let f of [].constructor(this.getSize()); let j = index"
             >
-              <div class="stone" [id]="i + '-' + j"></div>
+              <div class="stone" [id]="i + '-' + j" tabindex="0"></div>
               <div
                 class="stone right"
                 *ngIf="j == this.getSize() - 1"

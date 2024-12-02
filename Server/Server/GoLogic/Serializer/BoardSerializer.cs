@@ -1,3 +1,4 @@
+using GoLogic.Goban;
 using System.Text;
 
 namespace GoLogic.Serializer
@@ -12,51 +13,63 @@ namespace GoLogic.Serializer
         }
 
         /// <summary>
-        /// VÈrifie et retourne une reprÈsentation du plateau avec les positions Ko marquÈes
-        /// Une case est Ko si le coup remet le plateau dans son Ètat prÈcÈdent
+        /// V√©rifie et retourne une liste des positions Ko sur le plateau
+        /// Une case est Ko si le coup remet le plateau dans son √©tat pr√©c√©dent
         /// </summary>
-        /// <returns>ReprÈsentation du plateau avec les positions Ko marquÈes</returns>
-        public string ChecksGobanForKo(GameLogic logic, StoneColor currentTurn)
+        /// <returns>Liste des positions Ko sur le plateau</returns>
+        public List<Stone> ChecksGobanForKo(GameLogic logic, StoneColor currentTurn)
         {
             List<Stone> potentialKoPositions = new List<Stone>();
-            GameBoard boardCopy = new GameBoard(logic.Board.Size);
 
-            // RÈcupËre tous les voisins vides de la pierre prÈcÈdente
-            foreach (Stone stone in logic.GetNeighbors(logic.PreviousStone))
+            // R√©cup√®re tous les voisins vides de la pierre pr√©c√©dente
+            foreach (Stone stone in logic.Goban.GetNeighbors(logic.PreviousStone))
             {
                 if (stone.Color == StoneColor.Empty)
                 {
                     // Pour chaque voisin vide, fait une nouvelle copie et teste
-                    boardCopy.Board = logic.Board.CopyBoard();
-                    boardCopy.PreviousBoard = logic.Board.PreviousBoard;
-                    GameLogic logicCopy = new GameLogic(boardCopy);
+                    IBoard boardCopy = logic.Goban.Clone();
+                    CaptureManager captureManagerCopy = new CaptureManager(boardCopy);
+                    Stone stoneCopy = boardCopy.GetStone(stone.X, stone.Y);
 
                     // Essaie de placer une pierre de la couleur du joueur actuel
-                    Stone testStone = boardCopy.Board[stone.X, stone.Y];
-                    testStone.Color = currentTurn;
+                    stoneCopy.ChangeColor(currentTurn);
 
                     // Capture toutes les pierres adverses
-                    logicCopy.CapturesOpponent(testStone);
+                    captureManagerCopy.CapturesOpponent(stoneCopy);
 
-                    // VÈrifie si cela crÈe une situation de Ko
-                    if (logicCopy.IsKoViolation(boardCopy))
+                    // V√©rifie si cela cr√©e une situation de Ko
+                    if (boardCopy.IsKoViolation())
                     {
                         potentialKoPositions.Add(stone);
                     }
                 }
             }
 
+            return potentialKoPositions;
+        }
+
+        /// <summary>
+        /// Convertit le plateau en cha√Æne de caract√®res avec les positions Ko marqu√©es
+        /// </summary>
+        /// <param name="potentialKoPositions">Liste des positions Ko</param>
+        /// <returns>Repr√©sentation du plateau sous forme de cha√Æne</returns>
+        public string StringifyGoban(GameLogic logic, StoneColor currentTurn)
+        {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("x,y,color");
 
-            foreach (Stone stone in logic.Board.Board)
+            for (int i = 0; i < logic.Goban.Size; i++)
             {
-                string color = stone.Color.ToString();
-                if (potentialKoPositions.Any(k => k.X == stone.X && k.Y == stone.Y))
+                for (int j = 0; j < logic.Goban.Size; j++)
                 {
-                    color = "Ko";
+                    Stone stone = logic.Goban.GetStone(i, j);
+                    string color = stone.Color.ToString();
+                    if (ChecksGobanForKo(logic, currentTurn).Any(k => k.X == stone.X && k.Y == stone.Y))
+                    {
+                        color = "Ko";
+                    }
+                    sb.AppendLine($"{stone.X},{stone.Y},{color}");
                 }
-                sb.AppendLine($"{stone.X},{stone.Y},{color}");
             }
 
             return sb.ToString();

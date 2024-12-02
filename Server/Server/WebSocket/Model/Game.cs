@@ -1,12 +1,8 @@
 ﻿using GoLogic;
+using GoLogic.Goban;
 using GoLogic.Score;
 using GoLogic.Serializer;
 using GoLogic.Timer;
-using System.Diagnostics.Eventing.Reader;
-using System.Text;
-using System.Text.Json;
-using WebSocket.Model.DTO;
-using ZstdSharp.Unsafe;
 
 namespace WebSocket.Model
 {
@@ -39,6 +35,9 @@ namespace WebSocket.Model
             }
         }
 
+        /// <summary>
+        /// Renvoi si la partie a démarré ou non
+        /// </summary>
         public bool Started { get { return this.started; } }
 
         /// <summary>
@@ -54,24 +53,26 @@ namespace WebSocket.Model
 
 
         /// <summary>
-        /// Récupérer ou modifier le joueur qui doit jouer
+        /// Récupére le joueur qui doit jouer
         /// </summary>
         public Client CurrentTurn { get => currentTurn; }
 
 
         /// <summary>
-        /// Récupérer ou modifier la taille du plateau
+        /// Récupére la taille du plateau
         /// </summary>
-        public int Size { get => size; set => size = value; }
+        public int Size { get => size; }
 
-
-        public string Rule { get => rule; set => rule = value; }
+        /// <summary>
+        /// Renvoi les règles de la partie
+        /// </summary>
+        public string Rule { get => rule; }
 
 
         /// <summary>
-        /// Récupérer ou modifier l'identifiant de la partie
+        /// Récupére l'identifiant de la partie
         /// </summary>
-        public int Id { get => id; set => id = value; }
+        public int Id { get => id; }
 
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace WebSocket.Model
         public Game(int size, string rule)
         {
             this.started = false;
-            this.id = Server.Games.Count + 1;
+            this.id = Server.CustomGames.Count + 1;
             this.size = size;
             this.gameBoard = new GameBoard(size);
             this.logic = new GameLogic(gameBoard);
@@ -93,6 +94,9 @@ namespace WebSocket.Model
             }
         }
 
+        /// <summary>
+        /// Démarre la partie
+        /// </summary>
         public void Start()
         {
             this.started = true;
@@ -114,12 +118,7 @@ namespace WebSocket.Model
             else if (this.player2 == null)
             { 
                 this.player2 = player;
-            }
-            else
-            {
-                // throw exception
-            }
-           
+            }         
         }
 
 
@@ -153,7 +152,7 @@ namespace WebSocket.Model
         /// <returns>état de la partie en string</returns>
         public string StringifyGameBoard()
         {
-            return boardSerializer.ChecksGobanForKo(logic, logic.CurrentTurn);
+            return boardSerializer.StringifyGoban(logic, logic.CurrentTurn);
         }
 
         /// <summary>

@@ -17,13 +17,24 @@ namespace WebSocket
     {
         private IWebProtocol webSocket;
         private bool isRunning;
-        private static ConcurrentDictionary<int, Game> games = new ConcurrentDictionary<int, Game>();
+        private bool started;
+        private string gameType;
+        private static ConcurrentDictionary<int, Game> customGames = new ConcurrentDictionary<int, Game>();
+        private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
+  
         private Interpreter interpreter;
         private GameManager gameManager;
+
         /// <summary>
-        /// Dictionnaire qui contient les parties en cours
+        /// Dictionnaire qui contient les parties personnalisées en cours
         /// </summary>
-        public static ConcurrentDictionary<int, Game> Games { get => games; set => games = value; }
+        public static ConcurrentDictionary<int, Game> CustomGames { get => customGames; set => customGames = value; }
+
+        /// <summary>
+        /// Dictionnaire qui contient les parties de matchmaking en cours
+        /// </summary>
+        public static ConcurrentDictionary<int, Game> MatchmakingGames { get => matchmakingGames; set => matchmakingGames = value; }
+        
 
         /// <summary>
         /// Constructeur de la classe Server
@@ -98,7 +109,7 @@ namespace WebSocket
         /// <summary>
         /// Vérifie si le message reçu est une demande de handshake
         /// </summary>
-        private bool MessageIsHandshakeRequest(string message)
+        public bool MessageIsHandshakeRequest(string message)
         {
             return Regex.IsMatch(message, "^GET");
         }
@@ -118,7 +129,7 @@ namespace WebSocket
         /// </summary>
         private void DisconnectClient(Client client, DisconnectionException ex, ref bool endOfCommunication)
         {
-            foreach (var game in Server.Games)
+            foreach (var game in Server.CustomGames)
             {
                 if (game.Value.Player1 == client)
                 {
@@ -133,6 +144,7 @@ namespace WebSocket
             client.SendMessage(deconnectionBytes);
             Console.WriteLine(ex.Message + "\n");
             endOfCommunication = true; // Fin de la communication
+            this.started = false;
         }
 
 
@@ -142,28 +154,44 @@ namespace WebSocket
         private void TreatMessage(byte[] bytes, Client client, ref string message, ref string response)
         {
             byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
-            message = Encoding.UTF8.GetString(decryptedMessage);
-            response = this.interpreter.Interpret(message, client); // Interprétation du message reçu
+            message = Encoding.UTF8.GetString(decryptedMessage);        
+            if (message.Contains("custom"))
+            {
+                this.gameType = "custom";
+            }
+            else if (message.Contains("matchmaking"))
+            {
+                this.gameType = "matchmaking";
+            }
+            response = this.interpreter.Interpret(message, client, this.gameType); // Interprétation du message reçu
+            string[] data = response.Split("_");
+            string responseType = data[0]; // Récupération du type de réponse (Send ou Broadcast)
+            string responseData = data[1]; // Récupération des données à envoyer
 
-            string responseType = response.Split("_")[0]; // Récupération du type de réponse (Send ou Broadcast)
-            string responseData = response.Split("_")[1]; // Récupération des données à envoyer
 
-            int idGame = Convert.ToInt32(responseData.Split("/")[0]); // Id de la partie concernée
+            string stringId = responseData.Split("-")[0];
+            int idGame = Convert.ToInt32(stringId); // Id de la partie concernée
             byte[] responseBytes = this.webSocket.BuildMessage(responseData);
-            Game game = games[idGame];
+
+            if (!response.Contains("Create") && (!response.Contains("Timeout")))
+            {
+                Game game = this.gameType == "custom" ? customGames[idGame] : matchmakingGames[idGame];
+                if (responseType == "Broadcast")
+                {
+                    this.BroadastMessage(game, responseBytes);
+                }
+                if (game.IsFull && !game.Started)
+                {
+                    this.StartGame(game);
+                }
+
+            }
+
             if (responseType == "Send")
             {
                 this.SendMessage(client, responseBytes);
             }
-            else if (responseType == "Broadcast")
-            {
-                this.BroadastMessage(game, responseBytes);
-            }
             response = responseData;
-            if (game.IsFull && !game.Started)
-            {
-                this.StartGame(game);
-            }
         }
 
         private void SendMessage(Client client, byte[] bytes)
@@ -179,7 +207,7 @@ namespace WebSocket
             this.SendMessage(game.Player1, bytes);
             this.SendMessage(game.Player2, bytes);
 
-            if (this.TestWin(game)) // Test si la partie est terminée et lance la gestion de fin de partie si c'est le cas
+            if (game.TestWin()) // Appel direct de la méthode TestWin() de l'objet Game
             {
                 this.handleGameEnd(game);
             }
@@ -193,8 +221,8 @@ namespace WebSocket
         {
             game.Player1.User = this.gameManager.GetUserByToken(game.Player1.User.Token);
             game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
-            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
-            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}/Start:{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
+            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
+            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
             game.Start();
@@ -225,8 +253,8 @@ namespace WebSocket
                 player2won= true;
             }
 
-            byte[] endOfGameMessagePlayer1 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer1}-{scorePlayer2}|{player1won}");
-            byte[] endOfGameMessagePlayer2 = this.webSocket.BuildMessage($"{game.Id}/EndOfGame:{scorePlayer2}-{scorePlayer1}|{player2won}");
+            byte[] endOfGameMessagePlayer1 = this.webSocket.BuildMessage($"{game.Id}-EndOfGame-{scorePlayer1}-{scorePlayer2}-{player1won}");
+            byte[] endOfGameMessagePlayer2 = this.webSocket.BuildMessage($"{game.Id}-EndOfGame-{scorePlayer2}-{scorePlayer1}-{player2won}");
             this.SendMessage(game.Player1, endOfGameMessagePlayer1);
             this.SendMessage(game.Player2, endOfGameMessagePlayer2);
         }

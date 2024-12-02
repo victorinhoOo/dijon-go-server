@@ -1,4 +1,6 @@
-﻿namespace GoLogic.Timer;
+﻿using GoLogic.Goban;
+
+namespace GoLogic.Timer;
 
 /// <summary>
 /// Classe qui gère l'exécution des timers

@@ -15,6 +15,11 @@ namespace WebSocket.Protocol
     /// </summary>
     public class WebSocket : IWebProtocol
     {
+        private const byte TEXT_FRAME_OPCODE = 129; // Code d'opération pour un message texte
+        private const byte CLOSE_FRAME_OPCODE = 136; // Code d'opération pour une déconnexion
+        private const byte SHORT_PAYLOAD_LIMIT = 125; // Limite de la longueur pour un message stocké sur 1 octet
+        private const byte EXTENDED_PAYLOAD_16BITS = 126; // Indicateur de longueur pour un message stocké sur 2 octets
+        private const int EXTENDED_PAYLOAD_MAXLENGTH = 65535; // Limite de la longueur pour un message stocké sur 2 octets
         private TcpListener listener;
         private IDecrypter decrypter;
 
@@ -45,23 +50,17 @@ namespace WebSocket.Protocol
             byte[] length = new byte[] { };
             switch (messageLength)
             {
-                case <= 125: lengthIndicator = messageLength; break;
-                case <= 65535: // la trame contiendra 2 octets supplémentaires qui  indiqueront la longueur du message
+                case <= SHORT_PAYLOAD_LIMIT: lengthIndicator = messageLength; break;
+                case <= EXTENDED_PAYLOAD_MAXLENGTH: // la trame contiendra 2 octets supplémentaires qui  indiqueront la longueur du message
                     {
-                        lengthIndicator = 126;
-                        length = BitConverter.GetBytes(Convert.ToInt16(messageLength));
-                        Array.Reverse(length);
-                        break;
-                    }
-                    {
-                        lengthIndicator = 126;
+                        lengthIndicator = EXTENDED_PAYLOAD_16BITS;
                         length = BitConverter.GetBytes(Convert.ToInt16(messageLength));
                         Array.Reverse(length);
                         break;
                     }
             }
-            List<byte> messageBytes = new List<byte>() { 129, Convert.ToByte(lengthIndicator) }; // préparation de la trame
-            if (lengthIndicator == 126) // si la longueur du message est supérieure à 125 octets
+            List<byte> messageBytes = new List<byte>() { TEXT_FRAME_OPCODE, Convert.ToByte(lengthIndicator) }; // préparation de la trame
+            if (lengthIndicator == EXTENDED_PAYLOAD_16BITS) // si la longueur du message est supérieure à 125 octets
             {
                 foreach (byte b in length)
                 {
@@ -109,7 +108,7 @@ namespace WebSocket.Protocol
         {
             byte[] codeBytes = BitConverter.GetBytes(Convert.ToInt16(code));
             Array.Reverse(codeBytes);
-            List<byte> deconnectionBytes = new List<byte>() { 136, Convert.ToByte(codeBytes.Length) };
+            List<byte> deconnectionBytes = new List<byte>() { CLOSE_FRAME_OPCODE, Convert.ToByte(codeBytes.Length) };
             foreach (byte b in codeBytes)
             {
                 deconnectionBytes.Add(b);

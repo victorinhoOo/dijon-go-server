@@ -1,4 +1,4 @@
-﻿namespace GoLogic
+﻿namespace GoLogic.Goban
 {
     /// <summary>
     /// Enumération des différents états possibles des pierres
