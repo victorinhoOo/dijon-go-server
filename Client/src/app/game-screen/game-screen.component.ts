@@ -8,5 +8,8 @@ import { GridComponent } from '../grid/grid.component';
   templateUrl: './game-screen.component.html',
   styleUrl: './game-screen.component.css'
 })
+/**
+ * Composant de l'écran de jeu
+ */
 export class GameScreenComponent {
 }

@@ -6,6 +6,7 @@
 
 #global-container{
     margin-top: 70px;
+    cursor: not-allowed;
 }
 
 #player, #opponent{
@@ -31,6 +32,8 @@
     flex-direction: row;
     align-items: center;
 }
+
+
 
 .pseudo img{
     width: 50px;
@@ -61,7 +64,6 @@
 #pass:hover{
     box-sizing: border-box;
     border: 1px solid black;
-    cursor: pointer;
 }
 
 #cells-container{
@@ -79,6 +81,24 @@
     border: 0.5px solid black;
     position: relative;
 }
+
+.bigger-cell{
+    width: 45px;
+    height: 45px;
+    border: 0.5px solid black;
+    position: relative;
+}
+
+.bigger-stone{
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    left: -50%;
+    top: -50%;
+    z-index: 3;
+}
+
 .row{
     display: flex;
     flex-direction: row;
@@ -96,7 +116,7 @@
     z-index: 3;
 }
 
-.stone.right{
+.right{
     left: unset;
     right: -50%;
 }
@@ -111,11 +131,6 @@
     left: 0;
 }
 
-.cell-bottom{
-    position: relative;
-    width: 33px;
-    height: 33px;
-}
 
 .bottom{
     top: unset;
@@ -124,7 +139,7 @@
 
 
 
-.stone:hover{
+.active:hover{
     background-color: grey !important;
     opacity: 0.8 !important;
 }
@@ -132,6 +147,42 @@
 
 .score{
     margin-left: 30px;
+}
+
+.rule-container {
+    font-size: 13px;
+    display: flex;
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre le texte et l'icône verticalement */
+    margin: 20px auto; /* Ajoute de l'espace autour et centre horizontalement */
+}
+
+#rule-text {
+    display: flex;
+    align-items: center; /* Aligne le texte et l'icône au même niveau */
+    font-size: 1.2em; /* Ajustez la taille de police selon vos besoins */
+}
+
+#rule-icon {
+    text-decoration: none;
+    cursor: pointer;
+    background-color: inherit;
+    border: none;
+    color: rgb(207, 156, 89);
+    display: flex;
+    align-items: center; /* Aligne l'icône avec le texte */
+    margin-left: 5px; /* Ajoute un espace entre le texte et l'icône */
+}
+
+
+::ng-deep .custom-yes-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-no-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
 }
 
 

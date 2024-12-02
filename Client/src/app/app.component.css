@@ -5,7 +5,7 @@
 }
 
 app-navbar {
-    width: 13%;
+    width: 15%;
 }
 
 #content-container {
@@ -14,13 +14,60 @@ app-navbar {
     overflow: scroll;
     overflow-x: hidden;
     width: 100%;
-    height: 100%;
+    overflow-x: hidden;
     overflow: auto;
+    min-height: 100vh;
+    justify-content: space-between;
 }
+
 
 #footer-container {
     margin-top: auto;
 }
+
+@media (max-width:1475px) {
+    app-navbar {
+        width: 25%;
+        z-index: 1;
+    }
+    
+}
+@media (max-width:1366px) {
+    app-navbar {
+        width: 30%;
+        z-index: 1;
+    }
+
+}
+@media (max-width:1260px) {
+    app-navbar {
+        width: 35%;
+        z-index: 1;
+    }
+
+}
+
+@media (max-width:1260px) {
+    app-navbar {
+        width: 50%;
+        z-index: 1;
+    }
+
+}
+
+@media (max-width: 1024px) {
+
+    app-navbar {
+        width: 100%;
+        z-index: 1000;
+    }
+    app-hamburger-btn{
+        position: static;
+    }
+
+}
+
+
 
 
 

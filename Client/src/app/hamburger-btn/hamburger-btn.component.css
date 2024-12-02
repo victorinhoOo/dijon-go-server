@@ -1,0 +1,27 @@
+.test-nav-mobile {
+    display: none;
+    
+}
+
+@media (max-width: 1024px) {
+    .test-nav-mobile {
+        display: block;
+        margin: 0%;
+        padding: 10px;
+        margin-bottom: 50px;
+        border: none;
+        background-color: transparent;
+
+    }
+
+    @media (max-width: 500px) {
+        .test-nav-mobile {
+            display: block;
+            margin: 0%;
+            padding: 0%;
+            border: none;
+            background-color: transparent;
+    
+        }
+    }
+}

@@ -2,3 +2,8 @@ svg{
     padding-left: 10px;
     padding-bottom: 10px;
 }
+
+::ng-deep .focus :focus{
+    outline: 2px solid blue !important; /* Ajoute un contour bleu */
+    transition: outline 0.3s ease-in-out;
+}

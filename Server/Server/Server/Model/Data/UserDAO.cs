@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Data;
+using System.Text;
 
 namespace Server.Model.Data
 {
@@ -47,14 +48,27 @@ namespace Server.Model.Data
             bool res = false;
             database.Connect();
 
-            string query = "INSERT INTO user (username, hashPwd, email) VALUES (@username, @hashPwd, @email)";
+            // Adapter la requête SQL en fonction de la présence du mot de passe
+            string query = "INSERT INTO user (username, hashPwd, email, elo) VALUES (@username, @hashPwd, @email, @elo)";
             var parameters = new Dictionary<string, object>
                 {
                     {"@username", user.Username},
                     {"@hashPwd", user.Password},
-                    {"@email", user.Email}
+                    {"@email", user.Email},
+                    {"@elo", 100} // Chaque nouveau joueur commence à 100 elo
                 };
 
+            if (!string.IsNullOrEmpty(user.Password)) // Gestion du stockage des comptes googles (sans mot de passe)
+            {
+                query = "INSERT INTO user (username, hashPwd, email, elo) VALUES (@username, @hashPwd, @email, @elo)";
+                parameters.Add("@hashPwd", user.Password);
+            }
+            else
+            {
+                query = "INSERT INTO user (username, email, elo) VALUES (@username, @email, @elo)";
+            }
+
+            // Exécution de la requête
             database.ExecuteNonQuery(query, parameters);
             res = true;
 
@@ -62,6 +76,7 @@ namespace Server.Model.Data
             logger.LogInformation($"L'utilisateur {user.Username} a été enregistré");
             return res;
         }
+
 
         /// <inheritdoc/>
         public bool Update(User user)
@@ -123,7 +138,8 @@ namespace Server.Model.Data
                 {
                     Username = result.Rows[0]["username"].ToString(),
                     Password = result.Rows[0]["hashPwd"].ToString(),
-                    Email = result.Rows[0]["email"].ToString()
+                    Email = result.Rows[0]["email"].ToString(),
+                    
                 };
             }
 
@@ -131,5 +147,34 @@ namespace Server.Model.Data
             logger.LogInformation($"Récupération de l'utilisateur {username}");
             return user;
         }
+
+        /// <inheritdoc/>
+        public Dictionary<string, int> GetTop5Users()
+        {
+            Dictionary<string, int> topUsers = new Dictionary<string, int>();
+            database.Connect();
+
+            // Requête SQL pour obtenir le top 5 des utilisateurs selon leur score Elo
+            string query = "SELECT username, elo FROM user ORDER BY elo DESC LIMIT 5";
+            var result = database.ExecuteQuery(query, new Dictionary<string, object>());
+
+            if (result.Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Rows)
+                {
+                    string username = row["username"].ToString();
+                    int elo = Convert.ToInt32(row["elo"]);
+
+                    // ajout de l'utilisateur au leaderboard
+                    topUsers[username] = elo;
+                }
+            }
+
+            database.Disconnect();
+            logger.LogInformation("Récupération des 5 meilleurs utilisateurs (noms et Elo) dans un dictionnaire.");
+            return topUsers;
+        }
+
+
     }
 }

@@ -5,6 +5,7 @@ import { LoginUserDTO } from '../DTO/LoginUserDTO';
 import { UpdateUserDTO }from '../DTO/UpdateUserDTO';
 import { User } from '../User';
 import { HttpParams } from '@angular/common/http';
+import { environment } from '../../environment';
 
 /**
  * Gère les requêtes HTTP vers l'API pour la gestion des comptes utilisateurs
@@ -12,7 +13,7 @@ import { HttpParams } from '@angular/common/http';
 export class UserDAO {
   
   // URL de base pour les requêtes vers l'API utilisateur
-  private readonly url = 'https://localhost:7065/User/'; 
+  private readonly url = `${environment.apiUrl}/User/`;
 
   /**
    * Constructeur de la classe UserDAO.
@@ -59,16 +60,26 @@ export class UserDAO {
   }
 
   /**
+   * Envoie une requête POST pour se connecter avec Google
+   * @param idToken le token Google de l'utilisateur
+   */
+  public GoogleLogin(idToken: string) {
+    const params = new HttpParams().set('idToken', idToken);
+    return this.http.post<{ token: string }>(`${this.url}GoogleLogin`, null, { params });
+  }
+
+
+  /**
    * Envoie une requête GET pour récupérer les informations de l'utilisateur
    * @param token token utilisateur
    * @returns Les informations de l'utilisateur sous forme d'objet
   **/
   public GetUser(token: string): Observable<User> {
     const params = new HttpParams().set('tokenUser', token);
-    return this.http.get<{ user: { username: string, email: string } }>(this.url + 'Get', { params }).pipe(
-      map((response: { user: { username: string, email: string } }) => {
+    return this.http.get<{ user: { username: string, email: string, elo: number } }>(this.url + 'Get', { params }).pipe(
+      map((response: { user: { username: string, email: string, elo: number } }) => {
         // Créé un nouvel objet User à partir de l'objet  renvoyé par le serveur
-        return new User(response.user.username, response.user.email);
+        return new User(response.user.username, response.user.email,response.user.elo);
       }),
       catchError(error => {
         return throwError(() => new Error(error.error?.message || 'Erreur de connexion au serveur'));
@@ -99,7 +110,20 @@ export class UserDAO {
       })
     );
   }
-  
+
+  /**
+   * Récupère le classement des 5 meilleurs joueurs via une requête GET.
+   * @returns Un Observable contenant un dictionnaire avec les noms et les Elos des joueurs.
+   */
+  public GetLeaderboard(): Observable<{ [username: string]: number }> {
+    return this.http.get<{ [username: string]: number }>((this.url) + 'Leaderboard').pipe(
+      map((response) => response),
+      catchError((error) =>
+        throwError(() => new Error(error.error?.message || 'Erreur lors de la récupération du leaderboard'))
+      )
+    );
+  }
+
 
 }
 

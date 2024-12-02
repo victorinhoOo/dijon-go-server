@@ -14,9 +14,12 @@ namespace Server.Model.Data
         // Liste des utilisateurs en dur pour les tests
         private readonly List<UserEntry> users = new List<UserEntry>
         {
-            new UserEntry(1, "victor", "14773232b4a5ced20b3871374056bca2355e7dc225610ced8a9e9bc7d63a7abc", "user1@example.com", 1), // hash de "mdp" + sel
-            new UserEntry(2, "user2", "hashedPassword2", "user2@example.com", 2),
-            new UserEntry(3, "user3", "hashedPassword3", "user3@example.com", 3)
+            new UserEntry(1, "victor", "14773232b4a5ced20b3871374056bca2355e7dc225610ced8a9e9bc7d63a7abc", "user1@example.com", 1, 100), // hash de "mdp" + sel
+            new UserEntry(2, "user2", "hashedPassword2", "user2@example.com", 2, 100),
+            new UserEntry(3, "user3", "hashedPassword3", "user3@example.com", 3, 100),
+            new UserEntry(4, "Alice", "hashedPassword4", "alice@example.com", 4, 2000),
+            new UserEntry(5, "Bob", "hashedPassword5", "bob@example.com", 5, 1800),
+            new UserEntry(6, "Charlie", "hashedPassword6", "charlie@example.com", 6, 1500),
         };
 
         // Méthode pour mettre à jour les informations d'un utilisateur
@@ -47,7 +50,7 @@ namespace Server.Model.Data
             if (!VerifyExists(user))
             {
                 int newId = users.Max(u => u.IdUser) + 1;  // Génère un nouvel ID utilisateur
-                users.Add(new UserEntry(newId, user.Username, user.Password, user.Email, 0));
+                users.Add(new UserEntry(newId, user.Username, user.Password, user.Email, 0, 100));
                 return true;
             }
             return false;  // Si l'utilisateur existe déjà
@@ -60,21 +63,31 @@ namespace Server.Model.Data
             UserEntry userEntry = users.FirstOrDefault(u => u.Username == username);
             if (userEntry != null)
             {
-                result = new User(userEntry.IdUser, userEntry.Username, userEntry.HashPwd, userEntry.Email);
+                result = new User(userEntry.IdUser, userEntry.Username, userEntry.HashPwd, userEntry.Email,userEntry.Elo);
             }
             return result;
+        }
+
+        // Méthode pour obtenir le top 5 des utilisateurs
+        public Dictionary<string, int> GetTop5Users()
+        {
+            return users
+                .OrderByDescending(u => u.Elo) // Trie les utilisateurs par leur Elo de manière décroissante
+                .Take(5)
+                .ToDictionary(u => u.Username, u => u.Elo); // Cree un dictionnaire avec Username comme clé et Elo comme valeur
         }
 
         // Classe interne pour représenter les utilisateurs stockés 
         private class UserEntry
         {
-            public UserEntry(int idUser, string username, string hashPwd, string email, int idToken)
+            public UserEntry(int idUser, string username, string hashPwd, string email, int idToken, int elo)
             {
                 IdUser = idUser;
                 Username = username;
                 HashPwd = hashPwd;
                 Email = email;
                 IdToken = idToken;
+                Elo = elo;
             }
 
             public int IdUser { get; set; }
@@ -82,6 +95,7 @@ namespace Server.Model.Data
             public string HashPwd { get; set; }
             public string Email { get; set; }
             public int IdToken { get; set; }
+            public int Elo { get; set; }
         }
     }
 }

@@ -48,6 +48,32 @@ namespace Server.Controllers
         }
 
         /// <summary>
+        /// Connexion d'un utilisateur avec google
+        /// </summary>
+        /// <param name="idToken">Token de connexion Google de l'utilisateur souhaitant se connecter</param>
+        /// <returns>Le résultat de la connexion</returns>
+        [HttpPost("GoogleLogin")]
+        public async Task<IActionResult> GoogleLogin(string idToken)
+        {
+            IActionResult result = BadRequest(new InvalidLoginException());
+            try
+            {
+                string token = await userManager.GoogleConnect(idToken);
+                if (token != "")
+                {
+                    logger.LogInformation("Connexion réussie pour l'utilisateur Google");
+                    result = Ok(new { Token = token });
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Erreur lors de la connexion Google : " + ex.Message);
+                result = BadRequest(new { Message = ex.Message });
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Inscription d'un utilisateur.
         /// </summary>
         /// <param name="registerUserDTO">Les informations d'inscription de l'utilisateur.</param>
@@ -113,6 +139,29 @@ namespace Server.Controllers
             catch (Exception ex)
             {
                 logger.LogError("Erreur lors de la récupération de l'utilisateur : " + ex.Message);
+                result = BadRequest(new { Message = ex.Message });
+
+            }
+            return result;
+        }
+        /// <summary>
+        /// Renvoi le leaderboard : les 5 meilleurs joueurs en terme d'elo
+        /// </summary>
+        /// <returns>le nom et le classement des 5 meilleurs joueurs</returns>
+        [HttpGet("Leaderboard")]
+        public IActionResult GetLeardBoard()
+        {
+            IActionResult result = BadRequest(new { Message = "Impossible de récupérer le leaderboard" });
+            try
+            {
+                //recuperation du leaderboard
+                Dictionary<string, int> leaderboard = this.userManager.GetLeaderBoard();
+                logger.LogInformation("Récupération de leaderboard " + leaderboard.Count);
+                result = Ok(leaderboard);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Erreur lors de la récupération du leaderboard: " + ex.Message);
                 result = BadRequest(new { Message = ex.Message });
 
             }
