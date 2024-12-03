@@ -184,6 +184,10 @@ export class IndexComponent implements OnInit {
       title: 'Créer une partie',
       html: `
         <form id="create-game-form">
+         <label for="game-name">Nom de la partie :</label>
+          <input id="game-name" name="game-name" type="text" class="swal2-input" placeholder="Nom de la partie" required>
+          <br>
+
           <label for="grid-size">Taille de la grille :</label>
           <select id="grid-size" name="grid-size" class="swal2-select">
             <option value="9">9x9</option>
@@ -204,6 +208,13 @@ export class IndexComponent implements OnInit {
             <option value="c">Chinoises</option>
             <option value="j">Japonaises</option>
           </select>
+
+           <label for="komi">Komi :</label>
+          <select id="komi" name="komi" class="swal2-select">
+            <option value="0" selected>Pas de komi</option>
+            <option value="6,5">6.5</option>
+            <option value="7,5">7.5</option>
+          </select>
         </form>
       `,
       confirmButtonText: 'Créer',
@@ -214,11 +225,13 @@ export class IndexComponent implements OnInit {
       preConfirm: () => {
         const gridSize = (document.getElementById('grid-size') as HTMLSelectElement).value;
         const rules = (document.getElementById('rules') as HTMLSelectElement).value;
-        return { gridSize, rules };
+        const name = (document.getElementById('game-name') as HTMLSelectElement).value;
+        const komi = (document.getElementById('komi') as HTMLSelectElement).value;
+        return { gridSize, rules, name, komi };
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { gridSize, rules } = result.value!;
+        const { gridSize, rules, name, komi } = result.value!;
 
         // Affichez un chargement avant la connexion
         Swal.fire({
@@ -233,7 +246,7 @@ export class IndexComponent implements OnInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createGame(gridSize, rules, "custom");
+          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name);
           Swal.close(); // Ferme le chargement
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur

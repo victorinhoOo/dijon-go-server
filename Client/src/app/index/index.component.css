@@ -434,3 +434,6 @@
     flex: 1 !important;
     pointer-events: none !important;
 }
+::ng-deep #game-name{
+    width: 100% !important;
+}
