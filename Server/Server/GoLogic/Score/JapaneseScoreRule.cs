@@ -8,13 +8,13 @@ namespace GoLogic.Score
     /// </summary>
     public class JapaneseScoreRule : ScoreRule
     {
-        public JapaneseScoreRule(IBoard gameBoard) : base(gameBoard) { }
+        public JapaneseScoreRule(IBoard gameBoard, float komi = 6.5f) : base(gameBoard, komi) { }
 
         /// <summary>
         /// Règles de décompte des points Japonaise
         /// </summary>
         /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
-        public override (int blackStones, int whiteStones) CalculateScore()
+        public override (float blackStones, float whiteStones) CalculateScore()
         {
             RemoveDeadStones();
             (int blackStones, int whiteStones) = CountStones();
@@ -23,7 +23,7 @@ namespace GoLogic.Score
             {
                 (territoryBlack, territoryWhite) = FindTerritory();
             }
-            return (territoryBlack + GameBoard.CapturedWhiteStones, territoryWhite + GameBoard.CapturedBlackStones);
+            return (territoryBlack + GameBoard.CapturedWhiteStones, territoryWhite + GameBoard.CapturedBlackStones + this.komi);
         }
     }
 }
