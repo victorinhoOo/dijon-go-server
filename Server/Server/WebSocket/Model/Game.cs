@@ -159,7 +159,7 @@ namespace WebSocket.Model
         /// Récupérer le score de la partie
         /// </summary>
         /// <returns>Score de la partie sous forme de tuple</returns>
-        public (int, int) GetScore()
+        public (float, float) GetScore()
         {
             return score.CalculateScore();
         }
