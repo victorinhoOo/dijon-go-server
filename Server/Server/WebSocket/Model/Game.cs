@@ -3,6 +3,7 @@ using GoLogic.Goban;
 using GoLogic.Score;
 using GoLogic.Serializer;
 using GoLogic.Timer;
+using System.Xml.Linq;
 
 namespace WebSocket.Model
 {
@@ -22,6 +23,8 @@ namespace WebSocket.Model
         private string rule;
         private int size;
         private int id;
+        private float komi;
+        private string name;
         private TimerManager timerManager;
 
         /// <summary>
@@ -74,11 +77,20 @@ namespace WebSocket.Model
         /// </summary>
         public int Id { get => id; }
 
+        /// <summary>
+        /// Récupérer ou modifier le komi
+        /// </summary>
+        public float Komi { get => komi; }
+
+        /// <summary>
+        /// Récupérer ou modifier le nom de la partie
+        /// </summary>
+        public string Name { get => name; }
 
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game(int size, string rule)
+        public Game(int size, string rule, float komi, string name)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
@@ -87,6 +99,8 @@ namespace WebSocket.Model
             this.logic = new GameLogic(gameBoard);
             this.boardSerializer = new BoardSerializer(this.logic);
             this.rule = rule;
+            this.name = name;
+            this.komi = komi;
             switch (this.rule)
             {
                 case "c": this.score = new ChineseScoreRule(gameBoard);break;
