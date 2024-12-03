@@ -11,6 +11,6 @@ namespace Server.Model.Data
         /// Récupère la liste des parties disponibles 
         /// </summary>
         /// <returns>Liste de parties</returns>
-        public List<GameInfoDTO> GetAvailableGames();
+        public List<AvailableGameInfoDTO> GetAvailableGames();
     }
 }

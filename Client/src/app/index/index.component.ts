@@ -5,7 +5,7 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameDAO } from '../Model/DAO/GameDAO';
 import { HttpClient } from '@angular/common/http';
-import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
+import { GameInfoDTO } from '../Model/DTO/AvailableGameInfoDTO';
 import { WebsocketService } from '../websocket.service';
 import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
@@ -129,7 +129,7 @@ export class IndexComponent implements OnInit {
               : `<img class="flag" src="china.svg"/>`;
             content += `<div class="game-choice">
               <i class="fas fa-play"></i>
-              <button id="game-${index}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</button>
+              <button id="game-${index}"> <span id="gameName">${game["name"]}</span> - ${game["size"]}x${game["size"]} - Créateur : ${game["creatorName"]} ${stringRule}</button>
             </div><br>`;
           });
         }

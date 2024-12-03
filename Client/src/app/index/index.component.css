@@ -440,3 +440,7 @@
 ::ng-deep #komi{
     width: 100% !important;
 }
+::ng-deep #gameName{
+    font-weight: bold !important;
+    margin-right: 5px;
+}

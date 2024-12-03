@@ -31,7 +31,7 @@ namespace Server.Controllers
             IActionResult result = BadRequest(new { Message = "Impossible de récupérer les parties" });
             try
             {
-                List<GameInfoDTO> games = gameManager.GetAvailableGames();
+                List<AvailableGameInfoDTO> games = gameManager.GetAvailableGames();
                 result = Ok(new { Games = games });
                 logger.LogInformation("Liste des parties récupérée");
             }

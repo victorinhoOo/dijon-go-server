@@ -23,17 +23,19 @@ namespace WebSocket.Model.DAO
         ///<inheritdoc/>
         public bool InsertGame(Game game)
         {
+            game.Player1.User.Name = "nom du createur";
             this.database.Connect();
             bool res = false;
-            string query = "insert into availablegame (id,title,size,rule,komi,name) values (@id,@title,@size,@rule,@komi,@name);";
+            string query = "insert into availablegame (id,size,rule,komi,name,creatorName) values (@id,@size,@rule,@komi,@name,@creatorName);";
             var parameters = new Dictionary<string, object>
                 {
                     {"@id", game.Id},
-                    {"@title", $"Partie numéro {game.Id}"},
                     {"@size", game.Size},
                     {"@rule", game.Rule },
                     {"@komi", game.Komi },
-                    {"@name", game.Name }
+                    {"@name", game.Name },
+                    {"@creatorName",game.Player1.User.Name }
+
                 };
             database.ExecuteNonQuery(query, parameters);
             res = true;

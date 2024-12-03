@@ -34,7 +34,7 @@ namespace WebSocket.Strategy
             int size = Convert.ToInt16(data[3]);
             string rule = data[4];
             string name = data[7];
-            float komi = float.Parse(data[6]);
+            float komi = float.Parse(data[6], CultureInfo.InvariantCulture.NumberFormat);
             if (gameType == "custom") // la partie est personnalisée
             {
                 int id = Server.CustomGames.Count + 1; // Génération de l'id de la partie

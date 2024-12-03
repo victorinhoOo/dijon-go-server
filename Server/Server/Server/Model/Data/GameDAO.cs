@@ -17,25 +17,27 @@ public class GameDAO : IGameDAO
     }
 
     /// <inheritdoc/>
-    public List<GameInfoDTO> GetAvailableGames()
+    public List<AvailableGameInfoDTO> GetAvailableGames()
     {
-        List<GameInfoDTO> result = new List<GameInfoDTO>();
+        List<AvailableGameInfoDTO> result = new List<AvailableGameInfoDTO>();
 
         database.Connect();
 
-        string query = "SELECT id, title, size, rule FROM availablegame;";
+        string query = "SELECT id, size, rule, creatorName,komi, name FROM availablegame;";
 
         var dataTable = database.ExecuteQuery(query, null);
 
         // Boucle sur les résultats pour créer des GameInfoDTO
         foreach (DataRow row in dataTable.Rows)
         {
-            var gameInfo = new GameInfoDTO
+            var gameInfo = new AvailableGameInfoDTO
             {
                 Id = Convert.ToInt32(row["id"]),
-                Title = row["title"].ToString(),
                 Size = Convert.ToInt32(row["size"]),
-                Rule = row["rule"].ToString()
+                Rule = row["rule"].ToString(),
+                CreatorName = row["creatorName"].ToString(),
+                Komi = Convert.ToInt32(row["komi"]),
+                Name = row["name"].ToString(),
             };
             result.Add(gameInfo);
         }
