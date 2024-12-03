@@ -25,13 +25,15 @@ namespace WebSocket.Model.DAO
         {
             this.database.Connect();
             bool res = false;
-            string query = "insert into availablegame (id,title,size,rule) values (@id,@title,@size,@rule);";
+            string query = "insert into availablegame (id,title,size,rule,komi,name) values (@id,@title,@size,@rule,@komi,@name);";
             var parameters = new Dictionary<string, object>
                 {
                     {"@id", game.Id},
                     {"@title", $"Partie numéro {game.Id}"},
                     {"@size", game.Size},
-                    {"@rule", game.Rule }
+                    {"@rule", game.Rule },
+                    {"@komi", game.Komi },
+                    {"@name", game.Name }
                 };
             database.ExecuteNonQuery(query, parameters);
             res = true;
