@@ -26,3 +26,60 @@
         </div>
     </div>
 </div>
+<br>
+
+<div *ngIf="getHistoryData().length > 0; else noHistory" class="history-container">
+  <div *ngFor="let game of getHistoryData(); let i = index" class="history-item">
+    <div
+      class="game-line"
+      [ngStyle]="{ 'border-color': game.winner === UserPseudo ? '#96CEB4' : '#FF8080' }"
+      tabindex="0"
+    >
+    <strong>Date : {{ game.date }}</strong>
+      <span *ngIf="game.rule === 'chinoise'">
+        <img class="flag" src="china.svg" alt="Drapeau de la Chine" />
+      </span>
+      <span *ngIf="game.rule === 'japonaise'">
+        <img class="flag" src="japan.svg" alt="Drapeau du Japon" />
+      </span>
+      
+      <span>{{ game.size}}</span>
+      <span>
+        <mat-icon
+          class="stone"
+          [ngClass]="{ white: game.white === UserPseudo, black: game.black === UserPseudo }"
+        >
+          brightness_1
+        </mat-icon>
+        {{ UserPseudo }}
+        
+        <img *ngIf="game.winner === UserPseudo" class="crown" src="crown.svg" alt=" couronne">
+      </span>
+        <span>
+          <span class="points" class="espaceDroit" *ngIf="game.white === UserPseudo"> {{ game.capturedWhite }}</span>
+          <span class="points" class="espaceDroit" *ngIf="game.black === UserPseudo"> {{ game.capturedBlack }}</span>
+          VS
+          <span class="points" class="espaceGauche" *ngIf="game.white === game.player2"> {{ game.capturedWhite }}</span>
+          <span class="points" class="espaceGauche" *ngIf="game.black === game.player2"> {{ game.capturedBlack }}</span>
+        </span>
+      <span>
+        <mat-icon
+          class="stone"
+          [ngClass]="{ white: game.white === game.player2, black: game.black === game.player2 }"
+        >
+          brightness_1
+        </mat-icon>
+        {{ game.player2 }}
+        <img *ngIf="game.winner === game.player2" class="crown" src="crown.svg" alt=" couronne">
+      </span>
+    </div>
+    <hr />
+  </div>
+  
+  </div>
+  
+  <ng-template #noHistory>
+    <p>Aucun historique de parties trouvé.</p>
+  </ng-template>
+  
+  

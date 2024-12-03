@@ -1,32 +1,19 @@
+/* Carte de profil et historique */
 .card-pos {
     max-width: 60%;
     margin: 0 auto;
     padding: 1%;
     background-color: #FFF3E4;
     padding-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Bouton des paramètres */
 #params {
     margin-left: auto;
     display: block;
     padding-top: 5px;
-}
-
-.card-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.custom-dialog-container {
-    background-color: #FFF3E4;
-}
-
-.container {
-    color: black;
-}
-
-#params {
     background-color: #FA7E5C !important;
     border: none;
 }
@@ -35,18 +22,37 @@
     color: white;
 }
 
+/* Titre de la carte */
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Couleur principale pour les modals/dialogues */
+.custom-dialog-container {
+    background-color: #FFF3E4;
+}
+
+/* Conteneur global */
+.container {
+    color: black;
+}
+
+/* Classe pour le rang */
 .card-rank {
     font-size: 18px;
     margin-bottom: 0;
 }
 
+/* Texte spécifique au rang/elo */
 .text-elo {
     font-weight: lighter;
     margin-top: -10px;
 }
 
-.trophy-pic 
-{
+/* Image du trophée */
+.trophy-pic {
     display: inline-block;
     width: 50px;
     height: auto;
@@ -54,3 +60,119 @@
     top: 0;
     max-width: 100%;
 }
+
+/* Section historique */
+.history-container {
+    text-align: center;
+    margin: 30px auto;
+    max-width: 60%;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Ligne des jeux */
+.game-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    border: 3px solid;
+    opacity: 0.9;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    background-color: transparent;
+    display: flex;
+  justify-content: space-between; /* Espace égal entre les éléments */
+  align-items: center; /* Centrer verticalement les éléments */
+}
+
+/* Animation au survol des lignes */
+.game-line:hover {
+    transform: scale(1.02);
+    background-color: rgba(112, 112, 112, 0.1);
+}
+
+/* Style pour aligner les mat-icons avec le texte */
+.game-line mat-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+    color: #000;
+}
+
+/* Texte pour les lignes */
+.game-line span {
+    display: flex;
+    align-items: center;
+}
+
+/* Espacement entre les items */
+.history-item {
+    margin-bottom: 15px;
+}
+
+/* Ligne de séparation */
+hr {
+    margin-top: 15px;
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    width: 100%;
+}
+
+/* Titre des parties */
+.game-title {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Transition des icônes */
+.game-line mat-icon:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.crown {
+    margin-left: 5px;
+    height:10px;
+    width: auto;
+}
+
+.stone {
+    margin-left: 5px;
+}
+
+.points {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.flag {
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 3px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stone.white {
+    color: white !important;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+  }
+  
+  .stone.black {
+    color: black;
+    text-shadow: 0px 2px 5px rgba(255, 255, 255, 0.8);
+  }
+  
+  .espaceGauche{
+    margin-left: 10px;
+  }
+
+  .espaceDroit{
+    margin-right: 10px;
+  }

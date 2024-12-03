@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import  {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 import { MatDialog } from '@angular/material/dialog';
 import { UserCookieService } from '../Model/UserCookieService';
@@ -11,7 +12,7 @@ import { User } from '../Model/User';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatIconModule,MatButtonModule, HttpClientModule],
+  imports: [MatIconModule,MatButtonModule, HttpClientModule,CommonModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -25,6 +26,26 @@ export class ProfileComponent {
   private userEmail: string;
   private rank: string;
   private avatar: string;
+  private historyData: Array<{
+    black:string;
+    white:string;
+    gameId: number;
+    moveNumber: number;
+    boardState: string;
+    capturedBlack: number;
+    capturedWhite: number;
+    rule:string;
+    size:string;
+    player1: string;
+    player2: string;
+    winner: string;
+    date: string;
+  }> = [];
+
+  // Getter pour accéder aux données
+  public getHistoryData(): Array<any> {
+    return this.historyData;
+  }
 
   /**
    * Renvoi l'avatar de l'utilisateur
@@ -75,6 +96,12 @@ export class ProfileComponent {
     this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
   }
 
+
+  ngOnInit(): void {
+    // Appel de la méthode pour charger l'historique au moment de l'initialisation
+    this.getHistory();
+  }
+
   /**
    * Ouvre une popup profile settings pour modifier son profile 
    */
@@ -92,7 +119,78 @@ export class ProfileComponent {
       this.rank = this.userCookieService.getUser()!.Rank;
     });
   }
-  
+
+  /**
+   * permet d'afficher l'historique des parties de l'utilisateurs 
+   */
+  public getHistory(): void {
+    const history: any[] = ProfileComponent.getFAKE_DAO_History();
+
+    // Préparation des données pour affichage
+    this.historyData = history.map(entry => ({
+      gameId: entry.gamestate.game_id,
+      moveNumber: entry.gamestate.move_number,
+      boardState: entry.gamestate.board_state,
+      capturedBlack: entry.gamestate.captured_black,
+      capturedWhite: entry.gamestate.captured_white,
+      player1: entry.savedgame.player1,
+      player2: entry.savedgame.player2,
+      black:entry.gamestate.black,
+      white:entry.gamestate.white,
+      size: entry.savedgame.size,
+      rule:entry.savedgame.rule,
+      winner: entry.savedgame.winner,
+      date: new Date(entry.savedgame.date).toLocaleString(), // Format de date
+    }));
+  }
+
+  // Simule un DAO avec des données en dur
+  public static getFAKE_DAO_History(): Array<any> {
+    return [
+      {
+        gamestate: {
+          id: 1,
+          game_id: 1,
+          move_number: 42,
+          black : 'clem',
+          white :'test',
+          board_state: "xxoooxxooxo",
+          captured_black: 3,
+          captured_white: 2,
+        },
+        savedgame: {
+          id: 1,
+          player1: "test",
+          player2: "clem",
+          size: '19x19',
+          rule: "japonaise",
+          winner: "clem",
+          date: "2024-11-27T10:30:00",
+        },
+      },
+      {
+        gamestate: {
+          id: 2,
+          game_id: 2,
+          black : 'clem',
+          white :'test',
+          move_number: 25,
+          board_state: "ooxoxoxox",
+          captured_black: 1,
+          captured_white: 3,
+        },
+        savedgame: {
+          id: 2,
+          player1: "test",
+          player2: "clem",
+          size: '9x9',
+          rule: "chinoise",
+          winner: "test",
+          date: "2024-11-25T14:00:00",
+        },
+      },
+    ];
+  }
 }
 
 
