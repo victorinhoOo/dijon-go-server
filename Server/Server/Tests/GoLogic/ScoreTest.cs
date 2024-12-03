@@ -34,10 +34,10 @@ namespace Tests.Test_GoLogic
             // . . . @ . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(6, black);
-            Assert.Equal(3, white);
+            Assert.Equal(9.5, white);
         }
 
         [Fact]
@@ -68,10 +68,10 @@ namespace Tests.Test_GoLogic
             // . . . @ . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
             
             Assert.Equal(2, black);
-            Assert.Equal(0, white);
+            Assert.Equal(6.5, white);
         }
 
         [Fact]
@@ -105,10 +105,10 @@ namespace Tests.Test_GoLogic
             // @ @ . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(2, black);
-            Assert.Equal(9, white);
+            Assert.Equal(15.5, white);
         }
 
         [Fact]
@@ -406,10 +406,10 @@ namespace Tests.Test_GoLogic
             // @ @ . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(2, black);
-            Assert.Equal(12, white);
+            Assert.Equal(18.5, white);
         }
 
         [Fact]
@@ -443,10 +443,10 @@ namespace Tests.Test_GoLogic
             // @ @ . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(0, black);
-            Assert.Equal(6, white);
+            Assert.Equal(12.5, white);
         }
 
         [Fact] //TODO: !!! Penser à le retier
@@ -457,10 +457,10 @@ namespace Tests.Test_GoLogic
             ScoreRule gameScore = new JapaneseScoreRule(gameBoard);
 
             gameLogic.PlaceStone(8, 8);
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(0, black);
-            Assert.Equal(0, white);
+            Assert.Equal(6.5, white);
         }
     }
 }
