@@ -209,12 +209,9 @@ export class IndexComponent implements OnInit {
             <option value="j">Japonaises</option>
           </select>
 
-           <label for="komi">Komi :</label>
-          <select id="komi" name="komi" class="swal2-select">
-            <option value="0" selected>Pas de komi</option>
-            <option value="6,5">6.5</option>
-            <option value="7,5">7.5</option>
-          </select>
+          <label for="komi">Choix du komi :</label>
+          <input id="komi" name="komi" type="text" class="swal2-input" value="6.5" required>
+          <br>
         </form>
       `,
       confirmButtonText: 'Créer',

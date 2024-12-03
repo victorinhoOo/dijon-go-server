@@ -437,3 +437,6 @@
 ::ng-deep #game-name{
     width: 100% !important;
 }
+::ng-deep #komi{
+    width: 100% !important;
+}
