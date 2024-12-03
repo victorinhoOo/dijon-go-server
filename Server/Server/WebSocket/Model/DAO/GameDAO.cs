@@ -1,4 +1,5 @@
-﻿using Server.Model.Data;
+﻿using DotNetEnv;
+using Server.Model.Data;
 using WebSocket.Model.DAO.Redis;
 
 namespace WebSocket.Model.DAO
@@ -14,7 +15,8 @@ namespace WebSocket.Model.DAO
 
         public GameDAO()
         {
-            this.database = new SQLiteDatabase("Data Source=../../../../Server/dgs.db");
+            string sqliteConnectionString = Env.GetString("SQLITE_CONNECTION_STRING");
+            this.database = new SQLiteDatabase(sqliteConnectionString);
             this.userDAO = new UserDAO();
             this.gameStateDAO = new GameStateDAO();
 
@@ -97,7 +99,7 @@ namespace WebSocket.Model.DAO
         }
 
         /// <inheritdoc/>
-        public void UpdateGame(Game game)
+        public async Task UpdateGameAsync(Game game)
         {
             int winnerId;
             if (game.GetScore().Item1 > game.GetScore().Item2)
@@ -110,7 +112,7 @@ namespace WebSocket.Model.DAO
             }
 
             int gameId = GetIdFromGame(game);
-            this.database.Connect();
+            database.Connect(); // Connecter de manière asynchrone
 
             try
             {
@@ -139,22 +141,23 @@ namespace WebSocket.Model.DAO
                     {"@score_player_1", game.GetScore().Item1}, // Récupère le score actuel du joueur 1
                     {"@score_player_2", game.GetScore().Item2}, // Récupère le score actuel du joueur 2
                     {"@rule", game.Rule},
-                    {"@winner_id", winnerId}, 
-                    {"@date", DateTime.Now} 
+                    {"@winner_id", winnerId},
+                    {"@date", DateTime.Now}
                 };
 
-                // Exécuter la requête
+                // Exécuter la requête de manière asynchrone
                 database.ExecuteNonQuery(query, parameters);
             }
             catch (Exception ex)
             {
-                throw new Exception(($"Erreur lors de la mise à jour de la partie : {ex.Message}"));
+                throw new Exception($"Erreur lors de la mise à jour de la partie : {ex.Message}");
             }
             finally
             {
-                this.database.Disconnect();
+                database.Disconnect(); // Déconnexion asynchrone
             }
         }
+
 
 
         private int GetIdFromGame(Game game)
@@ -221,46 +224,48 @@ namespace WebSocket.Model.DAO
         }
 
         /// <inheritdoc/>
-        public void TransferMovesToSqlite(Game game)
+        public async Task TransferMovesToSqliteAsync(Game game)
         {
             int gameId = GetIdFromGame(game);
-            List<GameState> moves = gameStateDAO.GetGameStates(gameId);
+            List<GameState> moves = gameStateDAO.GetGameStates(gameId); 
 
-            this.database.Connect();
+            database.Connect(); 
 
             try
             {
                 foreach (var move in moves)
                 {
                     string query = @"
-                        INSERT INTO gamestate 
-                        (game_id, board_state, captured_black, captured_white) 
-                        VALUES 
-                        (@game_id, @board_state, @captured_black, @captured_white);
-                    ";
+                INSERT INTO gamestate 
+                (game_id, board_state, captured_black, captured_white) 
+                VALUES 
+                (@game_id, @board_state, @captured_black, @captured_white);
+            ";
 
                     var parameters = new Dictionary<string, object>
-                    {
-                        {"@game_id", gameId},
-                        {"@board_state", move.BoardState},
-                        {"@captured_black", move.CapturedBlack},
-                        {"@captured_white", move.CapturedWhite}
-                    };
+            {
+                {"@game_id", gameId},
+                {"@board_state", move.BoardState},
+                {"@captured_black", move.CapturedBlack},
+                {"@captured_white", move.CapturedWhite}
+            };
 
+                    // Exécuter la requête de manière asynchrone
                     database.ExecuteNonQuery(query, parameters);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new Exception("Erreur lors du transfert des coups vers SQLite" + ex.Message);
+                throw new Exception($"Erreur lors du transfert des coups vers SQLite : {ex.Message}");
             }
             finally
             {
-                this.database.Disconnect();
+                database.Disconnect(); // Déconnexion asynchrone
             }
 
             // Supprimer les GameStates dans Redis après le transfert
-            DeleteGameStates(gameId);
+            DeleteGameStates(gameId); // Supposant que DeleteGameStates est aussi asynchrone
         }
+
     }
 }

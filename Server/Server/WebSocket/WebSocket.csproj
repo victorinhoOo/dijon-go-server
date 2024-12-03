@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".env" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include=".env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.10" />
     <PackageReference Include="MySql.Data" Version="9.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

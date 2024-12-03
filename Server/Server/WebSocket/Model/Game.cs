@@ -187,21 +187,35 @@ namespace WebSocket.Model
             ChangeTurn();
         }
 
-
         /// <summary>
-        /// Test si la partie est terminée, si elle est terminée déclenche l'insertion des coups et la mise à jour de la partie en bdd 
+        /// Test si la partie est terminée. Si oui, déclenche les opérations de BDD en arrière-plan.
         /// </summary>
         /// <returns>True si la partie est terminée, False sinon</returns>
-        public bool TestWin()
+        public Task<bool> TestWinAsync()
         {
             bool result = false;
+
             if (logic.IsEndGame)
             {
                 result = true;
-                gameManager.TransferMovesToSql(this);
-                gameManager.UpdateGame(this);
+
+                // Exécuter les tâches BDD en arrière-plan
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await gameManager.TransferMovesToSqlAsync(this);
+                        await gameManager.UpdateGameAsync(this);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Erreur lors des opérations de transfert de Redis vers Sqlite : {ex.Message}");
+                    }
+                });
             }
-            return result;
+
+            // Retourner immédiatement le résultat
+            return Task.FromResult(result);
         }
     }
 }

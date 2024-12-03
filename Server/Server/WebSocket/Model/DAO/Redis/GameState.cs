@@ -12,7 +12,7 @@
         private int capturedWhite;
 
         /// <summary>
-        /// Obtient ou définit l'identifiant de l'état du jeu.
+        /// Obtient l'identifiant de l'état du jeu.
         /// </summary>
         public int Id
         {
@@ -20,7 +20,7 @@
         }
 
         /// <summary>
-        /// Obtient ou définit l'identifiant du jeu auquel cet état appartient.
+        /// Obtient l'identifiant du jeu auquel cet état appartient.
         /// </summary>
         public int GameId
         {
@@ -28,7 +28,7 @@
         }
 
         /// <summary>
-        /// Obtient ou définit l'état du plateau sous forme de chaîne.
+        /// Obtient l'état du plateau sous forme de chaîne.
         /// </summary>
         public string BoardState
         {
@@ -36,7 +36,7 @@
         }
 
         /// <summary>
-        /// Obtient ou définit le nombre de pierres noires capturées.
+        /// Obtient le nombre de pierres noires capturées.
         /// </summary>
         public int CapturedBlack
         {
@@ -44,7 +44,7 @@
         }
 
         /// <summary>
-        /// Obtient ou définit le nombre de pierres blanches capturées.
+        /// Obtient le nombre de pierres blanches capturées.
         /// </summary>
         public int CapturedWhite
         {

@@ -73,16 +73,17 @@ namespace WebSocket.Model
         }
 
         /// <summary>
-        /// Modifie une partie en base de données
+        /// Modifie une partie en base de données.
         /// </summary>
         /// <param name="game">La partie en cours</param>
-        public void UpdateGame(Game game)
+        public async Task UpdateGameAsync(Game game)
         {
-            this.gameDAO.UpdateGame(game);
+            await this.gameDAO.UpdateGameAsync(game);
         }
 
+
         /// <summary>
-        /// Insère un "état de partie" correspondant à un coup en base de données
+        /// Insère un "état de partie" correspondant à un coup en base de données.
         /// </summary>
         /// <param name="game">La partie en cours</param>
         public void InsertGameState(Game game)
@@ -90,13 +91,14 @@ namespace WebSocket.Model
             this.gameDAO.InsertGameState(game);
         }
 
+
         /// <summary>
         /// Transfert les coups de Redis vers Sql
         /// </summary>
         /// <param name="game">La partie en cours</param>
-        public void TransferMovesToSql(Game game)
+        public async Task TransferMovesToSqlAsync(Game game)
         {
-            this.gameDAO.TransferMovesToSqlite(game);
+            await this.gameDAO.TransferMovesToSqliteAsync(game);
         }
     }
 }

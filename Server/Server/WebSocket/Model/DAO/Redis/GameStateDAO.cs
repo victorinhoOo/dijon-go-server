@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using DotNetEnv;
+using StackExchange.Redis;
 
 namespace WebSocket.Model.DAO.Redis
 {
@@ -9,9 +10,10 @@ namespace WebSocket.Model.DAO.Redis
     {
         private readonly StackExchange.Redis.IDatabase redisDatabase;
 
-        public GameStateDAO(string connectionString = "localhost:6379")
+        public GameStateDAO()
         {
-            var redis = ConnectionMultiplexer.Connect(connectionString);
+            string redisConnectionString = Env.GetString("REDIS_CONNECTION_STRING");
+            var redis = ConnectionMultiplexer.Connect(redisConnectionString);
             redisDatabase = redis.GetDatabase();
         }
 

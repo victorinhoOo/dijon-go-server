@@ -28,7 +28,7 @@
         /// Met à jour une partie existante dans la base de données.
         /// </summary>
         /// <param name="game">L'objet Game contenant les nouvelles informations à mettre à jour.</param>
-        public void UpdateGame(Game game);
+        public Task UpdateGameAsync(Game game);
 
         /// <summary>
         /// Insère l'état d'une partie en base de données.
@@ -40,6 +40,6 @@
         /// Transfère les différents états d'une partie depuis la base de données Redis vers la base de données SQLite.
         /// </summary>
         /// <param name="game">La partie dont les états doivent être transférés.</param>
-        public void TransferMovesToSqlite(Game game);
+        public Task TransferMovesToSqliteAsync(Game game);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Server.Model.Data;
+﻿using DotNetEnv;
+using Server.Model.Data;
 using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
@@ -10,8 +11,8 @@ namespace WebSocket.Model.DAO
 
         public UserDAO()
         {
-            this.database = new SQLiteDatabase("Data Source= ../../../../Server/dgs.db");
-
+            string sqliteConnectionString = Env.GetString("SQLITE_CONNECTION_STRING");
+            this.database = new SQLiteDatabase(sqliteConnectionString);
         }
         /// <inheritdoc/>
         public GameUserDTO GetUserByToken(string token)
