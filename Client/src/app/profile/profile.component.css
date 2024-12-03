@@ -1,12 +1,12 @@
 /* Carte de profil et historique */
 .card-pos {
-    max-width: 60%; /* Largeur fixe à 60% pour les deux sections */
+    max-width: 60%;
     margin: 0 auto;
     padding: 1%;
     background-color: #FFF3E4;
     padding-top: 10px;
-    border-radius: 10px; /* Ajout d'une bordure arrondie pour une meilleure apparence */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Légère ombre pour le relief */
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Bouton des paramètres */
@@ -64,14 +64,13 @@
 /* Section historique */
 .history-container {
     text-align: center;
-    margin: 30px auto; /* Espacement vertical pour séparer les sections */
-    max-width: 60%; /* Largeur alignée avec la section profil */
+    margin: 30px auto;
+    max-width: 60%;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8); /* Fond semi-transparent */
-    backdrop-filter: blur(10px); /* Effet de flou pour un design moderne */
-    border-radius: 15px; /* Bordures arrondies pour une meilleure esthétique */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Ajout d'ombre pour un effet surélevé */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Bordure translucide élégante */
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Ligne des jeux */
@@ -80,32 +79,37 @@
     flex-wrap: wrap;
     gap: 15px;
     justify-content: space-between;
-    align-items: center; /* Alignement vertical des éléments */
+    align-items: center;
     padding: 15px;
-    background-color: rgba(0, 0, 0, 0.05); /* Fond légèrement coloré pour contraste */
-    border-radius: 10px; /* Bordures arrondies pour chaque ligne */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Bordure subtile */
-    opacity: 0.9; /* Légère transparence */
-    transition: transform 0.3s ease, background-color 0.3s ease; /* Animation pour hover */
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    border: 3px solid;
+    opacity: 0.9;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    background-color: transparent;
+    display: flex;
+  justify-content: space-between; /* Espace égal entre les éléments */
+  align-items: center; /* Centrer verticalement les éléments */
 }
 
 /* Animation au survol des lignes */
 .game-line:hover {
-    transform: scale(1.02); /* Légère mise en relief */
-    background-color: rgba(0, 0, 0, 0.1); /* Changement de fond */
+    transform: scale(1.02);
+    background-color: rgba(112, 112, 112, 0.1);
 }
 
 /* Style pour aligner les mat-icons avec le texte */
 .game-line mat-icon {
-    vertical-align: middle; /* Aligne les icônes avec le texte */
-    margin-right: 5px; /* Espacement entre l'icône et le texte */
-    color: #000; /* Couleur par défaut des icônes */
+    vertical-align: middle;
+    margin-right: 5px;
+    color: #000;
 }
 
 /* Texte pour les lignes */
 .game-line span {
     display: flex;
-    align-items: center; /* Alignement horizontal et vertical */
+    align-items: center;
 }
 
 /* Espacement entre les items */
@@ -116,18 +120,59 @@
 /* Ligne de séparation */
 hr {
     margin-top: 15px;
-    border: 1px solid rgba(200, 200, 200, 0.5); /* Ligne plus subtile */
+    border: 1px solid rgba(200, 200, 200, 0.5);
     width: 100%;
 }
 
 /* Titre des parties */
 .game-title {
     font-weight: bold;
-    color: #333; /* Couleur sombre pour le texte */
+    color: #333;
 }
 
 /* Transition des icônes */
 .game-line mat-icon:hover {
-    transform: scale(1.2); /* Mise en valeur de l'icône */
+    transform: scale(1.2);
     transition: transform 0.2s ease, color 0.2s ease;
 }
+
+.crown {
+    margin-left: 5px;
+    height:10px;
+    width: auto;
+}
+
+.stone {
+    margin-left: 5px;
+}
+
+.points {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.flag {
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 3px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stone.white {
+    color: white !important;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+  }
+  
+  .stone.black {
+    color: black;
+    text-shadow: 0px 2px 5px rgba(255, 255, 255, 0.8);
+  }
+  
+  .espaceGauche{
+    margin-left: 10px;
+  }
+
+  .espaceDroit{
+    margin-right: 10px;
+  }

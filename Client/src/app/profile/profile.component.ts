@@ -27,11 +27,15 @@ export class ProfileComponent {
   private rank: string;
   private avatar: string;
   private historyData: Array<{
+    black:string;
+    white:string;
     gameId: number;
     moveNumber: number;
     boardState: string;
     capturedBlack: number;
     capturedWhite: number;
+    rule:string;
+    size:string;
     player1: string;
     player2: string;
     winner: string;
@@ -131,6 +135,10 @@ export class ProfileComponent {
       capturedWhite: entry.gamestate.captured_white,
       player1: entry.savedgame.player1,
       player2: entry.savedgame.player2,
+      black:entry.gamestate.black,
+      white:entry.gamestate.white,
+      size: entry.savedgame.size,
+      rule:entry.savedgame.rule,
       winner: entry.savedgame.winner,
       date: new Date(entry.savedgame.date).toLocaleString(), // Format de date
     }));
@@ -144,6 +152,8 @@ export class ProfileComponent {
           id: 1,
           game_id: 1,
           move_number: 42,
+          black : 'clem',
+          white :'test',
           board_state: "xxoooxxooxo",
           captured_black: 3,
           captured_white: 2,
@@ -152,8 +162,8 @@ export class ProfileComponent {
           id: 1,
           player1: "test",
           player2: "clem",
-          size: 19,
-          rule: "Standard",
+          size: '19x19',
+          rule: "japonaise",
           winner: "clem",
           date: "2024-11-27T10:30:00",
         },
@@ -162,6 +172,8 @@ export class ProfileComponent {
         gamestate: {
           id: 2,
           game_id: 2,
+          black : 'clem',
+          white :'test',
           move_number: 25,
           board_state: "ooxoxoxox",
           captured_black: 1,
@@ -171,8 +183,8 @@ export class ProfileComponent {
           id: 2,
           player1: "test",
           player2: "clem",
-          size: 13,
-          rule: "Custom",
+          size: '9x9',
+          rule: "chinoise",
           winner: "test",
           date: "2024-11-25T14:00:00",
         },

@@ -29,43 +29,53 @@
 <br>
 
 <div *ngIf="getHistoryData().length > 0; else noHistory" class="history-container">
-    <div *ngFor="let game of getHistoryData(); let i = index" class="history-item">
-      <div 
-        class="game-line" 
-        [ngStyle]="{'background-color': game.winner === UserPseudo ? 'rgb(77, 213, 84)' : '#FA7E5C'}">
-        <strong>Date : {{ game.date }}</strong>
+  <div *ngFor="let game of getHistoryData(); let i = index" class="history-item">
+    <div
+      class="game-line"
+      [ngStyle]="{ 'border-color': game.winner === UserPseudo ? '#96CEB4' : '#FF8080' }"
+      tabindex="0"
+    >
+    <strong>Date : {{ game.date }}</strong>
+      <span *ngIf="game.rule === 'chinoise'">
+        <img class="flag" src="china.svg" alt="Drapeau de la Chine" />
+      </span>
+      <span *ngIf="game.rule === 'japonaise'">
+        <img class="flag" src="japan.svg" alt="Drapeau du Japon" />
+      </span>
+      
+      <span>{{ game.size}}</span>
+      <span>
+        <mat-icon
+          class="stone"
+          [ngClass]="{ white: game.white === UserPseudo, black: game.black === UserPseudo }"
+        >
+          brightness_1
+        </mat-icon>
+        {{ UserPseudo }}
+        
+        <img *ngIf="game.winner === UserPseudo" class="crown" src="crown.svg" alt=" couronne">
+      </span>
         <span>
-          <mat-icon [ngStyle]="{'color':'white'}">brightness_1</mat-icon> {{ UserPseudo }}
-          <!-- Affiche le SVG si le joueur actuel est le vainqueur -->
-          <svg 
-            *ngIf="game.winner === UserPseudo" 
-            xmlns="http://www.w3.org/2000/svg" 
-            height="10px" 
-            viewBox="0 0 576 512">
-            <path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6l277.2 0c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/>
-          </svg>
+          <span class="points" class="espaceDroit" *ngIf="game.white === UserPseudo"> {{ game.capturedWhite }}</span>
+          <span class="points" class="espaceDroit" *ngIf="game.black === UserPseudo"> {{ game.capturedBlack }}</span>
+          VS
+          <span class="points" class="espaceGauche" *ngIf="game.white === game.player2"> {{ game.capturedWhite }}</span>
+          <span class="points" class="espaceGauche" *ngIf="game.black === game.player2"> {{ game.capturedBlack }}</span>
         </span>
-        VS
-        <span>
-          <mat-icon>brightness_1</mat-icon> {{ game.player2 }}
-          <!-- Affiche le SVG si le joueur 2 est le vainqueur -->
-          <svg 
-            *ngIf="game.winner === game.player2" 
-            xmlns="http://www.w3.org/2000/svg" 
-            height="10px" 
-            viewBox="0 0 576 512">
-            <path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6l277.2 0c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/>
-          </svg>
-        </span>
-       
-        <span>
-          Score final : 
-          <mat-icon>brightness_1</mat-icon> {{ game.capturedBlack }} / 
-          <mat-icon [ngStyle]="{'color':'white'}">brightness_1</mat-icon> {{ game.capturedWhite }}
-        </span>
-      </div>
-      <hr/>
+      <span>
+        <mat-icon
+          class="stone"
+          [ngClass]="{ white: game.white === game.player2, black: game.black === game.player2 }"
+        >
+          brightness_1
+        </mat-icon>
+        {{ game.player2 }}
+        <img *ngIf="game.winner === game.player2" class="crown" src="crown.svg" alt=" couronne">
+      </span>
     </div>
+    <hr />
+  </div>
+  
   </div>
   
   <ng-template #noHistory>
