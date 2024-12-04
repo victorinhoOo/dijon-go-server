@@ -129,7 +129,16 @@ export class IndexComponent implements OnInit {
               : `<img class="flag" src="china.svg"/>`;
             content += `<div class="game-choice">
               <i class="fas fa-play"></i>
-              <button id="game-${index}"> <span id="gameName">${game["name"]}</span> - ${game["size"]}x${game["size"]} - Créateur : ${game["creatorName"]} ${stringRule}</button>
+              <button id="game-${index}"> 
+              <span id="gameName">${game["name"]}</span> - ${game["size"]}x${game["size"]} - Créateur : ${game["creatorName"]}
+              <div class="game-info">
+                <div class="grid-column">
+                  <div class="komi">Komi : ${game["komi"]}</div>
+                  <div class="handicap">Handicap : ${game["handicap"]}</div>
+                </div>
+                ${stringRule}
+              </div>
+              </button>
             </div><br>`;
           });
         }
@@ -138,12 +147,14 @@ export class IndexComponent implements OnInit {
         Swal.fire({
           title: 'Parties disponibles',
           html: content,
+
           showCloseButton: true,
           focusConfirm: false,
           confirmButtonText: 'Fermer',
           customClass: {
             confirmButton: 'custom-ok-button',
           },
+          width: '800px',
           didOpen: () => {
             // Ajouter les event listeners après que le contenu soit injecté
             games.forEach((game, index) => {
@@ -185,7 +196,7 @@ export class IndexComponent implements OnInit {
       html: `
         <form id="create-game-form">
          <label for="game-name">Nom de la partie :</label>
-          <input id="game-name" name="game-name" type="text" class="swal2-input" placeholder="Nom de la partie" required>
+          <input id="game-name" name="game-name" type="text" class="swal2-input" placeholder="Nom de la partie">
           <br>
 
           <label for="grid-size">Taille de la grille :</label>
@@ -212,6 +223,10 @@ export class IndexComponent implements OnInit {
           <label for="komi">Choix du komi :</label>
           <input id="komi" name="komi" type="text" class="swal2-input" value="6.5" required>
           <br>
+
+          <label for="number">Choix du handicap :</label>
+          <input type="number" id="handicap" name="handicap" min="0" max="9" class="swal2-input" value="0"/>
+
         </form>
       `,
       confirmButtonText: 'Créer',
@@ -224,12 +239,12 @@ export class IndexComponent implements OnInit {
         const rules = (document.getElementById('rules') as HTMLSelectElement).value;
         const name = (document.getElementById('game-name') as HTMLSelectElement).value;
         const komi = (document.getElementById('komi') as HTMLSelectElement).value;
-        const handicap = 7;
+        const handicap = (document.getElementById('handicap') as HTMLSelectElement).value;
         return { gridSize, rules, name, komi, handicap };
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { gridSize, rules, name, komi , handicap } = result.value!;
+        const { gridSize, rules, name, komi, handicap } = result.value!;
 
         // Affichez un chargement avant la connexion
         Swal.fire({
