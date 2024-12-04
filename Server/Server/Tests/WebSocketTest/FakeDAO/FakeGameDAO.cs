@@ -84,7 +84,7 @@ namespace Tests.WebSockets.FakeDAO
             return games.Select(game => new AvailableGameInfoDTO
             {
                 Id = game.Id,
-                Title = $"Partie numéro {game.Id}",
+                Name = $"Partie numéro {game.Id}",
                 Size = game.Size,
                 Rule = game.Rule
             }).ToList();
