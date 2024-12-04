@@ -30,21 +30,6 @@ export class AvailableGameInfoDTO {
         return this.id;
     }
 
-
-    /**
-     * Renvoie le nom d'utilisateur du joueur 1
-     */
-    public UsernamePlayer1(): string {
-        return this.usernamePlayer1;
-    }
-
-    /**
-     * Renvoie le nom d'utilisateur du joueur 2
-     */
-    public UsernamePlayer2(): string {
-        return this.usernamePlayer2;
-    }
-
     /**
      * Renvoie la taille de la grille de jeu
      */
