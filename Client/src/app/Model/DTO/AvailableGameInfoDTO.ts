@@ -9,8 +9,9 @@ export class GameInfoDTO {
     private creatorName : string;
     private komi : number;
     private name: string;
+    private handicap: number;
 
-    constructor(id: number, size: number, rule: string ,creatorName:string, komi : number, name: string) {
+    constructor(id: number, size: number, rule: string ,creatorName:string, komi : number, name: string,handicap:number) {
         this.id = id;
 
         this.size = size;
@@ -18,6 +19,7 @@ export class GameInfoDTO {
         this.creatorName = creatorName;
         this.komi = komi;
         this.name = name;
+        this.handicap = handicap;
     }
 
     /**
@@ -43,5 +45,8 @@ export class GameInfoDTO {
     }
     public Name(): string{
         return this.name;
+    }
+    public Handicap(): number{
+        return this.handicap;
     }
 }
