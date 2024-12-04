@@ -129,7 +129,6 @@ export class WebsocketService {
         this.setPlayerColor("black");
         let userToken = this.userCookieService.getToken();
         this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`);
-        console.log(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`)
         this.router.navigate(['game', size, rule]);
       } else {
         console.log('not connected');
