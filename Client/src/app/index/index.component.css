@@ -444,3 +444,6 @@
     font-weight: bold !important;
     margin-right: 5px;
 }
+::ng-deep #handicap{
+    width: 100%;
+}

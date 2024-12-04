@@ -212,6 +212,10 @@ export class IndexComponent implements OnInit {
           <label for="komi">Choix du komi :</label>
           <input id="komi" name="komi" type="text" class="swal2-input" value="6.5" required>
           <br>
+
+          <label for="number">Choix du handicap :</label>
+          <input type="number" id="handicap" name="handicap" min="0" max="9" class="swal2-input" value="0"/>
+
         </form>
       `,
       confirmButtonText: 'Créer',
@@ -224,11 +228,12 @@ export class IndexComponent implements OnInit {
         const rules = (document.getElementById('rules') as HTMLSelectElement).value;
         const name = (document.getElementById('game-name') as HTMLSelectElement).value;
         const komi = (document.getElementById('komi') as HTMLSelectElement).value;
+        const handicap = (document.getElementById('handicap') as HTMLSelectElement).value;
         return { gridSize, rules, name, komi };
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { gridSize, rules, name, komi } = result.value!;
+        const { gridSize, rules, name, komi , handicap} = result.value!;
 
         // Affichez un chargement avant la connexion
         Swal.fire({
