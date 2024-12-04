@@ -9,7 +9,7 @@
         private int size;
         private string rule;
         private string creatorName;
-        private int komi;
+        private float komi;
         private string name;
         private int handicap;
 
@@ -36,7 +36,7 @@
         /// <summary>
         /// Nom de l'utilisateur qui a crée la partie 
         /// </summary>
-        public int Komi { get => komi; set => komi = value; }
+        public float Komi { get => komi; set => komi = value; }
         /// <summary>
         /// Retourne et modifie le nom de la partie
         /// </summary>

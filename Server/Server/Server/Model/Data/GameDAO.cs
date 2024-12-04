@@ -1,6 +1,7 @@
 ﻿using Server.Model.Data;
 using Server.Model.DTO;
 using System.Data;
+using System.Globalization;
 
 /// <summary>
 /// Gère les requêtes en lien avec les parties de jeu.
@@ -36,7 +37,7 @@ public class GameDAO : IGameDAO
                 Size = Convert.ToInt32(row["size"]),
                 Rule = row["rule"].ToString(),
                 CreatorName = row["creatorName"].ToString(),
-                Komi = Convert.ToInt32(row["komi"]),
+                Komi = Convert.ToSingle(row["komi"]),
                 Name = row["name"].ToString(),
                 Handicap = Convert.ToInt32(row["handicap"])
             };
