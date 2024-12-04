@@ -1,4 +1,6 @@
-﻿namespace GoLogic.Score
+﻿using GoLogic.Goban;
+
+namespace GoLogic.Score
 {
     /// <summary>
     /// Classe pour gérer le décompte des points
@@ -6,14 +8,15 @@
     /// </summary>
     public class ChineseScoreRule : ScoreRule
     {
-        public ChineseScoreRule(GameBoard gameBoard) : base(gameBoard) { }
+        public ChineseScoreRule(IBoard gameBoard) : base(gameBoard) { }
 
         /// <summary>
         /// Règles de décompte des points Chinoise
         /// </summary>
-        /// <returns>Tuple d'entier correspondant aux scores noirs et blanc</returns>
+        /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public override (int blackStones, int whiteStones) CalculateScore()
         {
+            RemoveDeadStones();
             (int blackStones, int whiteStones) = CountStones();
             (int territoryBlack, int territoryWhite) = FindTerritory();
 

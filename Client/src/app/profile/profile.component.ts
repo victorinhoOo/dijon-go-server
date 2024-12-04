@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import  {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { User } from '../Model/User';
 
 @Component({
   selector: 'app-profile',
@@ -25,17 +26,30 @@ export class ProfileComponent {
   private rank: string;
   private avatar: string;
 
+  /**
+   * Renvoi l'avatar de l'utilisateur
+   */
   public get Avatar(): string {
     return this.avatar;
   }
+
+  /**
+   * Renvoi le pseudo de l'utilisateur
+   */
   public get UserPseudo(): string {
     return this.userPseudo;
   }
 
+  /**
+   * Renvoi le mail de l'utilisateur
+   */
   public get UserEmail(): string {
     return this.userEmail;
   }
 
+  /**
+   * Renvoi le rang de l'utilisateur
+   */
   public get Rank(): string {
     return this.rank;
   }
@@ -54,25 +68,28 @@ export class ProfileComponent {
     {
         this.router.navigate(['/login']);
     }
-
-    //recuperation de l'image de l'utilisateur à partir de son pseudo
-    this.userPseudo = this.userCookieService.getUser().Username;
-    this.userEmail = this.userCookieService.getUser().Email;
-    this.rank = "9 dan";
-    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo            
+    // Récupère les informations de l'utilisateur pour l'affichage
+    this.userPseudo = this.userCookieService.getUser()!.Username;
+    this.userEmail = this.userCookieService.getUser()!.Email;
+    this.rank = this.userCookieService.getUser()!.Rank;
+    this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
   }
 
   /**
    * Ouvre une popup profile settings pour modifier son profile 
    */
-  openDialog(): void {
+  public openDialog(): void {
     const dialogRef = this.dialog.open(ProfileSettingsComponent, {
       width: '80%',
       height: '85%',
       panelClass: 'custom-dialog-container'
     });
     dialogRef.afterClosed().subscribe(result => {
-       
+      // Récupère les informations de l'utilisateur après la modification
+      this.userPseudo = this.userCookieService.getUser()!.Username;
+      this.userEmail = this.userCookieService.getUser()!.Email;
+      this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}?t=${new Date().getTime()}`; // cache-busting pour mettre à jour l'avatar
+      this.rank = this.userCookieService.getUser()!.Rank;
     });
   }
   

@@ -1,19 +1,14 @@
 <div class="main-container">
-    <app-popup [show]="ShowPopup"  [title]="PopupTitle" (onClose)="handlePopupClose()">
-        <div class="game-choice" [innerHTML]="PopupContent">   
-                     
-        </div>
-    </app-popup>
     <div class="player-info">
         <img class="avatar" src="{{ Avatar }}" alt="photo de profil">
         <p class="pseudo">{{ UserPseudo }}</p>
     </div>
-    <div class="top-section">
+    <div class="top-section focus">
         <div class="rank">
             <img class="trophy-pic" src="trophy.png" alt="Trophy">
             <div class="rank-text">
                 <p class="rank-label">Rang</p>
-                <p class="rank-value">{{UserRank}}</p>
+                <p class="rank-value">{{UserRank}} <app-rankprogress></app-rankprogress></p>
             </div>
         </div>                
         <a class="last-game" href="">
@@ -21,19 +16,19 @@
             <p class="replay-last"><i class="fas fa-redo"></i>  Revoyez votre dernière partie</p>
         </a>
     </div>
-    <div class="game-options">
-        <a href="">
+    <div class="game-options focus">
+        <button id="join-matchmaking" tabindex="0">
             <img src="matchmaking.png" alt="Matchmaking">
             Matchmaking en ligne
-        </a>
-        <a id="create-game">
-            <img src="create.png" alt="Créer une partie">
+        </button>
+        <button id="create-game" tabindex="0">
+            <img src="create.png" alt="Créer une partie" >
             Créer une partie personnalisée
-        </a>
-        <a id="joinGames">
+        </button>
+        <button id="joinGames" tabindex="0">
             <img src="join.png" alt="Rejoindre une partie">
             Rejoindre une partie personnalisée
-        </a>
+        </button>
     </div>
     
 <div class="bottom-section">
@@ -50,9 +45,9 @@
             <div class="invitation-info">
                 <p>Louis vous a invité à jouer.</p>
             </div>
-            <div class="invitation-actions">
-                <a class="accept-btn"><mat-icon>check</mat-icon> Accepter</a>
-                <a class="decline-btn"><mat-icon>close</mat-icon> Refuser</a>
+            <div class="invitation-actions focus">
+                <a class="accept-btn" tabindex="0"><mat-icon>check</mat-icon> Accepter</a>
+                <a class="decline-btn" tabindex="0"><mat-icon>close</mat-icon> Refuser</a>
             </div>
         </div>
     </div>

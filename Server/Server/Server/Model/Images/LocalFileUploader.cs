@@ -24,10 +24,20 @@ namespace Server.Model.Images
         {
             try
             {
-                // Détermine le chemin complet du fichier
-                string filePath = Path.Combine(profilePicsPath, fileName + Path.GetExtension(file.FileName));
+                // Obtient le nom du fichier sans extension
+                string fileBasePath = Path.Combine(profilePicsPath, fileName);
 
-                // Sauvegarde le fichier sur le disque local
+                // Recherche et supprime les fichiers existants avec différentes extensions
+                foreach (var existingFile in Directory.GetFiles(profilePicsPath, $"{fileName}.*"))
+                {
+                    File.Delete(existingFile);
+                    this.logger.LogInformation($"Ancienne photo de profil supprimée : {existingFile}");
+                }
+
+                // Détermine le chemin complet du nouveau fichier avec l'extension actuelle
+                string filePath = fileBasePath + Path.GetExtension(file.FileName);
+
+                // Sauvegarde le nouveau fichier sur le disque local
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     this.logger.LogInformation($"Upload de la photo de profil : {filePath}");

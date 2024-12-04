@@ -20,10 +20,13 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@types/google-one-tap": "^1.2.6",
+    "angular-cd-timer": "^3.0.0",
     "ngx-cookie-service": "^18.0.0",
     "ngx-socket-io": "^4.7.0",
     "rxjs": "~7.8.0",
     "socket.io": "^4.8.0",
+    "sweetalert2": "^11.14.5",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },
@@ -42,4 +45,3 @@
     "typescript": "~5.5.2"
   }
 }
-

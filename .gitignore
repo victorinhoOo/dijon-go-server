@@ -396,3 +396,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+Client/src/app/environment.ts
+<<<<<<< Updated upstream
+=======
+/Server/Server/Server/dgs.db
+>>>>>>> Stashed changes
+/Server/Server/Server/dgs.db-journal

@@ -5,6 +5,7 @@ using Server.Model.Exceptions;
 using System.Security.Cryptography;
 using System.Text;
 using System;
+using Google.Apis.Auth;
 
 
 namespace Server.Model.Managers
@@ -60,6 +61,41 @@ namespace Server.Model.Managers
         }
 
         /// <summary>
+        /// Connecte un utilisateur en utilisant un ID token Google.
+        /// </summary>
+        /// <param name="idToken">L'ID token Google</param>
+        /// <returns>Le token de connexion généré</returns>
+        public async Task<string> GoogleConnect(string idToken)
+        {
+            string result = "";
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { "995926287687-u9810k8cnmk5b5ifaeh2fmtb4o34kinh.apps.googleusercontent.com" }
+            };
+
+            // Récupère les informations de l'utilisateur qui se connecte dans un "payload"
+            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+
+            User user = new User
+            {
+                Username = payload.Name,
+                Email = payload.Email
+            };
+
+            if (userDAO.GetUserByUsername(payload.Name) == null)
+            {
+                // si l'utilisateur ne s'est jamais connecté avec Google auparavant, on l'enregistre en bdd et on enregistre sa photo de profil
+                userDAO.Register(user);
+                IFormFile pfp = await imageManager.DownloadImageAsIFormFile(payload.Picture);
+                imageManager.UploadProfilePic(pfp, user.Username);
+            }
+
+            result = tokenManager.CreateTokenUser(user); // On génère le token pour l'utilisateur connecté
+
+            return result;
+        }
+
+        /// <summary>
         /// Hache le mot de passe et enregistre l'utilisateur en base de données
         /// </summary>
         /// <param name="registerUserDto">Les informations d'inscription de l'utilisateur</param>
@@ -89,7 +125,7 @@ namespace Server.Model.Managers
             };
             try
             {
-                if(registerUserDto.ProfilePic != null) // si une image a été sélectionné par l'utilisateur
+                if (registerUserDto.ProfilePic != null) // si une image a été sélectionné par l'utilisateur
                 {
                     imageManager.UploadProfilePic(registerUserDto.ProfilePic, user.Username); // Upload l'image de profil sur le serveur
                 }
@@ -121,14 +157,14 @@ namespace Server.Model.Managers
                     //  applique les modifications souhaitées
                     if (updateUserDTO.ProfilePic != null) // l'utilisateur a renseigné une nouvelle photo
                     {
-                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username); 
+                        imageManager.UploadProfilePic(updateUserDTO.ProfilePic, user.Username);
                     }
                     if (!string.IsNullOrEmpty(updateUserDTO.Username)) // l'utilisateur a renseigné un nouveau nom d'utilisateur
                     {
-                        if(this.userDAO.GetUserByUsername(updateUserDTO.Username) == null) // vérifie si le nom d'utilisateur n'est pas déjà pris
+                        if (this.userDAO.GetUserByUsername(updateUserDTO.Username) == null) // vérifie si le nom d'utilisateur n'est pas déjà pris
                         {
                             imageManager.RenameProfilePic(user.Username, updateUserDTO.Username); // Renomme l'image de profil sur le FTP (pour correspondre au nouveau nom d'utilisateur)
-                            user.Username = updateUserDTO.Username; 
+                            user.Username = updateUserDTO.Username;
                         }
                         else
                         {
@@ -200,7 +236,7 @@ namespace Server.Model.Managers
         public string HashPassword(string password)
         {
             // On établit un sel pour renforcer la sécurité du hash
-            string salt = "C3ciEst1SuperSelLaBale1Ne"; 
+            string salt = "C3ciEst1SuperSelLaBale1Ne";
 
             using (SHA256 sha256Hash = SHA256.Create())
             {
@@ -220,6 +256,13 @@ namespace Server.Model.Managers
                 return builder.ToString();
             }
         }
-
+        /// <summary>
+        /// Récupère les 5 joueurs les mieux classés
+        /// </summary>
+        /// <returns>le nom et le classement des 5 meilleurs joueurs</returns>
+        public Dictionary<string, int> GetLeaderBoard()
+        {
+            return this.userDAO.GetTop5Users();
+        }
     }
 }

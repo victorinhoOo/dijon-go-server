@@ -8,12 +8,12 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
 import { User } from '../Model/User';
-import { PopupComponent } from '../popup/popup.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, UploadImageComponent, HttpClientModule, PopupComponent],
+  imports: [ReactiveFormsModule, CommonModule, UploadImageComponent, HttpClientModule],
   templateUrl: './profile-settings.component.html',
   styleUrls: ['./profile-settings.component.css']
 })
@@ -28,78 +28,30 @@ export class ProfileSettingsComponent {
   private selectedImage: any;
   private userPseudo: string;
   private userEmail: string;
-  private showPopup: boolean;   
-  private popupMessage: string;   
-  private popupTitle: string;
   private oldPwdEmpty: boolean; //si l'ancien pwd est vide
-  private confirmPwdIsGood :boolean; //si le pwd et = au confirm pwd
-  private isStrongPassword :boolean; //si le pwd est strong
+  private confirmPwdIsGood: boolean; //si le pwd et = au confirm pwd
+  private isStrongPassword: boolean; //si le pwd est strong
 
-    /**
-   * Est vrai si le mdp et sa confirmation sont vrai
-   */
-    public get ConfirmPwdIsGood() :boolean
-    {
-      return this.confirmPwdIsGood;
-    }
+  /**
+ * Est vrai si le mdp et sa confirmation sont vrai
+ */
+  public get ConfirmPwdIsGood(): boolean {
+    return this.confirmPwdIsGood;
+  }
   /**
    * Verifie si le password est stong
    */
-  public get IsStrongPassword() : boolean
-  {
+  public get IsStrongPassword(): boolean {
     return this.isStrongPassword;
   }
 
   /**
    * renvoie si l'ancien mot de passe est vide ou non
    */
-  public get OldPwdEmpty(): boolean
-  {
-     return this.oldPwdEmpty;
+  public get OldPwdEmpty(): boolean {
+    return this.oldPwdEmpty;
   }
 
-   /**
-   * Getter pour l'ouverture de la popup
-   */
-    public get ShowPopup(): boolean {
-      return this.showPopup;
-    }
-    /**
-     * Setter pour l'ouverture de la popup
-     */
-    public set ShowPopup(value :boolean)
-    {
-      this.showPopup = value;
-    }
-    /**
-     * Getter pour le message d'erreur
-     */
-    public get PopupTitle(): string {
-      return this.popupTitle;
-    }
-
-    /**
-     * Setter pour le titre de la popup
-     */
-    public set PopupTitle(value: string)
-    {
-      this.popupTitle = value;
-    }
-
-    /**
-     * Getter pour le message de la popup
-     */
-    public get PopupMessage() : string
-    {
-      return this.popupMessage;
-    }
-    /**
-     * Setter pour le message de la popup
-     */
-    public set PopupMessage(value :string)
-    {
-      this.popupMessage = value;
-    }
 
   /**
    * Getter pour userPseudo
@@ -134,19 +86,14 @@ export class ProfileSettingsComponent {
   /**
    * Initialise le composant en créant un objet UserDAO et en récupérant les informations de l'utilisateurice 
    */
-  constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<ProfileSettingsComponent>, private userCookieService: UserCookieService, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private userCookieService: UserCookieService, private http: HttpClient, private dialogRef: MatDialogRef<ProfileSettingsComponent>) {
     this.userDAO = new UserDAO(this.http);
     this.token = this.userCookieService.getToken();
-    this.userPseudo = this.userCookieService.getUser().Username;
-    this.userEmail = this.userCookieService.getUser().Email;
-    this.popupTitle = '';
-    this.popupMessage = '';
-    this.showPopup = false;
+    this.userPseudo = this.userCookieService.getUser()!.Username;
+    this.userEmail = this.userCookieService.getUser()!.Email;
     this.oldPwdEmpty = false;
     this.confirmPwdIsGood = true;
     this.isStrongPassword = true;
-
-
   }
 
   /**
@@ -155,8 +102,8 @@ export class ProfileSettingsComponent {
   ngOnInit(): void {
     this.profileForm = this.fb.group({
       pseudo: [''],
-      oldpwd: ['',Validators.required],
-      pwd: ['',[Validators.pattern("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")]], //8 caractères, une maj, une min et 1 chiffre min
+      oldpwd: ['', Validators.required],
+      pwd: ['', [Validators.pattern("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")]], //8 caractères, une maj, une min et 1 chiffre minimum
       Cpwd: [''],
       img: [null],
       email: ['']
@@ -171,93 +118,89 @@ export class ProfileSettingsComponent {
    * Met ensuite à jour les informations de l'utilisateur dans les cookies puis ferme la popup
    */
   public onSubmit(): void {
+    this.InitializePwdForm();
 
-  //reinitialise les attributs pour prochain nouveau envoie de formulaire
-  this.InitializePwdForm();
+    if (this.profileForm.valid && this.CheckIfConfirmPwdIsGood()) {
+      const user = new UpdateUserDTO(
+        this.token,
+        this.profileForm.value.pseudo,
+        this.profileForm.value.email,
+        this.profileForm.value.oldpwd,
+        this.profileForm.value.pwd,
+        this.selectedImage,
+      );
 
-    if (this.profileForm.valid && this.CheckIfConfirmPwdIsGood()) 
-      {
-        
-        const user = new UpdateUserDTO
-          (
-            this.token,
-            this.profileForm.value.pseudo,
-            this.profileForm.value.email,
-            this.profileForm.value.oldpwd,
-            this.profileForm.value.pwd,
-            this.selectedImage,
-          );
-        // Appel de la méthode du DAO pour mettre à jour l'utilisateur
-        this.userDAO.UpdateUser(user).subscribe({
-          next: () => {
-            this.PopupTitle =" Succès :";
-            this.PopupMessage = "Les modifications ont bien été validées";
-
-
-            // Met à jour les informations de l'utilisateur dans les cookies
-            this.userDAO.GetUser(this.token).subscribe({
-              next: (user: User) => {
-                this.userCookieService.setUser(user);
-                window.location.reload();
-              },
-              error: (err: HttpErrorResponse) => {
-                this.PopupTitle = 'Erreur :';
-                this.popupMessage =  err.message;
-                this.ShowPopup = true;
-              }
-            });
-          },
-          error: (err: HttpErrorResponse) => {
-            // En cas d'erreur
-            this.PopupTitle = ' Erreur :';
-            this.PopupMessage = err.message;
-            this.ShowPopup = true;
-          }
-        });
-    }
-   else //erreur dans le formulaire
-   {
-
-    this.popupMessage = 'Formulaire non valide. Veuillez corriger les erreurs.';
-    this.popupTitle = 'Erreur :';
-      //check si l'ancien pwd etait vide 
-      if(this.profileForm.value.oldpwd == '')
-      {
+      this.userDAO.UpdateUser(user).subscribe({
+        next: () => {
+          this.userDAO.GetUser(this.token).subscribe({
+            next: (user: User) => {
+              this.userCookieService.setUser(user);
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+              });
+              Toast.fire({
+                icon: "success",
+                title: "Modification réussie",
+              });
+              this.dialogRef.close();
+            },
+            error: (err: HttpErrorResponse) => {
+              this.showErrorAlert(err.message);
+            }
+          });
+        },
+        error: (err: HttpErrorResponse) => {
+          this.showErrorAlert(err.message);
+        }
+      });
+    } else {
+      //verification de la saisie de l'ancien pwd
+      if (this.profileForm.value.oldpwd === '') {
         this.oldPwdEmpty = true;
       }
-
-      //verifie si le pwd est strong
-      if (this.profileForm.get('pwd')?.hasError('pattern'))
-        {
-          this.isStrongPassword = false;
-        }
-
-      //verfie la confirmation du pwd est incorrecte
-      if(!this.CheckIfConfirmPwdIsGood())
-        {
-          this.confirmPwdIsGood = false;
-        }
-      this.showPopup = true;
+      //verification de la solidité du pwd
+      if (this.profileForm.get('pwd')?.hasError('pattern')) {
+        this.isStrongPassword = false;
+      }
+      //verification de la confirmation du pwd
+      if (!this.CheckIfConfirmPwdIsGood()) {
+        this.confirmPwdIsGood = false;
+      }
     }
+  }
+
+  /**
+   * Affiche un popup d'erreur 
+   * @param message message de l'erreur à afficher
+   */
+  private showErrorAlert(message: string) {
+    Swal.fire({
+      title: 'Erreur',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'Fermer',
+      showCloseButton: true,
+      customClass: {
+        confirmButton: 'custom-ok-button'
+      },
+    });
   }
 
   // Récupère l'image uploadée par l'utilisateur
-  onImageSelected(image: any) {
-    this.selectedImage = image; 
+  public onImageSelected(image: any) {
+    this.selectedImage = image;
   }
 
-  //fermeture du popup
-  public handlePopupClose(): void {
-    this.showPopup = false;
-  }
-
-    /**
-   * Renvoie vrai si le password et confimpassword sont pareil
-   */
-  public CheckIfConfirmPwdIsGood() :boolean
-  {
+  /**
+ * Renvoie vrai si le password et confimpassword sont pareil
+ */
+  public CheckIfConfirmPwdIsGood(): boolean {
     let result = false;
-    if(this.profileForm.value.pwd == this.profileForm.value.Cpwd)
+    if (this.profileForm.value.pwd == this.profileForm.value.Cpwd)
       result = true;
     return result;
   }
@@ -265,9 +208,8 @@ export class ProfileSettingsComponent {
   /**
    * Inialise les attributs liés au password du formulaire
    */
-  public  InitializePwdForm() :void
-  {
+  public InitializePwdForm(): void {
     this.confirmPwdIsGood = true;
-    this.isStrongPassword = true;
+    this.isStrongPassword = false;
   }
 }

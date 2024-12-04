@@ -1,4 +1,3 @@
-<app-popup [show]="ShowPopup" [popupMessage]="PopupMessage" [title]="PopupTitle" (onClose)="handlePopupClose()" ></app-popup>
 <div class="row">
     <div class="col marge">
         <div class="container">
@@ -14,20 +13,21 @@
                     </div>
                     <mat-card-content>
                         <form [formGroup]="ConnexionForm" (ngSubmit)="onSubmit()">
-                            <div class="form-group">
+                            <div class="form-group focus">
                                 <label for="pseudo" class="col-form-label">Pseudo :</label>
-                                <input id="pseudo" formControlName="pseudo" class="form-control" />
+                                <input id="pseudo" formControlName="pseudo" class="form-control" tabindex="0" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group focus">
                                 <label for="pwd" class="col-form-label">Mot de passe :</label>
-                                <input type="password" formControlName="pwd" id="pwd" class="form-control" />
+                                <input type="password" formControlName="pwd" id="pwd" class="form-control" tabindex="0" />
                             </div>
-                            <div class="mt-4">
-                                <button type="submit" class="btn btn-primary btn-block" [disabled]="!ConnexionForm.valid" id="submit">
+                            <div class="mt-4 focus">
+                                <button type="submit" class="btn btn-primary btn-block " [disabled]="!ConnexionForm.valid" id="submit" tabindex="0" >
                                     Se connecter
                                 </button>
                             </div>                                                                                                                                                                                                                                
                         </form>
+                        <div class="google-button focus"><app-google-connexion></app-google-connexion></div>
                     </mat-card-content>
                 </mat-card>
             </div>
