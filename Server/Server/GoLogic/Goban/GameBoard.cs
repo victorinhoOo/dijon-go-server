@@ -46,7 +46,7 @@
         /// Le plateau du jeu et ses pierres
         /// </summary>
         /// <param name="size">La taille du plateau size x size</param>
-        public GameBoard(int size)
+        public GameBoard(int size, string handicapColor = "white", int handicapNbr = 0)
         {
             if (size <= 0)
                 throw new ArgumentOutOfRangeException(nameof(size), "Board size must be positive");
@@ -57,6 +57,9 @@
             this.capturedBlackStones = 0;
             this.capturedWhiteStones = 0;
             InitializeBoard();
+
+            StoneColor color = handicapColor == "white" ? StoneColor.White : StoneColor.Black;
+            PlaceHandicapStones(handicapNbr, color);
         }
 
         /// <summary>
@@ -77,6 +80,7 @@
         /// </summary>
         private void InitializeBoard()
         {
+
             for (int i = 0; i < Size; i++)
             {
                 for (int j = 0; j < Size; j++)
@@ -86,7 +90,81 @@
                 }
             }
         }
-        
+
+        /// <summary>
+        /// Place les pierres de handicap sur le plateau
+        /// </summary>
+        /// <param name="handicapCount">Nombre de pierre de handicap</param>
+        /// <param name="handicapColor">Couleur du joueur avec l'aide</param>
+        private void PlaceHandicapStones(int handicapCount, StoneColor handicapColor)
+        {
+            List<(int row, int col)> positions = new List<(int row, int col)>();
+
+            if (Size == 9)
+            {
+                (int, int)[] hoshiPoints = new[] {
+                (2, 6),   // haut droit
+                (6, 2),   // bas gauche
+                (6, 6),   // bas droit
+                (2, 2)    // haut gauche
+                };
+
+                positions.AddRange(handicapCount == 1
+                    ? new[] { hoshiPoints[0] }  // seulement haut droit
+                    : hoshiPoints.Take(handicapCount)); // sequence normal de 2-4
+            }
+            else // 13x13 et 19x19
+            {
+                int near = 3;
+                int far = Size - 4;
+                int middle = Size / 2;
+
+                // sequence de position standart excepter (middle, middle)
+                (int, int)[] hoshiPoints = new[] {
+                (near, far),      // top right (first point)
+                (far, near),      // bottom left
+                (far, far),       // bottom right
+                (near, near),     // top left
+                (middle, middle), // center
+                (middle, near),   // left edge
+                (middle, far),     // right edge
+                (near, middle),   // top edge
+                (far, middle),    // bottom edge                
+                };
+
+                // Ajout des pierre de 2 à 4 en fonction
+                positions.AddRange(handicapCount == 1
+                    ? new[] { hoshiPoints[0] }  // seulement haut droit
+                    : hoshiPoints.Take(handicapCount)); // sequence normal 2-4
+
+                if (handicapCount > 4)
+                {
+                    // Ajout pour 5, 7, 9
+                    if (handicapCount % 2 == 1)
+                    {
+                        positions.AddRange(hoshiPoints.Take(handicapCount));
+                    }
+                    else // Ajout pour handicap de 6 et 8
+                    {
+                        if (handicapCount == 6)
+                        {
+                            positions.AddRange(hoshiPoints.Skip(5).Take(6));
+                        }
+                        else
+                        {
+                            positions.AddRange(hoshiPoints.Skip(5).Take(8));
+                        }
+                    }
+                }
+            }
+
+            // Place les pierres de handicap
+            foreach ((int row, int col) in positions)
+            {
+                board[row, col].ChangeColor(color);
+            }
+        }
+
         /// <summary>
         /// Récupère l'instance de pierre aux coordonnées spécifiée
         /// </summary>
