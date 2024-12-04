@@ -158,6 +158,7 @@ namespace WebSocket
             if (message.Contains("custom"))
             {
                 this.gameType = "custom";
+                
             }
             else if (message.Contains("matchmaking"))
             {
@@ -236,9 +237,9 @@ namespace WebSocket
         /// </summary>
         private void handleGameEnd(Game game)
         {
-            (int,int) scores = game.GetScore();
-            int scorePlayer1 = scores.Item1;
-            int scorePlayer2 = scores.Item2;
+            (float , float) scores = game.GetScore();
+            float scorePlayer1 = scores.Item1;
+            float scorePlayer2 = scores.Item2;
             bool player1won = false;
             bool player2won = false;
 

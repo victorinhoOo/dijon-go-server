@@ -12,8 +12,8 @@ namespace Server.Model.DTO
         private string usernamePlayer2;
         private int size;
         private string rule;
-        private int scorePlayer1;
-        private int scorePlayer2;
+        private float scorePlayer1;
+        private float scorePlayer2;
         private bool won;
         private DateTime date;
 
@@ -45,12 +45,12 @@ namespace Server.Model.DTO
         /// <summary>
         /// Renvoi le score du joueur 1 de la partie 
         /// </summary>
-        public int ScorePlayer1 { get => scorePlayer1; }
+        public float ScorePlayer1 { get => scorePlayer1; }
 
         /// <summary>
         /// Renvoi le score du joueur 2 de la partie
         /// </summary>
-        public int ScorePlayer2 { get => scorePlayer2; }
+        public float ScorePlayer2 { get => scorePlayer2; }
 
         /// <summary>
         /// Renvoi si l'utilisateur ayant fait la requête a gagné la partie ou non
@@ -62,7 +62,7 @@ namespace Server.Model.DTO
         /// </summary>
         public DateTime Date { get => date; }
 
-        public GameInfoDTO(int id, string player1, string player2, int size, string rule, int scorePlayer1, int scorePlayer2, bool won, DateTime date)
+        public GameInfoDTO(int id, string player1, string player2, int size, string rule, float scorePlayer1, float scorePlayer2, bool won, DateTime date)
         {
             this.id = id;
             this.usernamePlayer1 = player1;

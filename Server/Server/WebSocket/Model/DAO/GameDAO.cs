@@ -25,15 +25,20 @@ namespace WebSocket.Model.DAO
         /// <inheritdoc/>
         public bool InsertAvailableGame(Game game)
         {
+            game.Player1.User.Name = "nom du createur";
             this.database.Connect();
             bool res = false;
-            string query = "insert into availablegame (id,title,size,rule) values (@id,@title,@size,@rule);";
+            string query = "insert into availablegame (id,size,rule,komi,name,creatorName,handicap) values (@id,@size,@rule,@komi,@name,@creatorName,@handicap);";
             var parameters = new Dictionary<string, object>
                 {
                     {"@id", game.Id},
-                    {"@title", $"Partie numéro {game.Id}"},
                     {"@size", game.Size},
-                    {"@rule", game.Rule }
+                    {"@rule", game.Rule },
+                    {"@komi", game.Komi },
+                    {"@name", game.Name },
+                    {"@creatorName",game.Player1.User.Name },
+                    {"@handicap",game.Handicap }
+
                 };
             database.ExecuteNonQuery(query, parameters);
             res = true;
@@ -76,10 +81,10 @@ namespace WebSocket.Model.DAO
                     {"@player1_id", game.Player1.User.Id},
                     {"@player2_id", game.Player2.User.Id},
                     {"@size", game.Size},
-                    {"@score_player_1", DBNull.Value}, // pour le moment le score n'est pas défini
-                    {"@score_player_2", DBNull.Value},
+                    {"@score_player_1", 0}, // pour le moment le score n'est pas défini
+                    {"@score_player_2", 0},
                     {"@rule", game.Rule},
-                    {"@winner_id", DBNull.Value},
+                    {"@winner_id", game.Player1.User.Id},
                     {"@date", DateTime.Now} // Date actuelle pour la partie
                 };
 

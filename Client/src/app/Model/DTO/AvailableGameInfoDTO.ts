@@ -4,15 +4,23 @@
  */
 export class AvailableGameInfoDTO {
     private id: number;
-    private title: string;
     private size: number;
     private rule: string;
+    private creatorName : string;
+    private komi : number;
+    private name: string;
+    private handicap: number;
 
-    constructor(id: number, title: string, size: number, rule: string) {
+    constructor(id: number, size: number, rule: string ,creatorName:string, komi : number, name: string,handicap:number) {
         this.id = id;
-        this.title = title;
+
         this.size = size;
         this.rule = rule;
+        this.creatorName = creatorName;
+        this.komi = komi;
+        this.name = name;
+        this.handicap = handicap;
+
     }
 
     /**
@@ -20,12 +28,6 @@ export class AvailableGameInfoDTO {
      */
     public Id(): number {
         return this.id;
-    }
-    /**
-     * Renvoie le titre de la partie
-     */
-    public Title(): string {
-        return this.title;
     }
 
     /**
@@ -35,7 +37,20 @@ export class AvailableGameInfoDTO {
         return this.size;
     }
 
+    /**
+     * Renvoie les règles de la partie
+     */
     public Rule(): string {
         return this.rule;
+    }
+
+    public CreatorName(): string {
+        return this.creatorName;
+    }
+    public Name(): string{
+        return this.name;
+    }
+    public Handicap(): number{
+        return this.handicap;
     }
 }

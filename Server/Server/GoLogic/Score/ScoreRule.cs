@@ -9,6 +9,7 @@ namespace GoLogic.Score
     public abstract class ScoreRule
     {
         private readonly IBoard gameBoard;
+        protected readonly float komi = 6.5f;
 
         /// <summary>
         /// Le plateau du jeu et ses pions
@@ -19,16 +20,17 @@ namespace GoLogic.Score
         /// Le calculateur de score selon les différentes règles
         /// </summary>
         /// <param name="gameBoard">Le plateau du jeu</param>
-        public ScoreRule(IBoard gameBoard)
+        public ScoreRule(IBoard gameBoard, float komi = 6.5f)
         {
             this.gameBoard = gameBoard;
+            this.komi = komi;
         }
 
         /// <summary>
         /// Règles de décompte des points pour chaque joueur
         /// </summary>
         /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
-        public abstract (int blackStones, int whiteStones) CalculateScore();
+        public abstract (float blackStones, float whiteStones) CalculateScore();
 
         /// <summary>
         /// Compte les nombres de pierres de chaque couleur sur le plateau
