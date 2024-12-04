@@ -1,8 +1,8 @@
 /**
- * Gère les attributs des informations de partie (DTO = Data Transfer Object) sert d'objet de transfert de 
+ * Gère les attributs des informations de partie qu'il est possible de rejoindre (DTO = Data Transfer Object) sert d'objet de transfert de 
  * données entre le serveur et le client
  */
-export class GameInfoDTO {
+export class AvailableGameInfoDTO {
     private id: number;
     private size: number;
     private rule: string;
@@ -20,6 +20,7 @@ export class GameInfoDTO {
         this.komi = komi;
         this.name = name;
         this.handicap = handicap;
+
     }
 
     /**
@@ -29,6 +30,21 @@ export class GameInfoDTO {
         return this.id;
     }
 
+
+    /**
+     * Renvoie le nom d'utilisateur du joueur 1
+     */
+    public UsernamePlayer1(): string {
+        return this.usernamePlayer1;
+    }
+
+    /**
+     * Renvoie le nom d'utilisateur du joueur 2
+     */
+    public UsernamePlayer2(): string {
+        return this.usernamePlayer2;
+    }
+
     /**
      * Renvoie la taille de la grille de jeu
      */
@@ -36,6 +52,9 @@ export class GameInfoDTO {
         return this.size;
     }
 
+    /**
+     * Renvoie les règles de la partie
+     */
     public Rule(): string {
         return this.rule;
     }

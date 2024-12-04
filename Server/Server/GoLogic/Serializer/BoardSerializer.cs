@@ -82,4 +82,4 @@ namespace GoLogic.Serializer
             return sb.ToString();
         }
     }
-} 
+}

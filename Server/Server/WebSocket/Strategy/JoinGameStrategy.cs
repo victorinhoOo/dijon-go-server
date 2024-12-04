@@ -37,7 +37,7 @@ namespace WebSocket.Strategy
 
                 player.User.Token = data[2]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
                 Server.CustomGames[idGame].AddPlayer(player); // Ajout du client en tant que joueur 2
-                this.gameDAO.DeleteGame(idGame); // Suppression de la partie de la liste des parties disponibles
+                this.gameDAO.DeleteAvailableGame(idGame); // Suppression de la partie de la liste des parties disponibles
                 response = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";
             }

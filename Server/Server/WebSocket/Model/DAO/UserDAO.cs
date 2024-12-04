@@ -1,10 +1,5 @@
-﻿using Server.Model.Data;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DotNetEnv;
+using Server.Model.Data;
 using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
@@ -16,8 +11,8 @@ namespace WebSocket.Model.DAO
 
         public UserDAO()
         {
-            this.database = new SQLiteDatabase("Data Source= ../../../../Server/dgs.db");
-
+            string sqliteConnectionString = Env.GetString("SQLITE_CONNECTION_STRING");
+            this.database = new SQLiteDatabase(sqliteConnectionString);
         }
         /// <inheritdoc/>
         public GameUserDTO GetUserByToken(string token)
@@ -45,6 +40,7 @@ namespace WebSocket.Model.DAO
                 {
                     userResult = new GameUserDTO
                     {
+                        Id = Convert.ToInt32(result.Rows[0]["idUser"]),
                         Name = result.Rows[0]["username"].ToString(),
                         Elo = Convert.ToInt32(result.Rows[0]["elo"]),
                         Token = token
@@ -84,7 +80,5 @@ namespace WebSocket.Model.DAO
                 database.Disconnect();
             }
         }
-
-
     }
 }
