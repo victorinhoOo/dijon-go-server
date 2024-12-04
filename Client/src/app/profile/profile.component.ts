@@ -8,6 +8,9 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { User } from '../Model/User';
+import { GameDAO } from '../Model/DAO/GameDAO';
+import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
+import { Game } from '../Model/Game';
 
 @Component({
   selector: 'app-profile',
@@ -26,24 +29,11 @@ export class ProfileComponent {
   private userEmail: string;
   private rank: string;
   private avatar: string;
-  private historyData: Array<{
-    black:string;
-    white:string;
-    gameId: number;
-    moveNumber: number;
-    boardState: string;
-    capturedBlack: number;
-    capturedWhite: number;
-    rule:string;
-    size:string;
-    player1: string;
-    player2: string;
-    winner: string;
-    date: string;
-  }> = [];
+  private historyData: GameInfoDTO[] = [];
+  private gameDAO: GameDAO;
 
   // Getter pour accéder aux données
-  public getHistoryData(): Array<any> {
+  public getHistoryData(): GameInfoDTO[] {
     return this.historyData;
   }
 
@@ -94,6 +84,7 @@ export class ProfileComponent {
     this.userEmail = this.userCookieService.getUser()!.Email;
     this.rank = this.userCookieService.getUser()!.Rank;
     this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
+    this.gameDAO = new GameDAO(this.http);
   }
 
 
@@ -124,73 +115,31 @@ export class ProfileComponent {
    * permet d'afficher l'historique des parties de l'utilisateurs 
    */
   public getHistory(): void {
-    const history: any[] = ProfileComponent.getFAKE_DAO_History();
-
-    // Préparation des données pour affichage
-    this.historyData = history.map(entry => ({
-      gameId: entry.gamestate.game_id,
-      moveNumber: entry.gamestate.move_number,
-      boardState: entry.gamestate.board_state,
-      capturedBlack: entry.gamestate.captured_black,
-      capturedWhite: entry.gamestate.captured_white,
-      player1: entry.savedgame.player1,
-      player2: entry.savedgame.player2,
-      black:entry.gamestate.black,
-      white:entry.gamestate.white,
-      size: entry.savedgame.size,
-      rule:entry.savedgame.rule,
-      winner: entry.savedgame.winner,
-      date: new Date(entry.savedgame.date).toLocaleString(), // Format de date
-    }));
+    const token = this.userCookieService.getToken();
+    this.gameDAO.GetGamesPlayed(token).subscribe((history: any[]) => {
+      // Convertir les objets JSON en instances de GameInfoDTO
+      this.historyData = history.map(
+        (game) =>
+          new GameInfoDTO(
+            game.id,
+            game.usernamePlayer1,
+            game.usernamePlayer2,
+            game.size,
+            game.rule,
+            game.scorePlayer1,
+            game.scorePlayer2,
+            game.won,
+            new Date(game.date) // Conversion explicite en Date si nécessaire
+          )
+      );
+      console.log(this.historyData); // Vérifiez ici que les objets ont bien été convertis
+    });
   }
 
-  // Simule un DAO avec des données en dur
-  public static getFAKE_DAO_History(): Array<any> {
-    return [
-      {
-        gamestate: {
-          id: 1,
-          game_id: 1,
-          move_number: 42,
-          black : 'clem',
-          white :'test',
-          board_state: "xxoooxxooxo",
-          captured_black: 3,
-          captured_white: 2,
-        },
-        savedgame: {
-          id: 1,
-          player1: "test",
-          player2: "clem",
-          size: '19x19',
-          rule: "japonaise",
-          winner: "clem",
-          date: "2024-11-27T10:30:00",
-        },
-      },
-      {
-        gamestate: {
-          id: 2,
-          game_id: 2,
-          black : 'clem',
-          white :'test',
-          move_number: 25,
-          board_state: "ooxoxoxox",
-          captured_black: 1,
-          captured_white: 3,
-        },
-        savedgame: {
-          id: 2,
-          player1: "test",
-          player2: "clem",
-          size: '9x9',
-          rule: "chinoise",
-          winner: "test",
-          date: "2024-11-25T14:00:00",
-        },
-      },
-    ];
+  public replayGame(game: any){
+
   }
+  
 }
 
 

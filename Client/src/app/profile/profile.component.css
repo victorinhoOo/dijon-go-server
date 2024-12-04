@@ -1,9 +1,9 @@
 /* Carte de profil et historique */
 .card-pos {
-    max-width: 60%;
+    max-width: 50%;
     margin: 0 auto;
     padding: 1%;
-    background-color: #FFF3E4;
+    background-color: #FDF7EF;
     padding-top: 10px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -61,6 +61,30 @@
     max-width: 100%;
 }
 
+.date-rule-information{
+    display: flex;
+    width: 40%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game-result{
+    display: flex;
+    width: 40%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-info{
+    width: 30%;
+}
+
+.score-container{
+    display: flex;
+    width: 30%;
+    justify-content: space-around;
+}
+
 /* Section historique */
 .history-container {
     text-align: center;
@@ -71,13 +95,14 @@
     border-radius: 15px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.5);
+    background-color: #fdf7ef;
+    color: black;
+    padding-bottom: 10px;
 }
 
 /* Ligne des jeux */
 .game-line {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
     justify-content: space-between;
     align-items: center;
     padding: 15px;
@@ -85,18 +110,28 @@
     border-radius: 10px;
     border: 3px solid;
     opacity: 0.9;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    transition: transform 0.1s ease, background-color 0.3s ease;
     cursor: pointer;
     background-color: transparent;
-    display: flex;
-  justify-content: space-between; /* Espace égal entre les éléments */
-  align-items: center; /* Centrer verticalement les éléments */
+    justify-content: space-between; /* Espace égal entre les éléments */
+    align-items: center; /* Centrer verticalement les éléments */
 }
 
 /* Animation au survol des lignes */
 .game-line:hover {
     transform: scale(1.02);
     background-color: rgba(112, 112, 112, 0.1);
+    /* Ajout de la classe pour faire tourner l'icône Replay */
+    .replay-icon {
+        transform: rotate(360deg); /* Rotation de l'icône */
+        transition: transform 0.3s ease; /* Transition pour l'animation */
+    }
+
+    .replay-text {
+        visibility: visible; /* Rendre l'élément visible */
+        opacity: 1; /* Rendre le texte visible */
+        transition: opacity 0.3s ease; /* Transition pour l'animation */
+    }
 }
 
 /* Style pour aligner les mat-icons avec le texte */
@@ -110,18 +145,12 @@
 .game-line span {
     display: flex;
     align-items: center;
+    margin: 0;
 }
 
 /* Espacement entre les items */
 .history-item {
     margin-bottom: 15px;
-}
-
-/* Ligne de séparation */
-hr {
-    margin-top: 15px;
-    border: 1px solid rgba(200, 200, 200, 0.5);
-    width: 100%;
 }
 
 /* Titre des parties */
@@ -130,20 +159,15 @@ hr {
     color: #333;
 }
 
-/* Transition des icônes */
-.game-line mat-icon:hover {
-    transform: scale(1.2);
-    transition: transform 0.2s ease, color 0.2s ease;
-}
-
 .crown {
     margin-left: 5px;
-    height:10px;
+    height:15px;
     width: auto;
 }
 
 .stone {
-    margin-left: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 .points {
@@ -159,14 +183,18 @@ hr {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.stone-container{
+    overflow: visible;
+}
+
 .stone.white {
     color: white !important;
-    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
   }
   
   .stone.black {
     color: black;
-    text-shadow: 0px 2px 5px rgba(255, 255, 255, 0.8);
+    text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.8);
   }
   
   .espaceGauche{
@@ -176,3 +204,34 @@ hr {
   .espaceDroit{
     margin-right: 10px;
   }
+
+  /* Style pour le bouton Replay */
+.replay-button {
+    background-color: transparent; /* Fond transparent pour l'icône */
+    border: none;
+    cursor: pointer;
+    padding: 0; /* Pas de padding pour centrer l'icône */
+}
+
+/* Icône Replay */
+.replay-icon {
+    text-align: left;
+    font-size: 24px; /* Taille de l'icône */
+    transition: transform 0.3s ease; /* Transition pour l'animation */
+}
+
+.replay-container{
+    width: 100px;
+    display: flex;
+    align-items: baseline;
+}
+
+.replay-text {
+    visibility: hidden; /* Masquer l'élément par défaut */
+    opacity: 0; /* Opacité initiale */
+    transition: opacity 0.3s ease; /* Transition pour l'animation */
+}
+
+.historique-title{
+    margin-bottom: 40px;
+}

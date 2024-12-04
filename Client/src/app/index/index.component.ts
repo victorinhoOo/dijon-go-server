@@ -5,7 +5,7 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameDAO } from '../Model/DAO/GameDAO';
 import { HttpClient } from '@angular/common/http';
-import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
+import { AvailableGameInfoDTO } from '../Model/DTO/AvailableGameInfoDTO';
 import { WebsocketService } from '../websocket.service';
 import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
@@ -116,7 +116,7 @@ export class IndexComponent implements OnInit {
    */
   private initializeJoinGamePopupContent() {
     this.gameDAO.GetAvailableGames().subscribe({
-      next: async (games: GameInfoDTO[]) => {
+      next: async (games: AvailableGameInfoDTO[]) => {
         let content = '';
 
         if (games.length === 0) {
