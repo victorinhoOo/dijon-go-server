@@ -81,10 +81,10 @@ namespace WebSocket.Model.DAO
                     {"@player1_id", game.Player1.User.Id},
                     {"@player2_id", game.Player2.User.Id},
                     {"@size", game.Size},
-                    {"@score_player_1", DBNull.Value}, // pour le moment le score n'est pas défini
-                    {"@score_player_2", DBNull.Value},
+                    {"@score_player_1", 0}, // pour le moment le score n'est pas défini
+                    {"@score_player_2", 0},
                     {"@rule", game.Rule},
-                    {"@winner_id", DBNull.Value},
+                    {"@winner_id", game.Player1.User.Id},
                     {"@date", DateTime.Now} // Date actuelle pour la partie
                 };
 

@@ -67,7 +67,6 @@ export class WebsocketService {
    * @param player2score score de son adversaire
    */
   private endGame(won: string, player1score: string, player2score: string) {
-    this.disconnectWebsocket();
     // On récupère les nouvelles informations utilisateurs car elles ont été modifiées (elo)
     let token = this.userCookieService.getToken();
     this.userDAO.GetUser(token).subscribe({
