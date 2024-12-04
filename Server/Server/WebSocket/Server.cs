@@ -39,9 +39,9 @@ namespace WebSocket
         /// <summary>
         /// Constructeur de la classe Server
         /// </summary>
-        public Server()
+        public Server(string ip, int port)
         {
-            this.webSocket = new Protocol.WebSocket("127.0.0.1", 7000); //10.211.55.3
+            this.webSocket = new Protocol.WebSocket(ip, port);
             this.gameManager = new GameManager();
         }
 
@@ -178,7 +178,7 @@ namespace WebSocket
                 Game game = this.gameType == "custom" ? customGames[idGame] : matchmakingGames[idGame];
                 if (responseType == "Broadcast")
                 {
-                    this.BroadastMessage(game, responseBytes);
+                    this.BroadastMessageAsync(game, responseBytes);
                 }
                 if (game.IsFull && !game.Started)
                 {
@@ -202,16 +202,19 @@ namespace WebSocket
             }
         }
 
-        private void BroadastMessage(Game game, byte[] bytes)
+        private async Task BroadastMessageAsync(Game game, byte[] bytes)
         {
             this.SendMessage(game.Player1, bytes);
             this.SendMessage(game.Player2, bytes);
 
-            if (game.TestWin()) // Appel direct de la méthode TestWin() de l'objet Game
+            // Vérifie si la partie est terminée
+            if (await game.TestWinAsync())
             {
+                // Si la partie est terminée, gérer la fin (en parallèle des tâches BDD)
                 this.handleGameEnd(game);
             }
         }
+
 
 
         /// <summary>
@@ -258,15 +261,6 @@ namespace WebSocket
             this.SendMessage(game.Player1, endOfGameMessagePlayer1);
             this.SendMessage(game.Player2, endOfGameMessagePlayer2);
         }
-
-        /// <summary>
-        /// Test si un joueur a gagné
-        /// </summary>
-        private bool TestWin(Game game)
-        {
-            return game.TestWin();
-        }
- 
     }
 
 }

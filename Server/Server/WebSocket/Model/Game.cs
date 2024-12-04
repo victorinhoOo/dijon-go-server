@@ -23,6 +23,7 @@ namespace WebSocket.Model
         private int size;
         private int id;
         private TimerManager timerManager;
+        private GameManager gameManager;
 
         /// <summary>
         /// Proprité qui indique si la partie est pleine
@@ -86,6 +87,7 @@ namespace WebSocket.Model
             this.gameBoard = new GameBoard(size);
             this.logic = new GameLogic(gameBoard);
             this.boardSerializer = new BoardSerializer(this.logic);
+            this.gameManager = new GameManager();
             this.rule = rule;
             switch (this.rule)
             {
@@ -101,6 +103,7 @@ namespace WebSocket.Model
         {
             this.started = true;
             this.timerManager = new TimerManager();
+            this.gameManager.InsertGame(this);
         }
 
 
@@ -133,6 +136,7 @@ namespace WebSocket.Model
             this.timerManager.SwitchToNextPlayer();
             string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
             this.logic.PlaceStone(x, y);
+            this.gameManager.InsertGameState(this);
             return time;
         }
 
@@ -183,14 +187,35 @@ namespace WebSocket.Model
             ChangeTurn();
         }
 
-
         /// <summary>
-        /// Test si la partie est terminée
+        /// Test si la partie est terminée. Si oui, déclenche les opérations de BDD en arrière-plan.
         /// </summary>
         /// <returns>True si la partie est terminée, False sinon</returns>
-        public bool TestWin()
+        public Task<bool> TestWinAsync()
         {
-            return logic.IsEndGame;
+            bool result = false;
+
+            if (logic.IsEndGame)
+            {
+                result = true;
+
+                // Exécuter les tâches BDD en arrière-plan
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await gameManager.TransferMovesToSqlAsync(this);
+                        await gameManager.UpdateGameAsync(this);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Erreur lors des opérations de transfert de Redis vers Sqlite : {ex.Message}");
+                    }
+                });
+            }
+
+            // Retourner immédiatement le résultat
+            return Task.FromResult(result);
         }
     }
 }

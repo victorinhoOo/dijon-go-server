@@ -1,5 +1,4 @@
-﻿using System;
-using WebSocket.Model.DAO;
+﻿using WebSocket.Model.DAO;
 using WebSocket.Model.DTO;
 
 namespace WebSocket.Model
@@ -10,11 +9,13 @@ namespace WebSocket.Model
     public class GameManager
     {
         private IUserDAO userDAO;
+        private IGameDAO gameDAO;
         private const int K = 32; // Facteur K pour les calculs Elo
 
         public GameManager()
         {
             this.userDAO = new UserDAO();
+            this.gameDAO = new GameDAO();
         }
 
         /// <summary>
@@ -60,6 +61,44 @@ namespace WebSocket.Model
 
             // Calcul du nouvel Elo
             return (int)(playerElo + K * (result - expectedScore));
+        }
+
+        /// <summary>
+        /// Insère une partie en base de données
+        /// </summary>
+        /// <param name="game">La partie en cours</param>
+        public void InsertGame(Game game)
+        {
+            this.gameDAO.InsertGame(game);
+        }
+
+        /// <summary>
+        /// Modifie une partie en base de données.
+        /// </summary>
+        /// <param name="game">La partie en cours</param>
+        public async Task UpdateGameAsync(Game game)
+        {
+            await this.gameDAO.UpdateGameAsync(game);
+        }
+
+
+        /// <summary>
+        /// Insère un "état de partie" correspondant à un coup en base de données.
+        /// </summary>
+        /// <param name="game">La partie en cours</param>
+        public void InsertGameState(Game game)
+        {
+            this.gameDAO.InsertGameState(game);
+        }
+
+
+        /// <summary>
+        /// Transfert les coups de Redis vers Sql
+        /// </summary>
+        /// <param name="game">La partie en cours</param>
+        public async Task TransferMovesToSqlAsync(Game game)
+        {
+            await this.gameDAO.TransferMovesToSqliteAsync(game);
         }
     }
 }

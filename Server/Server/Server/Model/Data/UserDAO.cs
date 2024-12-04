@@ -61,7 +61,6 @@ namespace Server.Model.Data
             if (!string.IsNullOrEmpty(user.Password)) // Gestion du stockage des comptes googles (sans mot de passe)
             {
                 query = "INSERT INTO user (username, hashPwd, email, elo) VALUES (@username, @hashPwd, @email, @elo)";
-                parameters.Add("@hashPwd", user.Password);
             }
             else
             {
