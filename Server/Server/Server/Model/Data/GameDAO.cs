@@ -23,7 +23,7 @@ public class GameDAO : IGameDAO
 
         database.Connect();
 
-        string query = "SELECT id, size, rule, creatorName,komi, name FROM availablegame;";
+        string query = "SELECT id, size, rule, creatorName,komi, name, handicap FROM availablegame;";
 
         var dataTable = database.ExecuteQuery(query, null);
 
@@ -38,6 +38,7 @@ public class GameDAO : IGameDAO
                 CreatorName = row["creatorName"].ToString(),
                 Komi = Convert.ToInt32(row["komi"]),
                 Name = row["name"].ToString(),
+                Handicap = Convert.ToInt32(row["handicap"])
             };
             result.Add(gameInfo);
         }

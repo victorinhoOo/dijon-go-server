@@ -25,6 +25,7 @@ namespace WebSocket.Model
         private int id;
         private float komi;
         private string name;
+        private int handicap;
         private TimerManager timerManager;
 
         /// <summary>
@@ -88,9 +89,14 @@ namespace WebSocket.Model
         public string Name { get => name; }
 
         /// <summary>
+        /// Récupérer ou modifier l'handicap de la partie
+        /// </summary>
+        public int Handicap { get => handicap; }
+
+        /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game(int size, string rule, float komi, string name)
+        public Game(int size, string rule, float komi, string name, int handicap)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
@@ -101,6 +107,7 @@ namespace WebSocket.Model
             this.rule = rule;
             this.name = name;
             this.komi = komi;
+            this.handicap = handicap;
             switch (this.rule)
             {
                 case "c": this.score = new ChineseScoreRule(gameBoard);break;

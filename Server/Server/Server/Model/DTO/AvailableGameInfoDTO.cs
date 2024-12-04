@@ -11,6 +11,7 @@
         private string creatorName;
         private int komi;
         private string name;
+        private int handicap;
 
         /// <summary>
         /// L'id de la partie
@@ -40,5 +41,9 @@
         /// Retourne et modifie le nom de la partie
         /// </summary>
         public string Name { get => name; set => name = value; }
+        /// <summary>
+        /// Retourne et modifie le handicap de la partie
+        /// </summary>
+        public int Handicap { get => handicap; set => handicap = value; }
     }
 }

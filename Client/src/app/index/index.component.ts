@@ -229,11 +229,11 @@ export class IndexComponent implements OnInit {
         const name = (document.getElementById('game-name') as HTMLSelectElement).value;
         const komi = (document.getElementById('komi') as HTMLSelectElement).value;
         const handicap = (document.getElementById('handicap') as HTMLSelectElement).value;
-        return { gridSize, rules, name, komi };
+        return { gridSize, rules, name, komi, handicap };
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { gridSize, rules, name, komi , handicap} = result.value!;
+        const { gridSize, rules, name, komi, handicap } = result.value!;
 
         // Affichez un chargement avant la connexion
         Swal.fire({
@@ -248,7 +248,7 @@ export class IndexComponent implements OnInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name);
+          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name, handicap);
           Swal.close(); // Ferme le chargement
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur
