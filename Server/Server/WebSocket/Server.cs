@@ -21,7 +21,9 @@ namespace WebSocket
         private string gameType;
         private static ConcurrentDictionary<int, Game> customGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
-  
+        private static ConcurrentDictionary<int, Lobby> lobbies = new ConcurrentDictionary<int, Lobby>();
+        private static readonly Queue<Client> waitingPlayers = new Queue<Client>();
+
         private Interpreter interpreter;
         private GameManager gameManager;
 
@@ -34,14 +36,17 @@ namespace WebSocket
         /// Dictionnaire qui contient les parties de matchmaking en cours
         /// </summary>
         public static ConcurrentDictionary<int, Game> MatchmakingGames { get => matchmakingGames; set => matchmakingGames = value; }
-        
+        public static ConcurrentDictionary<int, Lobby> Lobbies { get => lobbies; set => lobbies = value; }
+
+        public static Queue<Client> WaitingPlayers => waitingPlayers;
+
 
         /// <summary>
         /// Constructeur de la classe Server
         /// </summary>
         public Server()
         {
-            this.webSocket = new Protocol.WebSocket("127.0.0.1", 7000); //10.211.55.3
+            this.webSocket = new Protocol.WebSocket("10.211.55.3", 7000); //10.211.55.3
             this.gameManager = new GameManager();
         }
 
@@ -173,18 +178,22 @@ namespace WebSocket
             int idGame = Convert.ToInt32(stringId); // Id de la partie concernée
             byte[] responseBytes = this.webSocket.BuildMessage(responseData);
 
-            if (!response.Contains("Create") && (!response.Contains("Timeout")))
+            if (!response.Contains("Create") && (!response.Contains("Timeout")) && (!response.Contains("Cancelled")) && (!response.Contains("Retry")))
             {
                 Game game = this.gameType == "custom" ? customGames[idGame] : matchmakingGames[idGame];
                 if (responseType == "Broadcast")
                 {
-                    this.BroadastMessage(game, responseBytes);
+                    this.BroadcastMessage(game, responseBytes);
                 }
                 if (game.IsFull && !game.Started)
                 {
                     this.StartGame(game);
                 }
 
+            }
+            else if(responseType == "Broadcast")
+            {
+                this.BroadcastCancelMessage(Server.Lobbies[idGame], responseBytes);
             }
 
             if (responseType == "Send")
@@ -202,7 +211,7 @@ namespace WebSocket
             }
         }
 
-        private void BroadastMessage(Game game, byte[] bytes)
+        private void BroadcastMessage(Game game, byte[] bytes)
         {
             this.SendMessage(game.Player1, bytes);
             this.SendMessage(game.Player2, bytes);
@@ -211,6 +220,14 @@ namespace WebSocket
             {
                 this.handleGameEnd(game);
             }
+        }
+
+        private void BroadcastCancelMessage(Lobby lobby, byte[] bytes)
+        {
+            this.SendMessage(lobby.Player1, bytes);
+            this.SendMessage(lobby.Player2, bytes);
+            Server.Lobbies.TryRemove(lobby.Id, out _);
+
         }
 
 
