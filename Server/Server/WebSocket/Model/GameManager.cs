@@ -18,6 +18,13 @@ namespace WebSocket.Model
             this.gameDAO = new GameDAO();
         }
 
+        // Constructeur pour les tests
+        public GameManager(IUserDAO userDAO, IGameDAO gameDAO)
+        {
+            this.userDAO = userDAO;
+            this.gameDAO = gameDAO;
+        }
+
         /// <summary>
         /// Récupère un utilisateur à partir de son token
         /// </summary>
