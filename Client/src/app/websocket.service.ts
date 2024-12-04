@@ -198,4 +198,13 @@ export class WebsocketService {
     this.game.setPlayerColor(color);
     this.interpreter.setGame(this.game);
   }
+
+  public cancelMatchmaking(idLobby:string) {
+    if (this.websocket != null && this.websocket.OPEN) {
+      this.websocket.send(`${idLobby}-Cancel`);
+      console.log(`Sent : ${idLobby}-Cancel`);
+    } else {
+      console.log('not connected');
+    }
+  }
 }
