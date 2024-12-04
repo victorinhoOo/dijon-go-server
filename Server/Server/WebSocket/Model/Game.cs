@@ -14,7 +14,7 @@ namespace WebSocket.Model
         private Client player1;
         private Client player2;
         private Client currentTurn;
-        private GameBoard gameBoard;
+        private IBoard gameBoard;
         private GameLogic logic;
         private BoardSerializer boardSerializer;
         private ScoreRule score;
@@ -78,12 +78,12 @@ namespace WebSocket.Model
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game(int size, string rule)
+        public Game(int size, string rule, string handicapColor = "white", int handicapNbr = 0)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
             this.size = size;
-            this.gameBoard = new GameBoard(size);
+            this.gameBoard = new GameBoard(size, handicapColor, handicapNbr);
             this.logic = new GameLogic(gameBoard);
             this.boardSerializer = new BoardSerializer(this.logic);
             this.rule = rule;
