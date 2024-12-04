@@ -17,7 +17,7 @@ export class MatchmakingStrategy implements IStrategy {
             this.matchmakingResolve = null;
           }
           if(data.includes("Create")){
-            this.websocketService.createGame(19, "j", "matchmaking");
+            this.websocketService.createGame(19, "j", "matchmaking", "6.5", "test a changer", 0);
           }
           else {
             let stringId = data[0]

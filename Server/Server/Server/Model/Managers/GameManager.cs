@@ -18,7 +18,7 @@ namespace Server.Model.Managers
         /// Donne la liste des parties disponibles
         /// </summary>
         /// <returns>Liste d'informations de parties</returns>
-        public List<GameInfoDTO> GetAvailableGames()
+        public List<AvailableGameInfoDTO> GetAvailableGames()
         {
             return gameDAO.GetAvailableGames();
         }

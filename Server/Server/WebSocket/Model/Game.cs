@@ -3,6 +3,7 @@ using GoLogic.Goban;
 using GoLogic.Score;
 using GoLogic.Serializer;
 using GoLogic.Timer;
+using System.Xml.Linq;
 
 namespace WebSocket.Model
 {
@@ -22,6 +23,9 @@ namespace WebSocket.Model
         private string rule;
         private int size;
         private int id;
+        private float komi;
+        private string name;
+        private int handicap;
         private TimerManager timerManager;
 
         /// <summary>
@@ -74,23 +78,40 @@ namespace WebSocket.Model
         /// </summary>
         public int Id { get => id; }
 
+        /// <summary>
+        /// Récupérer ou modifier le komi
+        /// </summary>
+        public float Komi { get => komi; }
+
+        /// <summary>
+        /// Récupérer ou modifier le nom de la partie
+        /// </summary>
+        public string Name { get => name; }
+
+        /// <summary>
+        /// Récupérer ou modifier l'handicap de la partie
+        /// </summary>
+        public int Handicap { get => handicap; }
 
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game(int size, string rule, string handicapColor = "white", int handicapNbr = 0)
+        public Game(int size, string rule, float komi, string name, int handicap)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
             this.size = size;
-            this.gameBoard = new GameBoard(size, handicapColor, handicapNbr);
+            this.gameBoard = new GameBoard(size, "white", handicap);
             this.logic = new GameLogic(gameBoard);
             this.boardSerializer = new BoardSerializer(this.logic);
             this.rule = rule;
+            this.name = name;
+            this.komi = komi;
+            this.handicap = handicap;
             switch (this.rule)
             {
-                case "c": this.score = new ChineseScoreRule(gameBoard);break;
-                case "j": this.score = new JapaneseScoreRule(gameBoard);break;
+                case "c": this.score = new ChineseScoreRule(gameBoard, komi);break;
+                case "j": this.score = new JapaneseScoreRule(gameBoard, komi);break;
             }
         }
 

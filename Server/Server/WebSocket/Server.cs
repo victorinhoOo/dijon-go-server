@@ -158,6 +158,7 @@ namespace WebSocket
             if (message.Contains("custom"))
             {
                 this.gameType = "custom";
+                
             }
             else if (message.Contains("matchmaking"))
             {

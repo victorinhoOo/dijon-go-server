@@ -110,18 +110,30 @@ export class WebsocketService {
   /**
    * Envoi un message de création de partie
    */
-  public createGame(size: number, rule: string, type:string): void {
+  public createGame(size: number, rule: string, type:string, komi:string, name:string, handicap:number): void {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}`);
+      this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`);
       this.router.navigate(['game', size, rule]);
     } else {
       console.log('not connected');
     }
   }
 
-
+    /**
+     * Envoi un message de création de partie personalisée
+     */
+    public createPersonalizeGame(size: number, rule: string, type:string, komi:string, name:string,handicap:number): void {
+      if (this.websocket != null && this.websocket.OPEN) {
+        this.setPlayerColor("black");
+        let userToken = this.userCookieService.getToken();
+        this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`);
+        this.router.navigate(['game', size, rule]);
+      } else {
+        console.log('not connected');
+      }
+    }
   /**
    * Envoi un message de demande de rejoindre une partie
    * @param id Identifiant de la partie à rejoindre

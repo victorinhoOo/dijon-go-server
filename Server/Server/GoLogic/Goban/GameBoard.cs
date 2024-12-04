@@ -161,7 +161,7 @@
             // Place les pierres de handicap
             foreach ((int row, int col) in positions)
             {
-                board[row, col].ChangeColor(color);
+                board[row, col].ChangeColor(handicapColor);
             }
         }
 

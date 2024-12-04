@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { GameInfoDTO } from '../DTO/GameInfoDTO';
+import { GameInfoDTO } from '../DTO/AvailableGameInfoDTO';
 import { environment } from '../../environment';
 
 /**
