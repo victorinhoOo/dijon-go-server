@@ -2,7 +2,7 @@
 using GoLogic.Goban;
 using GoLogic.Score;
 
-namespace Tests.Test_GoLogic
+namespace Tests.GoLogic
 {
     public class ScoreTest
     {
