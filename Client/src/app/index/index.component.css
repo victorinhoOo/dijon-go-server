@@ -434,3 +434,17 @@
     flex: 1 !important;
     pointer-events: none !important;
 }
+
+::ng-deep .custom-yes-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-no-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-timer-progress-bar{
+    background-color: #F3AD09 !important;
+}

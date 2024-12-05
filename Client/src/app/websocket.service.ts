@@ -149,7 +149,7 @@ export class WebsocketService {
         (this.interpreter.getMatchMakingStrategy() as any).matchmakingResolve = resolve;
         
         // Envoi de la demande de matchmaking
-        this.websocket.send(`0-Matchmaking`);
+        this.websocket.send(`0-Matchmaking-${userToken}`);
       } else {
         reject(new Error('Non connecté au websocket'));
       }

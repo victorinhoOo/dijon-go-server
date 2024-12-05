@@ -1,6 +1,7 @@
 import { IStrategy } from './IStrategy';
 import { Game } from '../Model/Game';
 import { WebsocketService } from '../websocket.service';
+import { User } from '../Model/User';
 import Swal from 'sweetalert2';
 
 /**
@@ -26,11 +27,13 @@ export class MatchmakingStrategy implements IStrategy {
       this.matchmakingResolve();
       this.matchmakingResolve = null;
     }
+    let idLobby = data[3]
+    let opponentUsername = data[4];
+    let opponentElo = data[5];
     if (data.includes('Create')) {
-      let idLobby = data[3]
       setTimeout(
         () =>
-          this.confirmMatchmaking().then((result) => {
+          this.confirmMatchmaking(opponentUsername, opponentElo).then((result) => {
             if(result.isConfirmed){
               this.websocketService.createGame(19, 'j', 'matchmaking');
             }
@@ -46,7 +49,7 @@ export class MatchmakingStrategy implements IStrategy {
       console.log(idLobby);
       setTimeout(
         () =>
-          this.confirmMatchmaking().then((result) => {
+          this.confirmMatchmaking(opponentUsername, opponentElo).then((result) => {
             if (result.isConfirmed) {
               let stringId = data[0];
               let idGame = Number(stringId);
@@ -63,14 +66,24 @@ export class MatchmakingStrategy implements IStrategy {
     }
   }
 
-  private confirmMatchmaking() {
+  private confirmMatchmaking(opponentUsername: string, opponentElo: string) {
     return Swal.fire({
-      title: 'Une partie a été trouvée !',
-      text: 'Voulez-vous la rejoindre ?',
+      title: `Une partie a été trouvée contre ${opponentUsername} (Elo: ${opponentElo})`,
+      text: 'Vulez-vous la rejoindre ?',
       showConfirmButton: true,
       showCancelButton: true,
       confirmButtonText: 'Oui',
       cancelButtonText: 'Non',
-    });
+      customClass: {
+        confirmButton: 'custom-yes-button',
+        cancelButton: 'custom-no-button',
+        timerProgressBar: "custom-timer-progress-bar"
+        
+      },
+      timer: 10000,
+      timerProgressBar: true,
+      didOpen: () => {
+        
+    }});
   }
 }
