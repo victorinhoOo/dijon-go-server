@@ -109,24 +109,11 @@ export class IndexComponent implements OnInit, AfterViewInit {
       })
     }
     if(this.router.url.includes('cancelled')){
-      this.showCAancelledPopup();
+      document.getElementById('join-matchmaking')!.click();
     }
   }
 
-  private showCAancelledPopup(){
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 1500
-    });
-    Toast.fire({
-        icon: 'error',
-        title: "Votre adversaire n'a pas accepté la partie"
-      }).then(() => {
-        document.getElementById('join-matchmaking')!.click();
-      });
-}
+
 
 
   /**
@@ -267,10 +254,17 @@ export class IndexComponent implements OnInit, AfterViewInit {
  */
   private initializeJoinMatchmakingPopup() {
     let matchFound = false;
+    let content;
+    if(this.router.url.includes('cancelled')){
+      content = "Votre Adversaire n'a pas rejoint la partie, veuillez patienter le temps que nous trouvions un autre adversaire.";
+    }
+    else{
+      content = 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...'
+    }
 
     Swal.fire({
       title: 'Recherche en cours...',
-      text: 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...',
+      text: content,
       showCloseButton: false,
       allowOutsideClick: false,
       showCancelButton: false,
