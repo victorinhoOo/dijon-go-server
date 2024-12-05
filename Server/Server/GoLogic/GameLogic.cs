@@ -62,6 +62,7 @@ namespace GoLogic
         /// </summary>
         /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
+        /// <exception cref="InvalidOperationException">L'emplacement de la pierre n'est pas valide</exception>
         /// <returns>Vraie si la pierre a pu être placé, faux sinon</returns>
         public bool PlaceStone(int x, int y)
         {
