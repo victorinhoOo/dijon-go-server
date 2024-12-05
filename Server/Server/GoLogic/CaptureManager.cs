@@ -76,16 +76,13 @@ namespace GoLogic
                 // Si la pierre qu'on visite est de même couleur que celle initiale, on continu
                 if (stone.Color == initialStoneColor)
                 {
-                    bool result = false;
-
                     // On continu la récursion sur tous les voisins
                     foreach (Stone neighbor in this.goban.GetNeighbors(stone))
                     {
                         // Si un voisin renvoie True on s'arrête (libertée)
                         if (CheckLiberties(neighbor, visited, stone.Color))
-                            result = true;
+                            res = true;
                     }
-                    return result;
                 }
             }
 
