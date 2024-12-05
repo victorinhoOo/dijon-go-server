@@ -467,4 +467,27 @@
     width: 24px;
     height: auto;
   }
+ /* Alignement sur une ligne */
+ ::ng-deep .radio-container {
+    display: flex;
+    gap: 30px; /* Espacement entre les boutons */
+    align-items: center;
+    margin-top: 5px;
+  }
+
+  /* Styles personnalisés pour les boutons radio */
+  ::ng-deep input[type="radio"].demo3 {
+    display: none;
+  }
+
+  ::ng-deep input[type="radio"].demo3 + label::before {
+    font-family: "Font Awesome 5 Free";
+    content: '\f0c8';
+    font-size: 1.2em;  
+    margin-right: 0.3rem;
+  }
+
+  ::ng-deep input[type="radio"].demo3:checked + label::before {
+    content: '\f14a';
+  }
   

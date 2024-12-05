@@ -35,11 +35,12 @@ namespace WebSocket.Strategy
             string rule = data[4];
             string name = data[7];
             float komi = float.Parse(data[6], CultureInfo.InvariantCulture.NumberFormat);
+            string colorHandicap = data[8];
             int handicap = int.Parse(data[8]); 
             if (gameType == "custom") // la partie est personnalisée
             {
                 int id = Server.CustomGames.Count + 1; // Génération de l'id de la partie
-                Game newGame = new Game(size, rule, komi, name ,handicap);
+                Game newGame = new Game(size, rule, komi, name ,handicap,colorHandicap);
                 newGame.AddPlayer(player);
                 Server.CustomGames[id] = newGame;
                 gameDAO.InsertAvailableGame(newGame); // Ajout de la partie dans le dictionnaire des parties
@@ -51,7 +52,7 @@ namespace WebSocket.Strategy
             else if (gameType == "matchmaking")
             {
                 int id = Server.MatchmakingGames.Count + 1; // Génération de l'id de la partie
-                Game newGame = new Game(size, rule, 6.5f, " ",0);
+                Game newGame = new Game(size, rule, 6.5f, " ",0,"white");
                 newGame.AddPlayer(player);
                 Server.MatchmakingGames[id] = newGame;
                 player.User.Token = data[2];
