@@ -36,7 +36,7 @@ export class UpdateTurnStrategy implements IStrategy {
     }
 
     private updateBoard(data: string) {
-        let lines = data.split('\r\n');
+        let lines = data.split('!');
         for (let i = 1; i < lines.length; i++) {
           let stoneData = lines[i].split(',');
           let x = stoneData[0];
