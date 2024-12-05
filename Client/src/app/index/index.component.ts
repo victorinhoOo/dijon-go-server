@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MatIcon } from '@angular/material/icon';
 import { UserCookieService } from '../Model/UserCookieService';
@@ -20,7 +20,7 @@ import { RankprogressComponent } from "../rankprogress/rankprogress.component";
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css'],
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, AfterViewInit {
   private token: string;
   private userPseudo: string;
   private avatar: string;
@@ -108,7 +108,25 @@ export class IndexComponent implements OnInit {
         this.initializeJoinMatchmakingPopup();
       })
     }
+    if(this.router.url.includes('cancelled')){
+      this.showCAancelledPopup();
+    }
   }
+
+  private showCAancelledPopup(){
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500
+    });
+    Toast.fire({
+        icon: 'error',
+        title: "Votre adversaire n'a pas accepté la partie"
+      }).then(() => {
+        document.getElementById('join-matchmaking')!.click();
+      });
+}
 
 
   /**

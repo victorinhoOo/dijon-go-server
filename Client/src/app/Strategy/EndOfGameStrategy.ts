@@ -11,5 +11,6 @@ export class EndOfGameStrategy implements IStrategy {
         state.won = data[4];
         console.log(state.won)
         state.end = true;
+        idGame.value = "";
     }
 }
