@@ -5,7 +5,7 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameDAO } from '../Model/DAO/GameDAO';
 import { HttpClient } from '@angular/common/http';
-import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
+import { AvailableGameInfoDTO } from '../Model/DTO/AvailableGameInfoDTO';
 import { WebsocketService } from '../websocket.service';
 import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
@@ -121,7 +121,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
    */
   private initializeJoinGamePopupContent() {
     this.gameDAO.GetAvailableGames().subscribe({
-      next: async (games: GameInfoDTO[]) => {
+      next: async (games: AvailableGameInfoDTO[]) => {
         let content = '';
 
         if (games.length === 0) {
@@ -134,7 +134,16 @@ export class IndexComponent implements OnInit, AfterViewInit {
               : `<img class="flag" src="china.svg"/>`;
             content += `<div class="game-choice">
               <i class="fas fa-play"></i>
-              <button id="game-${index}">${game["title"]} - ${game["size"]}x${game["size"]} ${stringRule}</button>
+              <button id="game-${index}"> 
+              <span id="gameName">${game["name"]}</span> - ${game["size"]}x${game["size"]} - Créateur : ${game["creatorName"]}
+              <div class="game-info">
+                <div class="grid-column">
+                  <div class="komi">Komi : ${game["komi"]}</div>
+                  <div class="handicap">Handicap : ${game["handicap"]}</div>
+                </div>
+                ${stringRule}
+              </div>
+              </button>
             </div><br>`;
           });
         }
@@ -143,12 +152,14 @@ export class IndexComponent implements OnInit, AfterViewInit {
         Swal.fire({
           title: 'Parties disponibles',
           html: content,
+
           showCloseButton: true,
           focusConfirm: false,
           confirmButtonText: 'Fermer',
           customClass: {
             confirmButton: 'custom-ok-button',
           },
+          width: '800px',
           didOpen: () => {
             // Ajouter les event listeners après que le contenu soit injecté
             games.forEach((game, index) => {
@@ -189,6 +200,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
       title: 'Créer une partie',
       html: `
         <form id="create-game-form">
+         <label for="game-name">Nom de la partie :</label>
+          <input id="game-name" name="game-name" type="text" class="swal2-input" placeholder="Nom de la partie">
+          <br>
+
           <label for="grid-size">Taille de la grille :</label>
           <select id="grid-size" name="grid-size" class="swal2-select">
             <option value="9">9x9</option>
@@ -209,6 +224,14 @@ export class IndexComponent implements OnInit, AfterViewInit {
             <option value="c">Chinoises</option>
             <option value="j">Japonaises</option>
           </select>
+
+          <label for="komi">Choix du komi :</label>
+          <input id="komi" name="komi" type="text" class="swal2-input" value="6.5" required>
+          <br>
+
+          <label for="number">Choix du handicap :</label>
+          <input type="number" id="handicap" name="handicap" min="0" max="9" class="swal2-input" value="0"/>
+
         </form>
       `,
       confirmButtonText: 'Créer',
@@ -219,11 +242,14 @@ export class IndexComponent implements OnInit, AfterViewInit {
       preConfirm: () => {
         const gridSize = (document.getElementById('grid-size') as HTMLSelectElement).value;
         const rules = (document.getElementById('rules') as HTMLSelectElement).value;
-        return { gridSize, rules };
+        const name = (document.getElementById('game-name') as HTMLSelectElement).value;
+        const komi = (document.getElementById('komi') as HTMLSelectElement).value;
+        const handicap = (document.getElementById('handicap') as HTMLSelectElement).value;
+        return { gridSize, rules, name, komi, handicap };
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { gridSize, rules } = result.value!;
+        const { gridSize, rules, name, komi, handicap } = result.value!;
 
         // Affichez un chargement avant la connexion
         Swal.fire({
@@ -238,7 +264,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createGame(gridSize, rules, "custom");
+          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name, handicap);
           Swal.close(); // Ferme le chargement
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur

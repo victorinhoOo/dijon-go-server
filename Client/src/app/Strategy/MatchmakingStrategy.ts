@@ -35,8 +35,7 @@ export class MatchmakingStrategy implements IStrategy {
         () =>
           this.confirmMatchmaking(opponentUsername, opponentElo).then((result) => {
             if(result.isConfirmed){
-              this.websocketService.createGame(19, 'j', 'matchmaking');
-            }
+              this.websocketService.createGame(19, "j", "matchmaking", "6.5", "test a changer", 0)            }
             else{
               this.websocketService.cancelMatchmaking(idLobby);
             }

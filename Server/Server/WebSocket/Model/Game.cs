@@ -3,6 +3,7 @@ using GoLogic.Goban;
 using GoLogic.Score;
 using GoLogic.Serializer;
 using GoLogic.Timer;
+using System.Xml.Linq;
 
 namespace WebSocket.Model
 {
@@ -14,7 +15,7 @@ namespace WebSocket.Model
         private Client player1;
         private Client player2;
         private Client currentTurn;
-        private GameBoard gameBoard;
+        private IBoard gameBoard;
         private GameLogic logic;
         private BoardSerializer boardSerializer;
         private ScoreRule score;
@@ -22,7 +23,11 @@ namespace WebSocket.Model
         private string rule;
         private int size;
         private int id;
+        private float komi;
+        private string name;
+        private int handicap;
         private TimerManager timerManager;
+        private GameManager gameManager;
 
         /// <summary>
         /// Proprité qui indique si la partie est pleine
@@ -74,23 +79,41 @@ namespace WebSocket.Model
         /// </summary>
         public int Id { get => id; }
 
+        /// <summary>
+        /// Récupérer ou modifier le komi
+        /// </summary>
+        public float Komi { get => komi; }
+
+        /// <summary>
+        /// Récupérer ou modifier le nom de la partie
+        /// </summary>
+        public string Name { get => name; }
+
+        /// <summary>
+        /// Récupérer ou modifier l'handicap de la partie
+        /// </summary>
+        public int Handicap { get => handicap; }
 
         /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game(int size, string rule)
+        public Game(int size, string rule, float komi, string name, int handicap)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
             this.size = size;
-            this.gameBoard = new GameBoard(size);
+            this.gameBoard = new GameBoard(size, "white", handicap);
             this.logic = new GameLogic(gameBoard);
             this.boardSerializer = new BoardSerializer(this.logic);
+            this.gameManager = new GameManager();
             this.rule = rule;
+            this.name = name;
+            this.komi = komi;
+            this.handicap = handicap;
             switch (this.rule)
             {
-                case "c": this.score = new ChineseScoreRule(gameBoard);break;
-                case "j": this.score = new JapaneseScoreRule(gameBoard);break;
+                case "c": this.score = new ChineseScoreRule(gameBoard, komi);break;
+                case "j": this.score = new JapaneseScoreRule(gameBoard, komi);break;
             }
         }
 
@@ -101,6 +124,7 @@ namespace WebSocket.Model
         {
             this.started = true;
             this.timerManager = new TimerManager();
+            this.gameManager.InsertGame(this);
         }
 
 
@@ -133,6 +157,7 @@ namespace WebSocket.Model
             this.timerManager.SwitchToNextPlayer();
             string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
             this.logic.PlaceStone(x, y);
+            this.gameManager.InsertGameState(this);
             return time;
         }
 
@@ -159,7 +184,7 @@ namespace WebSocket.Model
         /// Récupérer le score de la partie
         /// </summary>
         /// <returns>Score de la partie sous forme de tuple</returns>
-        public (int, int) GetScore()
+        public (float, float) GetScore()
         {
             return score.CalculateScore();
         }
@@ -183,14 +208,35 @@ namespace WebSocket.Model
             ChangeTurn();
         }
 
-
         /// <summary>
-        /// Test si la partie est terminée
+        /// Test si la partie est terminée. Si oui, déclenche les opérations de BDD en arrière-plan.
         /// </summary>
         /// <returns>True si la partie est terminée, False sinon</returns>
-        public bool TestWin()
+        public Task<bool> TestWinAsync()
         {
-            return logic.IsEndGame;
+            bool result = false;
+
+            if (logic.IsEndGame)
+            {
+                result = true;
+
+                // Exécuter les tâches BDD en arrière-plan
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await gameManager.TransferMovesToSqlAsync(this);
+                        await gameManager.UpdateGameAsync(this);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Erreur lors des opérations de transfert de Redis vers Sqlite : {ex.Message}");
+                    }
+                });
+            }
+
+            // Retourner immédiatement le résultat
+            return Task.FromResult(result);
         }
     }
 }

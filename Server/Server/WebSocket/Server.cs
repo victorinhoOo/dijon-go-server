@@ -44,9 +44,9 @@ namespace WebSocket
         /// <summary>
         /// Constructeur de la classe Server
         /// </summary>
-        public Server()
+        public Server(string ip, int port)
         {
-            this.webSocket = new Protocol.WebSocket("127.0.0.1", 7000); //10.211.55.3
+            this.webSocket = new Protocol.WebSocket(ip, port);
             this.gameManager = new GameManager();
         }
 
@@ -163,6 +163,7 @@ namespace WebSocket
             if (message.Contains("custom"))
             {
                 this.gameType = "custom";
+                
             }
             else if (message.Contains("matchmaking"))
             {
@@ -183,7 +184,7 @@ namespace WebSocket
                 Game game = this.gameType == "custom" ? customGames[idGame] : matchmakingGames[idGame];
                 if (responseType == "Broadcast")
                 {
-                    this.BroadcastMessage(game, responseBytes);
+                    this.BroadastMessageAsync(game, responseBytes);
                 }
                 if (game.IsFull && !game.Started)
                 {
@@ -211,13 +212,15 @@ namespace WebSocket
             }
         }
 
-        private void BroadcastMessage(Game game, byte[] bytes)
+        private async Task BroadastMessageAsync(Game game, byte[] bytes)
         {
             this.SendMessage(game.Player1, bytes);
             this.SendMessage(game.Player2, bytes);
 
-            if (game.TestWin()) // Appel direct de la méthode TestWin() de l'objet Game
+            // Vérifie si la partie est terminée
+            if (await game.TestWinAsync())
             {
+                // Si la partie est terminée, gérer la fin (en parallèle des tâches BDD)
                 this.handleGameEnd(game);
             }
         }
@@ -250,9 +253,9 @@ namespace WebSocket
         /// </summary>
         private void handleGameEnd(Game game)
         {
-            (int,int) scores = game.GetScore();
-            int scorePlayer1 = scores.Item1;
-            int scorePlayer2 = scores.Item2;
+            (float , float) scores = game.GetScore();
+            float scorePlayer1 = scores.Item1;
+            float scorePlayer2 = scores.Item2;
             bool player1won = false;
             bool player2won = false;
 
@@ -275,15 +278,6 @@ namespace WebSocket
             this.SendMessage(game.Player1, endOfGameMessagePlayer1);
             this.SendMessage(game.Player2, endOfGameMessagePlayer2);
         }
-
-        /// <summary>
-        /// Test si un joueur a gagné
-        /// </summary>
-        private bool TestWin(Game game)
-        {
-            return game.TestWin();
-        }
- 
     }
 
 }

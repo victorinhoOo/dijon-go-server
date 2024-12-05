@@ -1,17 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import  {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 import { MatDialog } from '@angular/material/dialog';
 import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { User } from '../Model/User';
+import { GameDAO } from '../Model/DAO/GameDAO';
+import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
+import { Game } from '../Model/Game';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatIconModule,MatButtonModule, HttpClientModule],
+  imports: [MatIconModule,MatButtonModule, HttpClientModule,CommonModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -25,6 +29,13 @@ export class ProfileComponent {
   private userEmail: string;
   private rank: string;
   private avatar: string;
+  private historyData: GameInfoDTO[] = [];
+  private gameDAO: GameDAO;
+
+  // Getter pour accéder aux données
+  public getHistoryData(): GameInfoDTO[] {
+    return this.historyData;
+  }
 
   /**
    * Renvoi l'avatar de l'utilisateur
@@ -73,6 +84,13 @@ export class ProfileComponent {
     this.userEmail = this.userCookieService.getUser()!.Email;
     this.rank = this.userCookieService.getUser()!.Rank;
     this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
+    this.gameDAO = new GameDAO(this.http);
+  }
+
+
+  ngOnInit(): void {
+    // Appel de la méthode pour charger l'historique au moment de l'initialisation
+    this.getHistory();
   }
 
   /**
@@ -91,6 +109,35 @@ export class ProfileComponent {
       this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}?t=${new Date().getTime()}`; // cache-busting pour mettre à jour l'avatar
       this.rank = this.userCookieService.getUser()!.Rank;
     });
+  }
+
+  /**
+   * permet d'afficher l'historique des parties de l'utilisateurs 
+   */
+  public getHistory(): void {
+    const token = this.userCookieService.getToken();
+    this.gameDAO.GetGamesPlayed(token).subscribe((history: any[]) => {
+      // Convertir les objets JSON en instances de GameInfoDTO
+      this.historyData = history.map(
+        (game) =>
+          new GameInfoDTO(
+            game.id,
+            game.usernamePlayer1,
+            game.usernamePlayer2,
+            game.size,
+            game.rule,
+            game.scorePlayer1,
+            game.scorePlayer2,
+            game.won,
+            new Date(game.date) // Conversion explicite en Date si nécessaire
+          )
+      );
+      console.log(this.historyData); // Vérifiez ici que les objets ont bien été convertis
+    });
+  }
+
+  public replayGame(game: any){
+
   }
   
 }
