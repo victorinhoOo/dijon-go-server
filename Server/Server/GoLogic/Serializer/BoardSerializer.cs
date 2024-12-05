@@ -4,7 +4,7 @@ using System.Text;
 namespace GoLogic.Serializer
 {
     /// <summary>
-    /// Serialise en String le Goban
+    /// Serialise en String l'état du Goban
     /// </summary>
     public class BoardSerializer
     {
@@ -19,7 +19,6 @@ namespace GoLogic.Serializer
         /// Vérifie et retourne une liste des positions Ko sur le plateau
         /// Une case est Ko si le coup remet le plateau dans son état précédent
         /// </summary>
-        /// <param name="logic">instance de Gamelogic</param>
         /// <param name="currentTurn">Tour du joueur actuel, noir ou blanc</param>
         /// <returns>List des pierres en situation de ko</returns>
         private List<Stone> ChecksGobanForKo(StoneColor currentTurn)
@@ -59,6 +58,7 @@ namespace GoLogic.Serializer
         /// <summary>
         /// Convertit le plateau en chaîne de caractères avec les positions Ko marquées
         /// </summary>
+        /// <param name="currentTurn">Couleur du tour du joueur</param>
         /// <returns>Représentation du plateau sous forme de chaîne</returns>
         public string StringifyGoban(StoneColor currentTurn)
         {
