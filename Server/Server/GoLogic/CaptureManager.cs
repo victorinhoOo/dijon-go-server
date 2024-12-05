@@ -1,4 +1,4 @@
-﻿using GoLogic.Goban;
+using GoLogic.Goban;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,8 +122,8 @@ namespace GoLogic
         /// <param name="stone">La pierre initiale dont l'on veut capturer le groupe</param>
         private void CaptureGroup(Stone stone)
         {
-            HashSet<Stone> visited = []; // collection sans doublon 
-            List<Stone> group = [];
+            HashSet<Stone> visited = new HashSet<Stone>(); // collection sans doublon 
+            List<Stone> group = new List<Stone>();
 
             // Récupére le groupe de la pierre passé en paramétre
             group = FindGroup(stone, visited, group, stone.Color);
@@ -152,15 +152,14 @@ namespace GoLogic
         /// <returns>Liste de Pierre de même couleur toutes adjacentes</returns>
         private List<Stone> FindGroup(Stone stone, HashSet<Stone> visited, List<Stone> group, StoneColor initialStoneColor)
         {
-            if (visited.Contains(stone) || !this.goban.IsValidCoordinate(stone.X, stone.Y) || stone.Color != initialStoneColor)
+            if (!visited.Contains(stone) && this.goban.IsValidCoordinate(stone.X, stone.Y) && stone.Color == initialStoneColor)
             {
-                return group;
-            }
-            visited.Add(stone);
-            group.Add(stone);
-            foreach (Stone neighbor in this.goban.GetNeighbors(stone))
-            {
-                group = FindGroup(neighbor, visited, group, initialStoneColor);
+                visited.Add(stone);
+                group.Add(stone);
+                foreach (Stone neighbor in this.goban.GetNeighbors(stone))
+                {
+                    FindGroup(neighbor, visited, group, initialStoneColor);
+                }
             }
             return group;
         }
