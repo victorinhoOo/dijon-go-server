@@ -48,7 +48,7 @@
           </div>
         </div>
         <!-- Date de la partie -->
-        <strong>{{ game.Date() | date: 'dd/MM/yyyy HH:mm' }}</strong>
+        <strong id="date">{{ game.Date() | date: 'dd/MM/yyyy HH:mm' }}</strong>
 
         <!-- Règles de la partie -->
         <span *ngIf="game.Rule() === 'c'">
@@ -59,11 +59,12 @@
         </span>
 
         
-        
+        <!-- Taille de la grille -->
+      <span id="sizeMobile">{{ game.Size() }}x{{ game.Size() }}</span>
       </div>
 
       <!-- Taille de la grille -->
-      <span>{{ game.Size() }}x{{ game.Size() }}</span>
+      <span id="sizeOrdi">{{ game.Size() }}x{{ game.Size() }}</span>
 
 
       <div class="game-result">
@@ -111,25 +112,25 @@
         <!-- Joueur droite (toujours adversaire) -->
         <span class="right-player-info player-info">
           <div class="stone-container">
-            <mat-icon
-            class="stone"
-            [ngClass]="{
-              white: game.UsernamePlayer2() !== UserPseudo,
-              black: game.UsernamePlayer1() !== UserPseudo
-            }"
-          >
-            brightness_1
-          </mat-icon>
-        </div>
-        <div class="username-container">
-          {{ game.UsernamePlayer1() === UserPseudo ? game.UsernamePlayer2() : game.UsernamePlayer1() }}
-          <img
-          *ngIf="game.Won() === false"
-          class="crown"
-          src="crown.svg"
-          alt="Couronne"
-        />
-        </div>
+              <mat-icon
+              class="stone"
+              [ngClass]="{
+                white: game.UsernamePlayer2() !== UserPseudo,
+                black: game.UsernamePlayer1() !== UserPseudo
+              }"
+            >
+              brightness_1
+            </mat-icon>
+          </div>
+          <div class="username-container">
+            {{ game.UsernamePlayer1() === UserPseudo ? game.UsernamePlayer2() : game.UsernamePlayer1() }}
+            <img
+              *ngIf="game.Won() === false"
+              class="crown"
+              src="crown.svg"
+              alt="Couronne"
+            />
+          </div>
         </span>
       </div>
     </div>

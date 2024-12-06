@@ -9,6 +9,10 @@
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+#sizeMobile{
+    display: none;
+}
+
 /* Bouton des paramètres */
 #params {
     margin-left: auto;
@@ -61,22 +65,24 @@
     max-width: 100%;
 }
 
+#date{
+    font-size: 14px;
+}
+
 .date-rule-information{
     display: flex;
     width: 40%;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
 }
 
 .game-result{
     display: flex;
     width: 40%;
-    justify-content: space-between;
+    justify-content: space-between !important;
     align-items: center;
-}
-
-.player-info{
-    width: 30%;
+    gap: 15px;
 }
 
 .score-container{
@@ -115,6 +121,11 @@
     background-color: transparent;
     justify-content: space-between; /* Espace égal entre les éléments */
     align-items: center; /* Centrer verticalement les éléments */
+}
+
+.size{
+    display: block;
+    margin-left:50px ;
 }
 
 /* Animation au survol des lignes */
@@ -234,4 +245,86 @@
 
 .historique-title{
     margin-bottom: 40px;
+}
+
+.history-item{
+    display: flex; 
+    flex-direction: column;
+
+}
+
+@media (max-width: 1263px) {
+
+    #sizeOrdi{
+        display: none;
+    }
+
+    #sizeMobile{
+        display: visible;
+    }
+
+    .historique-title {
+        font-size: 20px; /* Taille réduite pour les petits écrans */
+        text-align: center;
+    }
+
+    .history-item {
+        margin-bottom: 10px;
+    }
+
+    .game-line {
+        flex-direction: column; /* Empile les éléments */
+        align-items: flex-start; /* Aligne les éléments au début */
+        padding: 10px;
+    }
+
+    .date-rule-information,
+    .game-result {
+        width: 100%; /* Prend toute la largeur disponible */
+        justify-content: space-between;
+        margin-bottom: 10px; /* Espacement entre les sections */
+    }
+
+    .player-info,
+    .score-container {
+        text-align: center;
+    }
+
+    .score-container span {
+        display: inline-block; /* Affiche les scores en ligne */
+    }
+
+    .replay-button {
+        margin: 0 auto;
+    }
+    .game-result{
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .history-container {
+        max-width: 90%;
+        padding: 10px;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .historique-title {
+        font-size: 18px; /* Encore plus petit pour très petits écrans */
+    }
+
+    .game-line {
+        padding: 8px;
+    }
+
+    .replay-container {
+        flex-direction: column; /* Empile le bouton et le texte */
+        align-items: center;
+    }
+
+    .replay-text {
+        margin-top: 5px;
+    }
 }
