@@ -17,9 +17,11 @@ namespace WebSocket.Strategy
     public class CreateGameStrategy : IStrategy
     {
         private IGameDAO gameDAO;
+        private GameManager gameManager;
         public CreateGameStrategy()
         {
             this.gameDAO = new GameDAO();
+            this.gameManager = new GameManager();
         }
 
         /// <summary>
@@ -43,10 +45,11 @@ namespace WebSocket.Strategy
                 int id = Server.CustomGames.Count + 1; 
                 GameConfiguration config = new GameConfiguration(size, rule, komi, name, handicap, colorHandicap);
                 Game newGame = GameFactory.CreateCustomGame(config);
+                player.User.Token = data[2];
                 newGame.AddPlayer(player);
                 Server.CustomGames[id] = newGame;
+                newGame.Player1.User = this.gameManager.GetUserByToken(newGame.Player1.User.Token); //  récupération de l'utilisateur pour l'insertion en bdd
                 gameDAO.InsertAvailableGame(newGame); // Ajout de la partie dans le dictionnaire des parties
-                player.User.Token = data[2];
                 Server.CustomGames[id].Player1 = player; // Ajout du client en tant que joueur 1
                 response = $"{id}-"; // Renvoi de l'id de la partie créée
                 type = "Send_";

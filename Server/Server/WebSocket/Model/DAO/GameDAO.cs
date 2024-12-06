@@ -25,7 +25,6 @@ namespace WebSocket.Model.DAO
         /// <inheritdoc/>
         public bool InsertAvailableGame(Game game)
         {
-            game.Player1.User.Name = "nom du createur";
             this.database.Connect();
             bool res = false;
             string query = "insert into availablegame (id,size,rule,komi,name,creatorName,handicap,handicapColor) values (@id,@size,@rule,@komi,@name,@creatorName,@handicap,@handicapColor);";

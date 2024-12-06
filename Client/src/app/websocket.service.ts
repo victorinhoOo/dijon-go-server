@@ -117,7 +117,7 @@ export class WebsocketService {
   }
 
     /**
-     * Envoi un message de création de partie personalisée
+     * Envoi un message de création de partie personalisée avec les paramètres choisis par le client
      */
     public createPersonalizeGame(size: number, rule: string, komi:string, name:string,handicap:number,colorHandicap: string): void {
       if (this.websocket != null && this.websocket.OPEN) {
