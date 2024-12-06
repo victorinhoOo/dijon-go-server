@@ -7,6 +7,9 @@ import { UserCookieService } from '../Model/UserCookieService';
 import { CdTimerModule } from 'angular-cd-timer';
 import { ViewChild } from '@angular/core';
 import Swal from 'sweetalert2';
+import { IObserver } from '../Observer/IObserver';
+import { Observable } from '../Observer/Observable';
+import { Game } from '../Model/Game';
 
 @Component({
   selector: 'app-grid',
@@ -18,11 +21,16 @@ import Swal from 'sweetalert2';
 /**
  * Composant de la grille de jeu
  */
-export class GridComponent implements AfterViewInit, OnInit {
+export class GridComponent implements AfterViewInit, OnInit, IObserver {
   private size: number;
   private rule: string;
   private playerAvatar: string;
   private playerPseudo: string;
+  private game: Game;
+
+  public update(object: Observable): void {
+    this.game = object as Game;
+  }
 
   public get PlayerAvatar() {
     return this.playerAvatar;
@@ -42,6 +50,7 @@ export class GridComponent implements AfterViewInit, OnInit {
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;
     this.rule = '';
+    this.game = new Game();
   }
 
   /**

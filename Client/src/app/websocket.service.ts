@@ -31,6 +31,7 @@ export class WebsocketService implements IObserver {
   constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient) {
     this.websocket = null;
     this.game = new Game();
+    this.game.register(this);
     this.interpreter = new Interpreter(this.game, this);
     this.userDAO = new UserDAO(httpclient);
   }
@@ -114,7 +115,7 @@ export class WebsocketService implements IObserver {
    */
   public createMatchmakingGame(): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      this.setPlayerColor("black");
+      this.game.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`0-Create-${userToken}-matchmaking`);
       this.router.navigate(['game', 19, "j"]);
@@ -126,7 +127,7 @@ export class WebsocketService implements IObserver {
      */
     public createPersonalizeGame(size: number, rule: string, komi:string, name:string,handicap:number,colorHandicap: string): void {
       if (this.websocket != null && this.websocket.OPEN) {
-        this.setPlayerColor("black");
+        this.game.setPlayerColor("black");
         let userToken = this.userCookieService.getToken();
         this.websocket.send(`0-Create-${userToken}-${size}-${rule}-custom-${komi}-${name}-${handicap}-${colorHandicap}`);
         this.router.navigate(['game', size, rule]);
@@ -138,7 +139,7 @@ export class WebsocketService implements IObserver {
    */
   public joinGame(id: number, type:string, rule:string, size:number): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      this.setPlayerColor("white");
+      this.game.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`${id}-Join-${userToken}-${type}`);
       this.router.navigate(['game', size, rule]);
@@ -172,7 +173,7 @@ export class WebsocketService implements IObserver {
    */
   public skipTurn(): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
+      if (this.game.getCurrentTurn() == this.game.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
         this.websocket.send(`${idGame}-Skip`);
       }
@@ -189,7 +190,7 @@ export class WebsocketService implements IObserver {
    */
   public placeStone(coordinates: string) {
     if (this.websocket != null && this.websocket.OPEN) {
-      if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
+      if (this.game.getCurrentTurn() == this.game.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
         this.websocket.send(`${idGame}-Stone-${coordinates}`);
         console.log(`${idGame}-Stone-${coordinates}`);
@@ -199,15 +200,6 @@ export class WebsocketService implements IObserver {
     }
   }
 
-
-  /**
-   * Définie la couleur du joueur
-   * @param color Couleur du joueur 
-   */
-  public setPlayerColor(color: string) {
-    this.game.setPlayerColor(color);
-    this.interpreter.setGame(this.game);
-  }
 
   public cancelMatchmaking(idLobby:string) {
     if (this.websocket != null && this.websocket.OPEN) {

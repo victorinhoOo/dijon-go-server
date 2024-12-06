@@ -38,6 +38,7 @@ export class Game extends Observable{
    */
   public initCurrentTurn() {
     this.currentTurn = 'black';
+    this.notifyChange(this);
   }
 
 
