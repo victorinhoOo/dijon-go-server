@@ -134,7 +134,7 @@ export class IndexComponent implements OnInit {
               <div class="game-info">
                 <div class="grid-column">
                   <div class="komi">Komi : ${game["komi"]}</div>
-                  <div class="handicap">Handicap : ${game["handicap"]}</div>
+                  <div class="handicap">Handicap : ${game["handicap"]} <img src="${game["handicapColor"]}.png" id="stone-${game["handicapColor"]}"></div>
                 </div>
                 ${stringRule}
               </div>

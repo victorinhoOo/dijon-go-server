@@ -34,11 +34,12 @@ namespace WebSocket.Strategy
             int size = Convert.ToInt16(data[3]);
             string rule = data[4];
             string name = data[7];
-            float komi = float.Parse(data[6], CultureInfo.InvariantCulture.NumberFormat);
-            string colorHandicap = data[8];
-            int handicap = int.Parse(data[8]); 
+
             if (gameType == "custom") // la partie est personnalisée
             {
+                float komi = float.Parse(data[6], CultureInfo.InvariantCulture.NumberFormat);
+                int handicap = int.Parse(data[8]);
+                string colorHandicap = data[9];
                 int id = Server.CustomGames.Count + 1; // Génération de l'id de la partie
                 Game newGame = new Game(size, rule, komi, name ,handicap,colorHandicap);
                 newGame.AddPlayer(player);

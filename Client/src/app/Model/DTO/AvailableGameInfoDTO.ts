@@ -11,7 +11,9 @@ export class AvailableGameInfoDTO {
     private name: string;
     private handicap: number;
 
-    constructor(id: number, size: number, rule: string ,creatorName:string, komi : number, name: string,handicap:number) {
+    private handicapColor: string;
+
+    constructor(id: number, size: number, rule: string ,creatorName:string, komi : number, name: string,handicap:number,handicapColor: string) {
         this.id = id;
 
         this.size = size;
@@ -20,6 +22,7 @@ export class AvailableGameInfoDTO {
         this.komi = komi;
         this.name = name;
         this.handicap = handicap;
+        this.handicapColor = handicapColor;
 
     }
 
@@ -52,5 +55,8 @@ export class AvailableGameInfoDTO {
     }
     public Handicap(): number{
         return this.handicap;
+    }
+    public HandicapColor(): string{
+        return this.handicapColor;
     }
 }

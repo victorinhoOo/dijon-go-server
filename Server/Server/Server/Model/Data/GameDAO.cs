@@ -27,23 +27,25 @@ namespace Server.Model.Data
 
             database.Connect();
 
-        string query = "SELECT id, size, rule, creatorName,komi, name, handicap FROM availablegame;";
+        string query = "SELECT id, size, rule, creatorName,komi, name, handicap,handicapColor FROM availablegame;";
 
             var dataTable = database.ExecuteQuery(query, null);
 
         // Boucle sur les résultats pour créer des GameInfoDTO
         foreach (DataRow row in dataTable.Rows)
         {
-            var gameInfo = new AvailableGameInfoDTO
-            {
-                Id = Convert.ToInt32(row["id"]),
-                Size = Convert.ToInt32(row["size"]),
-                Rule = row["rule"].ToString(),
-                CreatorName = row["creatorName"].ToString(),
-                Komi = Convert.ToSingle(row["komi"]),
-                Name = row["name"].ToString(),
-                Handicap = Convert.ToInt32(row["handicap"])
-            };
+                var gameInfo = new AvailableGameInfoDTO
+                {
+                    Id = Convert.ToInt32(row["id"]),
+                    Size = Convert.ToInt32(row["size"]),
+                    Rule = row["rule"].ToString(),
+                    CreatorName = row["creatorName"].ToString(),
+                    Komi = Convert.ToSingle(row["komi"]),
+                    Name = row["name"].ToString(),
+                    Handicap = Convert.ToInt32(row["handicap"]),
+                    HandicapColor = row["handicapColor"].ToString()
+
+                };
             result.Add(gameInfo);
         }
 

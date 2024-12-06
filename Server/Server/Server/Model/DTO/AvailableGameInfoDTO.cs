@@ -12,6 +12,7 @@
         private float komi;
         private string name;
         private int handicap;
+        private string handicapColor;
 
         /// <summary>
         /// L'id de la partie
@@ -48,5 +49,9 @@
         /// </summary>
         public int Handicap { get => handicap; set => handicap = value; }
 
+        /// <summary>
+        /// Retourne et modifie le choix de la couleur du handicap
+        /// </summary>
+        public string HandicapColor { get => handicapColor; set => handicapColor = value; }
     }
 }
