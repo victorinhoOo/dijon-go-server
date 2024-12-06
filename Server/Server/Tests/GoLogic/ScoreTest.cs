@@ -142,7 +142,7 @@ namespace Tests.GoLogic
             // . . . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.True(gameScore.IsGroupDead(gameBoard.GetStone(0, 2)));
+            Assert.True(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 2)));
 
         }
 
@@ -209,7 +209,7 @@ namespace Tests.GoLogic
             // . . . @ . . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(2, 3)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(2, 3)));
         }
 
         [Fact]
@@ -237,7 +237,7 @@ namespace Tests.GoLogic
             // . . . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(2, 2)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(2, 2)));
         }
 
         [Fact]
@@ -266,8 +266,8 @@ namespace Tests.GoLogic
             gameLogic.PlaceStone(3, 6); // noir
             gameLogic.PlaceStone(3, 5); // blanc
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(0, 4)));
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(0, 6)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 4)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 6)));
 
             // . . . O @ . O @ .
             // . . . O @ . O @ .
@@ -316,7 +316,7 @@ namespace Tests.GoLogic
             gameLogic.PlaceStone(4, 7); // blanc
             gameLogic.PlaceStone(8, 3); // noir
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(0, 4)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 4)));
 
             // . . . O @ . @ O .
             // . . . O @ @ @ O .
