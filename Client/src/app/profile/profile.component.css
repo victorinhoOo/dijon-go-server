@@ -9,10 +9,6 @@
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#sizeMobile{
-    display: none;
-}
-
 /* Bouton des paramètres */
 #params {
     margin-left: auto;
@@ -65,24 +61,22 @@
     max-width: 100%;
 }
 
-#date{
-    font-size: 14px;
-}
-
 .date-rule-information{
     display: flex;
     width: 40%;
     justify-content: space-between;
     align-items: center;
-    gap: 15px;
 }
 
 .game-result{
     display: flex;
     width: 40%;
-    justify-content: space-between !important;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
+}
+
+.player-info{
+    width: 30%;
 }
 
 .score-container{
@@ -121,11 +115,6 @@
     background-color: transparent;
     justify-content: space-between; /* Espace égal entre les éléments */
     align-items: center; /* Centrer verticalement les éléments */
-}
-
-.size{
-    display: block;
-    margin-left:50px ;
 }
 
 /* Animation au survol des lignes */
@@ -247,20 +236,24 @@
     margin-bottom: 40px;
 }
 
-.history-item{
-    display: flex; 
-    flex-direction: column;
-
+#sizeMobile{
+    display: none;
 }
-
+#sizeOrdi{
+    display: block;
+}
 @media (max-width: 1263px) {
+
+    .player-info{
+        width: 20%;
+    }
 
     #sizeOrdi{
         display: none;
     }
 
     #sizeMobile{
-        display: visible;
+        display: block;
     }
 
     .historique-title {
@@ -310,21 +303,3 @@
 
 }
 
-@media (max-width: 480px) {
-    .historique-title {
-        font-size: 18px; /* Encore plus petit pour très petits écrans */
-    }
-
-    .game-line {
-        padding: 8px;
-    }
-
-    .replay-container {
-        flex-direction: column; /* Empile le bouton et le texte */
-        align-items: center;
-    }
-
-    .replay-text {
-        margin-top: 5px;
-    }
-}
