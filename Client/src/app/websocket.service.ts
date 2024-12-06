@@ -5,10 +5,11 @@ import { Game } from './Model/Game';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { environment } from './environment';
-import { env } from 'process';
 import { UserDAO } from './Model/DAO/UserDAO';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { User } from './Model/User';
+import { IObserver } from './Observer/IObserver';
+import { Observable } from './Observer/Observable';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ import { User } from './Model/User';
 /**
  * Service gérant la connexion au serveur websocket
  */
-export class WebsocketService {
+export class WebsocketService implements IObserver {
   private websocket: WebSocket | null;
   private game: Game;
   private interpreter: Interpreter;
@@ -32,6 +33,10 @@ export class WebsocketService {
     this.game = new Game();
     this.interpreter = new Interpreter(this.game, this);
     this.userDAO = new UserDAO(httpclient);
+  }
+
+  public update(object: Observable):void{
+    this.game = object as Game;
   }
 
 

@@ -1,8 +1,11 @@
-export class Game {
+import { Observable } from "../Observer/Observable";
+
+export class Game extends Observable{
   private currentTurn: string;
   private playerColor: string;
 
   public constructor() {
+    super();
     this.currentTurn = '';
     this.playerColor = '';
   }
