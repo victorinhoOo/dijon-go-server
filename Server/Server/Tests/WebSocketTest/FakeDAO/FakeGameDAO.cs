@@ -82,13 +82,19 @@ namespace Tests.WebSockets.FakeDAO
         public List<AvailableGameInfoDTO> GetAvailableGames()
         {
             return games.Select(game => new AvailableGameInfoDTO
-            {
-                Id = game.Id,
-                Name = $"Partie numéro {game.Id}",
-                Size = game.Size,
-                Rule = game.Rule
-            }).ToList();
+            (
+                game.Id,
+                game.Size,
+                game.Rule,
+                game.Player1.User.Name,
+                6.5f,
+                "Ma Game",
+                 0,
+                 "white"
+            )
+            ).ToList();
         }
+
 
 
         public List<GameInfoDTO> GetGamesByToken(string token)
