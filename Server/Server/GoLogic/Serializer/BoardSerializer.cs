@@ -16,46 +16,6 @@ namespace GoLogic.Serializer
         }
 
         /// <summary>
-        /// Vérifie et retourne une liste des positions Ko sur le plateau
-        /// Une case est Ko si le coup remet le plateau dans son état précédent
-        /// </summary>
-        /// <param name="currentTurn">Tour du joueur actuel, noir ou blanc</param>
-        /// <returns>List des pierres en situation de ko</returns>
-        private List<Stone> ChecksGobanForKo(StoneColor currentTurn)
-        {
-            List<Stone> potentialKoPositions = new List<Stone>();
-
-            // Only check Ko if there was a previous stone
-            if (this.logic.PreviousStone == null) return potentialKoPositions;
-
-            // Récupère tous les voisins vides de la pierre précédente
-            foreach (Stone stone in logic.Goban.GetNeighbors(this.logic.PreviousStone))
-            {
-                if (stone.Color == StoneColor.Empty)
-                {
-                    // Pour chaque voisin vide, fait une nouvelle copie et teste
-                    IBoard boardCopy = this.logic.Goban.Clone();
-                    CaptureManager captureManagerCopy = new CaptureManager(boardCopy);
-                    Stone stoneCopy = boardCopy.GetStone(stone.X, stone.Y);
-
-                    // Essaie de placer une pierre de la couleur du joueur actuel
-                    stoneCopy.ChangeColor(currentTurn);
-
-                    // Capture toutes les pierres adverses
-                    captureManagerCopy.CapturesOpponent(stoneCopy);
-
-                    // Vérifie si cela crée une situation de Ko
-                    if (boardCopy.IsKoViolation())
-                    {
-                        potentialKoPositions.Add(stone);
-                    }
-                }
-            }
-
-            return potentialKoPositions;
-        }
-
-        /// <summary>
         /// Convertit le plateau en chaîne de caractères avec les positions Ko marquées
         /// </summary>
         /// <param name="currentTurn">Couleur du tour du joueur</param>
@@ -64,7 +24,7 @@ namespace GoLogic.Serializer
         {
             // Récupère les positions en Ko
             var koPositions = new HashSet<(int x, int y)>();
-            foreach (var stone in ChecksGobanForKo(currentTurn))
+            foreach (var stone in this.logic.ChecksGobanForKo(currentTurn))
             {
                 koPositions.Add((stone.X, stone.Y));
             }

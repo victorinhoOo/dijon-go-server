@@ -88,7 +88,47 @@ namespace GoLogic
             
             return res;
         }
-        
+
+        /// <summary>
+        /// Vérifie et retourne une liste des positions Ko sur le plateau
+        /// Une case est Ko si le coup remet le plateau dans son état précédent
+        /// </summary>
+        /// <param name="currentTurn">Tour du joueur actuel, noir ou blanc</param>
+        /// <returns>List des pierres en situation de ko</returns>
+        public List<Stone> ChecksGobanForKo(StoneColor currentTurn)
+        {
+            List<Stone> potentialKoPositions = new List<Stone>();
+
+            // Only check Ko if there was a previous stone
+            if (this.previousStone != null)
+            {
+                // Récupère tous les voisins vides de la pierre précédente
+                foreach (Stone stone in this.goban.GetNeighbors(this.previousStone))
+                {
+                    if (stone.Color == StoneColor.Empty)
+                    {
+                        // Pour chaque voisin vide, fait une nouvelle copie et teste
+                        IBoard boardCopy = this.goban.Clone();
+                        CaptureManager captureManagerCopy = new CaptureManager(boardCopy);
+                        Stone stoneCopy = boardCopy.GetStone(stone.X, stone.Y);
+
+                        // Essaie de placer une pierre de la couleur du joueur actuel
+                        stoneCopy.ChangeColor(currentTurn);
+
+                        // Capture toutes les pierres adverses
+                        captureManagerCopy.CapturesOpponent(stoneCopy);
+
+                        // Vérifie si cela crée une situation de Ko
+                        if (boardCopy.IsKoViolation())
+                        {
+                            potentialKoPositions.Add(stone);
+                        }
+                    }
+                }
+            }
+
+            return potentialKoPositions;
+        }
     }
 }
 
