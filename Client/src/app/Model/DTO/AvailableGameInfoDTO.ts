@@ -47,15 +47,27 @@ export class AvailableGameInfoDTO {
         return this.rule;
     }
 
+    /**
+     * Renvoie le nom du createur de la partie
+     */
     public CreatorName(): string {
         return this.creatorName;
     }
+    /**
+     * Renvoie le titre de la partie
+     */
     public Name(): string{
         return this.name;
     }
+    /**
+     * Renvoie le handicap de la partie
+     */
     public Handicap(): number{
         return this.handicap;
     }
+    /**
+     * Renvoie la couleur de la personne sur qui affecté le handicap
+     */
     public HandicapColor(): string{
         return this.handicapColor;
     }

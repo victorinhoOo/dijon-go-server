@@ -34,18 +34,18 @@ namespace Server.Model.Data
         // Boucle sur les résultats pour créer des GameInfoDTO
         foreach (DataRow row in dataTable.Rows)
         {
-                var gameInfo = new AvailableGameInfoDTO
-                {
-                    Id = Convert.ToInt32(row["id"]),
-                    Size = Convert.ToInt32(row["size"]),
-                    Rule = row["rule"].ToString(),
-                    CreatorName = row["creatorName"].ToString(),
-                    Komi = Convert.ToSingle(row["komi"]),
-                    Name = row["name"].ToString(),
-                    Handicap = Convert.ToInt32(row["handicap"]),
-                    HandicapColor = row["handicapColor"].ToString()
+                AvailableGameInfoDTO gameInfo = new AvailableGameInfoDTO
+                (
+                    Convert.ToInt32(row["id"]),
+                    Convert.ToInt32(row["size"]),
+                    row["rule"].ToString(),
+                    row["creatorName"].ToString(),
+                    Convert.ToSingle(row["komi"]),
+                    row["name"].ToString(),
+                    Convert.ToInt32(row["handicap"]),
+                    row["handicapColor"].ToString()
 
-                };
+                );
             result.Add(gameInfo);
         }
 
