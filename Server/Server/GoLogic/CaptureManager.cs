@@ -129,14 +129,10 @@ namespace GoLogic
             {
                 stoneInGroup.ChangeColor(StoneColor.Empty); // Retire les pierres capturées (couleur Empty)
             }
-            if (this.goban.CurrentTurn == StoneColor.Black)
-            {
-                this.goban.CapturedWhiteStones += group.Count;
-            }
-            else
-            {
-                this.goban.CapturedBlackStones += group.Count;
-            }
+
+            if (this.goban.CurrentTurn == StoneColor.Black) goban.AddCapturedStone(StoneColor.White, group.Count);
+            
+            else goban.AddCapturedStone(StoneColor.Black, group.Count);
         }
 
         /// <summary>

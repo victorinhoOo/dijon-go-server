@@ -16,7 +16,7 @@
         /// <summary>
         /// Tour actuel, Noir ou Blanc
         /// </summary>
-        public StoneColor CurrentTurn { get => currentTurn; set => this.currentTurn = value; }
+        public StoneColor CurrentTurn { get => currentTurn; }
 
         /// <summary>
         /// La taille du plateau (size x size)
@@ -29,7 +29,6 @@
         public int CapturedBlackStones
         {
             get => this.capturedBlackStones;
-            set => this.capturedBlackStones = value;
         }
 
         /// <summary>
@@ -38,7 +37,6 @@
         public int CapturedWhiteStones
         {
             get => this.capturedWhiteStones;
-            set => this.capturedWhiteStones = value;
         }
         #endregion Attributs
         
@@ -304,6 +302,24 @@
             }
 
             return res;
+        }
+        /// <inheritdoc/>
+        public void AddCapturedStone(StoneColor color, int amount)
+        {
+            if (color == StoneColor.Black)
+            {
+                this.capturedBlackStones += amount;
+            }
+            else
+            {
+                this.capturedWhiteStones += amount;
+            }
+        }
+
+        /// <inheritdoc/> 
+        public void NextTurn()
+        {
+            this.currentTurn = this.currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
         }
     }
 }

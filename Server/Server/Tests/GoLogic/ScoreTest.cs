@@ -357,9 +357,6 @@ namespace Tests.GoLogic
             gameLogic.PlaceStone(2, 6); // blanc
             gameLogic.PlaceStone(8, 4); // noir
 
-            // Capture du groupe de pierres noirs en plaçant un blanc en (0, 4)
-            gameLogic.PlaceStone(0, 4);
-
             // . . O @ . @ O . .
             // . . O @ @ @ O . .
             // . . O O O O O . .
@@ -368,11 +365,15 @@ namespace Tests.GoLogic
             // . . . . . . . . .
             // . . . . . . . . .
             // . . . . . . . . .
-            // . . . . . . . . .
+            // @ @ @ @ @ . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.Equal(StoneColor.White, gameBoard.GetStone(0, 4).Color);
+            gameScore.CalculateScore();
+
+            Assert.Equal(StoneColor.White, gameBoard.GetStone(0, 2).Color);
             Assert.Equal(StoneColor.Empty, gameBoard.GetStone(1, 4).Color);
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone(1, 3).Color);
+            Assert.Equal(StoneColor.Black, gameBoard.GetStone(8, 0).Color);
         }
 
         [Fact]

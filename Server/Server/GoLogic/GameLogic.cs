@@ -23,7 +23,7 @@ namespace GoLogic
         /// <summary>
         /// Tour actuel, Noir ou Blanc
         /// </summary>
-        public StoneColor CurrentTurn { get => this.goban.CurrentTurn; set => this.goban.CurrentTurn = value; }
+        public StoneColor CurrentTurn { get => this.goban.CurrentTurn; }
 
         /// <summary>
         /// True si la partie est finie
@@ -53,7 +53,7 @@ namespace GoLogic
         public void SkipTurn()
         {
             if (this.skippedTurn) this.isEndGame = true;
-            CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+            this.goban.NextTurn();
             this.skippedTurn = true;
         }
         
@@ -77,11 +77,11 @@ namespace GoLogic
             }
             else
             {
-                this.goban.PlaceStone(stone, CurrentTurn); // place la pierre en changeant sa couleur de Empty à CurrentTurn
+                this.goban.PlaceStone(stone, this.goban.CurrentTurn); // place la pierre en changeant sa couleur de Empty à CurrentTurn
                 stone = this.goban.GetStone(x,y);
                 this.captureManager.CapturesOpponent(stone);
                 this.previousStone = stone;
-                CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black; // tour passe au joueur suivant
+                this.goban.NextTurn(); // tour passe au joueur suivant
 
                 res = true;
             }
