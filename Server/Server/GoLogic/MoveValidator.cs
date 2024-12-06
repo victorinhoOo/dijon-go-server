@@ -11,8 +11,13 @@ namespace GoLogic
     public class MoveValidator : IMoveValidator
     {
         private IBoard goban;
-        private CaptureManager captureManager;
-
+        private CaptureManager captureManager; //TODO: à retirer
+        
+        /// <summary>
+        /// Constructeur de MoveValidator
+        /// </summary>
+        /// <param name="board">Le GameBoard à valider</param>
+        /// <param name="captureManager">Le captureManager pour la validation</param>
         public MoveValidator(IBoard board, CaptureManager captureManager) 
         {
             this.goban = board;

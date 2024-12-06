@@ -8,7 +8,7 @@ namespace GoLogic.Score
     /// </summary>
     public abstract class ScoreRule
     {
-        private readonly IBoard gameBoard;
+        protected readonly IBoard gameBoard;
         protected readonly float komi = 6.5f;
 
         /// <summary>
@@ -31,27 +31,6 @@ namespace GoLogic.Score
         /// </summary>
         /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public abstract (float blackStones, float whiteStones) CalculateScore();
-
-        /// <summary>
-        /// Compte les nombres de pierres de chaque couleur sur le plateau
-        /// </summary>
-        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
-        public (int blackStones, int whiteStones) CountStones()
-        {
-            int blackStones = 0;
-            int whiteStones = 0;
-
-            for (int i = 0; i < this.gameBoard.Size; i++)
-            {
-                for (int j = 0; j < this.gameBoard.Size; j++)
-                {
-                    if (this.gameBoard.GetStone(i, j).Color == StoneColor.Black) blackStones++;
-                    if (this.gameBoard.GetStone(i, j).Color == StoneColor.White) whiteStones++;
-                }
-            }
-
-            return (blackStones, whiteStones);
-        }
 
         /// <summary>
         /// Trouve le territoire des joueurs noirs et blancs
@@ -158,24 +137,26 @@ namespace GoLogic.Score
         /// <param name="liberties">les libertées du groupe</param>
         private void CollectGroupAndLiberties(Stone stone, HashSet<Stone> visited, List<Stone> group, HashSet<Stone> liberties)
         {
-            // si la pierre a déjà été visité on s'arrête
-            if (visited.Contains(stone)) return;
-            visited.Add(stone);
-
-            // si la pierre est Empty c'est une liberté
-            if (stone.Color == StoneColor.Empty)
+            // si la pierre n'a déjà été visité on continue
+            if (!visited.Contains(stone))
             {
-                liberties.Add(stone);
-                return;
-            }
+                visited.Add(stone);
 
-            StoneColor initialColor = group.FirstOrDefault()?.Color ?? stone.Color;
-            if (stone.Color == initialColor)
-            {
-                group.Add(stone);
-                foreach (Stone neighbor in this.gameBoard.GetNeighbors(stone))
+                if (stone.Color == StoneColor.Empty) // si la pierre est Empty c'est une liberté
                 {
-                    CollectGroupAndLiberties(neighbor, visited, group, liberties);
+                    liberties.Add(stone);
+                }
+                else 
+                {
+                    StoneColor initialColor = group.FirstOrDefault()?.Color ?? stone.Color;
+                    if (stone.Color == initialColor)
+                    {
+                        group.Add(stone);
+                        foreach (Stone neighbor in this.gameBoard.GetNeighbors(stone))
+                        {
+                            CollectGroupAndLiberties(neighbor, visited, group, liberties);
+                        }
+                    }
                 }
             }
         }
@@ -183,7 +164,7 @@ namespace GoLogic.Score
         /// <summary>
         /// Vérifie si une liberté constitue l'oeil d'un groupe
         /// </summary>
-        /// <param name="liberty">la liberté à tester</param>
+        /// <param name="liberty">La liberté à tester</param>
         /// <param name="color">La couleur des pierres du groupe</param>
         /// <returns>True si la liberté est un oeil, False sinon</returns>
         private bool IsRealEye(Stone liberty, StoneColor color)
@@ -273,25 +254,32 @@ namespace GoLogic.Score
         /// <summary>
         /// Détermine si un groupe de pierre est mort
         /// </summary>
-        /// <param name="stone">La pierre initial du groupe à analyser</param>
+        /// <param name="stone">La pierre initiale du groupe à analyser</param>
         /// <returns>Renvoie True si les pierres sont mortes False sinon</returns>
         public bool IsGroupDead(Stone stone)
         {
-            if (stone.Color == StoneColor.Empty) return false;
-
-            var (group, liberties) = GetGroupAndLiberties(stone);
-            List<Stone> eyes = GetRealEyes(liberties, stone.Color);
-
-            // Check various life conditions
-            if (HasTwoEyes(eyes) ||
-                IsSeki(group, liberties) ||
-                HasPotentialLife(liberties, group, stone.Color) ||
-                HasPotentialSecondEye(eyes, liberties, stone.Color))
+            bool res = true;
+            
+            if (stone.Color == StoneColor.Empty)
             {
-                return false;
+                res = false;
             }
-
-            return true;
+            else
+            {
+                (List<Stone> group, HashSet<Stone> liberties) = GetGroupAndLiberties(stone); 
+                List<Stone> eyes = GetRealEyes(liberties, stone.Color);
+                            
+                // vérifie différente condition de vie
+                if (HasTwoEyes(eyes) ||
+                    IsSeki(group, liberties) ||
+                    HasPotentialLife(liberties, group, stone.Color) ||
+                    HasPotentialSecondEye(eyes, liberties, stone.Color))
+                {
+                    res = false;
+                }
+            }
+            
+            return res;
         }
 
         /// <summary>
@@ -339,6 +327,7 @@ namespace GoLogic.Score
         /// <returns>Vrai si le groupe a un potentiel de vie</returns>
         private bool HasPotentialLife(HashSet<Stone> liberties, List<Stone> group, StoneColor color)
         {
+            bool res = false;
             // Vérifie la condition d'une seule liberté
             if (liberties.Count == 1)
             {
@@ -348,21 +337,23 @@ namespace GoLogic.Score
 
                 if (!surroundingStones.All(s => s.Color == oppositeColor || group.Contains(s)))
                 {
-                    return true;
+                    res = true;
                 }
             }
-
-            // Vérifie la condition de territoire
-            foreach (Stone liberty in liberties)
+            else
             {
-                List<Stone> libertyNeighbors = this.gameBoard.GetNeighbors(liberty);
-                if (libertyNeighbors.Any(n => n.Color == StoneColor.Empty && !liberties.Contains(n)))
+                // Vérifie la condition de territoire
+                foreach (Stone liberty in liberties)
                 {
-                    return true;
+                    List<Stone> libertyNeighbors = this.gameBoard.GetNeighbors(liberty);
+                    if (libertyNeighbors.Any(n => n.Color == StoneColor.Empty && !liberties.Contains(n)))
+                    {
+                        res = true;
+                    }
                 }
             }
 
-            return false;
+            return res;
         }
 
         /// <summary>
@@ -374,18 +365,20 @@ namespace GoLogic.Score
         /// <returns>Vrai si un second œil est possible</returns>
         private bool HasPotentialSecondEye(List<Stone> eyes, HashSet<Stone> liberties, StoneColor color)
         {
-            if (eyes.Count != 1) return false;
-
-            foreach (Stone liberty in liberties.Where(l => !eyes.Contains(l)))
+            bool res = false;
+            if (eyes.Count == 1)
             {
-                List<Stone> potentialEyeNeighbors = this.gameBoard.GetNeighbors(liberty);
-                if (potentialEyeNeighbors.Count(n => n.Color == color || liberties.Contains(n)) >= 3)
+                foreach (Stone liberty in liberties.Where(l => !eyes.Contains(l)))
                 {
-                    return true;
+                    List<Stone> potentialEyeNeighbors = this.gameBoard.GetNeighbors(liberty);
+                    if (potentialEyeNeighbors.Count(n => n.Color == color || liberties.Contains(n)) >= 3)
+                    {
+                        res = true;
+                    }
                 }
             }
 
-            return false;
+            return res;
         }
 
         /// <summary>
