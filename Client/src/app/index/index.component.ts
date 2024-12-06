@@ -28,6 +28,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
   private gameDAO: GameDAO;
   private userDAO: UserDAO;
 
+
   /**
  * Getter pour le lien d'affichage de l'avatar
  */
@@ -71,7 +72,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     this.userCookieService.getUserObservable().subscribe((user: User | null) => {
       if (user) {
         this.userPseudo = user.Username;
-        this.userRank = this.userCookieService.getUser()!.Rank;
+        this.userRank = user.getRank();
         this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}`;
       }
     });
@@ -340,7 +341,7 @@ private populateLeaderboard(): void {
       //affichage de chaque joueur du leaderboard
       topPlayers.forEach(([name, elo], index) => {
         let userTop = new User(name,"",Number(elo)); //creation d'un user pour obtenir son rang
-        const rankString = `${index + 1}) ${name} - ${userTop.Rank}`;
+        const rankString = `${index + 1}) ${name} - ${userTop.getRank()}`;
         const p = document.createElement('p');
         p.textContent = rankString;
         leaderboardElement.appendChild(p);
