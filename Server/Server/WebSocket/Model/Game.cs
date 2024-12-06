@@ -26,6 +26,7 @@ namespace WebSocket.Model
         private float komi;
         private string name;
         private int handicap;
+        private string handicapColor;
         private TimerManager timerManager;
         private GameManager gameManager;
 
@@ -95,9 +96,14 @@ namespace WebSocket.Model
         public int Handicap { get => handicap; }
 
         /// <summary>
+        /// Récupérer ou modifier la couleur du handicap du joueur de la partie
+        /// </summary>
+        public string HandicapColor { get => handicapColor; set => handicapColor = value; }
+
+        /// <summary>
         /// Constructeur de la classe Game
         /// </summary>
-        public Game(int size, string rule, float komi, string name, int handicap)
+        public Game(int size, string rule, float komi, string name, int handicap, string handicapColor)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
@@ -110,6 +116,7 @@ namespace WebSocket.Model
             this.name = name;
             this.komi = komi;
             this.handicap = handicap;
+            this.handicapColor = handicapColor;
             switch (this.rule)
             {
                 case "c": this.score = new ChineseScoreRule(gameBoard, komi);break;
