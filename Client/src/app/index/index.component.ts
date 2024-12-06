@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MatIcon } from '@angular/material/icon';
 import { UserCookieService } from '../Model/UserCookieService';
@@ -20,7 +20,7 @@ import { RankprogressComponent } from "../rankprogress/rankprogress.component";
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css'],
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, AfterViewInit {
   private token: string;
   private userPseudo: string;
   private avatar: string;
@@ -108,7 +108,12 @@ export class IndexComponent implements OnInit {
         this.initializeJoinMatchmakingPopup();
       })
     }
+    if(this.router.url.includes('cancelled')){
+      document.getElementById('join-matchmaking')!.click();
+    }
   }
+
+
 
 
   /**
@@ -275,10 +280,17 @@ export class IndexComponent implements OnInit {
  */
   private initializeJoinMatchmakingPopup() {
     let matchFound = false;
+    let content;
+    if(this.router.url.includes('cancelled')){
+      content = "Votre Adversaire n'a pas rejoint la partie, veuillez patienter le temps que nous trouvions un autre adversaire.";
+    }
+    else{
+      content = 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...'
+    }
 
     Swal.fire({
       title: 'Recherche en cours...',
-      text: 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...',
+      text: content,
       showCloseButton: false,
       allowOutsideClick: false,
       showCancelButton: false,
