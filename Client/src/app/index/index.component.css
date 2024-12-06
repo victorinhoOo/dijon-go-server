@@ -383,9 +383,13 @@
         margin-left: auto;
         margin-right: auto;
     }
+
+}
+@media (max-width: 600px){
     ::ng-deep  .grid-column {
-        display: none !important;; /* Cache la colonne */
+        display: none !important;; /* Cache le komi et handicap */
       }
+    
 }
 
 ::ng-deep .flag-container {
@@ -467,4 +471,61 @@
     width: 24px;
     height: auto;
   }
+
+::ng-deep .custom-yes-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-no-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-timer-progress-bar{
+    background-color: #F3AD09 !important;
+}
   
+ /* Alignement sur une ligne */
+ ::ng-deep .radio-container {
+    display: flex;
+    gap: 30px; /* Espacement entre les boutons */
+    align-items: center;
+    margin-top: 5px;
+  }
+
+  /* Styles personnalisés pour les boutons radio */
+  ::ng-deep input[type="radio"].demo3 {
+    display: none;
+  }
+
+  ::ng-deep input[type="radio"].demo3 + label::before {
+    font-family: "Font Awesome 5 Free";
+    content: '\f0c8';
+    font-size: 1.2em;  
+    margin-right: 0.3rem;
+  }
+
+  ::ng-deep input[type="radio"].demo3:checked + label::before {
+    content: '\f14a';
+  }
+  
+  .stone-container{
+    overflow: visible;
+}
+::ng-deep .handicap {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espace entre le texte et l'image */
+}
+
+::ng-deep #stone-black {
+    width: 18px;
+    height: 15px;
+    vertical-align: middle;
+}
+::ng-deep #stone-white{
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+}

@@ -123,11 +123,11 @@ export class WebsocketService {
     /**
      * Envoi un message de création de partie personalisée
      */
-    public createPersonalizeGame(size: number, rule: string, type:string, komi:string, name:string,handicap:number): void {
+    public createPersonalizeGame(size: number, rule: string, type:string, komi:string, name:string,handicap:number,colorHandicap: string): void {
       if (this.websocket != null && this.websocket.OPEN) {
         this.setPlayerColor("black");
         let userToken = this.userCookieService.getToken();
-        this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`);
+        this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}-${colorHandicap}`);
         this.router.navigate(['game', size, rule]);
       } else {
         console.log('not connected');
@@ -160,7 +160,7 @@ export class WebsocketService {
         (this.interpreter.getMatchMakingStrategy() as any).matchmakingResolve = resolve;
         
         // Envoi de la demande de matchmaking
-        this.websocket.send(`0-Matchmaking`);
+        this.websocket.send(`0-Matchmaking-${userToken}`);
       } else {
         reject(new Error('Non connecté au websocket'));
       }
@@ -208,5 +208,14 @@ export class WebsocketService {
   public setPlayerColor(color: string) {
     this.game.setPlayerColor(color);
     this.interpreter.setGame(this.game);
+  }
+
+  public cancelMatchmaking(idLobby:string) {
+    if (this.websocket != null && this.websocket.OPEN) {
+      this.websocket.send(`${idLobby}-Cancel`);
+      console.log(`Sent : ${idLobby}-Cancel`);
+    } else {
+      console.log('not connected');
+    }
   }
 }

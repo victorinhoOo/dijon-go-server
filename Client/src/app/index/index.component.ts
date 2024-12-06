@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MatIcon } from '@angular/material/icon';
 import { UserCookieService } from '../Model/UserCookieService';
@@ -20,7 +20,7 @@ import { RankprogressComponent } from "../rankprogress/rankprogress.component";
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css'],
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, AfterViewInit {
   private token: string;
   private userPseudo: string;
   private avatar: string;
@@ -108,7 +108,12 @@ export class IndexComponent implements OnInit {
         this.initializeJoinMatchmakingPopup();
       })
     }
+    if(this.router.url.includes('cancelled')){
+      document.getElementById('join-matchmaking')!.click();
+    }
   }
+
+
 
 
   /**
@@ -134,7 +139,7 @@ export class IndexComponent implements OnInit {
               <div class="game-info">
                 <div class="grid-column">
                   <div class="komi">Komi : ${game["komi"]}</div>
-                  <div class="handicap">Handicap : ${game["handicap"]}</div>
+                  <div class="handicap">Handicap : ${game["handicap"]} <img src="${game["handicapColor"]}.png" id="stone-${game["handicapColor"]}"></div>
                 </div>
                 ${stringRule}
               </div>
@@ -226,7 +231,13 @@ export class IndexComponent implements OnInit {
 
           <label for="number">Choix du handicap :</label>
           <input type="number" id="handicap" name="handicap" min="0" max="9" class="swal2-input" value="0"/>
+          <div class="radio-container">
+            <input type="radio" class="demo3" id="black" name="demoGroup">
+            <label for="black">Noir</label>
 
+            <input type="radio" class="demo3" id="white" name="demoGroup" checked>
+            <label for="white">Blanc</label>
+          </div>
         </form>
       `,
       confirmButtonText: 'Créer',
@@ -240,11 +251,13 @@ export class IndexComponent implements OnInit {
         const name = (document.getElementById('game-name') as HTMLSelectElement).value;
         const komi = (document.getElementById('komi') as HTMLSelectElement).value;
         const handicap = (document.getElementById('handicap') as HTMLSelectElement).value;
-        return { gridSize, rules, name, komi, handicap };
+        const selectedColor = (document.querySelector('input[name="demoGroup"]:checked') as HTMLInputElement)?.id;
+
+        return { gridSize, rules, name, komi, handicap, selectedColor };
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { gridSize, rules, name, komi, handicap } = result.value!;
+        const { gridSize, rules, name, komi, handicap, selectedColor } = result.value!;
 
         // Affichez un chargement avant la connexion
         Swal.fire({
@@ -259,7 +272,7 @@ export class IndexComponent implements OnInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name, handicap);
+          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name, handicap, selectedColor);
           Swal.close(); // Ferme le chargement
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur
@@ -275,10 +288,17 @@ export class IndexComponent implements OnInit {
  */
   private initializeJoinMatchmakingPopup() {
     let matchFound = false;
+    let content;
+    if(this.router.url.includes('cancelled')){
+      content = "Votre Adversaire n'a pas rejoint la partie, veuillez patienter le temps que nous trouvions un autre adversaire.";
+    }
+    else{
+      content = 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...'
+    }
 
     Swal.fire({
       title: 'Recherche en cours...',
-      text: 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...',
+      text: content,
       showCloseButton: false,
       allowOutsideClick: false,
       showCancelButton: false,
