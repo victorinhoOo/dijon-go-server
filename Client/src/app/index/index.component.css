@@ -471,6 +471,21 @@
     width: 24px;
     height: auto;
   }
+
+::ng-deep .custom-yes-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-no-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-timer-progress-bar{
+    background-color: #F3AD09 !important;
+}
+  
  /* Alignement sur une ligne */
  ::ng-deep .radio-container {
     display: flex;

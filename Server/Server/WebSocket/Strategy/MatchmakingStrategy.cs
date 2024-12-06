@@ -1,9 +1,13 @@
 ﻿using MySqlX.XDevAPI;
+using Org.BouncyCastle.Asn1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebSocket.Model;
+using WebSocket.Model.DAO;
+using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket.Strategy
 {
@@ -13,15 +17,18 @@ namespace WebSocket.Strategy
     /// </summary>
     public class MatchmakingStrategy : IStrategy
     {
-        /// <summary>
-        /// File contenant les joueurs en recherche de matchmaking
-        /// </summary>
-        private static readonly Queue<Client> waitingPlayers = new Queue<Client>();
+        private GameManager gameManager;
 
         /// <summary>
         /// Temps en secondes au bout duquel le matchmaking s'annule 
         /// </summary>
         const int TIMEOUT_SECONDS = 20;
+
+
+        public MatchmakingStrategy()
+        {
+            this.gameManager = new GameManager();
+        }
 
         /// <summary>
         /// Exécute la logique de matchmaking pour un joueur.
@@ -33,36 +40,58 @@ namespace WebSocket.Strategy
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
         public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
         {
-            waitingPlayers.Enqueue(player);
+            Server.WaitingPlayers.Enqueue(player);
             int initialNbMatchmakingGames = Server.MatchmakingGames.Count();
-            bool timeout = false;
+            MatchmakingState state;
 
-            Client player1 = waitingPlayers.Peek();
+            Client player1 = Server.WaitingPlayers.Peek();
+            int idLobby = initialNbMatchmakingGames + 1;
+            if (!Server.Lobbies.ContainsKey(idLobby))
+            {
+                Server.Lobbies[idLobby] = new Lobby(idLobby);
+            }
+
             if (player == player1) // Le joueur qui rejoint est le premier joueur
             {
+                Server.Lobbies[idLobby].Player1 = player;
+                string userToken = data[2];
+                Server.Lobbies[idLobby].Player1.User = this.gameManager.GetUserByToken(userToken);
                 // Attente du second joueur
-                timeout = WaitForCondition(() => waitingPlayers.Count >= 2);
-                if (!timeout)
+                state = WaitForCondition(() => Server.WaitingPlayers.Count >= 2, () => !Server.Lobbies.ContainsKey(idLobby));
+                if (state == MatchmakingState.OK)
                 {
-                    response = "0-Create-matchmaking";
+                    Client opponement = Server.Lobbies[idLobby].Player2;
+                    string opponentUsername = opponement.User.Name;
+                    int opponentElo = opponement.User.Elo;
+                    Server.WaitingPlayers.Dequeue();
+                    response = $"0-Create-matchmaking-{idLobby}-{opponentUsername}-{opponentElo}";
                 }
             }
             else // le joueur qui rejoint est le deuxième joueur
             {
+                Server.Lobbies[idLobby].Player2 = player;
+                string userToken = data[2];
+                Server.Lobbies[idLobby].Player2.User = this.gameManager.GetUserByToken(userToken);
                 // Attente de la création de la partie
-                timeout = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames);
-                if (!timeout)
+                state = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames, () => !Server.Lobbies.ContainsKey(idLobby) );
+                if (state == MatchmakingState.OK)
                 {
-                    waitingPlayers.Dequeue();
-                    waitingPlayers.Dequeue();
+                    Client opponement = Server.Lobbies[idLobby].Player1;
+                    string opponentUsername = opponement.User.Name;
+                    int opponentElo = opponement.User.Elo;
+                    Server.WaitingPlayers.Dequeue();
                     string idGame = Server.MatchmakingGames.Count().ToString();
-                    response = $"{idGame}-Join-matchmaking";
+                    response = $"{idGame}-Join-matchmaking-{idLobby}-{opponentUsername}-{opponentElo}";
                 }
             }
-
-            if (timeout) // Si on a attendu mais que personne n'a rejoint au bout de TIMEOUT_SECONDS
+            if(state == MatchmakingState.RETRY)
             {
-                waitingPlayers.Dequeue();
+                Server.WaitingPlayers.Dequeue();
+                response = "0-Retry";
+            }
+            else if (state == MatchmakingState.TIMEOUT) // Si on a attendu mais que personne n'a rejoint au bout de TIMEOUT_SECONDS
+            {
+                Server.WaitingPlayers.Dequeue();
                 response = "0-Timeout";
             }
             type = "Send_";
@@ -71,24 +100,38 @@ namespace WebSocket.Strategy
         /// <summary>
         /// Attend qu'une condition soit remplie pendant une durée maximale définie par TIMEOUT_SECONDS.
         /// </summary>
-        /// <param name="condition">Délégué représentant la condition à vérifier périodiquement</param>
+        /// <param name="condition">Délégué représentant la condition principale à vérifier périodiquement</param>
+        /// <param name="cancelCondition">Délégué représentant une condition d'annulation</param>
         /// <returns>
-        /// true si le délai d'attente a expiré avant que la condition ne soit remplie,
-        /// false si la condition a été remplie avant l'expiration du délai
+        /// MatchmakingState.OK si la condition principale est remplie avant le délai d'attente,
+        /// MatchmakingState.TIMEOUT si le délai d'attente est atteint,
+        /// MatchmakingState.RETRY si la condition d'annulation est remplie.
         /// </returns>
-        private bool WaitForCondition(Func<bool> condition)
+        private MatchmakingState WaitForCondition(Func<bool> condition, Func<bool> cancelCondition)
         {
-            bool timeout = false;
             DateTime startTime = DateTime.Now;
-            while (!condition() && !timeout)
+            bool loop = true;
+            MatchmakingState state = MatchmakingState.TIMEOUT;
+            while (loop)
             {
+                if (condition())
+                {
+                    state = MatchmakingState.OK;
+                    loop = false;
+                }
                 if ((DateTime.Now - startTime).TotalSeconds >= TIMEOUT_SECONDS)
                 {
-                    timeout = true;
+                    state = MatchmakingState.TIMEOUT;
+                    loop = false;
+                }
+                if (cancelCondition())
+                {
+                    state = MatchmakingState.RETRY;
+                    loop = false;
                 }
                 Thread.Sleep(100);
             }
-            return timeout;
+            return state;
         }
     }
 }
