@@ -9,6 +9,7 @@ import { SkipStrategy } from "./Strategy/SkipStrategy";
 import { StartStrategy } from "./Strategy/StartStrategy";
 import { TimeoutStrategy } from "./Strategy/TimeoutStrategy";
 import { UpdateTurnStrategy } from "./Strategy/UpdateTurnStrategy";
+import { CancelStrategy } from "./Strategy/CancelStrategy";
 
 
 /**
@@ -83,6 +84,8 @@ export class Interpreter {
     this.strategies.set("Start", new StartStrategy());
     this.strategies.set("Timeout", new TimeoutStrategy());
     this.strategies.set("Stone", new UpdateTurnStrategy());
+    this.strategies.set("Cancelled", new CancelStrategy());
+    this.strategies.set("Retry", matchmakingStrategy);
   }
 
   
@@ -93,6 +96,7 @@ export class Interpreter {
    * @param state définit l'état de la partie (en cours ou terminée)
    */
   public interpret(message: string, state: { end: boolean, won: string, player1score: string, player2score: string}): void {
+    console.log("Received: " + message);
     let data = message.split('-');
     let action = data[1];
     if (message.length <= 3) {
