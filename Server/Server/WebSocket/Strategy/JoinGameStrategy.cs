@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebSocket.Model.DAO;
+using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket.Strategy
 {
@@ -28,11 +29,11 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie ("custom" ou "matchmaking")</param>
         /// <param name="response">Réponse à envoyer au client (modifiée par référence)</param>
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
-        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
             string stringId = data[0];
             int idGame = Convert.ToInt16(stringId);
-            if (gameType == "custom")
+            if (gameType == GameType.CUSTOM)
             {
 
                 player.User.Token = data[2]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
@@ -41,7 +42,7 @@ namespace WebSocket.Strategy
                 response = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";
             }
-            else if (gameType == "matchmaking")
+            else if (gameType == GameType.MATCHMAKING)
             {
                 player.User.Token = data[2];
                 Server.MatchmakingGames[idGame].AddPlayer(player);

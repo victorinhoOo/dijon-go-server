@@ -100,8 +100,8 @@ namespace Server.Model.Data
                         row["player2"].ToString(),
                         Convert.ToInt32(row["size"]),
                         row["rule"].ToString(),
-                        Convert.ToInt32(row["score_player_1"]),
-                        Convert.ToInt32(row["score_player_2"]),
+                        Convert.ToSingle(row["score_player_1"]),
+                        Convert.ToSingle(row["score_player_2"]),
                         Convert.ToBoolean(row["won"]), // Déduit si le joueur a gagné
                         Convert.ToDateTime(row["date"])
                     );

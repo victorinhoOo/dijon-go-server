@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using WebSocket.Exceptions;
 using WebSocket.Model;
 using WebSocket.Protocol;
+using WebSocket.Strategy.Enumerations;
 
 
 namespace WebSocket
@@ -18,7 +19,7 @@ namespace WebSocket
         private IWebProtocol webSocket;
         private bool isRunning;
         private bool started;
-        private string gameType;
+        private GameType gameType;
         private static ConcurrentDictionary<int, Game> customGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Lobby> lobbies = new ConcurrentDictionary<int, Lobby>();
@@ -162,14 +163,14 @@ namespace WebSocket
             message = Encoding.UTF8.GetString(decryptedMessage);        
             if (message.Contains("custom"))
             {
-                this.gameType = "custom";
+                this.gameType = GameType.CUSTOM;
                 
             }
             else if (message.Contains("matchmaking"))
             {
-                this.gameType = "matchmaking";
+                this.gameType = GameType.MATCHMAKING;
             }
-            response = this.interpreter.Interpret(message, client, this.gameType); // Interprétation du message reçu
+            response = this.interpreter.Interpret(message, client, gameType); // Interprétation du message reçu
             string[] data = response.Split("_");
             string responseType = data[0]; // Récupération du type de réponse (Send ou Broadcast)
             string responseData = data[1]; // Récupération des données à envoyer
@@ -181,7 +182,7 @@ namespace WebSocket
 
             if (!response.Contains("Create") && (!response.Contains("Timeout")) && (!response.Contains("Cancelled")) && (!response.Contains("Retry")))
             {
-                Game game = this.gameType == "custom" ? customGames[idGame] : matchmakingGames[idGame];
+                Game game = this.gameType == GameType.CUSTOM ? customGames[idGame] : matchmakingGames[idGame];
                 if (responseType == "Broadcast")
                 {
                     this.BroadastMessageAsync(game, responseBytes);

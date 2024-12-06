@@ -1,8 +1,13 @@
-﻿using System;
+﻿using GoLogic.Goban;
+using GoLogic.Score;
+using GoLogic.Serializer;
+using GoLogic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GoLogic.Timer;
 
 namespace WebSocket.Model
 {
@@ -14,15 +19,18 @@ namespace WebSocket.Model
         /// <summary>
         /// Crée une partie personnalisée
         /// </summary>
-        /// <param name="size">taille de la grille</param>
-        /// <param name="rule">règles du jeu</param>
-        /// <param name="komi">komi choisi</param>
-        /// <param name="name">nom de la partie</param>
-        /// <param name="handicap">handicap choisi</param>
+        /// <param name="config">La configuration de la partie</param>
         /// <returns>La partie créee</returns>
-        public static Game CreateCustomGame(int size, string rule, float komi, string name, int handicap)
+        public static Game CreateCustomGame(GameConfiguration config)
         {
-            return new Game(size, rule, komi, name, handicap);
+            GameBoard gameBoard = new GameBoard(config.Size, config.HandicapColor, config.Handicap);
+            GameLogic logic = new GameLogic(gameBoard);
+            BoardSerializer boardSerializer = new BoardSerializer(logic);
+            ScoreRule scoreRule = ScoreRuleFactory.Create(config.Rule, gameBoard, config.Komi);
+            GameManager gameManager = new GameManager();
+            TimerManager timerManager = new TimerManager();
+
+            return new Game(config, gameBoard, logic, boardSerializer, scoreRule, gameManager, timerManager);
         }
 
         /// <summary>
@@ -31,7 +39,7 @@ namespace WebSocket.Model
         /// <returns>La partie créee</returns>
         public static Game CreateMatchmakingGame()
         {
-            return new Game(19, "j", 6.5f, "matchmaking-game", 0);
+            return CreateCustomGame(GameConfiguration.Default());
         }
     }
 }

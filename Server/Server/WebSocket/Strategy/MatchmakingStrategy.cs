@@ -38,7 +38,7 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie demandée (ici "matchmaking")</param>
         /// <param name="response">Réponse à envoyer au client (modifiée par référence)</param>
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
-        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
             Server.WaitingPlayers.Enqueue(player);
             int initialNbMatchmakingGames = Server.MatchmakingGames.Count();

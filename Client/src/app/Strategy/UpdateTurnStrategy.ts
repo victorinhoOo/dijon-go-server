@@ -26,11 +26,11 @@ export class UpdateTurnStrategy implements IStrategy {
         let playerScore;
         let opponentScore;
         if (game.getPlayerColor() == 'black') { 
-          playerScore = score.split(';')[SCORE_INDEX_OPPONENT];
-          opponentScore = score.split(';')[SCORE_INDEX_PLAYER];
+          playerScore = score.split(';')[0];
+          opponentScore = score.split(';')[1];
         } else {
-          playerScore = score.split(';')[SCORE_INDEX_PLAYER];
-          opponentScore = score.split(';')[SCORE_INDEX_OPPONENT];
+          playerScore = score.split(';')[1];
+          opponentScore = score.split(';')[0];
         }
     
         document.getElementById('opponent-score-value')!.innerHTML =
