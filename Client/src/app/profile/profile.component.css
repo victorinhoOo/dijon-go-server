@@ -235,3 +235,71 @@
 .historique-title{
     margin-bottom: 40px;
 }
+
+#sizeMobile{
+    display: none;
+}
+#sizeOrdi{
+    display: block;
+}
+@media (max-width: 1263px) {
+
+    .player-info{
+        width: 20%;
+    }
+
+    #sizeOrdi{
+        display: none;
+    }
+
+    #sizeMobile{
+        display: block;
+    }
+
+    .historique-title {
+        font-size: 20px; /* Taille réduite pour les petits écrans */
+        text-align: center;
+    }
+
+    .history-item {
+        margin-bottom: 10px;
+    }
+
+    .game-line {
+        flex-direction: column; /* Empile les éléments */
+        align-items: flex-start; /* Aligne les éléments au début */
+        padding: 10px;
+    }
+
+    .date-rule-information,
+    .game-result {
+        width: 100%; /* Prend toute la largeur disponible */
+        justify-content: space-between;
+        margin-bottom: 10px; /* Espacement entre les sections */
+    }
+
+    .player-info,
+    .score-container {
+        text-align: center;
+    }
+
+    .score-container span {
+        display: inline-block; /* Affiche les scores en ligne */
+    }
+
+    .replay-button {
+        margin: 0 auto;
+    }
+    .game-result{
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .history-container {
+        max-width: 90%;
+        padding: 10px;
+    }
+
+}
+
