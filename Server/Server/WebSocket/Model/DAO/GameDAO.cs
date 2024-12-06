@@ -25,10 +25,9 @@ namespace WebSocket.Model.DAO
         /// <inheritdoc/>
         public bool InsertAvailableGame(Game game)
         {
-            game.Player1.User.Name = "nom du createur";
             this.database.Connect();
             bool res = false;
-            string query = "insert into availablegame (id,size,rule,komi,name,creatorName,handicap) values (@id,@size,@rule,@komi,@name,@creatorName,@handicap);";
+            string query = "insert into availablegame (id,size,rule,komi,name,creatorName,handicap,handicapColor) values (@id,@size,@rule,@komi,@name,@creatorName,@handicap,@handicapColor);";
             var parameters = new Dictionary<string, object>
                 {
                     {"@id", game.Id},
@@ -37,7 +36,8 @@ namespace WebSocket.Model.DAO
                     {"@komi", game.Komi },
                     {"@name", game.Name },
                     {"@creatorName",game.Player1.User.Name },
-                    {"@handicap",game.Handicap }
+                    {"@handicap",game.Handicap },
+                    {"@handicapColor",game.HandicapColor },
 
                 };
             database.ExecuteNonQuery(query, parameters);

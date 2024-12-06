@@ -26,6 +26,7 @@ namespace WebSocket.Model
         private float komi;
         private string name;
         private int handicap;
+        private string handicapColor;
         private TimerManager timerManager;
         private GameManager gameManager;
 
@@ -95,26 +96,33 @@ namespace WebSocket.Model
         public int Handicap { get => handicap; }
 
         /// <summary>
-        /// Constructeur de la classe Game
+        /// Récupérer ou modifier la couleur du handicap du joueur de la partie
         /// </summary>
-        public Game(int size, string rule, float komi, string name, int handicap)
+        public string HandicapColor { get => handicapColor; }
+
+        /// <summary>
+        /// Constructeur d'une partie
+        /// </summary>
+        public Game(GameConfiguration config, GameBoard gameBoard, GameLogic logic, BoardSerializer boardSerializer, ScoreRule scoreRule, GameManager gameManager, TimerManager timerManager)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
-            this.size = size;
-            this.gameBoard = new GameBoard(size, "white", handicap);
-            this.logic = new GameLogic(gameBoard);
-            this.boardSerializer = new BoardSerializer(this.logic);
-            this.gameManager = new GameManager();
-            this.rule = rule;
-            this.name = name;
-            this.komi = komi;
-            this.handicap = handicap;
-            switch (this.rule)
-            {
-                case "c": this.score = new ChineseScoreRule(gameBoard, komi);break;
-                case "j": this.score = new JapaneseScoreRule(gameBoard, komi);break;
-            }
+
+            // Configuration
+            this.size = config.Size;
+            this.rule = config.Rule;
+            this.komi = config.Komi;
+            this.name = config.Name;
+            this.handicap = config.Handicap;
+            this.handicapColor = config.HandicapColor;
+
+            // Dépendances
+            this.gameBoard = gameBoard;
+            this.logic = logic;
+            this.boardSerializer = boardSerializer;
+            this.score = scoreRule;
+            this.gameManager = gameManager;
+            this.timerManager = timerManager;
         }
 
         /// <summary>
@@ -123,7 +131,6 @@ namespace WebSocket.Model
         public void Start()
         {
             this.started = true;
-            this.timerManager = new TimerManager();
             this.gameManager.InsertGame(this);
         }
 
@@ -154,12 +161,35 @@ namespace WebSocket.Model
         /// <returns>Temps restant du joueur précédent</returns>
         public string PlaceStone(int x, int y)
         {
-            this.timerManager.SwitchToNextPlayer();
-            string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
             this.logic.PlaceStone(x, y);
-            this.gameManager.InsertGameState(this);
-            return time;
+            this.timerManager.SwitchToNextPlayer();
+            this.SaveGameState();
+            return GetPreviousPlayerTime();
         }
+
+        /// <summary>
+        /// Enregistre l'état de la partie actuelle en base de données
+        /// </summary>
+        private void SaveGameState()
+        {
+            this.gameManager.InsertGameState(this);
+        }
+
+
+        /// <summary>
+        /// Récupérer le temps restant du joueur précédent
+        /// </summary>
+        /// <returns>temps restant du joueur qui vient de jouer en chaîne de caractères</returns>
+        private string GetPreviousPlayerTime()
+        {
+            string result = null;
+            ISystemTimer previousTimer = this.timerManager.GetPreviousTimer();
+            TimeSpan previousTimeSpan = previousTimer.TotalTime;
+            double previousTimerInMs = previousTimeSpan.TotalMilliseconds;
+            result = previousTimerInMs.ToString();
+            return result;
+        }
+
 
 
         /// <summary>
@@ -234,8 +264,6 @@ namespace WebSocket.Model
                     }
                 });
             }
-
-            // Retourner immédiatement le résultat
             return Task.FromResult(result);
         }
     }

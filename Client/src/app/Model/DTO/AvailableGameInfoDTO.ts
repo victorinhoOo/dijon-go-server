@@ -11,7 +11,9 @@ export class AvailableGameInfoDTO {
     private name: string;
     private handicap: number;
 
-    constructor(id: number, size: number, rule: string ,creatorName:string, komi : number, name: string,handicap:number) {
+    private handicapColor: string;
+
+    constructor(id: number, size: number, rule: string ,creatorName:string, komi : number, name: string,handicap:number,handicapColor: string) {
         this.id = id;
 
         this.size = size;
@@ -20,6 +22,7 @@ export class AvailableGameInfoDTO {
         this.komi = komi;
         this.name = name;
         this.handicap = handicap;
+        this.handicapColor = handicapColor;
 
     }
 
@@ -44,13 +47,28 @@ export class AvailableGameInfoDTO {
         return this.rule;
     }
 
+    /**
+     * Renvoie le nom du createur de la partie
+     */
     public CreatorName(): string {
         return this.creatorName;
     }
+    /**
+     * Renvoie le titre de la partie
+     */
     public Name(): string{
         return this.name;
     }
+    /**
+     * Renvoie le handicap de la partie
+     */
     public Handicap(): number{
         return this.handicap;
+    }
+    /**
+     * Renvoie la couleur de la personne sur qui affecté le handicap
+     */
+    public HandicapColor(): string{
+        return this.handicapColor;
     }
 }

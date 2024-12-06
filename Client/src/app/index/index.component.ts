@@ -139,7 +139,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
               <div class="game-info">
                 <div class="grid-column">
                   <div class="komi">Komi : ${game["komi"]}</div>
-                  <div class="handicap">Handicap : ${game["handicap"]}</div>
+                  <div class="handicap">Handicap : ${game["handicap"]} <img src="${game["handicapColor"]}.png" id="stone-${game["handicapColor"]}"></div>
                 </div>
                 ${stringRule}
               </div>
@@ -207,15 +207,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
           <label for="grid-size">Taille de la grille :</label>
           <select id="grid-size" name="grid-size" class="swal2-select">
             <option value="9">9x9</option>
-            <option value="10">10x10</option>
-            <option value="11">11x11</option>
-            <option value="12">12x12</option>
             <option value="13">13x13</option>
-            <option value="14">14x14</option>
-            <option value="15">15x15</option>
-            <option value="16">16x16</option>
-            <option value="17">17x17</option>
-            <option value="18">18x18</option>
             <option value="19" selected>19x19</option>
           </select>
           
@@ -231,7 +223,13 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
           <label for="number">Choix du handicap :</label>
           <input type="number" id="handicap" name="handicap" min="0" max="9" class="swal2-input" value="0"/>
+          <div class="radio-container">
+            <input type="radio" class="demo3" id="black" name="demoGroup">
+            <label for="black">Noir</label>
 
+            <input type="radio" class="demo3" id="white" name="demoGroup" checked>
+            <label for="white">Blanc</label>
+          </div>
         </form>
       `,
       confirmButtonText: 'Créer',
@@ -245,11 +243,13 @@ export class IndexComponent implements OnInit, AfterViewInit {
         const name = (document.getElementById('game-name') as HTMLSelectElement).value;
         const komi = (document.getElementById('komi') as HTMLSelectElement).value;
         const handicap = (document.getElementById('handicap') as HTMLSelectElement).value;
-        return { gridSize, rules, name, komi, handicap };
+        const selectedColor = (document.querySelector('input[name="demoGroup"]:checked') as HTMLInputElement)?.id;
+
+        return { gridSize, rules, name, komi, handicap, selectedColor };
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { gridSize, rules, name, komi, handicap } = result.value!;
+        const { gridSize, rules, name, komi, handicap, selectedColor } = result.value!;
 
         // Affichez un chargement avant la connexion
         Swal.fire({
@@ -264,7 +264,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         try {
           // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
-          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name, handicap);
+          this.websocketService.createPersonalizeGame(gridSize, rules, komi, name, handicap, selectedColor);
           Swal.close(); // Ferme le chargement
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur

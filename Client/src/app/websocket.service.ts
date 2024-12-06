@@ -112,28 +112,24 @@ export class WebsocketService implements IObserver {
   /**
    * Envoi un message de création de partie
    */
-  public createGame(size: number, rule: string, type:string, komi:string, name:string, handicap:number): void {
+  public createMatchmakingGame(): void {
     if (this.websocket != null && this.websocket.OPEN) {
       this.setPlayerColor("black");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`);
-      this.router.navigate(['game', size, rule]);
-    } else {
-      console.log('not connected');
+      this.websocket.send(`0-Create-${userToken}-matchmaking`);
+      this.router.navigate(['game', 19, "j"]);
     }
   }
 
     /**
-     * Envoi un message de création de partie personalisée
+     * Envoi un message de création de partie personalisée avec les paramètres choisis par le client
      */
-    public createPersonalizeGame(size: number, rule: string, type:string, komi:string, name:string,handicap:number): void {
+    public createPersonalizeGame(size: number, rule: string, komi:string, name:string,handicap:number,colorHandicap: string): void {
       if (this.websocket != null && this.websocket.OPEN) {
         this.setPlayerColor("black");
         let userToken = this.userCookieService.getToken();
-        this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`);
+        this.websocket.send(`0-Create-${userToken}-${size}-${rule}-custom-${komi}-${name}-${handicap}-${colorHandicap}`);
         this.router.navigate(['game', size, rule]);
-      } else {
-        console.log('not connected');
       }
     }
   /**

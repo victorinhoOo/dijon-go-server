@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebSocket.Model;
+using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket.Strategy
 {
@@ -26,16 +27,16 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie ("custom" ou "matchmaking")</param>
         /// <param name="response">Message de réponse à renvoyer (modifié par référence)</param>
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
-        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
             string stringId = data[0];
             int idGame = Convert.ToInt16(stringId);
             Game game = null;
-            if (gameType == "custom")
+            if (gameType == GameType.CUSTOM)
             {
                 game = Server.CustomGames[idGame];
             }
-            else if (gameType == "matchmaking")
+            else if (gameType == GameType.MATCHMAKING)
             {
                 game = Server.MatchmakingGames[idGame];
             }
