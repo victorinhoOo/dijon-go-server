@@ -1,5 +1,9 @@
 import { IStrategy } from './IStrategy';
 import { Game } from '../Model/Game';
+import { environment } from '../environment';
+
+const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
+const TIMER_INTERVAL = 1000;
 
 /**
  * Implémentation de la stratégie de démarrage de partie
@@ -10,10 +14,10 @@ export class StartStrategy implements IStrategy {
         let pseudo = document.getElementById('pseudo-text');
         pseudo!.innerHTML = data[2]; // Récupère le pseudo de l'adversaire pour l'afficher sur la page
         let profilePic = document.getElementById('opponent-pic') as HTMLImageElement;
-        profilePic!.src = `https://localhost:7065/profile-pics/${pseudo!.innerText}`; // Récupère l'avatar de l'adversaire pour l'afficher sur la page
+        profilePic!.src = `${PROFILE_PIC_URL}${pseudo!.innerText}`; // Récupère l'avatar de l'adversaire pour l'afficher sur la page
         game.updateHover();
         setInterval(()=>{
             game.launchTimer();
-        }, 1000);
+        }, TIMER_INTERVAL);
     }
 }

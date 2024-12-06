@@ -72,8 +72,6 @@ export class WebsocketService {
     this.userDAO.GetUser(token).subscribe({
       next: (user: User) => {
         this.userCookieService.setUser(user);
-        console.log(player1score);
-        console.log(player2score);
         Swal.fire({
           title: won === "True" ? 'Victoire ! 🌸' : 'Défaite 👺',
           html: `

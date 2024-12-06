@@ -20,10 +20,10 @@ export class Interpreter {
 
   private strategies : Map<string, IStrategy>;
 
-  //#region Getters & Setters
+  //#region Propriétés
 
   /**
-   * Setter pout l'attribut game
+   * Modifie la valeur de l'attribut game
    * @param game partie concernée
    */
   public setGame(game:Game){
@@ -31,15 +31,12 @@ export class Interpreter {
   } 
 
   /**
-   * Getter pour l'id du jeu
+   * Récupère l'id de jeu
    * @returns l'id du jeu
    */
   public getIdGame(): string {
     return this.idGame.value;
   }
-
-
-
 
   /**
    * 

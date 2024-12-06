@@ -1,15 +1,19 @@
 import { IStrategy } from './IStrategy';
 import { Game } from '../Model/Game';
 
+const BOARD_INDEX = 2;
+const SCORE_INDEX_PLAYER = 3;
+const SCORE_INDEX_OPPONENT = 4;
+const TIMER_INDEX = 5;
 /**
  * Implémentation de la stratégie de changement de tour
  */
 export class UpdateTurnStrategy implements IStrategy {
 
     public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game):void {
-        let board = data[2];
-        let score = `${data[3]};${data[4]}`;
-        let timer = data[5];
+        let board = data[BOARD_INDEX];
+        let score = `${data[SCORE_INDEX_PLAYER]};${data[SCORE_INDEX_OPPONENT]}`;
+        let timer = data[TIMER_INDEX];
         this.updateBoard(board);
         this.updateScore(score, game);
         this.updateTimer(timer, game);
@@ -22,11 +26,11 @@ export class UpdateTurnStrategy implements IStrategy {
         let playerScore;
         let opponentScore;
         if (game.getPlayerColor() == 'black') { 
-          playerScore = score.split(';')[1];
-          opponentScore = score.split(';')[0];
+          playerScore = score.split(';')[SCORE_INDEX_OPPONENT];
+          opponentScore = score.split(';')[SCORE_INDEX_PLAYER];
         } else {
-          playerScore = score.split(';')[0];
-          opponentScore = score.split(';')[1];
+          playerScore = score.split(';')[SCORE_INDEX_PLAYER];
+          opponentScore = score.split(';')[SCORE_INDEX_OPPONENT];
         }
     
         document.getElementById('opponent-score-value')!.innerHTML =
@@ -37,26 +41,25 @@ export class UpdateTurnStrategy implements IStrategy {
 
     private updateBoard(data: string) {
         let lines = data.split('\r\n');
+        const colorMap: { [key: string]: string } = {
+            'White': 'white',
+            'Black': 'black',
+            'Empty': 'transparent'
+        };
+
         for (let i = 1; i < lines.length; i++) {
-          let stoneData = lines[i].split(',');
-          let x = stoneData[0];
-          let y = stoneData[1];
-          let color = stoneData[2];
-          let stone = document.getElementById(`${x}-${y}`);
-          this.discardKo(stone);
-          switch (color) {
-            case 'White':
-              stone!.style.background = 'white';
-              break;
-            case 'Black':
-              stone!.style.background = 'black';
-              break;
-            case 'Empty':
-              stone!.style.background = 'transparent';
-              break;
-            case 'Ko':
-              this.drawKo(stone);
-          }
+            let stoneData = lines[i].split(',');
+            let x = stoneData[0];
+            let y = stoneData[1];
+            let color = stoneData[2];
+            let stone = document.getElementById(`${x}-${y}`);
+            this.discardKo(stone);
+
+            if (colorMap[color]) {
+                stone!.style.background = colorMap[color];
+            } else if (color === 'Ko') {
+                this.drawKo(stone);
+            }
         }
     }
 

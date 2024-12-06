@@ -12,11 +12,12 @@ import Swal from 'sweetalert2';
 import { User } from '../Model/User';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { RankprogressComponent } from "../rankprogress/rankprogress.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [NavbarComponent, MatIcon, HttpClientModule, RankprogressComponent],
+  imports: [NavbarComponent, MatIcon, HttpClientModule, RankprogressComponent, CommonModule],
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css'],
 })
@@ -67,6 +68,11 @@ export class IndexComponent implements OnInit {
    * Initialise les informations utilisateurs, le leaderboard, et gère la création de parties
    */
   public async ngOnInit() {
+    // Vérifiez et gérez la connexion
+    this.token = this.userCookieService.getToken();
+    if (!this.token) {
+      this.router.navigate(['/login']);
+    }
     this.websocketService.disconnectWebsocket();
     this.userCookieService.getUserObservable().subscribe((user: User | null) => {
       if (user) {
@@ -75,12 +81,6 @@ export class IndexComponent implements OnInit {
         this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}`;
       }
     });
-
-    // Vérifiez et gérez la connexion
-    this.token = this.userCookieService.getToken();
-    if (!this.token) {
-      this.router.navigate(['/login']);
-    }
     this.populateLeaderboard();
   }
 
