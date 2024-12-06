@@ -88,5 +88,11 @@ namespace GoLogic.Goban
         /// </summary>
         /// <returns>Vraie si le coup ne respecte pas la règle, faux sinon</returns>
         public bool IsKoViolation();
+
+        /// <summary>
+        /// Compte les nombres de pierres de chaque couleur sur le plateau
+        /// </summary>
+        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
+        public (int blackStones, int whiteStones) CountStones();
     }
 }

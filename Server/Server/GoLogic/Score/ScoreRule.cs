@@ -8,7 +8,7 @@ namespace GoLogic.Score
     /// </summary>
     public abstract class ScoreRule
     {
-        private readonly IBoard gameBoard;
+        protected readonly IBoard gameBoard;
         protected readonly float komi = 6.5f;
 
         /// <summary>
@@ -31,27 +31,6 @@ namespace GoLogic.Score
         /// </summary>
         /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
         public abstract (float blackStones, float whiteStones) CalculateScore();
-
-        /// <summary>
-        /// Compte les nombres de pierres de chaque couleur sur le plateau
-        /// </summary>
-        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
-        public (int blackStones, int whiteStones) CountStones()
-        {
-            int blackStones = 0;
-            int whiteStones = 0;
-
-            for (int i = 0; i < this.gameBoard.Size; i++)
-            {
-                for (int j = 0; j < this.gameBoard.Size; j++)
-                {
-                    if (this.gameBoard.GetStone(i, j).Color == StoneColor.Black) blackStones++;
-                    if (this.gameBoard.GetStone(i, j).Color == StoneColor.White) whiteStones++;
-                }
-            }
-
-            return (blackStones, whiteStones);
-        }
 
         /// <summary>
         /// Trouve le territoire des joueurs noirs et blancs

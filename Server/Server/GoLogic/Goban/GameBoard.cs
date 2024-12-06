@@ -321,6 +321,27 @@
         {
             this.currentTurn = this.currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
         }
+
+        /// <summary>
+        /// Compte les nombres de pierres de chaque couleur sur le plateau
+        /// </summary>
+        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
+        public (int blackStones, int whiteStones) CountStones()
+        {
+            int blackStones = 0;
+            int whiteStones = 0;
+
+            for (int i = 0; i < this.Size; i++)
+            {
+                for (int j = 0; j < this.Size; j++)
+                {
+                    if (this.GetStone(i, j).Color == StoneColor.Black) blackStones++;
+                    if (this.GetStone(i, j).Color == StoneColor.White) whiteStones++;
+                }
+            }
+
+            return (blackStones, whiteStones);
+        }
     }
 }
 
