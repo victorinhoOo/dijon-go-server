@@ -20,13 +20,8 @@ namespace WebSocket.Model
         private BoardSerializer boardSerializer;
         private ScoreRule score;
         private bool started;
-        private string rule;
-        private int size;
         private int id;
-        private float komi;
-        private string name;
-        private int handicap;
-        private string handicapColor;
+        private GameConfiguration config;
         private TimerManager timerManager;
         private GameManager gameManager;
 
@@ -63,42 +58,16 @@ namespace WebSocket.Model
         /// </summary>
         public Client CurrentTurn { get => currentTurn; }
 
-
         /// <summary>
-        /// Récupére la taille du plateau
+        /// Récupère la configuration de la partie
         /// </summary>
-        public int Size { get => size; }
-
-        /// <summary>
-        /// Renvoi les règles de la partie
-        /// </summary>
-        public string Rule { get => rule; }
-
+        public GameConfiguration Config { get => config; }
 
         /// <summary>
         /// Récupére l'identifiant de la partie
         /// </summary>
         public int Id { get => id; }
 
-        /// <summary>
-        /// Récupérer ou modifier le komi
-        /// </summary>
-        public float Komi { get => komi; }
-
-        /// <summary>
-        /// Récupérer ou modifier le nom de la partie
-        /// </summary>
-        public string Name { get => name; }
-
-        /// <summary>
-        /// Récupérer ou modifier l'handicap de la partie
-        /// </summary>
-        public int Handicap { get => handicap; }
-
-        /// <summary>
-        /// Récupérer ou modifier la couleur du handicap du joueur de la partie
-        /// </summary>
-        public string HandicapColor { get => handicapColor; }
 
         /// <summary>
         /// Constructeur d'une partie
@@ -109,12 +78,7 @@ namespace WebSocket.Model
             this.id = Server.CustomGames.Count + 1;
 
             // Configuration
-            this.size = config.Size;
-            this.rule = config.Rule;
-            this.komi = config.Komi;
-            this.name = config.Name;
-            this.handicap = config.Handicap;
-            this.handicapColor = config.HandicapColor;
+            this.config = config;
 
             // Dépendances
             this.gameBoard = gameBoard;

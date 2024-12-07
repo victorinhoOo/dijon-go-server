@@ -84,8 +84,8 @@ namespace Tests.WebSockets.FakeDAO
             return games.Select(game => new AvailableGameInfoDTO
             (
                 game.Id,
-                game.Size,
-                game.Rule,
+                game.Config.Size,
+                game.Config.Rule,
                 game.Player1.User.Name,
                 6.5f,
                 "Ma Game",
@@ -106,19 +106,13 @@ namespace Tests.WebSockets.FakeDAO
                     game.Id,
                     game.Player1.User.Name,
                     game.Player2.User.Name,
-                    game.Size,
-                    game.Rule,
+                    game.Config.Size,
+                    game.Config.Rule,
                     game.GetScore().Item1,
                     game.GetScore().Item2,
                     true,
                     DateTime.Now
                 )).ToList();
-        }
-
-
-        public List<GameStateDTO> GetGameStatesByGameId(int gameId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

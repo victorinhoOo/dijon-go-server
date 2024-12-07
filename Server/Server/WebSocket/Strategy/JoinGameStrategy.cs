@@ -31,8 +31,8 @@ namespace WebSocket.Strategy
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
         public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
-            string stringId = data[0];
-            int idGame = Convert.ToInt16(stringId);
+            string stringIdGame = data[0];
+            int idGame = Convert.ToInt16(stringIdGame);
             if (gameType == GameType.CUSTOM)
             {
 
