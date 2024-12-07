@@ -132,7 +132,6 @@ export class ProfileComponent {
             new Date(game.date) // Conversion explicite en Date si nécessaire
           )
       );
-      console.log(this.historyData); // Vérifiez ici que les objets ont bien été convertis
     });
   }
 

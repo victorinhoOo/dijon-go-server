@@ -175,7 +175,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         });
       },
       error: (err) => {
-        console.error("Erreur lors de la récupération des parties :", err);
         Swal.fire({
           title: 'Erreur',
           text: 'Impossible de récupérer les parties disponibles.',
@@ -319,13 +318,8 @@ private populateLeaderboard(): void {
       // Accès à l'élément DOM pour le leaderboard
       const leaderboardElement = document.querySelector('.leaderboard');
     
-      if (!leaderboardElement) {
-        console.error('Leaderboard DOM introuvable.');
-        return;
-      }
-    
       // Vidage du contenu actuel du leaderboard
-      leaderboardElement.innerHTML = '';
+      leaderboardElement!.innerHTML = '';
       //remplissage d'un tableau
       const topPlayers = Object.entries(leaderboard);
       
@@ -335,12 +329,9 @@ private populateLeaderboard(): void {
         const rankString = `${index + 1}) ${name} - ${userTop.Rank}`;
         const p = document.createElement('p');
         p.textContent = rankString;
-        leaderboardElement.appendChild(p);
+        leaderboardElement!.appendChild(p);
       });
     },
-    error: (err) => {
-      console.error('Erreur lors de la récupération du leaderboard:', err);
-    }
   });
 }
 

@@ -147,8 +147,6 @@ export class WebsocketService implements IObserver {
       let userToken = this.userCookieService.getToken();
       this.websocket.send(`${id}-Join-${userToken}-${type}`);
       this.router.navigate(['game', size, rule]);
-    } else {
-      console.log('not connected');
     }
   }
 
@@ -181,8 +179,6 @@ export class WebsocketService implements IObserver {
         let idGame = this.interpreter.getIdGame();
         this.websocket.send(`${idGame}-Skip`);
       }
-    } else {
-      console.log('not connected');
     }
   }
 
@@ -197,10 +193,7 @@ export class WebsocketService implements IObserver {
       if (this.game.getCurrentTurn() == this.game.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
         this.websocket.send(`${idGame}-Stone-${coordinates}`);
-        console.log(`${idGame}-Stone-${coordinates}`);
       }
-    } else {
-      console.log('not connected');
     }
   }
 
@@ -208,9 +201,6 @@ export class WebsocketService implements IObserver {
   public cancelMatchmaking(idLobby:string) {
     if (this.websocket != null && this.websocket.OPEN) {
       this.websocket.send(`${idLobby}-Cancel`);
-      console.log(`Sent : ${idLobby}-Cancel`);
-    } else {
-      console.log('not connected');
     }
   }
 }

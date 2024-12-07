@@ -45,7 +45,6 @@ export class MatchmakingStrategy implements IStrategy {
       );
     } else if(data.includes('Join')){
       let idLobby = data[0];
-      console.log(idLobby);
       setTimeout(
         () =>
           this.confirmMatchmaking(opponentUsername, opponentElo).then((result) => {
