@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using WebSocket.Exceptions;
 using WebSocket.Model;
+using WebSocket.Model.DAO.Redis;
 using WebSocket.Protocol;
 using WebSocket.Strategy.Enumerations;
 
@@ -18,7 +19,6 @@ namespace WebSocket
     {
         private IWebProtocol webSocket;
         private bool isRunning;
-        private bool started;
         private GameType gameType;
         private static ConcurrentDictionary<int, Game> customGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
@@ -37,8 +37,15 @@ namespace WebSocket
         /// Dictionnaire qui contient les parties de matchmaking en cours
         /// </summary>
         public static ConcurrentDictionary<int, Game> MatchmakingGames { get => matchmakingGames; set => matchmakingGames = value; }
+
+        /// <summary>
+        /// Dictionnaire qui contient les lobbies en cours
+        /// </summary>
         public static ConcurrentDictionary<int, Lobby> Lobbies { get => lobbies; set => lobbies = value; }
 
+        /// <summary>
+        /// File d'attente des joueurs en attente de matchmaking
+        /// </summary>
         public static Queue<Client> WaitingPlayers => waitingPlayers;
 
 
@@ -150,7 +157,6 @@ namespace WebSocket
             client.SendMessage(deconnectionBytes);
             Console.WriteLine(ex.Message + "\n");
             endOfCommunication = true; // Fin de la communication
-            this.started = false;
         }
 
 
@@ -236,14 +242,15 @@ namespace WebSocket
 
 
         /// <summary>
-        /// Démarre une partie
+        /// Démarre une partie en récupérant les joueurs et en envoyant le nom de l'adversaire à chaque joueur ainsi que l'état du plateau
         /// </summary>
         private void StartGame(Game game)
         {
             game.Player1.User = this.gameManager.GetUserByToken(game.Player1.User.Token);
             game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
-            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
-            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
+            string gameBoard = game.StringifyGameBoard();
+            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player2.User.Name}-{gameBoard}"); // Envoi du nom du joueur à son adversaire
+            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player1.User.Name}-{gameBoard}"); // Envoi du nom du joueur à son adversaire
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
             game.Start();
