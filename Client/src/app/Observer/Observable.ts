@@ -9,11 +9,10 @@ export abstract class Observable{
 
     public register(observer:IObserver){
         this.observers.push(observer);
-        console.log(this.observers);
+        console.log(this.observers.length);
     }
 
-    protected notifyChange(object:Observable){
-        console.log("update");    
+    protected notifyChange(object:Observable){  
         this.observers.forEach(obs=>{
             obs.update(object);
         })

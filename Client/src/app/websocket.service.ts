@@ -40,6 +40,10 @@ export class WebsocketService implements IObserver {
     this.game = object as Game;
   }
 
+  public getGame():Game{
+    return this.game;
+  }
+
 
   /**
    * Fonction permettant de se connecter au serveur websocket

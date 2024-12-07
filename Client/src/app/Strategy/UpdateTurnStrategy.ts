@@ -16,7 +16,6 @@ export class UpdateTurnStrategy implements IStrategy {
         let timer = data[TIMER_INDEX];
         this.updateBoard(board);
         this.updateScore(score, game);
-        this.updateTimer(timer, game);
         game.changeTurn();
         this.updateHover(game);
     }
@@ -79,15 +78,6 @@ export class UpdateTurnStrategy implements IStrategy {
   
     }
 
-    private updateTimer(ms:string, game:Game):void{
-        let timer = game.msToTimer(ms)
-        if(game.getPlayerColor() == game.getCurrentTurn()){
-          document.getElementById("player-timer")!.innerText = timer
-        }
-        else{
-          document.getElementById("opponent-timer")!.innerText = timer;
-        }
-    }
 
     public updateHover(game:Game):void{
         let stones = document.querySelectorAll(".stone, .bigger-stone");

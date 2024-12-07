@@ -15,7 +15,6 @@ export class StartStrategy implements IStrategy {
         pseudo!.innerHTML = data[2]; // Récupère le pseudo de l'adversaire pour l'afficher sur la page
         let profilePic = document.getElementById('opponent-pic') as HTMLImageElement;
         profilePic!.src = `${PROFILE_PIC_URL}${pseudo!.innerText}`; // Récupère l'avatar de l'adversaire pour l'afficher sur la page
-        game.updateHover();
         setInterval(()=>{
             game.launchTimer();
         }, TIMER_INTERVAL);

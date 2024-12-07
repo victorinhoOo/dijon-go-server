@@ -30,6 +30,61 @@ export class GridComponent implements AfterViewInit, OnInit, IObserver {
 
   public update(object: Observable): void {
     this.game = object as Game;
+    let playerTimerContainer = document.getElementById('player-timer');
+    let opponentTimerContainer = document.getElementById('opponent-timer');
+    if(playerTimerContainer != undefined && opponentTimerContainer != undefined){
+      this.updateTimers(playerTimerContainer, opponentTimerContainer);
+    }
+    let globalContainer = document.getElementById('global-container');
+    if(globalContainer != undefined){
+      this.updateHover(globalContainer);
+    }
+  }
+
+  private updateTimers(playerTimerContainer:HTMLElement, opponentTimerContainer:HTMLElement):void{
+    let palyerMs = this.game.getPlayerMs();
+    let opponentMs = this.game.getOpponentMs();
+    let stringPlayerMs = palyerMs.toString();
+    let stringOpponentMs = opponentMs.toString();
+    let playerTimer = this.msToTimer(stringPlayerMs);
+    let opponentTimer = this.msToTimer(stringOpponentMs);
+    playerTimerContainer.innerText = playerTimer;
+    opponentTimerContainer.innerText = opponentTimer;
+  }
+
+  /**
+   * Met à jour l'effet de survol des pierres
+   */
+  private updateHover(container:HTMLElement):void{
+    let stones = document.querySelectorAll(".stone, .bigger-stone");
+    let stonesArray = Array.from(stones);
+    if(this.game.isPlayerTurn()){
+      container.style.cursor = "pointer";
+      stonesArray.forEach((stone)=>{
+        stone.classList.add("active");
+      })
+    }else{
+      container.style.cursor = "not-allowed";
+      stonesArray.forEach((stone)=>{
+        stone.classList.remove("active");
+      })
+    }
+  }
+
+  /**
+   * Trasforme un nombre de ms en un timer
+   * @param ms nombre de ms
+   * @returns un timer en string
+   */
+  private msToTimer(ms:string):string{
+    let totalMs = Number(ms);
+    let totalSeconds = Math.floor(totalMs/1000);
+    let minutes = Math.floor(totalSeconds/60);
+    let seconds = totalSeconds % 60;
+    let stringMiniutes = minutes.toString().padStart(2,'0');
+    let stringSeconds = seconds.toString().padStart(2,'0');
+    let result = `${stringMiniutes}:${stringSeconds}`;
+    return result;
   }
 
   public get PlayerAvatar() {
@@ -50,7 +105,8 @@ export class GridComponent implements AfterViewInit, OnInit, IObserver {
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;
     this.rule = '';
-    this.game = new Game();
+    this.game = this.websocketService.getGame();
+    this.game.register(this);
   }
 
   /**
