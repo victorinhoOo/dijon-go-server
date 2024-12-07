@@ -18,21 +18,18 @@ namespace WebSocket.Strategy
     {
 
         // Constantes pour les index de tableau
-        private const int TOKEN_INDEX = 2;
         private const int SIZE_INDEX = 3;
         private const int RULE_INDEX = 4;
-        private const int KOMI_INDEX = 6;
-        private const int NAME_INDEX = 7;
-        private const int HANDICAP_INDEX = 8;
-        private const int COLOR_HANDICAP_INDEX = 9;
+        private const int KOMI_INDEX = 5;
+        private const int NAME_INDEX = 6;
+        private const int HANDICAP_INDEX = 7;
+        private const int COLOR_HANDICAP_INDEX = 8;
 
         private IGameDAO gameDAO;
-        private GameManager gameManager;
 
         public CreateGameStrategy()
         {
             this.gameDAO = new GameDAO();
-            this.gameManager = new GameManager();
         }
 
         /// <summary>
@@ -56,10 +53,8 @@ namespace WebSocket.Strategy
                 int id = Server.CustomGames.Count + 1; 
                 GameConfiguration config = new GameConfiguration(size, rule, komi, name, handicap, colorHandicap);
                 Game newGame = GameFactory.CreateCustomGame(config);
-                player.User.Token = data[TOKEN_INDEX];
                 newGame.AddPlayer(player);
                 Server.CustomGames[id] = newGame;
-                newGame.Player1.User = this.gameManager.GetUserByToken(newGame.Player1.User.Token); //  récupération de l'utilisateur pour l'insertion en bdd
                 gameDAO.InsertAvailableGame(newGame); // Ajout de la partie dans le dictionnaire des parties
                 Server.CustomGames[id].Player1 = player; // Ajout du client en tant que joueur 1
                 response = $"{id}-"; // Renvoi de l'id de la partie créée
@@ -71,7 +66,6 @@ namespace WebSocket.Strategy
                 Game newGame = GameFactory.CreateMatchmakingGame();
                 newGame.AddPlayer(player);
                 Server.MatchmakingGames[id] = newGame;
-                player.User.Token = data[TOKEN_INDEX];
                 Server.MatchmakingGames[id].Player1 = player;
                 response = $"{id}-"; // Renvoi del'id de la partie créée
                 type = "Send_";

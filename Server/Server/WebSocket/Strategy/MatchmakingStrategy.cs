@@ -24,7 +24,6 @@ namespace WebSocket.Strategy
         /// </summary>
         private const int TIMEOUT_SECONDS = 20;
 
-        private const int TOKEN_INDEX = 2;
 
 
         public MatchmakingStrategy()
@@ -56,8 +55,6 @@ namespace WebSocket.Strategy
             if (player == player1) // Le joueur qui rejoint est le premier joueur
             {
                 Server.Lobbies[idLobby].Player1 = player;
-                string userToken = data[TOKEN_INDEX];
-                Server.Lobbies[idLobby].Player1.User = this.gameManager.GetUserByToken(userToken);
                 // Attente du second joueur
                 state = WaitForCondition(() => Server.WaitingPlayers.Count >= 2, () => !Server.Lobbies.ContainsKey(idLobby));
                 if (state == MatchmakingState.OK)
@@ -72,8 +69,6 @@ namespace WebSocket.Strategy
             else // le joueur qui rejoint est le deuxième joueur
             {
                 Server.Lobbies[idLobby].Player2 = player;
-                string userToken = data[TOKEN_INDEX];
-                Server.Lobbies[idLobby].Player2.User = this.gameManager.GetUserByToken(userToken);
                 // Attente de la création de la partie
                 state = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames, () => !Server.Lobbies.ContainsKey(idLobby) );
                 if (state == MatchmakingState.OK)

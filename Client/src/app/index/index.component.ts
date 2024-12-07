@@ -261,7 +261,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         });
 
         try {
-          // todo: envoyer le choix des règles au serveur
           await this.websocketService.connectWebsocket();
           this.websocketService.createPersonalizeGame(gridSize, rules, komi, name, handicap, selectedColor);
           Swal.close(); // Ferme le chargement

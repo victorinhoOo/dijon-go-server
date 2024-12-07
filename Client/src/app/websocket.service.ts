@@ -46,11 +46,12 @@ export class WebsocketService implements IObserver {
 
 
   /**
-   * Fonction permettant de se connecter au serveur websocket
+   * Fonction permettant de se connecter au serveur websocket, transmet le token utilisateur pour l'authentification
    */
   public connectWebsocket(): Promise<void> {
+    const userToken = this.userCookieService.getToken();
     return new Promise((resolve, reject) => {
-      this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/`);
+      this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/?token=${userToken}`);
       this.websocket.onopen = () => {
         console.log('connected');
         resolve();
@@ -120,8 +121,7 @@ export class WebsocketService implements IObserver {
   public createMatchmakingGame(): void {
     if (this.websocket != null && this.websocket.OPEN) {
       this.game.setPlayerColor("black");
-      let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0-Create-${userToken}-matchmaking`);
+      this.websocket.send(`0-Create-matchmaking`);
       this.router.navigate(['game', 19, "j"]);
     }
   }
@@ -132,20 +132,22 @@ export class WebsocketService implements IObserver {
     public createPersonalizeGame(size: number, rule: string, komi:string, name:string,handicap:number,colorHandicap: string): void {
       if (this.websocket != null && this.websocket.OPEN) {
         this.game.setPlayerColor("black");
-        let userToken = this.userCookieService.getToken();
-        this.websocket.send(`0-Create-${userToken}-${size}-${rule}-custom-${komi}-${name}-${handicap}-${colorHandicap}`);
+        this.websocket.send(`0-Create-custom-${size}-${rule}-${komi}-${name}-${handicap}-${colorHandicap}`);
         this.router.navigate(['game', size, rule]);
       }
     }
   /**
    * Envoi un message de demande de rejoindre une partie
-   * @param id Identifiant de la partie à rejoindre
+   * @param id l'id de la partie à rejoindre
+   * @param type le type de partie que l'on souhaite rejoindre (matchmaking ou custom)
+   * @param rule les règles de la partie
+   * @param size la taille de la grille de jeu de la partie
    */
   public joinGame(id: number, type:string, rule:string, size:number): void {
     if (this.websocket != null && this.websocket.OPEN) {
       this.game.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`${id}-Join-${userToken}-${type}`);
+      this.websocket.send(`${id}-Join-${type}`);
       this.router.navigate(['game', size, rule]);
     }
   }
@@ -156,13 +158,12 @@ export class WebsocketService implements IObserver {
   public joinMatchmaking(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.websocket != null && this.websocket.OPEN) {
-        let userToken = this.userCookieService.getToken();
         
         // Stocker la Promise resolve pour l'utiliser dans l'interpreteur
         (this.interpreter.getMatchMakingStrategy() as any).matchmakingResolve = resolve;
         
         // Envoi de la demande de matchmaking
-        this.websocket.send(`0-Matchmaking-${userToken}`);
+        this.websocket.send(`0-Matchmaking`);
       } else {
         reject(new Error('Non connecté au websocket'));
       }

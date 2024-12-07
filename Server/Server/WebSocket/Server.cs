@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using WebSocket.Exceptions;
 using WebSocket.Model;
 using WebSocket.Model.DAO.Redis;
@@ -132,9 +133,22 @@ namespace WebSocket
         /// </summary>
         private void ProceedHandshake(string message, Client client, ref string response)
         {
+            ExtractTokenUserFromHandshake(message, client);
             byte[] handshake = this.webSocket.BuildHandShake(message);
             response = Encoding.UTF8.GetString(handshake);
             client.SendMessage(handshake);
+        }
+
+        /// <summary>
+        /// Extrait le token de la demande de l'url de demande de connexion entre le client et le server
+        /// </summary>
+        private void ExtractTokenUserFromHandshake(string message, Client client)
+        {
+            string url = message.Split(" ")[1];
+            var uri = new Uri($"http://{Environment.GetEnvironmentVariable("SERVER_IP")}:{Environment.GetEnvironmentVariable("SERVER_PORT")}{url}");
+            string token = HttpUtility.ParseQueryString(uri.Query).Get("token");
+            Console.WriteLine($"Token utilisateur reçu : {token}");
+            client.User = gameManager.GetUserByToken(token);
         }
 
         /// <summary>
@@ -246,8 +260,6 @@ namespace WebSocket
         /// </summary>
         private void StartGame(Game game)
         {
-            game.Player1.User = this.gameManager.GetUserByToken(game.Player1.User.Token);
-            game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
             string gameBoard = game.StringifyGameBoard();
             byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player2.User.Name}-{gameBoard}"); // Envoi du nom du joueur à son adversaire
             byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player1.User.Name}-{gameBoard}"); // Envoi du nom du joueur à son adversaire
