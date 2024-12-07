@@ -41,11 +41,47 @@ namespace WebSocket
         {
             string[] data = message.Split("-");
             string action = data[1]; // action à effectuer
+            ValidateAndTruncate(ref data);
             string type = ""; // type de réponse (send ou broadcast)
             string response = "";
             this.strategies[action].Execute(client, data, gameType, ref response, ref type);
             return type + response;
 
         }
+
+        /// <summary>
+        /// Valide et tronque les valeurs selon les limites imposées 
+        /// </summary>
+        /// <param name="data">Tableau des données à valider</param>
+        private void ValidateAndTruncate(ref string[] data)
+        {
+            // Vérifier et tronquer data[6] les valeurs en dessous de 0 ne sont pas accepté
+            if (data[6].Length > 3)
+            {
+                float komi = float.Parse(data[6], CultureInfo.InvariantCulture.NumberFormat);
+                if (komi > 999)
+                    komi = 999;
+                else if( komi < 0)
+                    komi = 0;
+                data[6] = komi.ToString();
+            }
+            
+            // Vérifier et tronquer data[7] à 15 caractères
+            if (data[7].Length > 15)
+                data[7] = data[7].Substring(0, 15);
+            
+
+            // Vérifier et tronquer data[8] à une longueur de 1 caractère, avec une limite de "9"
+            if (data[8].Length > 1)
+            {
+                float handicap = float.Parse(data[8], CultureInfo.InvariantCulture.NumberFormat);
+                if (handicap > 9)
+                    handicap = 9;
+                else if (handicap < 0)
+                    handicap = 0;
+                data[8] = handicap.ToString();
+            }
+        }
+
     }
 }
