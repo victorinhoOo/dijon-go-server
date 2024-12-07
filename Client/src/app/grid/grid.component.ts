@@ -10,6 +10,10 @@ import Swal from 'sweetalert2';
 import { IObserver } from '../Observer/IObserver';
 import { Observable } from '../Observer/Observable';
 import { Game } from '../Model/Game';
+import { environment } from '../environment';
+
+
+const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
 
 @Component({
   selector: 'app-grid',
@@ -18,6 +22,9 @@ import { Game } from '../Model/Game';
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
 })
+
+
+
 /**
  * Composant de la grille de jeu
  */
@@ -39,6 +46,18 @@ export class GridComponent implements AfterViewInit, OnInit, IObserver {
     if(globalContainer != undefined){
       this.updateHover(globalContainer);
     }
+
+    let opponentPseudoContainer = document.getElementById('pseudo-text');
+    let opponentAvatarContainer = document.getElementById('opponent-pic');
+    if(opponentPseudoContainer != undefined && opponentAvatarContainer != undefined){
+      this.updateOpponentPseudo(opponentPseudoContainer, opponentAvatarContainer as HTMLImageElement);
+    }
+  }
+
+  private updateOpponentPseudo(opponentPseudoContainer:HTMLElement, opponentAvatarContainer:HTMLImageElement):void{
+    let opponentPseudo = this.game.getOpponentPseudo();
+    opponentPseudoContainer.innerText = opponentPseudo;
+    opponentAvatarContainer.src = `${PROFILE_PIC_URL}${opponentPseudo}`;
   }
 
   private updateTimers(playerTimerContainer:HTMLElement, opponentTimerContainer:HTMLElement):void{
@@ -102,6 +121,7 @@ export class GridComponent implements AfterViewInit, OnInit, IObserver {
   ) {
     this.size = 0;
     this.playerPseudo = this.userCookieService.getUser()!.Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
+
     this.playerAvatar =
       'https://localhost:7065/profile-pics/' + this.playerPseudo;
     this.rule = '';

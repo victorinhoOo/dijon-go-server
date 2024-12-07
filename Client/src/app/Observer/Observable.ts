@@ -13,6 +13,7 @@ export abstract class Observable{
     }
 
     protected notifyChange(object:Observable){  
+        console.log(object);
         this.observers.forEach(obs=>{
             obs.update(object);
         })

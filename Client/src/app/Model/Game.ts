@@ -11,13 +11,25 @@ export class Game extends Observable{
 
   private opponentMs:number;
 
+  private opponentPseudo : string ;
+
 
   public constructor() {
     super();
     this.currentTurn = '';
     this.playerColor = '';
+    this.opponentPseudo = '';
     this.playerMs = ONE_HOUR_IN_MS;
     this.opponentMs = ONE_HOUR_IN_MS;
+  }
+
+  public getOpponentPseudo():string{
+    return this.opponentPseudo;
+  }
+
+  public setOpponentPseudo(pseudo:string){
+    this.opponentPseudo = pseudo;
+    this.notifyChange(this);
   }
 
   public getPlayerMs():number{
@@ -77,16 +89,7 @@ export class Game extends Observable{
   public isPlayerTurn(): boolean {
     return this.playerColor == this.currentTurn;
   }
-
-  private timerToMs(timer: string) {
-    let minutes = Number(timer.split(':')[0]);
-    let seconds = Number(timer.split(':')[1]);
-    return (seconds + minutes * 60) * 1000;
-  }
-
-
   
-
   public launchTimer(){
     if(this.playerColor == this.currentTurn){
       this.playerTimerTick();

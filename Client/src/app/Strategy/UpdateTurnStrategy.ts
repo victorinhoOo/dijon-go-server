@@ -15,12 +15,15 @@ export class UpdateTurnStrategy implements IStrategy {
         let score = `${data[SCORE_INDEX_PLAYER]};${data[SCORE_INDEX_OPPONENT]}`;
         let timer = data[TIMER_INDEX];
         this.updateBoard(board);
-        this.updateScore(score, game);
         game.changeTurn();
-        this.updateHover(game);
+        this.updateScore(score, game);
+        
     }
 
 
+    /**
+     * Ne marche plus a cause des avatars
+     */
     private updateScore(score: string, game:Game): void {
         let playerScore;
         let opponentScore;
@@ -78,20 +81,4 @@ export class UpdateTurnStrategy implements IStrategy {
   
     }
 
-
-    public updateHover(game:Game):void{
-        let stones = document.querySelectorAll(".stone, .bigger-stone");
-        let stonesArray = Array.from(stones);
-        if(game.isPlayerTurn()){
-          document.getElementById("global-container")!.style.cursor = "pointer";
-          stonesArray.forEach((stone)=>{
-            stone.classList.add("active");
-          })
-        }else{
-          document.getElementById("global-container")!.style.cursor = "not-allowed";
-          stonesArray.forEach((stone)=>{
-            stone.classList.remove("active");
-          })
-        }
-    }
 }
