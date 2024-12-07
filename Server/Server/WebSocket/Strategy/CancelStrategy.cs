@@ -8,8 +8,19 @@ using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket.Strategy
 {
+    /// <summary>
+    /// Représente la stratégie d'annulation d'une partie
+    /// </summary>
     public class CancelStrategy : IStrategy
     {
+        /// <summary>
+        /// Exécute la stratégie d'annulation d'une partie
+        /// </summary>
+        /// <param name="player">Le joueur qui annule la partie</param>
+        /// <param name="data"></param>
+        /// <param name="gameType"></param>
+        /// <param name="response"></param>
+        /// <param name="type"></param>
         public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
             if(gameType == GameType.MATCHMAKING)
