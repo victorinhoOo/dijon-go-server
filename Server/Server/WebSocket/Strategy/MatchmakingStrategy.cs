@@ -17,18 +17,14 @@ namespace WebSocket.Strategy
     /// </summary>
     public class MatchmakingStrategy : IStrategy
     {
-        private GameManager gameManager;
 
         /// <summary>
         /// Temps en secondes au bout duquel le matchmaking s'annule 
         /// </summary>
         private const int TIMEOUT_SECONDS = 20;
 
-
-
         public MatchmakingStrategy()
         {
-            this.gameManager = new GameManager();
         }
 
         /// <summary>

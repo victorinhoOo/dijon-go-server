@@ -7,6 +7,7 @@ using System.Web;
 using WebSocket.Exceptions;
 using WebSocket.Model;
 using WebSocket.Model.DAO.Redis;
+using WebSocket.Model.Managers;
 using WebSocket.Protocol;
 using WebSocket.Strategy.Enumerations;
 
@@ -147,7 +148,6 @@ namespace WebSocket
             string url = message.Split(" ")[1];
             var uri = new Uri($"http://{Environment.GetEnvironmentVariable("SERVER_IP")}:{Environment.GetEnvironmentVariable("SERVER_PORT")}{url}");
             string token = HttpUtility.ParseQueryString(uri.Query).Get("token");
-            Console.WriteLine($"Token utilisateur reçu : {token}");
             client.User = gameManager.GetUserByToken(token);
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebSocket.Model
 {
     /// <summary>
-    /// Représente un lobby
+    /// Représente un lobby de jeu
     /// </summary>
     public class Lobby
     {

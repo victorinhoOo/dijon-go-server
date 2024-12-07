@@ -72,6 +72,14 @@ export class WebsocketService implements IObserver {
   }
 
   /**
+   * Renvoi l'état de la connexion au websocket
+   * @returns True si la connexion est établie, sinon false
+   */
+  public isWebsocketConnected(): boolean{
+    return this.websocket?.OPEN ? true : false;
+  }
+
+  /**
    * Gère la fin de partie en affichant un popup indiquant le gagnant et son score ainsi que le nouvel elo
    * @param won gagné ou non
    * @param player1score score du joueur 

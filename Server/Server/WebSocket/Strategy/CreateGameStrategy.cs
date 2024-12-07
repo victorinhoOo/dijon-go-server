@@ -8,6 +8,7 @@ using WebSocket.Model.DAO;
 using WebSocket.Model;
 using System.Globalization;
 using WebSocket.Strategy.Enumerations;
+using WebSocket.Model.Managers;
 
 namespace WebSocket.Strategy
 {
@@ -25,11 +26,11 @@ namespace WebSocket.Strategy
         private const int HANDICAP_INDEX = 7;
         private const int COLOR_HANDICAP_INDEX = 8;
 
-        private IGameDAO gameDAO;
+        private AvailableGameManager availableGameManager;
 
         public CreateGameStrategy()
         {
-            this.gameDAO = new GameDAO();
+            this.availableGameManager = new AvailableGameManager();
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace WebSocket.Strategy
                 Game newGame = GameFactory.CreateCustomGame(config);
                 newGame.AddPlayer(player);
                 Server.CustomGames[id] = newGame;
-                gameDAO.InsertAvailableGame(newGame); // Ajout de la partie dans le dictionnaire des parties
+                availableGameManager.InsertAvailableGame(newGame); // Ajout de la partie dans le dictionnaire des parties
                 Server.CustomGames[id].Player1 = player; // Ajout du client en tant que joueur 1
                 response = $"{id}-"; // Renvoi de l'id de la partie créée
                 type = "Send_";

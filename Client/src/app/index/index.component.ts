@@ -74,8 +74,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
       this.router.navigate(['/login']);
     }
     if(!this.router.url.includes('cancelled')){ // si une recherche n'a pas été annulée, on se déco / reco en arrivant sur la page d'accueil
-      this.websocketService.disconnectWebsocket();
-      this.websocketService.connectWebsocket();
+      if(!this.websocketService.isWebsocketConnected()){
+        this.websocketService.disconnectWebsocket();
+        this.websocketService.connectWebsocket();
+      }
     }
     this.userCookieService.getUserObservable().subscribe((user: User | null) => {
       if (user) {

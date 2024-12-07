@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebSocket.Model.DAO;
+using WebSocket.Model.Managers;
 using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket.Strategy
@@ -16,10 +17,10 @@ namespace WebSocket.Strategy
     {
         private const int GAMEID_INDEX = 0;
 
-        private IGameDAO gameDAO;
+        private AvailableGameManager availableGameManager;
         public JoinGameStrategy()
         {
-            this.gameDAO = new GameDAO();
+            this.availableGameManager = new AvailableGameManager();
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace WebSocket.Strategy
             if (gameType == GameType.CUSTOM)
             {
                 Server.CustomGames[idGame].AddPlayer(player); // Ajout du client en tant que joueur 2
-                this.gameDAO.DeleteAvailableGame(idGame); // Suppression de la partie de la liste des parties disponibles
+                this.availableGameManager.DeleteAvailableGame(idGame); // Suppression de la partie de la liste des parties disponibles
                 response = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";
             }
