@@ -73,7 +73,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
     if (!this.token) {
       this.router.navigate(['/login']);
     }
-    this.websocketService.disconnectWebsocket();
+    if(!this.router.url.includes('cancelled')){ // si une recherche n'a pas été annulée, on se déco / reco en arrivant sur la page d'accueil
+      this.websocketService.disconnectWebsocket();
+      this.websocketService.connectWebsocket();
+    }
     this.userCookieService.getUserObservable().subscribe((user: User | null) => {
       if (user) {
         this.userPseudo = user.Username;
@@ -127,7 +130,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         if (games.length === 0) {
           content = '<p>Aucune partie disponible pour le moment...</p>';
         } else {
-          await this.websocketService.connectWebsocket();
           games.forEach((game, index) => {
             let stringRule = game["rule"] == "j" 
               ? `<img class="flag" src="japan.svg"/>` 
@@ -261,7 +263,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         });
 
         try {
-          await this.websocketService.connectWebsocket();
           this.websocketService.createPersonalizeGame(gridSize, rules, komi, name, handicap, selectedColor);
           Swal.close(); // Ferme le chargement
         } catch (error) {
@@ -295,7 +296,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
       didOpen: async () => {
         Swal.showLoading();
         try {
-          await this.websocketService.connectWebsocket();
           await this.websocketService.joinMatchmaking();
           Swal.close();
         } catch(error) {
