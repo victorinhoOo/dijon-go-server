@@ -14,6 +14,8 @@ namespace WebSocket.Strategy
     /// </summary>
     public class JoinGameStrategy : IStrategy
     {
+        private const int GAMEID_INDEX = 0;
+        private const int TOKEN_INDEX = 2;
 
         private IGameDAO gameDAO;
         public JoinGameStrategy()
@@ -31,12 +33,12 @@ namespace WebSocket.Strategy
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
         public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
-            string stringIdGame = data[0];
+            string stringIdGame = data[GAMEID_INDEX];
             int idGame = Convert.ToInt16(stringIdGame);
             if (gameType == GameType.CUSTOM)
             {
 
-                player.User.Token = data[2]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
+                player.User.Token = data[TOKEN_INDEX]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
                 Server.CustomGames[idGame].AddPlayer(player); // Ajout du client en tant que joueur 2
                 this.gameDAO.DeleteAvailableGame(idGame); // Suppression de la partie de la liste des parties disponibles
                 response = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
@@ -44,7 +46,7 @@ namespace WebSocket.Strategy
             }
             else if (gameType == GameType.MATCHMAKING)
             {
-                player.User.Token = data[2];
+                player.User.Token = data[TOKEN_INDEX];
                 Server.MatchmakingGames[idGame].AddPlayer(player);
                 response = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";

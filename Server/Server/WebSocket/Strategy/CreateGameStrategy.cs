@@ -16,8 +16,19 @@ namespace WebSocket.Strategy
     /// </summary>
     public class CreateGameStrategy : IStrategy
     {
+
+        // Constantes pour les index de tableau
+        private const int TOKEN_INDEX = 2;
+        private const int SIZE_INDEX = 3;
+        private const int RULE_INDEX = 4;
+        private const int KOMI_INDEX = 6;
+        private const int NAME_INDEX = 7;
+        private const int HANDICAP_INDEX = 8;
+        private const int COLOR_HANDICAP_INDEX = 9;
+
         private IGameDAO gameDAO;
         private GameManager gameManager;
+
         public CreateGameStrategy()
         {
             this.gameDAO = new GameDAO();
@@ -36,16 +47,16 @@ namespace WebSocket.Strategy
         {
             if (gameType == GameType.CUSTOM) // la partie est personnalisée
             {
-                int size = Convert.ToInt16(data[3]);
-                string rule = data[4];
-                string name = data[7];
-                float komi = float.Parse(data[6], CultureInfo.InvariantCulture.NumberFormat);
-                int handicap = int.Parse(data[8]);
-                string colorHandicap = data[9];
+                int size = Convert.ToInt16(data[SIZE_INDEX]);
+                string rule = data[RULE_INDEX];
+                string name = data[NAME_INDEX];
+                float komi = float.Parse(data[KOMI_INDEX], CultureInfo.InvariantCulture.NumberFormat);
+                int handicap = int.Parse(data[HANDICAP_INDEX]);
+                string colorHandicap = data[COLOR_HANDICAP_INDEX];
                 int id = Server.CustomGames.Count + 1; 
                 GameConfiguration config = new GameConfiguration(size, rule, komi, name, handicap, colorHandicap);
                 Game newGame = GameFactory.CreateCustomGame(config);
-                player.User.Token = data[2];
+                player.User.Token = data[TOKEN_INDEX];
                 newGame.AddPlayer(player);
                 Server.CustomGames[id] = newGame;
                 newGame.Player1.User = this.gameManager.GetUserByToken(newGame.Player1.User.Token); //  récupération de l'utilisateur pour l'insertion en bdd
@@ -60,7 +71,7 @@ namespace WebSocket.Strategy
                 Game newGame = GameFactory.CreateMatchmakingGame();
                 newGame.AddPlayer(player);
                 Server.MatchmakingGames[id] = newGame;
-                player.User.Token = data[2];
+                player.User.Token = data[TOKEN_INDEX];
                 Server.MatchmakingGames[id].Player1 = player;
                 response = $"{id}-"; // Renvoi del'id de la partie créée
                 type = "Send_";

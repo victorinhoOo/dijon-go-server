@@ -141,7 +141,7 @@ namespace WebSocket.Model
 
 
         /// <summary>
-        /// Récupérer le temps restant du joueur précédent
+        /// Récupérer le temps restant du joueur précédent 
         /// </summary>
         /// <returns>temps restant du joueur qui vient de jouer en chaîne de caractères</returns>
         private string GetPreviousPlayerTime()
@@ -150,7 +150,8 @@ namespace WebSocket.Model
             ISystemTimer previousTimer = this.timerManager.GetPreviousTimer();
             TimeSpan previousTimeSpan = previousTimer.TotalTime;
             double previousTimerInMs = previousTimeSpan.TotalMilliseconds;
-            result = previousTimerInMs.ToString();
+            double roundedResult = Math.Round(previousTimerInMs);
+            result = roundedResult.ToString();
             return result;
         }
 

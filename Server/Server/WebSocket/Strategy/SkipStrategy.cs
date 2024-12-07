@@ -19,6 +19,8 @@ namespace WebSocket.Strategy
     /// </remarks>
     public class SkipStrategy : IStrategy
     {
+        private const int ID_GAME = 0;
+
         /// <summary>
         /// Exécute l'action de passer le tour
         /// </summary>
@@ -29,7 +31,7 @@ namespace WebSocket.Strategy
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
         public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
-            string stringId = data[0];
+            string stringId = data[ID_GAME];
             int idGame = Convert.ToInt16(stringId);
             Game game = null;
             if (gameType == GameType.CUSTOM)

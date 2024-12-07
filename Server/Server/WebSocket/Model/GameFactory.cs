@@ -12,7 +12,7 @@ using GoLogic.Timer;
 namespace WebSocket.Model
 {
     /// <summary>
-    /// Gère la création des parties
+    /// Fabrique qui gère la création des parties
     /// </summary>
     public static class GameFactory
     {
