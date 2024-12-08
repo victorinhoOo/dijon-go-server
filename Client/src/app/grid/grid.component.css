@@ -185,4 +185,13 @@
     outline: none !important;
 }
 
+/* Ajoutez ce style pour positionner le composant des joueurs connectés */
+.player-list-container {
+    position: fixed; /* Position fixe */
+    bottom: 0px; /* Distance du bas de la page */
+    right: 30px; /* Distance de la droite de la page */
+    z-index: 1000; /* Assurez-vous qu'il soit au-dessus des autres éléments */
+    width: 300px;
+}
+
 

@@ -12,6 +12,11 @@ import { UpdateTurnStrategy } from "./Strategy/UpdateTurnStrategy";
 import { CancelStrategy } from "./Strategy/CancelStrategy";
 import { IObserver } from "./Observer/IObserver";
 import { Observable } from "./Observer/Observable";
+import { UserListStrategy } from "./Strategy/UserListStrategy";
+import { ConnectedUsersService } from "./services/connected-users.service";
+import { ChatService } from "./services/chat.service";
+import { ChatStrategy } from "./Strategy/ChatStrategy";
+import { UserCookieService } from "./Model/UserCookieService";
 
 
 /**
@@ -57,7 +62,7 @@ export class Interpreter implements IObserver{
   /**
    * Constructeur de la classe
    */
-  constructor(game:Game, private websocketService: WebsocketService) {
+  constructor(game:Game, private websocketService: WebsocketService, private connectedUsersService: ConnectedUsersService, private chatService: ChatService, private userCookieService: UserCookieService) {
     this.idGame = {value: ''};
     this.game = game;
     this.game.register(this);
@@ -73,6 +78,8 @@ export class Interpreter implements IObserver{
     this.strategies.set("Stone", new UpdateTurnStrategy());
     this.strategies.set("Cancelled", new CancelStrategy());
     this.strategies.set("Retry", matchmakingStrategy);
+    this.strategies.set("UserList", new UserListStrategy(this.connectedUsersService));
+    this.strategies.set("Chat", new ChatStrategy(this.chatService, this.userCookieService));
   }
   public update(object: Observable): void {
     this.game = object as Game;

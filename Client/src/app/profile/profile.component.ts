@@ -11,11 +11,12 @@ import { User } from '../Model/User';
 import { GameDAO } from '../Model/DAO/GameDAO';
 import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 import { Game } from '../Model/Game';
+import { PlayerListComponent } from '../player-list/player-list.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatIconModule,MatButtonModule, HttpClientModule,CommonModule],
+  imports: [MatIconModule,MatButtonModule, HttpClientModule,CommonModule, PlayerListComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })

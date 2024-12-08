@@ -49,7 +49,14 @@ namespace WebSocket
         /// <param name="bytes">tableau d'octets contenant la trame qui encapsule le message</param>
         public void SendMessage(byte[] bytes)
         {
-            this.stream.Write(bytes, 0, bytes.Length);
+            try
+            {
+                this.stream.Write(bytes, 0, bytes.Length);
+            }
+            catch(Exception ex)
+            {
+                // On ne fait rien en cas d'exception, si un client se déconnecte on ne veut pas que le serveur crash
+            }
         }
     }
 }
