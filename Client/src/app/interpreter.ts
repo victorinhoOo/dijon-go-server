@@ -10,21 +10,23 @@ import { StartStrategy } from "./Strategy/StartStrategy";
 import { TimeoutStrategy } from "./Strategy/TimeoutStrategy";
 import { UpdateTurnStrategy } from "./Strategy/UpdateTurnStrategy";
 import { CancelStrategy } from "./Strategy/CancelStrategy";
+import { IObserver } from "./Observer/IObserver";
+import { Observable } from "./Observer/Observable";
 
 
 /**
  * Classe qui interprete les messages envoyés par le serveur websocket
  */
-export class Interpreter {
+export class Interpreter implements IObserver{
   private idGame: any;
   private game: Game;
 
   private strategies : Map<string, IStrategy>;
 
-  //#region Getters & Setters
+  //#region Propriétés
 
   /**
-   * Setter pout l'attribut game
+   * Modifie la valeur de l'attribut game
    * @param game partie concernée
    */
   public setGame(game:Game){
@@ -32,30 +34,11 @@ export class Interpreter {
   } 
 
   /**
-   * Getter pour l'id du jeu
+   * Récupère l'id de jeu
    * @returns l'id du jeu
    */
   public getIdGame(): string {
     return this.idGame.value;
-  }
-
-
-
-
-  /**
-   * 
-   * @returns Récupère la couleur du joueur
-   */
-  public getPlayerColor():string{
-    return this.game.getPlayerColor();
-  }
-
-
-  /***
-   * Récupère le tour actuel
-   */
-  public getCurrentTurn():string{
-    return this.game.getCurrentTurn();
   }
 
   /**
@@ -77,6 +60,7 @@ export class Interpreter {
   constructor(game:Game, private websocketService: WebsocketService) {
     this.idGame = {value: ''};
     this.game = game;
+    this.game.register(this);
     let matchmakingStrategy = new MatchmakingStrategy(this.websocketService);
     this.strategies = new Map<string, IStrategy>();
     this.strategies.set("EndOfGame", new EndOfGameStrategy());
@@ -89,6 +73,9 @@ export class Interpreter {
     this.strategies.set("Stone", new UpdateTurnStrategy());
     this.strategies.set("Cancelled", new CancelStrategy());
     this.strategies.set("Retry", matchmakingStrategy);
+  }
+  public update(object: Observable): void {
+    this.game = object as Game;
   }
 
   

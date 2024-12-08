@@ -3,9 +3,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using WebSocket.Exceptions;
 using WebSocket.Model;
+using WebSocket.Model.DAO.Redis;
+using WebSocket.Model.Managers;
 using WebSocket.Protocol;
+using WebSocket.Strategy.Enumerations;
 
 
 namespace WebSocket
@@ -17,8 +21,7 @@ namespace WebSocket
     {
         private IWebProtocol webSocket;
         private bool isRunning;
-        private bool started;
-        private string gameType;
+        private GameType gameType;
         private static ConcurrentDictionary<int, Game> customGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Lobby> lobbies = new ConcurrentDictionary<int, Lobby>();
@@ -36,8 +39,15 @@ namespace WebSocket
         /// Dictionnaire qui contient les parties de matchmaking en cours
         /// </summary>
         public static ConcurrentDictionary<int, Game> MatchmakingGames { get => matchmakingGames; set => matchmakingGames = value; }
+
+        /// <summary>
+        /// Dictionnaire qui contient les lobbies en cours
+        /// </summary>
         public static ConcurrentDictionary<int, Lobby> Lobbies { get => lobbies; set => lobbies = value; }
 
+        /// <summary>
+        /// File d'attente des joueurs en attente de matchmaking
+        /// </summary>
         public static Queue<Client> WaitingPlayers => waitingPlayers;
 
 
@@ -124,9 +134,21 @@ namespace WebSocket
         /// </summary>
         private void ProceedHandshake(string message, Client client, ref string response)
         {
+            ExtractTokenUserFromHandshake(message, client);
             byte[] handshake = this.webSocket.BuildHandShake(message);
             response = Encoding.UTF8.GetString(handshake);
             client.SendMessage(handshake);
+        }
+
+        /// <summary>
+        /// Extrait le token de la demande de l'url de demande de connexion entre le client et le server
+        /// </summary>
+        private void ExtractTokenUserFromHandshake(string message, Client client)
+        {
+            string url = message.Split(" ")[1];
+            var uri = new Uri($"http://{Environment.GetEnvironmentVariable("SERVER_IP")}:{Environment.GetEnvironmentVariable("SERVER_PORT")}{url}");
+            string token = HttpUtility.ParseQueryString(uri.Query).Get("token");
+            client.User = gameManager.GetUserByToken(token);
         }
 
         /// <summary>
@@ -149,7 +171,6 @@ namespace WebSocket
             client.SendMessage(deconnectionBytes);
             Console.WriteLine(ex.Message + "\n");
             endOfCommunication = true; // Fin de la communication
-            this.started = false;
         }
 
 
@@ -162,14 +183,14 @@ namespace WebSocket
             message = Encoding.UTF8.GetString(decryptedMessage);        
             if (message.Contains("custom"))
             {
-                this.gameType = "custom";
+                this.gameType = GameType.CUSTOM;
                 
             }
             else if (message.Contains("matchmaking"))
             {
-                this.gameType = "matchmaking";
+                this.gameType = GameType.MATCHMAKING;
             }
-            response = this.interpreter.Interpret(message, client, this.gameType); // Interprétation du message reçu
+            response = this.interpreter.Interpret(message, client, gameType); // Interprétation du message reçu
             string[] data = response.Split("_");
             string responseType = data[0]; // Récupération du type de réponse (Send ou Broadcast)
             string responseData = data[1]; // Récupération des données à envoyer
@@ -181,7 +202,7 @@ namespace WebSocket
 
             if (!response.Contains("Create") && (!response.Contains("Timeout")) && (!response.Contains("Cancelled")) && (!response.Contains("Retry")))
             {
-                Game game = this.gameType == "custom" ? customGames[idGame] : matchmakingGames[idGame];
+                Game game = this.gameType == GameType.CUSTOM ? customGames[idGame] : matchmakingGames[idGame];
                 if (responseType == "Broadcast")
                 {
                     this.BroadastMessageAsync(game, responseBytes);
@@ -235,14 +256,13 @@ namespace WebSocket
 
 
         /// <summary>
-        /// Démarre une partie
+        /// Démarre une partie en récupérant les joueurs et en envoyant le nom de l'adversaire à chaque joueur ainsi que l'état du plateau
         /// </summary>
         private void StartGame(Game game)
         {
-            game.Player1.User = this.gameManager.GetUserByToken(game.Player1.User.Token);
-            game.Player2.User = this.gameManager.GetUserByToken(game.Player2.User.Token);
-            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player2.User.Name}"); // Envoi du nom du joueur à son adversaire
-            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player1.User.Name}"); // Envoi du nom du joueur à son adversaire
+            string gameBoard = game.StringifyGameBoard();
+            byte[] startP1 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player2.User.Name}-{gameBoard}"); // Envoi du nom du joueur à son adversaire
+            byte[] startP2 = this.webSocket.BuildMessage($"{game.Id}-Start-{game.Player1.User.Name}-{gameBoard}"); // Envoi du nom du joueur à son adversaire
             this.SendMessage(game.Player1, startP1);
             this.SendMessage(game.Player2, startP2);
             game.Start();

@@ -17,17 +17,14 @@ namespace WebSocket.Strategy
     /// </summary>
     public class MatchmakingStrategy : IStrategy
     {
-        private GameManager gameManager;
 
         /// <summary>
         /// Temps en secondes au bout duquel le matchmaking s'annule 
         /// </summary>
-        const int TIMEOUT_SECONDS = 20;
-
+        private const int TIMEOUT_SECONDS = 20;
 
         public MatchmakingStrategy()
         {
-            this.gameManager = new GameManager();
         }
 
         /// <summary>
@@ -38,7 +35,7 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie demandée (ici "matchmaking")</param>
         /// <param name="response">Réponse à envoyer au client (modifiée par référence)</param>
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
-        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
             Server.WaitingPlayers.Enqueue(player);
             int initialNbMatchmakingGames = Server.MatchmakingGames.Count();
@@ -54,8 +51,6 @@ namespace WebSocket.Strategy
             if (player == player1) // Le joueur qui rejoint est le premier joueur
             {
                 Server.Lobbies[idLobby].Player1 = player;
-                string userToken = data[2];
-                Server.Lobbies[idLobby].Player1.User = this.gameManager.GetUserByToken(userToken);
                 // Attente du second joueur
                 state = WaitForCondition(() => Server.WaitingPlayers.Count >= 2, () => !Server.Lobbies.ContainsKey(idLobby));
                 if (state == MatchmakingState.OK)
@@ -70,8 +65,6 @@ namespace WebSocket.Strategy
             else // le joueur qui rejoint est le deuxième joueur
             {
                 Server.Lobbies[idLobby].Player2 = player;
-                string userToken = data[2];
-                Server.Lobbies[idLobby].Player2.User = this.gameManager.GetUserByToken(userToken);
                 // Attente de la création de la partie
                 state = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames, () => !Server.Lobbies.ContainsKey(idLobby) );
                 if (state == MatchmakingState.OK)

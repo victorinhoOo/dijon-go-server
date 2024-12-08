@@ -69,11 +69,12 @@ export class UserCookieService {
   // Méthode pour obtenir l'utilisateur
   public getUser(): User | null {
     const userData = this.cookieService.get(this.userKey);
+    let user: User | null = null; 
     if (userData) {
       const { username, email, elo } = JSON.parse(userData);
-      return new User(username, email, elo); // Création d'un nouvel objet User
-    }
-    return null;
+      user = new User(username, email, elo); 
+    } 
+    return user; 
   }
 
   // Méthode pour supprimer l'utilisateur

@@ -12,11 +12,12 @@ import Swal from 'sweetalert2';
 import { User } from '../Model/User';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { RankprogressComponent } from "../rankprogress/rankprogress.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [NavbarComponent, MatIcon, HttpClientModule, RankprogressComponent],
+  imports: [NavbarComponent, MatIcon, HttpClientModule, RankprogressComponent, CommonModule],
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css'],
 })
@@ -68,7 +69,17 @@ export class IndexComponent implements OnInit, AfterViewInit {
    * Initialise les informations utilisateurs, le leaderboard, et gère la création de parties
    */
   public async ngOnInit() {
-    this.websocketService.disconnectWebsocket();
+    // Vérifiez et gérez la connexion
+    this.token = this.userCookieService.getToken();
+    if (!this.token) {
+      this.router.navigate(['/login']);
+    }
+    if(!this.router.url.includes('cancelled')){ // si une recherche n'a pas été annulée, on se déco / reco en arrivant sur la page d'accueil
+      if(!this.websocketService.isWebsocketConnected()){
+        this.websocketService.disconnectWebsocket();
+        this.websocketService.connectWebsocket();
+      }
+    }
     this.userCookieService.getUserObservable().subscribe((user: User | null) => {
       if (user) {
         this.userPseudo = user.Username;
@@ -76,12 +87,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}`;
       }
     });
-
-    // Vérifiez et gérez la connexion
-    this.token = this.userCookieService.getToken();
-    if (!this.token) {
-      this.router.navigate(['/login']);
-    }
     this.populateLeaderboard();
   }
 
@@ -128,7 +133,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         if (games.length === 0) {
           content = '<p>Aucune partie disponible pour le moment...</p>';
         } else {
-          await this.websocketService.connectWebsocket();
           games.forEach((game, index) => {
             let stringRule = game["rule"] == "j" 
               ? `<img class="flag" src="japan.svg"/>` 
@@ -176,7 +180,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
         });
       },
       error: (err) => {
-        console.error("Erreur lors de la récupération des parties :", err);
         Swal.fire({
           title: 'Erreur',
           text: 'Impossible de récupérer les parties disponibles.',
@@ -208,15 +211,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
           <label for="grid-size">Taille de la grille :</label>
           <select id="grid-size" name="grid-size" class="swal2-select">
             <option value="9">9x9</option>
-            <option value="10">10x10</option>
-            <option value="11">11x11</option>
-            <option value="12">12x12</option>
             <option value="13">13x13</option>
-            <option value="14">14x14</option>
-            <option value="15">15x15</option>
-            <option value="16">16x16</option>
-            <option value="17">17x17</option>
-            <option value="18">18x18</option>
             <option value="19" selected>19x19</option>
           </select>
           
@@ -271,9 +266,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         });
 
         try {
-          // todo: envoyer le choix des règles au serveur
-          await this.websocketService.connectWebsocket();
-          this.websocketService.createPersonalizeGame(gridSize, rules, "custom", komi, name, handicap, selectedColor);
+          this.websocketService.createPersonalizeGame(gridSize, rules, komi, name, handicap, selectedColor);
           Swal.close(); // Ferme le chargement
         } catch (error) {
           Swal.close(); // Ferme le chargement en cas d'erreur
@@ -306,7 +299,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
       didOpen: async () => {
         Swal.showLoading();
         try {
-          await this.websocketService.connectWebsocket();
           await this.websocketService.joinMatchmaking();
           Swal.close();
         } catch(error) {
@@ -328,13 +320,8 @@ private populateLeaderboard(): void {
       // Accès à l'élément DOM pour le leaderboard
       const leaderboardElement = document.querySelector('.leaderboard');
     
-      if (!leaderboardElement) {
-        console.error('Leaderboard DOM introuvable.');
-        return;
-      }
-    
       // Vidage du contenu actuel du leaderboard
-      leaderboardElement.innerHTML = '';
+      leaderboardElement!.innerHTML = '';
       //remplissage d'un tableau
       const topPlayers = Object.entries(leaderboard);
       
@@ -344,12 +331,9 @@ private populateLeaderboard(): void {
         const rankString = `${index + 1}) ${name} - ${userTop.getRank()}`;
         const p = document.createElement('p');
         p.textContent = rankString;
-        leaderboardElement.appendChild(p);
+        leaderboardElement!.appendChild(p);
       });
     },
-    error: (err) => {
-      console.error('Erreur lors de la récupération du leaderboard:', err);
-    }
   });
 }
 

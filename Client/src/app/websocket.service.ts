@@ -5,10 +5,11 @@ import { Game } from './Model/Game';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { environment } from './environment';
-import { env } from 'process';
 import { UserDAO } from './Model/DAO/UserDAO';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { User } from './Model/User';
+import { IObserver } from './Observer/IObserver';
+import { Observable } from './Observer/Observable';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ import { User } from './Model/User';
 /**
  * Service gérant la connexion au serveur websocket
  */
-export class WebsocketService {
+export class WebsocketService implements IObserver {
   private websocket: WebSocket | null;
   private game: Game;
   private interpreter: Interpreter;
@@ -30,17 +31,27 @@ export class WebsocketService {
   constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient) {
     this.websocket = null;
     this.game = new Game();
+    this.game.register(this);
     this.interpreter = new Interpreter(this.game, this);
     this.userDAO = new UserDAO(httpclient);
   }
 
+  public update(object: Observable):void{
+    this.game = object as Game;
+  }
+
+  public getGame():Game{
+    return this.game;
+  }
+
 
   /**
-   * Fonction permettant de se connecter au serveur websocket
+   * Fonction permettant de se connecter au serveur websocket, transmet le token utilisateur pour l'authentification
    */
   public connectWebsocket(): Promise<void> {
+    const userToken = this.userCookieService.getToken();
     return new Promise((resolve, reject) => {
-      this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/`);
+      this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/?token=${userToken}`);
       this.websocket.onopen = () => {
         console.log('connected');
         resolve();
@@ -61,6 +72,14 @@ export class WebsocketService {
   }
 
   /**
+   * Renvoi l'état de la connexion au websocket
+   * @returns True si la connexion est établie, sinon false
+   */
+  public isWebsocketConnected(): boolean{
+    return this.websocket?.OPEN ? true : false;
+  }
+
+  /**
    * Gère la fin de partie en affichant un popup indiquant le gagnant et son score ainsi que le nouvel elo
    * @param won gagné ou non
    * @param player1score score du joueur 
@@ -72,8 +91,6 @@ export class WebsocketService {
     this.userDAO.GetUser(token).subscribe({
       next: (user: User) => {
         this.userCookieService.setUser(user);
-        console.log(player1score);
-        console.log(player2score);
         Swal.fire({
           title: won === "True" ? 'Victoire ! 🌸' : 'Défaite 👺',
           html: `
@@ -109,42 +126,37 @@ export class WebsocketService {
   /**
    * Envoi un message de création de partie
    */
-  public createGame(size: number, rule: string, type:string, komi:string, name:string, handicap:number): void {
+  public createMatchmakingGame(): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      this.setPlayerColor("black");
-      let userToken = this.userCookieService.getToken();
-      this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}`);
-      this.router.navigate(['game', size, rule]);
-    } else {
-      console.log('not connected');
+      this.game.setPlayerColor("black");
+      this.websocket.send(`0-Create-matchmaking`);
+      this.router.navigate(['game', 19, "j"]);
     }
   }
 
     /**
-     * Envoi un message de création de partie personalisée
+     * Envoi un message de création de partie personalisée avec les paramètres choisis par le client
      */
-    public createPersonalizeGame(size: number, rule: string, type:string, komi:string, name:string,handicap:number,colorHandicap: string): void {
+    public createPersonalizeGame(size: number, rule: string, komi:string, name:string,handicap:number,colorHandicap: string): void {
       if (this.websocket != null && this.websocket.OPEN) {
-        this.setPlayerColor("black");
-        let userToken = this.userCookieService.getToken();
-        this.websocket.send(`0-Create-${userToken}-${size}-${rule}-${type}-${komi}-${name}-${handicap}-${colorHandicap}`);
+        this.game.setPlayerColor("black");
+        this.websocket.send(`0-Create-custom-${size}-${rule}-${komi}-${name}-${handicap}-${colorHandicap}`);
         this.router.navigate(['game', size, rule]);
-      } else {
-        console.log('not connected');
       }
     }
   /**
    * Envoi un message de demande de rejoindre une partie
-   * @param id Identifiant de la partie à rejoindre
+   * @param id l'id de la partie à rejoindre
+   * @param type le type de partie que l'on souhaite rejoindre (matchmaking ou custom)
+   * @param rule les règles de la partie
+   * @param size la taille de la grille de jeu de la partie
    */
   public joinGame(id: number, type:string, rule:string, size:number): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      this.setPlayerColor("white");
+      this.game.setPlayerColor("white");
       let userToken = this.userCookieService.getToken();
-      this.websocket.send(`${id}-Join-${userToken}-${type}`);
+      this.websocket.send(`${id}-Join-${type}`);
       this.router.navigate(['game', size, rule]);
-    } else {
-      console.log('not connected');
     }
   }
 
@@ -154,13 +166,12 @@ export class WebsocketService {
   public joinMatchmaking(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.websocket != null && this.websocket.OPEN) {
-        let userToken = this.userCookieService.getToken();
         
         // Stocker la Promise resolve pour l'utiliser dans l'interpreteur
         (this.interpreter.getMatchMakingStrategy() as any).matchmakingResolve = resolve;
         
         // Envoi de la demande de matchmaking
-        this.websocket.send(`0-Matchmaking-${userToken}`);
+        this.websocket.send(`0-Matchmaking`);
       } else {
         reject(new Error('Non connecté au websocket'));
       }
@@ -173,12 +184,10 @@ export class WebsocketService {
    */
   public skipTurn(): void {
     if (this.websocket != null && this.websocket.OPEN) {
-      if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
+      if (this.game.getCurrentTurn() == this.game.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
         this.websocket.send(`${idGame}-Skip`);
       }
-    } else {
-      console.log('not connected');
     }
   }
 
@@ -190,32 +199,17 @@ export class WebsocketService {
    */
   public placeStone(coordinates: string) {
     if (this.websocket != null && this.websocket.OPEN) {
-      if (this.interpreter.getCurrentTurn() == this.interpreter.getPlayerColor()) {
+      if (this.game.getCurrentTurn() == this.game.getPlayerColor()) {
         let idGame = this.interpreter.getIdGame();
         this.websocket.send(`${idGame}-Stone-${coordinates}`);
-        console.log(`${idGame}-Stone-${coordinates}`);
       }
-    } else {
-      console.log('not connected');
     }
   }
 
 
-  /**
-   * Définie la couleur du joueur
-   * @param color Couleur du joueur 
-   */
-  public setPlayerColor(color: string) {
-    this.game.setPlayerColor(color);
-    this.interpreter.setGame(this.game);
-  }
-
   public cancelMatchmaking(idLobby:string) {
     if (this.websocket != null && this.websocket.OPEN) {
       this.websocket.send(`${idLobby}-Cancel`);
-      console.log(`Sent : ${idLobby}-Cancel`);
-    } else {
-      console.log('not connected');
     }
   }
 }

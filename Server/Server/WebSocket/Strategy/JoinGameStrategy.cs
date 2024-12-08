@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebSocket.Model.DAO;
+using WebSocket.Model.Managers;
+using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket.Strategy
 {
@@ -13,11 +15,12 @@ namespace WebSocket.Strategy
     /// </summary>
     public class JoinGameStrategy : IStrategy
     {
+        private const int GAMEID_INDEX = 0;
 
-        private IGameDAO gameDAO;
+        private AvailableGameManager availableGameManager;
         public JoinGameStrategy()
         {
-            this.gameDAO = new GameDAO();
+            this.availableGameManager = new AvailableGameManager();
         }
 
         /// <summary>
@@ -28,22 +31,19 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie ("custom" ou "matchmaking")</param>
         /// <param name="response">Réponse à envoyer au client (modifiée par référence)</param>
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
-        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
-            string stringId = data[0];
-            int idGame = Convert.ToInt16(stringId);
-            if (gameType == "custom")
+            string stringIdGame = data[GAMEID_INDEX];
+            int idGame = Convert.ToInt16(stringIdGame);
+            if (gameType == GameType.CUSTOM)
             {
-
-                player.User.Token = data[2]; // Récupération du token du joueur afin d'afficher son pseudo et sa photo de profil
                 Server.CustomGames[idGame].AddPlayer(player); // Ajout du client en tant que joueur 2
-                this.gameDAO.DeleteAvailableGame(idGame); // Suppression de la partie de la liste des parties disponibles
+                this.availableGameManager.DeleteAvailableGame(idGame); // Suppression de la partie de la liste des parties disponibles
                 response = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";
             }
-            else if (gameType == "matchmaking")
+            else if (gameType == GameType.MATCHMAKING)
             {
-                player.User.Token = data[2];
                 Server.MatchmakingGames[idGame].AddPlayer(player);
                 response = $"{idGame}-"; // Renvoi de l'id de la partie rejointe 
                 type = "Send_";

@@ -1,7 +1,7 @@
 ﻿using WebSocket.Model.DAO;
 using WebSocket.Model.DTO;
 
-namespace WebSocket.Model
+namespace WebSocket.Model.Managers
 {
     /// <summary>
     /// Gère les opérations liées aux parties
@@ -14,8 +14,8 @@ namespace WebSocket.Model
 
         public GameManager()
         {
-            this.userDAO = new UserDAO();
-            this.gameDAO = new GameDAO();
+            userDAO = new UserDAO();
+            gameDAO = new GameDAO();
         }
 
         // Constructeur pour les tests
@@ -50,8 +50,8 @@ namespace WebSocket.Model
             int newLooserElo = CalculateNewElo(initialLooserElo, initialWinnerElo, 0); // Resultat 0 : le perdant
 
             // Mise à jour des Elo dans la base de données
-            this.userDAO.UpdateEloByToken(winner.Token, newWinnerElo);
-            this.userDAO.UpdateEloByToken(looser.Token, newLooserElo);
+            userDAO.UpdateEloByToken(winner.Token, newWinnerElo);
+            userDAO.UpdateEloByToken(looser.Token, newLooserElo);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace WebSocket.Model
         /// <param name="game">La partie en cours</param>
         public void InsertGame(Game game)
         {
-            this.gameDAO.InsertGame(game);
+            gameDAO.InsertGame(game);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace WebSocket.Model
         /// <param name="game">La partie en cours</param>
         public async Task UpdateGameAsync(Game game)
         {
-            await this.gameDAO.UpdateGameAsync(game);
+            await gameDAO.UpdateGameAsync(game);
         }
 
 
@@ -95,7 +95,7 @@ namespace WebSocket.Model
         /// <param name="game">La partie en cours</param>
         public void InsertGameState(Game game)
         {
-            this.gameDAO.InsertGameState(game);
+            gameDAO.InsertGameState(game);
         }
 
 
@@ -105,7 +105,7 @@ namespace WebSocket.Model
         /// <param name="game">La partie en cours</param>
         public async Task TransferMovesToSqlAsync(Game game)
         {
-            await this.gameDAO.TransferMovesToSqliteAsync(game);
+            await gameDAO.TransferMovesToSqliteAsync(game);
         }
     }
 }

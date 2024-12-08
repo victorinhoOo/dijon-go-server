@@ -65,7 +65,6 @@ export class GoogleConnexionComponent implements OnInit {
    */
   private handleCredentialResponse(response: CredentialResponse): void {
     const idToken = response.credential;
-    console.log(idToken);
     // Essaye de se connecter
     this.userDAO.GoogleLogin(idToken).subscribe({
       next: (response: {token: string}) => 

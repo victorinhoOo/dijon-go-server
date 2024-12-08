@@ -35,7 +35,7 @@ export class MatchmakingStrategy implements IStrategy {
         () =>
           this.confirmMatchmaking(opponentUsername, opponentElo).then((result) => {
             if(result.isConfirmed){
-              this.websocketService.createGame(19, "j", "matchmaking", "6.5", "test a changer", 0)            }
+              this.websocketService.createMatchmakingGame();            }
             else{
               this.websocketService.cancelMatchmaking(idLobby);
             }
@@ -45,7 +45,6 @@ export class MatchmakingStrategy implements IStrategy {
       );
     } else if(data.includes('Join')){
       let idLobby = data[0];
-      console.log(idLobby);
       setTimeout(
         () =>
           this.confirmMatchmaking(opponentUsername, opponentElo).then((result) => {
@@ -53,8 +52,6 @@ export class MatchmakingStrategy implements IStrategy {
               let stringId = data[0];
               let idGame = Number(stringId);
               this.websocketService.joinGame(idGame, 'matchmaking', 'j', 19);
-            }
-            else{
               this.websocketService.cancelMatchmaking(idLobby);
             }
           }),

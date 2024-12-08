@@ -6,6 +6,7 @@ using WebSocket.Model;
 using WebSocket.Model.DAO;
 using WebSocket.Model.DTO;
 using WebSocket.Strategy;
+using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket
 {
@@ -38,7 +39,7 @@ namespace WebSocket
         /// <param name="message">Message reçu</param>
         /// <param name="client">client qui expédie le message</param>
         /// <returns>la réponse du serveur au client</returns>
-        public string Interpret(string message, Client client, string gameType)
+        public string Interpret(string message, Client client, GameType gameType)
         {
             string[] data = message.Split("-");
             string action = data[1]; // action à effectuer

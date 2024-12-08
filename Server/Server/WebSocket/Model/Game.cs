@@ -4,6 +4,7 @@ using GoLogic.Score;
 using GoLogic.Serializer;
 using GoLogic.Timer;
 using System.Xml.Linq;
+using WebSocket.Model.Managers;
 
 namespace WebSocket.Model
 {
@@ -20,13 +21,8 @@ namespace WebSocket.Model
         private BoardSerializer boardSerializer;
         private ScoreRule score;
         private bool started;
-        private string rule;
-        private int size;
         private int id;
-        private float komi;
-        private string name;
-        private int handicap;
-        private string handicapColor;
+        private GameConfiguration config;
         private TimerManager timerManager;
         private GameManager gameManager;
 
@@ -63,65 +59,35 @@ namespace WebSocket.Model
         /// </summary>
         public Client CurrentTurn { get => currentTurn; }
 
-
         /// <summary>
-        /// Récupére la taille du plateau
+        /// Récupère la configuration de la partie
         /// </summary>
-        public int Size { get => size; }
-
-        /// <summary>
-        /// Renvoi les règles de la partie
-        /// </summary>
-        public string Rule { get => rule; }
-
+        public GameConfiguration Config { get => config; }
 
         /// <summary>
         /// Récupére l'identifiant de la partie
         /// </summary>
         public int Id { get => id; }
 
-        /// <summary>
-        /// Récupérer ou modifier le komi
-        /// </summary>
-        public float Komi { get => komi; }
 
         /// <summary>
-        /// Récupérer ou modifier le nom de la partie
+        /// Constructeur d'une partie
         /// </summary>
-        public string Name { get => name; }
-
-        /// <summary>
-        /// Récupérer ou modifier l'handicap de la partie
-        /// </summary>
-        public int Handicap { get => handicap; }
-
-        /// <summary>
-        /// Récupérer ou modifier la couleur du handicap du joueur de la partie
-        /// </summary>
-        public string HandicapColor { get => handicapColor; set => handicapColor = value; }
-
-        /// <summary>
-        /// Constructeur de la classe Game
-        /// </summary>
-        public Game(int size, string rule, float komi, string name, int handicap, string handicapColor)
+        public Game(GameConfiguration config, GameBoard gameBoard, GameLogic logic, BoardSerializer boardSerializer, ScoreRule scoreRule, GameManager gameManager, TimerManager timerManager)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
-            this.size = size;
-            this.gameBoard = new GameBoard(size, "white", handicap);
-            this.logic = new GameLogic(gameBoard);
-            this.boardSerializer = new BoardSerializer(this.logic);
-            this.gameManager = new GameManager();
-            this.rule = rule;
-            this.name = name;
-            this.komi = komi;
-            this.handicap = handicap;
-            this.handicapColor = handicapColor;
-            switch (this.rule)
-            {
-                case "c": this.score = new ChineseScoreRule(gameBoard, komi);break;
-                case "j": this.score = new JapaneseScoreRule(gameBoard, komi);break;
-            }
+
+            // Configuration
+            this.config = config;
+
+            // Dépendances
+            this.gameBoard = gameBoard;
+            this.logic = logic;
+            this.boardSerializer = boardSerializer;
+            this.score = scoreRule;
+            this.gameManager = gameManager;
+            this.timerManager = timerManager;
         }
 
         /// <summary>
@@ -130,7 +96,6 @@ namespace WebSocket.Model
         public void Start()
         {
             this.started = true;
-            this.timerManager = new TimerManager();
             this.gameManager.InsertGame(this);
         }
 
@@ -161,12 +126,36 @@ namespace WebSocket.Model
         /// <returns>Temps restant du joueur précédent</returns>
         public string PlaceStone(int x, int y)
         {
-            this.timerManager.SwitchToNextPlayer();
-            string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
             this.logic.PlaceStone(x, y);
-            this.gameManager.InsertGameState(this);
-            return time;
+            this.timerManager.SwitchToNextPlayer();
+            this.SaveGameState();
+            return GetPreviousPlayerTime();
         }
+
+        /// <summary>
+        /// Enregistre l'état de la partie actuelle en base de données
+        /// </summary>
+        private void SaveGameState()
+        {
+            this.gameManager.InsertGameState(this);
+        }
+
+
+        /// <summary>
+        /// Récupérer le temps restant du joueur précédent 
+        /// </summary>
+        /// <returns>temps restant du joueur qui vient de jouer en chaîne de caractères</returns>
+        private string GetPreviousPlayerTime()
+        {
+            string result = null;
+            ISystemTimer previousTimer = this.timerManager.GetPreviousTimer();
+            TimeSpan previousTimeSpan = previousTimer.TotalTime;
+            double previousTimerInMs = previousTimeSpan.TotalMilliseconds;
+            double roundedResult = Math.Round(previousTimerInMs);
+            result = roundedResult.ToString();
+            return result;
+        }
+
 
 
         /// <summary>
@@ -241,8 +230,6 @@ namespace WebSocket.Model
                     }
                 });
             }
-
-            // Retourner immédiatement le résultat
             return Task.FromResult(result);
         }
     }

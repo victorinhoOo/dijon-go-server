@@ -25,20 +25,19 @@ namespace WebSocket.Model.DAO
         /// <inheritdoc/>
         public bool InsertAvailableGame(Game game)
         {
-            game.Player1.User.Name = "nom du createur";
             this.database.Connect();
             bool res = false;
             string query = "insert into availablegame (id,size,rule,komi,name,creatorName,handicap,handicapColor) values (@id,@size,@rule,@komi,@name,@creatorName,@handicap,@handicapColor);";
             var parameters = new Dictionary<string, object>
                 {
                     {"@id", game.Id},
-                    {"@size", game.Size},
-                    {"@rule", game.Rule },
-                    {"@komi", game.Komi },
-                    {"@name", game.Name },
+                    {"@size", game.Config.Size},
+                    {"@rule", game.Config.Rule },
+                    {"@komi", game.Config.Komi },
+                    {"@name", game.Config.Name },
                     {"@creatorName",game.Player1.User.Name },
-                    {"@handicap",game.Handicap },
-                    {"@handicapColor",game.HandicapColor },
+                    {"@handicap",game.Config.Handicap },
+                    {"@handicapColor",game.Config.HandicapColor },
 
                 };
             database.ExecuteNonQuery(query, parameters);
@@ -81,10 +80,10 @@ namespace WebSocket.Model.DAO
                 {
                     {"@player1_id", game.Player1.User.Id},
                     {"@player2_id", game.Player2.User.Id},
-                    {"@size", game.Size},
+                    {"@size", game.Config.Size},
                     {"@score_player_1", 0}, // pour le moment le score n'est pas défini
                     {"@score_player_2", 0},
-                    {"@rule", game.Rule},
+                    {"@rule", game.Config.Rule},
                     {"@winner_id", game.Player1.User.Id},
                     {"@date", DateTime.Now} // Date actuelle pour la partie
                 };
@@ -126,12 +125,8 @@ namespace WebSocket.Model.DAO
                 string query = @"
                     UPDATE savedgame 
                     SET 
-                        player1_id = @player1_id,
-                        player2_id = @player2_id,
-                        size = @size,
                         score_player_1 = @score_player_1,
                         score_player_2 = @score_player_2,
-                        rule = @rule,
                         winner_id = @winner_id,
                         date = @date
                     WHERE id = @game_id;
@@ -141,12 +136,8 @@ namespace WebSocket.Model.DAO
                 var parameters = new Dictionary<string, object>
                 {
                     {"@game_id", gameId},
-                    {"@player1_id", game.Player1.User.Id},
-                    {"@player2_id", game.Player2.User.Id},
-                    {"@size", game.Size},
                     {"@score_player_1", game.GetScore().Item1}, // Récupère le score actuel du joueur 1
                     {"@score_player_2", game.GetScore().Item2}, // Récupère le score actuel du joueur 2
-                    {"@rule", game.Rule},
                     {"@winner_id", winnerId},
                     {"@date", DateTime.Now}
                 };
@@ -178,8 +169,6 @@ namespace WebSocket.Model.DAO
                     FROM savedgame
                     WHERE player1_id = @player1_id 
                       AND player2_id = @player2_id 
-                      AND size = @size 
-                      AND rule = @rule
                     ORDER BY id DESC
                     LIMIT 1;
                 ";
@@ -188,8 +177,6 @@ namespace WebSocket.Model.DAO
                 {
                     { "@player1_id", game.Player1.User.Id },
                     { "@player2_id", game.Player2.User.Id },
-                    { "@size", game.Size },
-                    { "@rule", game.Rule }
                 };
 
                 var result = this.database.ExecuteQuery(query, parameters);

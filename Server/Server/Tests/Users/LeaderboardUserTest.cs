@@ -1,7 +1,7 @@
 ﻿using Server.Model.Data;
-using WebSocket.Model;
 using Tests.WebSockets;
 using Tests.WebSockets.FakeDAO;
+using WebSocket.Model.Managers;
 
 namespace Tests.Users
 {

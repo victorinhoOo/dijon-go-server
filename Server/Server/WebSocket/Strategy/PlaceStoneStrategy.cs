@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using WebSocket.Model;
+using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket.Strategy
 {
@@ -13,6 +14,11 @@ namespace WebSocket.Strategy
     /// </summary>
     public class PlaceStoneStrategy : IStrategy
     {
+
+        private const int GAME_ID = 0;
+        private const int STONEPLACED_X = 2;
+        private const int STONEPLACED_Y = 3;
+
         /// <summary>
         /// Exécute la stratégie de placement d'une pierre.
         /// </summary>
@@ -21,18 +27,18 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie ("custom" ou "matchmaking")</param>
         /// <param name="response">Message de réponse à envoyer aux clients (modifié par référence)</param>
         /// <param name="type">Type de réponse ("Broadcast_" ou "Send_") (modifié par référence)</param>
-        public void Execute(Client player, string[] data, string gameType, ref string response, ref string type)
+        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
-            string stringId = data[0];
-            int idGame = Convert.ToInt16(stringId);
+            string stringGameId = data[GAME_ID];
+            int idGame = Convert.ToInt16(stringGameId);
             if (idGame != 0)
             {
                 Game game = null;
-                if (gameType == "custom")
+                if (gameType == GameType.CUSTOM)
                 {
                     game = Server.CustomGames[idGame];
                 }
-                else if (gameType == "matchmaking")
+                else if (gameType == GameType.MATCHMAKING)
                 {
                     game = Server.MatchmakingGames[idGame];
                 }
@@ -40,13 +46,13 @@ namespace WebSocket.Strategy
                 {
                     try
                     {
-                        int x = Convert.ToInt32(data[2]);
-                        int y = Convert.ToInt32(data[3]);
+                        int x = Convert.ToInt32(data[STONEPLACED_X]);
+                        int y = Convert.ToInt32(data[STONEPLACED_Y]);
 
-                        string timeRemaining = game.PlaceStone(x, y); // pose de la pierre
+                        string timeRemaining = game.PlaceStone(x, y); // pose de la pierre et récupération du temps restant à l'adversaire
                         (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone(); // récupération des pierres capturées
                         game.ChangeTurn(); // changement de tour
-                        response = $"{idGame}-Stone-{game.StringifyGameBoard()}-{capturedBlackStones}-{capturedWhiteStones}-{timeRemaining.Split(',')[0]}";
+                        response = $"{idGame}-Stone-{game.StringifyGameBoard()}-{capturedBlackStones}-{capturedWhiteStones}-{timeRemaining}";
                         type = "Broadcast_";
                     }
                     catch (Exception e)
