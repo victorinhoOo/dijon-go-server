@@ -30,6 +30,9 @@ namespace WebSocket
         private Interpreter interpreter;
         private GameManager gameManager;
 
+        // Ajout d'un dictionnaire pour stocker tous les clients connectés
+        private static ConcurrentDictionary<string, Client> connectedClients = new ConcurrentDictionary<string, Client>();
+
         /// <summary>
         /// Dictionnaire qui contient les parties personnalisées en cours
         /// </summary>
@@ -49,6 +52,11 @@ namespace WebSocket
         /// File d'attente des joueurs en attente de matchmaking
         /// </summary>
         public static Queue<Client> WaitingPlayers => waitingPlayers;
+
+        /// <summary>
+        /// Renvoi les clients connectés
+        /// </summary>
+        public static ConcurrentDictionary<string, Client> ConnectedClients { get => connectedClients; }
 
 
         /// <summary>
@@ -81,7 +89,6 @@ namespace WebSocket
                         this.interpreter = new Interpreter();
                         bool endOfCommunication = false;
 
-
                         while (!endOfCommunication)
                         {
                             byte[] bytes = client.ReceiveMessage();
@@ -91,6 +98,18 @@ namespace WebSocket
                             if (this.MessageIsHandshakeRequest(message)) // test si le message reçu est une demande de handshake
                             {
                                 this.ProceedHandshake(message, client, ref response);
+
+                                try
+                                {// Ajoute le client à la liste des clients connectés après le handshake
+                                    connectedClients.TryAdd(client.User.Name, client);
+                                }
+                                catch(Exception ex)
+                                {
+                                    // on ne fait rien en cas d'erreur, si un client se déconnecte pendant le handshake on ne veut pas que le serveur crash
+                                }
+                                
+                                // Broadcaster la liste mise à jour des utilisateurs
+                                this.BroadcastUserList();
                             }
                             else // Le message est un message chiffré
                             {
@@ -110,6 +129,9 @@ namespace WebSocket
                             }
                         }
 
+                        // À la déconnexion, retire le client de la liste des  et broadcaster la nouvelle liste
+                        connectedClients.TryRemove(client.User.Name, out _);
+                        this.BroadcastUserList();
                     });
                     thread.Start();
 
@@ -200,7 +222,11 @@ namespace WebSocket
             int idGame = Convert.ToInt32(stringId); // Id de la partie concernée
             byte[] responseBytes = this.webSocket.BuildMessage(responseData);
 
-            if (!response.Contains("Create") && (!response.Contains("Timeout")) && (!response.Contains("Cancelled")) && (!response.Contains("Retry")))
+            if (!response.Contains("Create") && 
+                !response.Contains("Timeout") && 
+                !response.Contains("Cancelled") && 
+                !response.Contains("Retry") && 
+                !response.Contains("Chat"))
             {
                 Game game = this.gameType == GameType.CUSTOM ? customGames[idGame] : matchmakingGames[idGame];
                 if (responseType == "Broadcast")
@@ -218,7 +244,16 @@ namespace WebSocket
                 this.BroadcastCancelMessage(Server.Lobbies[idGame], responseBytes);
             }
 
-            if (responseType == "Send")
+            if (responseType.StartsWith("Private"))
+            {
+                string recipient = responseType.Split('-')[1];
+                if (Server.ConnectedClients.TryGetValue(recipient, out Client recipientClient))
+                {
+                    byte[] messageBytes = this.webSocket.BuildMessage(responseData);
+                    this.SendMessage(recipientClient, messageBytes);
+                }
+            }
+            else if (responseType == "Send")
             {
                 this.SendMessage(client, responseBytes);
             }
@@ -251,7 +286,6 @@ namespace WebSocket
             this.SendMessage(lobby.Player1, bytes);
             this.SendMessage(lobby.Player2, bytes);
             Server.Lobbies.TryRemove(lobby.Id, out _);
-
         }
 
 
@@ -298,6 +332,21 @@ namespace WebSocket
             this.SendMessage(game.Player1, endOfGameMessagePlayer1);
             this.SendMessage(game.Player2, endOfGameMessagePlayer2);
         }
+
+        /// <summary>
+        /// Envoi la liste des utilisateurs à tous les utilisateurs connectés
+        /// </summary>
+        private void BroadcastUserList()
+        {
+            string userListMessage = "0-UserList-" + string.Join(",", connectedClients.Keys);
+            byte[] userListBytesMessage = this.webSocket.BuildMessage(userListMessage);
+            
+            foreach (var client in connectedClients.Values)
+            {
+                this.SendMessage(client,userListBytesMessage);
+            }
+        }
+
     }
 
 }
