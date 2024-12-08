@@ -21,7 +21,7 @@ namespace Tests.Users
             fakeUserDAOApi = new Server.Model.Data.FakeUserDAO();
             fakeUserDAOWebsocket = new WebSockets.FakeDAO.FakeUserDAO();
             fakeGameDAO = new WebSockets.FakeDAO.FakeGameDAO();
-            gameManager = new WebSocket.Model.GameManager(fakeUserDAOWebsocket, fakeGameDAO);
+            gameManager = new WebSocket.Model.Managers.GameManager(fakeUserDAOWebsocket, fakeGameDAO);
         }
         // Test de la méthode GetTop5Users
         [Fact]
