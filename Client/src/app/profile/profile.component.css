@@ -89,7 +89,7 @@
 .history-container {
     text-align: center;
     margin: 30px auto;
-    max-width: 60%;
+    max-width: 55%;
     padding: 20px;
     backdrop-filter: blur(10px);
     border-radius: 15px;
@@ -234,6 +234,20 @@
 
 .historique-title{
     margin-bottom: 40px;
+}
+
+/* Ajoutez ce style pour positionner le composant des joueurs connectés */
+.player-list-container {
+    position: fixed; /* Position fixe */
+    bottom: 0px; /* Distance du bas de la page */
+    right: 30px; /* Distance de la droite de la page */
+    z-index: 1000; /* Assurez-vous qu'il soit au-dessus des autres éléments */
+    width: 300px;
+}
+
+h3{
+    font-size: 18px;
+    font-family: 'Roboto', sans-serif;
 }
 
 #sizeMobile{

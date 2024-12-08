@@ -2,13 +2,13 @@ import { Component, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
-
+import { PlayerListComponent } from '../player-list/player-list.component';
 
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [NgFor, NgIf, MatIconModule],
+  imports: [NgFor, NgIf, MatIconModule, PlayerListComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
 })

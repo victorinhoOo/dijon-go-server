@@ -13,11 +13,19 @@ import { User } from '../Model/User';
 import { UserDAO } from '../Model/DAO/UserDAO';
 import { RankprogressComponent } from "../rankprogress/rankprogress.component";
 import { CommonModule } from '@angular/common';
+import { PlayerListComponent } from '../player-list/player-list.component';
 
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [NavbarComponent, MatIcon, HttpClientModule, RankprogressComponent, CommonModule],
+  imports: [
+    NavbarComponent, 
+    MatIcon, 
+    HttpClientModule, 
+    RankprogressComponent, 
+    CommonModule,
+    PlayerListComponent
+  ],
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css'],
 })

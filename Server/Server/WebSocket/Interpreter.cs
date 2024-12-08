@@ -29,7 +29,8 @@ namespace WebSocket
                 { "Join", new JoinGameStrategy() },
                 { "Matchmaking", new MatchmakingStrategy() },
                 { "Skip", new SkipStrategy() },
-                {"Cancel", new CancelStrategy() }
+                {"Cancel", new CancelStrategy() },
+                { "Chat", new ChatStrategy() }
             };
         }
 

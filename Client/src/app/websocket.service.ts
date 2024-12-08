@@ -10,7 +10,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { User } from './Model/User';
 import { IObserver } from './Observer/IObserver';
 import { Observable } from './Observer/Observable';
-
+import { ConnectedUsersService } from './services/connected-users.service';
+import { ChatService } from './services/chat.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -28,11 +29,11 @@ export class WebsocketService implements IObserver {
    * Constructeur du service
    * @param userCookieService Service permettant de récupérer les informations de l'utilisateur
    */
-  constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient) {
+  constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient, private connectedUsersService: ConnectedUsersService, private chatService: ChatService) {
     this.websocket = null;
     this.game = new Game();
     this.game.register(this);
-    this.interpreter = new Interpreter(this.game, this);
+    this.interpreter = new Interpreter(this.game, this, this.connectedUsersService, this.chatService, this.userCookieService);
     this.userDAO = new UserDAO(httpclient);
   }
 
@@ -210,6 +211,12 @@ export class WebsocketService implements IObserver {
   public cancelMatchmaking(idLobby:string) {
     if (this.websocket != null && this.websocket.OPEN) {
       this.websocket.send(`${idLobby}-Cancel`);
+    }
+  }
+
+  public sendMessage(message: string, receiver: string) {
+    if (this.websocket != null && this.websocket.OPEN) {
+      this.websocket.send(`0-Chat-${receiver}-${message}`);
     }
   }
 }

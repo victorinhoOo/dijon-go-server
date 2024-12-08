@@ -8,6 +8,7 @@ import { NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Output,EventEmitter, } from '@angular/core';
+import { WebsocketService } from '../websocket.service';
 
 @Component({
   selector: 'app-navbar',
@@ -30,6 +31,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private tokenUser: string;
   private tokenSubscription!: Subscription;
   private lightIsBlack: boolean
+  private websocketService: WebsocketService;
 
   /**
    * Renvoi le token de l'utilisateur connecté
@@ -38,7 +40,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.tokenUser;
   }
 
-  public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef) {
+  public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef, websocketService: WebsocketService) {
+    this.websocketService = websocketService;
     this.lightIsBlack = false;
     this.isNavbarVisible = true;
     this.tokenUser = '';
@@ -87,6 +90,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       logoutButton.addEventListener("click", () => {
         this.userCookieService.deleteToken();
         this.userCookieService.deleteUser();
+        this.websocketService.disconnectWebsocket();
         this.router.navigate([""]);  // Redirection vers la page d'accueil
         this.cdr.detectChanges();    // Force la mise à jour du composant
         if (!this.isPC())
