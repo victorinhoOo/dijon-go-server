@@ -20,14 +20,10 @@ import { ActivatedRoute } from '@angular/router';
  */
 export class GridComponent implements OnInit{
   private size: number;
-  private playerAvatar: string;
-  private playerPseudo: string;
   
 
   public constructor(private route: ActivatedRoute){
     this.size = 0;
-    this.playerAvatar = "";
-    this.playerPseudo = "";
   }
   ngOnInit(): void {
     this.size = Number(this.route.snapshot.paramMap.get('size'));
