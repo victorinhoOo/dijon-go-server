@@ -1,6 +1,8 @@
+import { clear } from "console";
 import { Observable } from "../Observer/Observable";
 
 const ONE_HOUR_IN_MS = 3600000;
+const TIMER_INTERVAL = 1000;
 
 export class Game extends Observable{
 
@@ -11,7 +13,13 @@ export class Game extends Observable{
 
   private opponentMs:number;
 
-  private opponentPseudo : string ;
+  private opponentPseudo : string;
+
+  private board: string;
+
+  private captures : string;
+
+  private timerInterval: NodeJS.Timeout | null;
 
 
   public constructor() {
@@ -19,8 +27,29 @@ export class Game extends Observable{
     this.currentTurn = '';
     this.playerColor = '';
     this.opponentPseudo = '';
+    this.board = '';
+    this.captures = '';
+    this.timerInterval = null;
     this.playerMs = ONE_HOUR_IN_MS;
     this.opponentMs = ONE_HOUR_IN_MS;
+  }
+
+  public getCaptures():string{
+    return this.captures;
+  }
+
+  public setCaptures(captures:string){  
+    this.captures = captures;
+    this.notifyChange(this);
+  }
+
+  public getBoard():string{
+    return this.board;
+  }
+
+  public setBoard(board:string){
+    this.board = board;
+    this.notifyChange(this);
   }
 
   public getOpponentPseudo():string{
@@ -35,7 +64,6 @@ export class Game extends Observable{
   public getPlayerMs():number{
     return this.playerMs;
   }
-
   public getOpponentMs():number{
     return this.opponentMs;
   }
@@ -89,12 +117,25 @@ export class Game extends Observable{
   public isPlayerTurn(): boolean {
     return this.playerColor == this.currentTurn;
   }
+
+  public endGame(){
+    this.clearTimer();
+    this.destroy();
+  }
   
   public launchTimer(){
-    if(this.playerColor == this.currentTurn){
-      this.playerTimerTick();
-    }else{
-      this.opponentTimerTick();
+    this.timerInterval = setInterval(() => {
+      if(this.playerColor == this.currentTurn){
+        this.playerTimerTick();
+      }else{
+        this.opponentTimerTick();
+      }
+    }, TIMER_INTERVAL);
+  }
+
+  private clearTimer(){
+    if(this.timerInterval != null){
+      clearInterval(this.timerInterval);
     }
   }
 
@@ -107,4 +148,19 @@ export class Game extends Observable{
     this.opponentMs -= 1000;
     this.notifyChange(this);
   }
+
+  private destroy():void{
+    this.currentTurn = '';
+    this.playerColor = '';
+    this.opponentPseudo = '';
+    this.board = '';
+    this.captures = '';
+    this.playerMs = ONE_HOUR_IN_MS;
+    this.opponentMs = ONE_HOUR_IN_MS;
+    this.notifyChange(this);
+  }
+
+
+
+
 }

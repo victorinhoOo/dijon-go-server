@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
@@ -28,7 +28,7 @@ const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
 /**
  * Composant de la grille de jeu
  */
-export class GridComponent implements AfterViewInit, OnInit, IObserver {
+export class GridComponent implements AfterViewInit, OnInit, IObserver, OnDestroy {
   private size: number;
   private rule: string;
   private playerAvatar: string;
@@ -45,12 +45,23 @@ export class GridComponent implements AfterViewInit, OnInit, IObserver {
     let globalContainer = document.getElementById('global-container');
     if(globalContainer != undefined){
       this.updateHover(globalContainer);
+      this.updateBoard();
     }
 
     let opponentPseudoContainer = document.getElementById('pseudo-text');
     let opponentAvatarContainer = document.getElementById('opponent-pic');
     if(opponentPseudoContainer != undefined && opponentAvatarContainer != undefined){
       this.updateOpponentPseudo(opponentPseudoContainer, opponentAvatarContainer as HTMLImageElement);
+    }
+
+    let playerCapturesContainer = document.getElementById('player-score-value');
+    let opponentCapturesContainer = document.getElementById('opponent-score-value');
+    if(playerCapturesContainer != undefined && opponentCapturesContainer != undefined){
+      let captures = this.game.getCaptures();
+      if(captures != ""){
+        console.log(captures);
+        this.updateCaptures(captures, playerCapturesContainer, opponentCapturesContainer);
+      }
     }
   }
 
@@ -127,6 +138,9 @@ export class GridComponent implements AfterViewInit, OnInit, IObserver {
     this.rule = '';
     this.game = this.websocketService.getGame();
     this.game.register(this);
+  }
+  ngOnDestroy(): void {
+    this.game.endGame();
   }
 
   /**
@@ -271,4 +285,63 @@ export class GridComponent implements AfterViewInit, OnInit, IObserver {
       }
     });
   }
+
+  private updateBoard() {
+    let board = this.game.getBoard();
+    let lines = board.split('\r\n');
+    const colorMap: { [key: string]: string } = {
+        'White': 'white',
+        'Black': 'black',
+        'Empty': 'transparent'
+    };
+
+    for (let i = 1; i < lines.length; i++) {
+        let stoneData = lines[i].split(',');
+        let x = stoneData[0];
+        let y = stoneData[1];
+        let color = stoneData[2];
+        let stone = document.getElementById(`${x}-${y}`);
+        this.discardKo(stone);
+
+        if (colorMap[color]) {
+            stone!.style.background = colorMap[color];
+        } else if (color === 'Ko') {
+            this.drawKo(stone);
+        }
+    }
+  }
+
+  private discardKo(stone: HTMLElement | null):void{
+    if(stone != null){
+      stone.style.border = "none";
+      stone.style.borderRadius = "50%";
+    }
+
+  }
+
+  private drawKo(stone: HTMLElement | null):void{
+    stone!.style.borderRadius = "0";
+    stone!.style.border = "5px solid #A7001E";
+    stone!.style.boxSizing = "border-box";
+    stone!.style.background = "transparent";
+
+  }
+
+
+  private updateCaptures(captures: string, playerCapturesContainer: HTMLElement, opponentCapturesContainer: HTMLElement): void {
+    let playerCaptures;
+    let opponentCaptures;
+    if (this.game.getPlayerColor() == 'black') { 
+      playerCaptures = captures.split(';')[1];
+      opponentCaptures = captures.split(';')[0];
+    } else {
+      playerCaptures = captures.split(';')[0];
+      opponentCaptures = captures.split(';')[1];
+    }
+
+    document.getElementById('opponent-score-value')!.innerHTML =
+      'Prises : ' + opponentCaptures;
+    document.getElementById('player-score-value')!.innerHTML =
+      'Prises : ' + playerCaptures;
+}
 }

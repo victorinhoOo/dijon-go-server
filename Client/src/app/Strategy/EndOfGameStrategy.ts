@@ -15,5 +15,6 @@ export class EndOfGameStrategy implements IStrategy {
         state.won = data[WON_INDEX];
         state.end = true;
         idGame.value = "";
+        game.endGame();
     }
 }
