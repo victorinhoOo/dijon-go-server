@@ -17,7 +17,7 @@ namespace GoLogic.Score
         public override (float blackStones, float whiteStones) CalculateScore()
         {
             RemoveDeadStones();
-            (int blackStones, int whiteStones) = CountStones();
+            (int blackStones, int whiteStones) = this.gameBoard.CountStones();
             (int territoryBlack, int territoryWhite) = FindTerritory();
 
             return (blackStones + territoryBlack, whiteStones + territoryWhite + komi);

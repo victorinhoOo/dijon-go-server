@@ -23,7 +23,7 @@ namespace GoLogic
         /// <summary>
         /// Tour actuel, Noir ou Blanc
         /// </summary>
-        public StoneColor CurrentTurn { get => this.goban.CurrentTurn; set => this.goban.CurrentTurn = value; }
+        public StoneColor CurrentTurn { get => this.goban.CurrentTurn; }
 
         /// <summary>
         /// True si la partie est finie
@@ -53,7 +53,7 @@ namespace GoLogic
         public void SkipTurn()
         {
             if (this.skippedTurn) this.isEndGame = true;
-            CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+            this.goban.NextTurn();
             this.skippedTurn = true;
         }
         
@@ -62,6 +62,7 @@ namespace GoLogic
         /// </summary>
         /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
+        /// <exception cref="InvalidOperationException">L'emplacement de la pierre n'est pas valide</exception>
         /// <returns>Vraie si la pierre a pu être placé, faux sinon</returns>
         public bool PlaceStone(int x, int y)
         {
@@ -76,18 +77,58 @@ namespace GoLogic
             }
             else
             {
-                this.goban.PlaceStone(stone, CurrentTurn); // place la pierre en changeant sa couleur de Empty à CurrentTurn
+                this.goban.PlaceStone(stone, this.goban.CurrentTurn); // place la pierre en changeant sa couleur de Empty à CurrentTurn
                 stone = this.goban.GetStone(x,y);
                 this.captureManager.CapturesOpponent(stone);
                 this.previousStone = stone;
-                CurrentTurn = CurrentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black; // tour passe au joueur suivant
+                this.goban.NextTurn(); // tour passe au joueur suivant
 
                 res = true;
             }
             
             return res;
         }
-        
+
+        /// <summary>
+        /// Vérifie et retourne une liste des positions Ko sur le plateau
+        /// Une case est Ko si le coup remet le plateau dans son état précédent
+        /// </summary>
+        /// <param name="currentTurn">Tour du joueur actuel, noir ou blanc</param>
+        /// <returns>List des pierres en situation de ko</returns>
+        public List<Stone> ChecksGobanForKo(StoneColor currentTurn)
+        {
+            List<Stone> potentialKoPositions = new List<Stone>();
+
+            // Only check Ko if there was a previous stone
+            if (this.previousStone != null)
+            {
+                // Récupère tous les voisins vides de la pierre précédente
+                foreach (Stone stone in this.goban.GetNeighbors(this.previousStone))
+                {
+                    if (stone.Color == StoneColor.Empty)
+                    {
+                        // Pour chaque voisin vide, fait une nouvelle copie et teste
+                        IBoard boardCopy = this.goban.Clone();
+                        CaptureManager captureManagerCopy = new CaptureManager(boardCopy);
+                        Stone stoneCopy = boardCopy.GetStone(stone.X, stone.Y);
+
+                        // Essaie de placer une pierre de la couleur du joueur actuel
+                        stoneCopy.ChangeColor(currentTurn);
+
+                        // Capture toutes les pierres adverses
+                        captureManagerCopy.CapturesOpponent(stoneCopy);
+
+                        // Vérifie si cela crée une situation de Ko
+                        if (boardCopy.IsKoViolation())
+                        {
+                            potentialKoPositions.Add(stone);
+                        }
+                    }
+                }
+            }
+
+            return potentialKoPositions;
+        }
     }
 }
 

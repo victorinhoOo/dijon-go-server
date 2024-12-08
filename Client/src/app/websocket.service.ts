@@ -97,7 +97,7 @@ export class WebsocketService implements IObserver {
           <div class="game-result">
             <p>Score final : ${player1score} - ${player2score}</p>
             <div class="elo-message">
-              Rang : ${user.Rank}
+              Rang : ${user.getRank()}
             </div>
           </div>
         `,

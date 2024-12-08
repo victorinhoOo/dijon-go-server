@@ -264,7 +264,7 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
 
   private updateBoard() {
     let board = this.game.getBoard();
-    let lines = board.split('\r\n');
+    let lines = board.split('!');
     const colorMap: { [key: string]: string } = {
         'White': 'white',
         'Black': 'black',

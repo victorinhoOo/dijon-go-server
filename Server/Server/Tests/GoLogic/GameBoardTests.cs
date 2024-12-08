@@ -1,7 +1,7 @@
 ﻿using GoLogic;
 using GoLogic.Goban;
 
-namespace Tests.Test_GoLogic
+namespace Tests.GoLogic
 {
     public class GameBoardTests
     {
@@ -98,11 +98,11 @@ namespace Tests.Test_GoLogic
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(15, 3).Color); // B
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(15, 15).Color); // C
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(3, 3).Color); // D
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone( 9, 9 ).Color); // E
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone( 9, 9 ).Color); // E empty
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 3).Color); // F
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 15).Color); // G
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone( 3, 9 ).Color); // H
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone(15, 9 ).Color); // I
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone( 3, 9 ).Color); // H empty
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone(15, 9 ).Color); // I empty
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Tests.Test_GoLogic
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(15, 3).Color); // B
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(15, 15).Color); // C
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(3, 3).Color); // D
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone( 9, 9 ).Color); // E
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone( 9, 9 ).Color); // E empty
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 3).Color); // F
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 15).Color); // G
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(3, 9).Color); // H
@@ -130,11 +130,11 @@ namespace Tests.Test_GoLogic
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 3).Color); // B
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 9).Color); // C
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(3, 3).Color); // D
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone(6, 6).Color); // E
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone(6, 6).Color); // E
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(6, 3).Color); // F
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(6, 9).Color); // G
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone(3, 6).Color); // H
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 6).Color); // I
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone(9, 6).Color); // I
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone(3, 6).Color); // H
         }
 
         [Fact]
@@ -146,7 +146,7 @@ namespace Tests.Test_GoLogic
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 3).Color); // B
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(9, 9).Color); // C
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(3, 3).Color); // D
-            //Assert.Equal(StoneColor.Black, gameBoard.GetStone(6, 6).Color); // E
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone(6, 6).Color); // E
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(6, 3).Color); // F
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(6, 9).Color); // G
             Assert.Equal(StoneColor.Black, gameBoard.GetStone(3, 6).Color); // H

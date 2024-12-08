@@ -82,7 +82,7 @@ export class ProfileComponent {
     // Récupère les informations de l'utilisateur pour l'affichage
     this.userPseudo = this.userCookieService.getUser()!.Username;
     this.userEmail = this.userCookieService.getUser()!.Email;
-    this.rank = this.userCookieService.getUser()!.Rank;
+    this.rank = this.userCookieService.getUser()!.getRank();
     this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
     this.gameDAO = new GameDAO(this.http);
   }
@@ -107,7 +107,7 @@ export class ProfileComponent {
       this.userPseudo = this.userCookieService.getUser()!.Username;
       this.userEmail = this.userCookieService.getUser()!.Email;
       this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}?t=${new Date().getTime()}`; // cache-busting pour mettre à jour l'avatar
-      this.rank = this.userCookieService.getUser()!.Rank;
+      this.rank = this.userCookieService.getUser()!.getRank();
     });
   }
 

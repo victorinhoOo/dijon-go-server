@@ -59,11 +59,12 @@
         </span>
 
         
-        
+        <!-- Taille de la grille -->
+      <span id="sizeMobile">{{ game.Size() }}x{{ game.Size() }}</span>
       </div>
 
       <!-- Taille de la grille -->
-      <span>{{ game.Size() }}x{{ game.Size() }}</span>
+      <span id="sizeOrdi">{{ game.Size() }}x{{ game.Size() }}</span>
 
 
       <div class="game-result">
@@ -139,7 +140,3 @@
 <ng-template #noHistory>
   <p>Aucune partie trouvée</p>
 </ng-template>
-
-
-  
-  

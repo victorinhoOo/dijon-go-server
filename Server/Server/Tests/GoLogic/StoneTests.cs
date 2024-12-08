@@ -1,7 +1,7 @@
 ﻿using GoLogic;
 using GoLogic.Goban;
 
-namespace Tests.Test_GoLogic
+namespace Tests.GoLogic
 {
     public class StoneTests
     {

@@ -31,6 +31,7 @@
         /// </summary>
         /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
+        /// <exception cref="ArgumentOutOfRangeException">Lancer si les coordonnés sont hors limites</exception>
         public Stone(int x, int y)
         {
             if (x < 0) throw new ArgumentOutOfRangeException(nameof(x), "X coordinate cannot be negative");
@@ -47,6 +48,7 @@
         /// <param name="x">Position ligne x dans le plateau</param>
         /// <param name="y">Position colonne y dans le plateau</param>
         /// <param name="color">La couleur Black, White ou Empty</param>
+        /// <exception cref="ArgumentOutOfRangeException">Lancer si les coordonnés sont hors limites</exception>
         public Stone(int x, int y, StoneColor color)
         {
             if (x < 0) throw new ArgumentOutOfRangeException(nameof(x), "X coordinate cannot be negative");

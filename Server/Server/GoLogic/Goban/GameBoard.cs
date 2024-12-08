@@ -16,7 +16,7 @@
         /// <summary>
         /// Tour actuel, Noir ou Blanc
         /// </summary>
-        public StoneColor CurrentTurn { get => currentTurn; set => this.currentTurn = value; }
+        public StoneColor CurrentTurn { get => currentTurn; }
 
         /// <summary>
         /// La taille du plateau (size x size)
@@ -29,7 +29,6 @@
         public int CapturedBlackStones
         {
             get => this.capturedBlackStones;
-            set => this.capturedBlackStones = value;
         }
 
         /// <summary>
@@ -38,7 +37,6 @@
         public int CapturedWhiteStones
         {
             get => this.capturedWhiteStones;
-            set => this.capturedWhiteStones = value;
         }
         #endregion Attributs
         
@@ -46,6 +44,9 @@
         /// Le plateau du jeu et ses pierres
         /// </summary>
         /// <param name="size">La taille du plateau size x size</param>
+        /// <param name="handicapColor">Couleur des pierres de handicap</param>
+        /// <param name="handicapNbr">Nombre de pierres de handicap</param>
+        /// <exception cref="ArgumentOutOfRangeException">Lancer si taille du plateau est négative</exception>
         public GameBoard(int size, string handicapColor = "white", int handicapNbr = 0)
         {
             if (size <= 0)
@@ -120,7 +121,7 @@
                 int middle = Size / 2;
 
                 // sequence de position standart excepter (middle, middle)
-                (int, int)[] hoshiPoints = new[] {
+                List<(int, int)> hoshiPoints = new() {
                 (near, far),      // top right (first point)
                 (far, near),      // bottom left
                 (far, far),       // bottom right
@@ -132,7 +133,7 @@
                 (far, middle),    // bottom edge                
                 };
 
-                // Ajout des pierre de 2 à 4 en fonction
+                // Ajout des pierres de 2 à 4 en fonction
                 positions.AddRange(handicapCount == 1
                     ? new[] { hoshiPoints[0] }  // seulement haut droit
                     : hoshiPoints.Take(handicapCount)); // sequence normal 2-4
@@ -148,11 +149,14 @@
                     {
                         if (handicapCount == 6)
                         {
-                            positions.AddRange(hoshiPoints.Skip(5).Take(6));
+                            hoshiPoints.RemoveAt(4);
+                            hoshiPoints.RemoveRange(6,2);
+                            positions = hoshiPoints;
                         }
                         else
                         {
-                            positions.AddRange(hoshiPoints.Skip(5).Take(8));
+                            hoshiPoints.RemoveAt(4);
+                            positions = hoshiPoints;
                         }
                     }
                 }
@@ -174,19 +178,19 @@
         /// <exception cref="ArgumentOutOfRangeException">Coordonnées hors plateau</exception>
         public Stone GetStone(int x, int y)
         {
-            if (IsValidCoordinate(x, y))
+            if (!IsValidCoordinate(x, y))
             {
-                return board[x, y];
+                throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of bounds for the goban size.");
             }
-            throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of bounds for the goban size.");
+            return board[x, y];
         }
 
         /// <summary>
         /// Change la couleur de la pierre aux coordonnés spécifié
         /// </summary>
-        /// <param name="x">X coordinate</param>
-        /// <param name="y">Y coordinate</param>
+        /// <param name="stone">Pierre à poser</param>
         /// <param name="color">Couleur de la pierre</param>
+        /// <exception cref="ArgumentOutOfRangeException">Lancer si les coordonnés sont hors limites</exception>
         public void PlaceStone(Stone stone, StoneColor color)
         {
             if (!IsValidCoordinate(stone.X, stone.Y))
@@ -242,7 +246,7 @@
         /// <summary>
         /// Copie le plateau en paramétre dans previousBoard du GameBoard
         /// </summary>
-        /// <param name="boardToCopy"></param>
+        /// <param name="boardToCopy">le tableau à copier</param>
         public void CopyToPreviousBoard(Stone[,] boardToCopy)
         {
             for (int i = 0; i < Size; i++)
@@ -298,6 +302,45 @@
             }
 
             return res;
+        }
+        /// <inheritdoc/>
+        public void AddCapturedStone(StoneColor color, int amount)
+        {
+            if (color == StoneColor.Black)
+            {
+                this.capturedBlackStones += amount;
+            }
+            else
+            {
+                this.capturedWhiteStones += amount;
+            }
+        }
+
+        /// <inheritdoc/> 
+        public void NextTurn()
+        {
+            this.currentTurn = this.currentTurn == StoneColor.Black ? StoneColor.White : StoneColor.Black;
+        }
+
+        /// <summary>
+        /// Compte les nombres de pierres de chaque couleur sur le plateau
+        /// </summary>
+        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
+        public (int blackStones, int whiteStones) CountStones()
+        {
+            int blackStones = 0;
+            int whiteStones = 0;
+
+            for (int i = 0; i < this.Size; i++)
+            {
+                for (int j = 0; j < this.Size; j++)
+                {
+                    if (this.GetStone(i, j).Color == StoneColor.Black) blackStones++;
+                    if (this.GetStone(i, j).Color == StoneColor.White) whiteStones++;
+                }
+            }
+
+            return (blackStones, whiteStones);
         }
     }
 }
