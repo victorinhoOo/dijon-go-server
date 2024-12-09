@@ -142,12 +142,12 @@ export class PlayerListComponent implements OnInit, IObserver {
     this.selectedPlayer = null;
   }
 
-  public toggleChat() {
-    this.isChatOpen = !this.isChatOpen;
-  }
-
   public getUnreadMessageCount(player: string): number {
     return this.unreadMessageCounts.get(player) || 0;
+  }
+
+  public toggleChat() {
+    this.isChatOpen = !this.isChatOpen;
   }
 
   public getTotalUnreadMessages(): number {
