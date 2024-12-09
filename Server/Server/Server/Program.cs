@@ -68,6 +68,8 @@ builder.Services.AddScoped<UserManager>(provider =>
 
 builder.Services.AddScoped<GameManager>();
 
+
+
 builder.Services.AddScoped<IUserDAO, UserDAO>(provider =>
 {
     var database = provider.GetRequiredService<IDatabase>();
@@ -87,6 +89,20 @@ builder.Services.AddScoped<IGameDAO, GameDAO>(provider =>
     var database = provider.GetRequiredService<IDatabase>();
     var logger = provider.GetRequiredService<ILogger<GameDAO>>();
     return new GameDAO(database, logger);
+});
+
+builder.Services.AddScoped<IMessageDAO, MessageDAO>(provider =>
+{
+    var database = provider.GetRequiredService<IDatabase>();
+    return new MessageDAO(database);
+});
+
+builder.Services.AddScoped<MessageManager>(provider =>
+{
+    var messageDao = provider.GetRequiredService<IMessageDAO>();
+    var tokenDAO = provider.GetRequiredService<ITokenDAO>();
+    var logger = provider.GetRequiredService<ILogger<MessageManager>>();
+    return new MessageManager(tokenDAO, messageDao, logger);
 });
 
 var app = builder.Build();
