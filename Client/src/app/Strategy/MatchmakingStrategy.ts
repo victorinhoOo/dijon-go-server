@@ -65,8 +65,9 @@ export class MatchmakingStrategy implements IStrategy {
   }
 
   private confirmMatchmaking(opponentUsername: string, opponentElo: string) {
+    let user = new User(opponentUsername,'',parseInt(opponentElo))
     return Swal.fire({
-      title: `Une partie a été trouvée contre ${opponentUsername} (Elo: ${opponentElo})`,
+      title: `Une partie a été trouvée contre ${user.Username} (Rank: ${user.getRank()})`,
       text: 'Voulez-vous la rejoindre ?',
       showConfirmButton: true,
       showCancelButton: true,
