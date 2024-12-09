@@ -17,10 +17,19 @@ export class ChatService extends Observable {
   }
 
   public addMessage(message: MessageDTO) {
-    this.messages.push(message);
-    console.log("chat service", message);
-    console.log("chat service", this.messages);
-    this.notifyChange(this);
+    const isDuplicate = this.messages.some(msg => 
+      msg.Sender() === message.Sender() &&
+      msg.Receiver() === message.Receiver() &&
+      msg.Content() === message.Content() &&
+      msg.Timestamp().getTime() === message.Timestamp().getTime()
+    );
+
+    if (!isDuplicate) {
+      this.messages.push(message);
+      console.log("chat service", message);
+      console.log("chat service", this.messages);
+      this.notifyChange(this);
+    }
   }
 
   public getMessages(): MessageDTO[] {

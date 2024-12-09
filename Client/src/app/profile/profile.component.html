@@ -27,9 +27,8 @@
     </div>
 </div>
 <br>
-
+<h2 class="historique-title">Historique</h2>
 <div *ngIf="getHistoryData().length > 0; else noHistory" class="history-container">
-  <h2 class="historique-title">Historique</h2>
   <div *ngFor="let game of getHistoryData(); let i = index" class="history-item">
     
     <div
