@@ -1,9 +1,12 @@
 using WebSocket.Strategy.Enumerations;
+using WebSocket.Model;
+using WebSocket.Model.Managers;
 
 namespace WebSocket.Strategy
 {
     public class ChatStrategy : IStrategy
     {
+        private MessageManager messageManager = new MessageManager();
         public void Execute(Client sender, string[] data, GameType gameType, ref string response, ref string type)
         {
             string recipient = data[2];
@@ -13,7 +16,8 @@ namespace WebSocket.Strategy
             if (Server.ConnectedClients.TryGetValue(recipient, out _))
             {
                 response = $"0-Chat-{sender.User.Name}-{message}";
-                type = $"Private-{recipient}_"; 
+                type = $"Private-{recipient}_";
+                messageManager.AddMessage(sender.User.Name, recipient, message);
             }
             else
             {
