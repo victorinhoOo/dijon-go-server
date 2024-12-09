@@ -1,19 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from '../Observer/Observable';
 import { UserCookieService } from '../Model/UserCookieService';
-
-interface ChatMessage {
-  sender: string;
-  receiver: string;
-  content: string;
-  timestamp: Date;
-}
+import { MessageDTO } from '../Model/DTO/MessageDTO';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService extends Observable {
-  private messages: ChatMessage[] = [];
+  private messages: MessageDTO[] = [];
+  private loadedConversations: Set<string> = new Set();
   private userCookieService: UserCookieService;
 
   constructor(userCookieService: UserCookieService) {
@@ -21,17 +16,22 @@ export class ChatService extends Observable {
     this.userCookieService = userCookieService;
   }
 
-  public addMessage(sender: string, receiver: string, content: string) {
-    this.messages.push({
-      sender,
-      receiver,
-      content,
-      timestamp: new Date()
-    });
+  public addMessage(message: MessageDTO) {
+    this.messages.push(message);
+    console.log("chat service", message);
+    console.log("chat service", this.messages);
     this.notifyChange(this);
   }
 
-  public getMessages(): ChatMessage[] {
+  public getMessages(): MessageDTO[] {
     return this.messages;
+  }
+
+  public isConversationLoaded(username: string): boolean {
+    return this.loadedConversations.has(username);
+  }
+
+  public markConversationAsLoaded(username: string): void {
+    this.loadedConversations.add(username);
   }
 } 
