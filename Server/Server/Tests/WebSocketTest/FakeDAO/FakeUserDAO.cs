@@ -50,5 +50,11 @@ namespace Tests.WebSockets.FakeDAO
                 .Select(u => new KeyValuePair<string, int>(u.Name, u.Elo))
                 .ToList();
         }
+
+        public int GetIdByUsername(string username)
+        {
+            var user = users.Values.FirstOrDefault(u => u.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
+            return user?.Id ?? -1;
+        }
     }
 }
