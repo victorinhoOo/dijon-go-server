@@ -52,7 +52,9 @@ export class MatchmakingStrategy implements IStrategy {
               let stringId = data[0];
               let idGame = Number(stringId);
               this.websocketService.joinGame(idGame, 'matchmaking', 'j', 19);
-              this.websocketService.cancelMatchmaking(idLobby);
+            }
+            else{
+              this.websocketService.cancelMatchmaking(idLobby);             
             }
           }),
         50

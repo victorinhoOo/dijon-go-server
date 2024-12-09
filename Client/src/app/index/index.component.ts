@@ -292,7 +292,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     let matchFound = false;
     let content;
     if(this.router.url.includes('cancelled')){
-      content = "Votre Adversaire n'a pas rejoint la partie, veuillez patienter le temps que nous trouvions un autre adversaire.";
+      content = "Votre adversaire n'a pas rejoint la partie, veuillez patienter pendant que nous vous trouvons un autre adversaire...";
     }
     else{
       content = 'Veuillez patienter pendant que nous recherchons un adversaire à votre niveau...'

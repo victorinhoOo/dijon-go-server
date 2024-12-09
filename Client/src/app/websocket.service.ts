@@ -210,6 +210,7 @@ export class WebsocketService implements IObserver {
 
   public cancelMatchmaking(idLobby:string) {
     if (this.websocket != null && this.websocket.OPEN) {
+      console.log("cancel matchmaking");
       this.websocket.send(`${idLobby}-Cancel`);
     }
   }
