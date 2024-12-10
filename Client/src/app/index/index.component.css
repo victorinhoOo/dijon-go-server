@@ -179,40 +179,86 @@
     color: black;
 }
 
-
-.leaderboard-section {
+.leaderboard-section h2 {
     text-align: center;
+    margin: 0 auto;
     margin-top: 10px;
-    margin-right: 80px;
+    margin-bottom: 20px;
 }
 
-.leaderboard {
-    background-color: #ffffff;
+
+::ng-deep .leaderboard {
+    background-color: #F5F5F5;
     padding: 20px;
     border-radius: 10px;
-    max-width: 600px;
     margin: 0 auto;
-    padding-right: 40px;
-    padding-left: 40px;
-    text-align: justify;
-    width: 200px;
+    width: 400px;
+    min-width: 400px;
     color: black;
-}
-.leaderboard p {
-    font-size: 18px;
-    margin: 0; /* Supprime les marges des paragraphes */
-    padding: 5px; /* Ajoute un léger padding pour l'espacement interne */
-    border-radius: 5px;
-    text-align: center; /* Centre horizontalement le texte */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.leaderboard p {
-    font-size: 18px;
-    letter-spacing: 1cm;
-    padding: 10px;
+::ng-deep .leaderboard h2 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+}
+
+::ng-deep .leaderboard-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
     margin: 5px 0;
-    border-radius: 5px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+::ng-deep .leaderboard-rank {
+    font-weight: bold;
+    font-size: 18px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.leaderboard-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+    min-width: 35px;
+    min-height: 35px;
+}
+
+.leaderboard-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard-name {
+    font-weight: 500;
+    font-size: 16px;
+    color: #333;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+::ng-deep .leaderboard-rank-info {
+    margin-left: 10px;
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
 }
 
 .bottom-section {
@@ -537,4 +583,35 @@
     right: 30px; /* Distance de la droite de la page */
     z-index: 1000; /* Assurez-vous qu'il soit au-dessus des autres éléments */
     width: 300px;
+}
+
+/* Style commun pour tous les avatars */
+::ng-deep .avatar,
+::ng-deep .player-avatar,
+::ng-deep .leaderboard-avatar {
+    width: 35px !important;
+    height: 35px !important;
+    min-width: 35px !important;
+    min-height: 35px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    margin-right: 10px !important;
+}
+
+/* Avatar spécifique pour le profil utilisateur en haut */
+::ng-deep .player-info .avatar {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+}
+
+/* Avatar pour le leaderboard */
+::ng-deep .leaderboard-avatar {
+    margin-right: 15px !important;
+}
+
+/* Avatar pour la liste des joueurs connectés */
+::ng-deep .player-avatar {
+    margin-right: 8px !important;
 }
