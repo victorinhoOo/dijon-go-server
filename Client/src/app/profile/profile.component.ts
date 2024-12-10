@@ -12,6 +12,7 @@ import { GameDAO } from '../Model/DAO/GameDAO';
 import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 import { Game } from '../Model/Game';
 import { PlayerListComponent } from '../player-list/player-list.component';
+import { WebsocketService } from '../websocket.service';
 
 @Component({
   selector: 'app-profile',
@@ -72,7 +73,7 @@ export class ProfileComponent {
    * à partir des cookies. Si le jeton n'est pas valide, l'utilisateur est redirigé vers 
    * la page de connexion.
    * */
-  constructor(public dialog: MatDialog, private userCookieService: UserCookieService, private router: Router, private http: HttpClient) {
+  constructor(public dialog: MatDialog,private websocketService: WebsocketService, private userCookieService: UserCookieService, private router: Router, private http: HttpClient) {
     // Récupère le token utilisateur
     this.token = this.userCookieService.getToken();
     //verfication du token utilisateur sinon redirection login
@@ -92,6 +93,12 @@ export class ProfileComponent {
   ngOnInit(): void {
     // Appel de la méthode pour charger l'historique au moment de l'initialisation
     this.getHistory();
+    this.websocketService.disconnectWebsocket();
+    this.websocketService.connectWebsocket();
+    if(!this.websocketService.isWebsocketConnected()){
+      this.websocketService.disconnectWebsocket();
+      this.websocketService.connectWebsocket();
+    }
   }
 
   /**
