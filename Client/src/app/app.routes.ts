@@ -6,6 +6,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { IndexComponent } from './index/index.component';
 import { HomeScreenComponent } from './home-screen/home-screen.component';
+import { ReplayScreenComponent } from './replay-screen/replay-screen.component';
 
 export const routes: Routes = [
     {path:"", component: HomeScreenComponent},
@@ -17,5 +18,5 @@ export const routes: Routes = [
     {path: "index", component: IndexComponent},
     {path: "cancelled", component: IndexComponent},
     {path:"game/:size/:rule", component: GameScreenComponent},
-    {path:":id/:size/:rule", component: IndexComponent}
+    {path: "replay/:id/:size", component: ReplayScreenComponent}
 ];

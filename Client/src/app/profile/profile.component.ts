@@ -137,7 +137,7 @@ export class ProfileComponent {
   }
 
   public replayGame(game: any){
-
+    this.router.navigate(['replay', game.id, game.size]);
   }
   
 }
