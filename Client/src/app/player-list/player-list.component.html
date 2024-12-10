@@ -10,7 +10,7 @@
 <!-- Panneau de chat -->
 <div class="chat-panel" [class.open]="isChatOpen">
   <div class="player-list-container">
-    <h3>Joueurs connectés</h3>
+    <h3 id="titre">Joueurs connectés</h3>
     <div class="player-list">
       <div *ngIf="connectedPlayers.length === 0">Aucun joueur connecté...</div>
       <div *ngFor="let player of connectedPlayers" 
