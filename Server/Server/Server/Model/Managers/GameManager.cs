@@ -33,6 +33,17 @@ namespace Server.Model.Managers
             return gameDAO.GetGamesByToken(token);
         }
 
+
+        /// <summary>
+        /// Renvoi les infomations de la partie identifiée par l'ID
+        /// </summary>
+        /// <param name="id">Identifiant de la partie à récupérer</param>
+        /// <returns>Les informations de la partie en question</returns>
+        public GameInfoDTO GetGameById(int id)
+        {
+            return this.gameDAO.GetGameById(id);
+        }
+
         /// <summary>
         /// Renvoi la liste des coups / états de jeu d'une partie
         /// </summary>

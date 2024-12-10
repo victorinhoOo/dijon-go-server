@@ -66,19 +66,43 @@ namespace Server.Controllers
             return result;
         }
 
+
+        /// <summary>
+        /// Récupère les informations d'une partie identifiée par un ID
+        /// </summary>
+        /// <param name="id">ID de la partie dont on veut récupérer les infos</param>
+        /// <returns>Les informations de la partie en question</returns>
+        [HttpPost("Game")]
+        public IActionResult GetGameById(int id)
+        {
+            IActionResult result = BadRequest(new { Message = "Impossible de récupérer la partie" });
+            try
+            {
+                GameInfoDTO game = gameManager.GetGameById(id);
+                result = Ok(new { Game = game });
+                logger.LogInformation("Partie récupérée");
+            }
+            catch(Exception ex)
+            {
+                result = BadRequest(new { Message = ex.Message });
+                logger.LogInformation("Erreur lors de la récupération de la partie : " + ex.Message);
+            }
+            return result;
+        }
+
         [HttpPost("Game-states")]
         /// <summary>
         /// Récupère la liste des "états" d'une partie correspondant à chaque coup
         /// </summary>
         /// <param name="idGame">L'id de la partie dont on souhaite récupérer la liste des coups</param>
         /// <returns>Liste des coups / états de la partie</returns>
-        public IActionResult GetGameStatesByid(int idGame)
+        public IActionResult GetGameStatesByid(int id)
         {
             IActionResult result = BadRequest(new { Message = "Impossible de récupérer les coups de la partie" });
             try
             {
-                List<GameStateDTO> gameStates = gameManager.GetGameStatesByGameId(idGame);
-                result = Ok(new { GameStates = gameStates });
+                List<GameStateDTO> gameStates = gameManager.GetGameStatesByGameId(id);
+                result = Ok(new { States = gameStates });
                 logger.LogInformation("Liste des parties récupérée");
             }
             catch (Exception ex)

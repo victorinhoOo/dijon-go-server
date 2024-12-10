@@ -26,5 +26,12 @@ namespace Server.Model.Data
         /// <param name="gameId">L'identifiant de la partie.</param>
         /// <returns>Liste des états de la partie sous forme de GameStateDTO.</returns>
         public List<GameStateDTO> GetGameStatesByGameId(int gameId);
+
+        /// <summary>
+        /// Rcupère les informations d'une partie en fonction de son ID
+        /// </summary>
+        /// <param name="id">ID de la partie à récupérer</param>
+        /// <returns>Les informations de la partie en question</returns>
+        public GameInfoDTO GetGameById(int id);
     }
 }
