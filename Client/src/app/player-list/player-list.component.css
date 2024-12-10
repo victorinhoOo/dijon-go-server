@@ -245,6 +245,7 @@
 
 @media (max-width: 1263px)
 {
-
-
+  .player-list-container{
+    background-color: #F5E0AD;
+  }
 }
