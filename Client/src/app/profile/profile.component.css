@@ -3,10 +3,10 @@
     max-width: 50%;
     margin: 0 auto;
     padding: 1%;
-    background-color: #FDF7EF;
+    background-color: #F5F5F5;
     padding-top: 10px;
     border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Bouton des paramètres */
@@ -89,13 +89,13 @@
 .history-container {
     text-align: center;
     margin: 30px auto;
-    max-width: 60%;
+    max-width:  55%;
     padding: 20px;
     backdrop-filter: blur(10px);
     border-radius: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    background-color: #fdf7ef;
+    background-color: #F5F5F5;
     color: black;
     padding-bottom: 10px;
 }
@@ -233,7 +233,9 @@
 }
 
 .historique-title{
-    margin-bottom: 40px;
+    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 /* Ajoutez ce style pour positionner le composant des joueurs connectés */

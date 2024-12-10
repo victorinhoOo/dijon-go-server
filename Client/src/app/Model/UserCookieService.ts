@@ -12,20 +12,13 @@ import { BehaviorSubject } from 'rxjs';
 export class UserCookieService {
   private tokenKey = 'authToken';        // Clé pour le stockage du token
   private userKey = 'authUser';          // Clé pour le stockage de l'utilisateur
-  private leaderboardKey = 'leaderboard'; // Clé pour le stockage du leaderboard
 
   private tokenSubject: BehaviorSubject<string>;
   private userSubject: BehaviorSubject<User | null>;
-  private leaderboardSubject: BehaviorSubject<{ [username: string]: number }>;
 
   constructor(private cookieService: CookieService) {
     this.tokenSubject = new BehaviorSubject<string>(this.getToken());
     this.userSubject = new BehaviorSubject<User | null>(this.getUser());
-
-    // Récupérer le leaderboard stocké dans les cookies si disponible
-    const storedLeaderboard = this.cookieService.get(this.leaderboardKey);
-    const leaderboard = storedLeaderboard ? JSON.parse(storedLeaderboard) : {};
-    this.leaderboardSubject = new BehaviorSubject<{ [username: string]: number }>(leaderboard);
   }
 
   // Méthode pour définir le token

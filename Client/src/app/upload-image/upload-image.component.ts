@@ -6,6 +6,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   templateUrl: './upload-image.component.html',
   styleUrls: ['./upload-image.component.css']
 })
+/**
+ * Composant pour télécharger une image
+ */
 export class UploadImageComponent {
   
   // Variable privée pour stocker l'image téléchargée 

@@ -1,9 +1,9 @@
 ﻿namespace GoLogic.Goban
 {
     /// <summary>
-    /// Enumération des différents états possibles des pierres
+    /// Enumération des différents états possibles des pierres/intersections
     /// </summary>
-    public enum StoneColor // TODO: Renommer IshiStatus ou IntersectionStatus ou PointState
+    public enum StoneColor
     {
         Black,
         White,

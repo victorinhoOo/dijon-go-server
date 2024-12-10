@@ -33,7 +33,7 @@ namespace GoLogic
         /// <summary>
         /// Coup précédemment joué
         /// </summary>
-        public Stone PreviousStone { get => this.previousStone; }
+        public Stone? PreviousStone { get => this.previousStone; }
         #endregion attributs
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace GoLogic
         {
             this.goban = board;
             this.captureManager = new CaptureManager(board);
-            this.moveValidator = new MoveValidator(board, this.captureManager);
+            this.moveValidator = new MoveValidator(board);
         }
 
         /// <summary>
@@ -52,7 +52,9 @@ namespace GoLogic
         /// </summary>
         public void SkipTurn()
         {
+            // si le tour à été précédemment passé la partie est finie
             if (this.skippedTurn) this.isEndGame = true;
+
             this.goban.NextTurn();
             this.skippedTurn = true;
         }
@@ -77,9 +79,17 @@ namespace GoLogic
             }
             else
             {
-                this.goban.PlaceStone(stone, this.goban.CurrentTurn); // place la pierre en changeant sa couleur de Empty à CurrentTurn
-                stone = this.goban.GetStone(x,y);
+                if (isEndGame) 
+                {
+                    throw new InvalidOperationException("Impossible move because game was ended");
+                }
+                // place la pierre en changeant sa couleur de Empty à CurrentTurn
+                this.goban.PlaceStone(stone, this.goban.CurrentTurn); 
+                
+                // capture les pierres capturables suite au placement de la pierre
                 this.captureManager.CapturesOpponent(stone);
+
+                // la pierre précédente deviens la pierre actuel 
                 this.previousStone = stone;
                 this.goban.NextTurn(); // tour passe au joueur suivant
 
@@ -99,7 +109,7 @@ namespace GoLogic
         {
             List<Stone> potentialKoPositions = new List<Stone>();
 
-            // Only check Ko if there was a previous stone
+            // Ne vérifie que si la pierre précédante existe
             if (this.previousStone != null)
             {
                 // Récupère tous les voisins vides de la pierre précédente
