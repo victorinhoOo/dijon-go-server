@@ -325,21 +325,26 @@ export class IndexComponent implements OnInit, AfterViewInit {
 private populateLeaderboard(): void {
   this.userDAO.GetLeaderboard().subscribe({
     next: (leaderboard: any) => {
-      // Accès à l'élément DOM pour le leaderboard
       const leaderboardElement = document.querySelector('.leaderboard');
-    
-      // Vidage du contenu actuel du leaderboard
-      leaderboardElement!.innerHTML = '';
-      //remplissage d'un tableau
       const topPlayers = Object.entries(leaderboard);
       
-      //affichage de chaque joueur du leaderboard
       topPlayers.forEach(([name, elo], index) => {
-        let userTop = new User(name,"",Number(elo)); //creation d'un user pour obtenir son rang
-        const rankString = `${index + 1}) ${name} - ${userTop.getRank()}`;
-        const p = document.createElement('p');
-        p.textContent = rankString;
-        leaderboardElement!.appendChild(p);
+        let userTop = new User(name, "", Number(elo));
+        const playerDiv = document.createElement('div');
+        playerDiv.className = 'leaderboard-item';
+        
+        playerDiv.innerHTML = `
+          <span class="leaderboard-rank">${index + 1}</span>
+          <img src="https://localhost:7065/profile-pics/${name}" 
+               alt="${name}'s avatar" 
+               class="leaderboard-avatar">
+          <div class="leaderboard-info">
+            <span class="leaderboard-name">${name}</span>
+            <span class="leaderboard-rank-info">${userTop.getRank()}</span>
+          </div>
+        `;
+        
+        leaderboardElement!.appendChild(playerDiv);
       });
     },
   });

@@ -4,6 +4,9 @@ using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
 {
+    /// <summary>
+    /// Classe permettant d'accéder aux données des utilisateurs.
+    /// </summary>
     public class UserDAO : IUserDAO
     {
 
@@ -79,6 +82,31 @@ namespace WebSocket.Model.DAO
             {
                 database.Disconnect();
             }
+        }
+
+        /// <inheritdoc/>
+        public int GetIdByUsername(string username)
+        {
+            database.Connect();
+            int id = -1;
+            try
+            {
+                string query = "SELECT idUser FROM user WHERE username = @username";
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@username", username }
+                };
+                var result = database.ExecuteQuery(query, parameters);
+                if (result.Rows.Count > 0)
+                {
+                    id = Convert.ToInt32(result.Rows[0]["idUser"]);
+                }
+            }
+            finally
+            {
+                database.Disconnect();
+            }
+            return id;
         }
     }
 }

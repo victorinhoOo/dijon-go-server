@@ -30,6 +30,6 @@ export class GridComponent implements OnInit{
   }
 
   public getSize(): number {
-    return this.size;
+    return this.size - 1;
   }
 }
