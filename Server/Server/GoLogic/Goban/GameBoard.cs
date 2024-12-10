@@ -66,6 +66,12 @@
         /// <summary>
         /// Constructor privé pour créer une nouvelle instance avec un état spécifique
         /// </summary>
+        /// <param name="size">taille du plateau</param>
+        /// <param name="board">Tableau de pierres actuel</param>
+        /// <param name="previousBoard">Tableau de pierres précdent</param>
+        /// <param name="capturedBlack">Pierres noires capturées</param>
+        /// <param name="capturedWhite">Pierres blanches capturées</param>
+        /// <param name="currentTurn">Tour du joueur</param>
         private GameBoard(int size, Stone[,] board, Stone[,] previousBoard, int capturedBlack, int capturedWhite, StoneColor currentTurn)
         {
             this.size = size;
@@ -86,10 +92,26 @@
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    this.board[i, j] = new Stone(i, j); // Initialise les pierres Empty 
+                    this.board[i, j] = new Stone(i, j); // Initialise les pierres à Empty 
                     this.previousBoard[i, j] = new Stone(i, j);
                 }
             }
+        }
+
+        /// <summary>
+        /// Clone le GameBoard
+        /// </summary>
+        /// <returns>Renvoie une nouvelle instance de GameBoard</returns>
+        public IBoard Clone()
+        {
+            return new GameBoard(
+                this.size,
+                CloneBoardArray(this.board),
+                CloneBoardArray(this.previousBoard),
+                this.capturedBlackStones,
+                this.capturedWhiteStones,
+                this.currentTurn
+            );
         }
 
         /// <summary>
@@ -122,15 +144,15 @@
 
                 // sequence de position standart excepter (middle, middle)
                 List<(int, int)> hoshiPoints = new() {
-                (near, far),      // top right (first point)
-                (far, near),      // bottom left
-                (far, far),       // bottom right
-                (near, near),     // top left
-                (middle, middle), // center
-                (middle, near),   // left edge
-                (middle, far),     // right edge
-                (near, middle),   // top edge
-                (far, middle),    // bottom edge                
+                (near, far),      // haut droit (premier point)
+                (far, near),      // bas gauche
+                (far, far),       // bas droit
+                (near, near),     // haut gauche
+                (middle, middle), // centre
+                (middle, near),   // bord gauche
+                (middle, far),    // bord droit
+                (near, middle),   // bord supérieur
+                (far, middle),    // bord inférieur    
                 };
 
                 // Ajout des pierres de 2 à 4 en fonction
@@ -196,24 +218,8 @@
             if (!IsValidCoordinate(stone.X, stone.Y))
                 throw new ArgumentOutOfRangeException($"Coordinates ({stone.X}, {stone.Y}) are out of bounds for the goban size.");
 
-            CopyToPreviousBoard(this.board);
+            CopyToPreviousBoard();
             stone.ChangeColor(color);
-        }
-
-        /// <summary>
-        /// Clone le Goban
-        /// </summary>
-        /// <returns>Renvoie une nouvelle instance de GameBoard</returns>
-        public IBoard Clone()
-        {
-            return new GameBoard(
-                this.size,
-                CloneBoardArray(this.board),
-                CloneBoardArray(this.previousBoard),
-                this.capturedBlackStones,
-                this.capturedWhiteStones,
-                this.currentTurn
-            );
         }
 
         /// <summary>
@@ -230,6 +236,8 @@
         /// <summary>
         /// Crée une copie compléte du board liste de pierre
         /// </summary>
+        /// <param name="source">Tableau de pierres à copier</param>
+        /// <returns>Tableau de pierres identiques à l'original</returns>
         private Stone[,] CloneBoardArray(Stone[,] source)
         {
             Stone[,] clone = new Stone[Size, Size];
@@ -246,14 +254,13 @@
         /// <summary>
         /// Copie le plateau en paramétre dans previousBoard du GameBoard
         /// </summary>
-        /// <param name="boardToCopy">le tableau à copier</param>
-        public void CopyToPreviousBoard(Stone[,] boardToCopy)
+        public void CopyToPreviousBoard()
         {
             for (int i = 0; i < Size; i++)
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    this.previousBoard[i, j].CopyStoneColor(boardToCopy[i, j]);
+                    this.previousBoard[i, j].CopyStoneColor(this.board[i, j]);
                 }
             }
         }
@@ -268,7 +275,7 @@
             List<Stone> neighbors = [];
 
             // Récupère les coordonnées des Pierres voisines
-            foreach (var (x, y) in stone.GetNeighborsCoordinate())
+            foreach ((int x, int y) in stone.GetNeighborsCoordinate())
             {
                 // Si les coordonnées sont correctes, on ajoute la pierre correspondante
                 if (IsValidCoordinate(y, x))
@@ -303,6 +310,7 @@
 
             return res;
         }
+
         /// <inheritdoc/>
         public void AddCapturedStone(StoneColor color, int amount)
         {

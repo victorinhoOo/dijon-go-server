@@ -13,16 +13,15 @@ namespace GoLogic.Score
         protected readonly DeadStoneAnalyzer deadStoneAnalyzer;
 
         /// <summary>
-        /// Le plateau du jeu et ses pions
+        /// Gère les pierres mortes
         /// </summary>
-        public IBoard GameBoard { get => this.gameBoard; }
-
         public DeadStoneAnalyzer DeadStoneAnalyzer { get => deadStoneAnalyzer; }
 
         /// <summary>
         /// Le calculateur de score selon les différentes règles
         /// </summary>
         /// <param name="gameBoard">Le plateau du jeu</param>
+        /// <param name="komi"></param>
         public ScoreRule(IBoard gameBoard, float komi = 6.5f)
         {
             this.gameBoard = gameBoard;

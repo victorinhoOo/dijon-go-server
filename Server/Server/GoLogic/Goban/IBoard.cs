@@ -53,10 +53,9 @@ namespace GoLogic.Goban
         Stone GetStone(int x, int y);
 
         /// <summary>
-        /// Change la couleur de la pierre aux coordonnés spécifié
+        /// Change la couleur de la pierre spécifié
         /// </summary>
-        /// <param name="x">X coordinate</param>
-        /// <param name="y">Y coordinate</param>
+        /// <param name="stone">La pierre à changer la couleur</param>
         /// <param name="color">Couleur de la pierre à placer</param>
         /// <returns>A new board state with the stone placed</returns>
         void PlaceStone(Stone stone, StoneColor color);

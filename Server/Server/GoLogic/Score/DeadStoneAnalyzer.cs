@@ -2,10 +2,17 @@
 
 namespace GoLogic.Score
 {
+    /// <summary>
+    /// Gére l'analyse des pierres mortes d'un goban
+    /// </summary>
     public class DeadStoneAnalyzer
     {
         private readonly IBoard gameBoard;
 
+        /// <summary>
+        /// Gére l'analyse des pierres mortes d'un goban
+        /// </summary>
+        /// <param name="gameBoard">IBoard à analyser</param>
         public DeadStoneAnalyzer(IBoard gameBoard)
         {
             this.gameBoard = gameBoard;
@@ -18,9 +25,9 @@ namespace GoLogic.Score
         /// <param name="visited">Pierre visité lors de la recherche</param>
         /// <param name="group">Le groupe de pierre</param>
         /// <param name="liberties">les libertées du groupe</param>
-        private void CollectGroupAndLiberties(Stone stone, HashSet<Stone> visited, List<Stone> group, HashSet<Stone> liberties)
+        private void CollectGroupAndLiberties(Stone stone, ref HashSet<Stone> visited, ref List<Stone> group, ref HashSet<Stone> liberties)
         {
-            // si la pierre n'a déjà été visité on continue
+            // si la pierre n'a pas déjà été visité on continue
             if (!visited.Contains(stone))
             {
                 visited.Add(stone);
@@ -34,10 +41,10 @@ namespace GoLogic.Score
                     StoneColor initialColor = group.FirstOrDefault()?.Color ?? stone.Color;
                     if (stone.Color == initialColor)
                     {
-                        group.Add(stone);
+                        group.Add(stone); // ajoute la pierre au groupe
                         foreach (Stone neighbor in this.gameBoard.GetNeighbors(stone))
                         {
-                            CollectGroupAndLiberties(neighbor, visited, group, liberties);
+                            CollectGroupAndLiberties(neighbor, ref visited, ref group, ref liberties);
                         }
                     }
                 }
@@ -66,11 +73,11 @@ namespace GoLogic.Score
 
                 int[][] diagonalOffsets = new int[][]
                 {
-                new int[] {-1, -1}, new int[] {-1, 1},
-                new int[] {1, -1}, new int[] {1, 1}
+                    new int[] {-1, -1}, new int[] {-1, 1},
+                    new int[] {1, -1}, new int[] {1, 1}
                 };
 
-                foreach (var offset in diagonalOffsets)
+                foreach (int[] offset in diagonalOffsets)
                 {
                     int newX = x + offset[0];
                     int newY = y + offset[1];
@@ -100,7 +107,7 @@ namespace GoLogic.Score
         /// </summary>
         /// <param name="group">Le groupe à tester</param>
         /// <param name="liberties">les libertées de ce groupe</param>
-        /// <returns></returns>
+        /// <returns>True si le groupe est seki, False sinon</returns>
         private bool IsSeki(List<Stone> group, HashSet<Stone> liberties)
         {
             bool res = false;
@@ -120,7 +127,7 @@ namespace GoLogic.Score
                     HashSet<Stone> enemyLiberties = new HashSet<Stone>();
                     HashSet<Stone> enemyVisited = new HashSet<Stone>();
 
-                    CollectGroupAndLiberties(enemyStone, enemyVisited, enemyGroup, enemyLiberties);
+                    CollectGroupAndLiberties(enemyStone, ref enemyVisited, ref enemyGroup, ref enemyLiberties);
 
                     // Si les deux groupes partagent les mêmes libertés vitales et ont peu de libertés
                     List<Stone> sharedLiberties = liberties.Intersect(enemyLiberties).ToList();
@@ -138,7 +145,7 @@ namespace GoLogic.Score
         /// Détermine si un groupe de pierre est mort
         /// </summary>
         /// <param name="stone">La pierre initiale du groupe à analyser</param>
-        /// <returns>Renvoie True si les pierres sont mortes False sinon</returns>
+        /// <returns>Renvoie True si les pierres sont mortes, False sinon</returns>
         public bool IsGroupDead(Stone stone)
         {
             bool res = true;
@@ -153,7 +160,7 @@ namespace GoLogic.Score
                 List<Stone> eyes = GetRealEyes(liberties, stone.Color);
 
                 // vérifie différente condition de vie
-                if (HasTwoEyes(eyes) ||
+                if (HasTwoEyes(eyes) || 
                     IsSeki(group, liberties) ||
                     HasPotentialLife(liberties, group, stone.Color) ||
                     HasPotentialSecondEye(eyes, liberties, stone.Color))
@@ -176,7 +183,7 @@ namespace GoLogic.Score
             List<Stone> group = new List<Stone>();
             HashSet<Stone> liberties = new HashSet<Stone>();
 
-            CollectGroupAndLiberties(stone, visited, group, liberties);
+            CollectGroupAndLiberties(stone, ref visited, ref group, ref liberties);
             return (group, liberties);
         }
 
@@ -295,7 +302,7 @@ namespace GoLogic.Score
                     else
                     {
                         // Marque les pierres du groupe vivant comme traitées
-                        var (livingGroup, _) = GetGroupAndLiberties(stone);
+                        (List<Stone> livingGroup, HashSet<Stone> _) = GetGroupAndLiberties(stone);
                         foreach (var livingStone in livingGroup)
                         {
                             processedStones.Add(livingStone);
