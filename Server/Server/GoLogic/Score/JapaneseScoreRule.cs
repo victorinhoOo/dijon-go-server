@@ -23,7 +23,7 @@ namespace GoLogic.Score
             {
                 (territoryBlack, territoryWhite) = FindTerritory();
             }
-            return (territoryBlack + GameBoard.CapturedWhiteStones, territoryWhite + GameBoard.CapturedBlackStones + this.komi);
+            return (territoryBlack + this.gameBoard.CapturedWhiteStones, territoryWhite + this.gameBoard.CapturedBlackStones + this.komi);
         }
     }
 }
