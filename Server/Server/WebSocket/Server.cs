@@ -119,6 +119,9 @@ namespace WebSocket
                                 }
                                 catch (DisconnectionException ex) // Le message reçu est un message de déconnexion
                                 {
+                                    // À la déconnexion, retire le client de la liste des  et broadcaster la nouvelle liste
+                                    connectedClients.TryRemove(client.User.Name, out _);
+                                    this.BroadcastUserList();
                                     this.DisconnectClient(client, ex, ref endOfCommunication);
                                 }
                             }
@@ -128,10 +131,6 @@ namespace WebSocket
                                 Console.WriteLine($"Sent : {response}");
                             }
                         }
-
-                        // À la déconnexion, retire le client de la liste des  et broadcaster la nouvelle liste
-                        connectedClients.TryRemove(client.User.Name, out _);
-                        this.BroadcastUserList();
                     });
                     thread.Start();
 

@@ -1,22 +1,22 @@
 <!-- Bouton pour ouvrir le chat -->
-<div class="chat-toggle" [class.open]="isChatOpen" (click)="toggleChat()">
-  <mat-icon *ngIf="!isChatOpen">chat</mat-icon>
-  <mat-icon *ngIf="isChatOpen">close</mat-icon>
-  <span *ngIf="getTotalUnreadMessages() > 0 && !isChatOpen" class="total-unread">
+<div class="chat-toggle" [class.open]="IsChatOpen()" (click)="toggleChat()">
+  <mat-icon *ngIf="!IsChatOpen()">chat</mat-icon>
+  <mat-icon *ngIf="IsChatOpen()">close</mat-icon>
+  <span *ngIf="getTotalUnreadMessages() > 0 && !IsChatOpen()" class="total-unread">
     {{ getTotalUnreadMessages() }}
   </span>
 </div>
 
 <!-- Panneau de chat -->
-<div class="chat-panel" [class.open]="isChatOpen">
+<div class="chat-panel" [class.open]="IsChatOpen()">
   <div class="player-list-container">
     <h3>Joueurs connectés</h3>
     <div class="player-list">
-      <div *ngIf="connectedPlayers.length === 0">Aucun joueur connecté...</div>
-      <div *ngFor="let player of connectedPlayers" 
+      <div *ngIf="ConnectedPlayers().length === 0">Aucun joueur connecté...</div>
+      <div *ngFor="let player of ConnectedPlayers()" 
            class="player-item" 
            (click)="selectPlayer(player)"
-           [class.selected]="selectedPlayer === player">
+           [class.selected]="SelectedPlayer() === player">
         <span class="player-name">
           <img [src]="'https://localhost:7065/profile-pics/' + player" alt="{{ player }}'s avatar" class="player-avatar" />
           {{ player }} 
@@ -29,21 +29,22 @@
     </div>
 
     <!-- Chat avec le joueur sélectionné -->
-    <div *ngIf="selectedPlayer" class="chat-section">
+    <div *ngIf="SelectedPlayer()" class="chat-section">
       <div class="chat-header">
-        Chat avec {{ selectedPlayer }}
+        Chat avec {{ SelectedPlayer() }}
         <button class="close-chat" (click)="closeChat()"><mat-icon>close</mat-icon></button>
       </div>
       <div class="chat-messages" #messageContainer>
-        <div *ngFor="let msg of messages" class="message" 
-             [class.sent]="msg.Sender() === currentUser"
-             [class.received]="msg.Sender() !== currentUser">
+        <div *ngFor="let msg of Messages()" class="message" 
+             [class.sent]="msg.Sender() === CurrentUser()"
+             [class.received]="msg.Sender() !== CurrentUser()">
           <span class="message-content">{{ msg.Content() }}</span>
           <span class="message-time">{{ msg.Timestamp() | date:'HH:mm' }}</span>
         </div>
       </div>
       <div class="chat-input">
-        <input [(ngModel)]="newMessage" 
+        <input [ngModel]="NewMessage()" 
+               (ngModelChange)="SetNewMessage($event)"
                (keyup.enter)="sendMessage()"
                placeholder="Écrivez votre message...">
         <button (click)="sendMessage()">Envoyer</button>

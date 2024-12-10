@@ -6,7 +6,7 @@ const PLAYER2_SCORE_INDEX = 3;
 const WON_INDEX = 4;
 
 /**
- * Implémenter la stratégie de fin de partie
+ * Implémente la stratégie de fin de partie
  */
 export class EndOfGameStrategy implements IStrategy {
     public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game):void{
