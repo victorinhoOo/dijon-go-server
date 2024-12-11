@@ -4,13 +4,21 @@ using WebSocket.Model.Managers;
 
 namespace WebSocket.Strategy
 {
+    /// <summary>
+    /// Représente la stratégie de chat
+    /// </summary>
     public class ChatStrategy : IStrategy
     {
-        private MessageManager messageManager = new MessageManager();
+        private readonly MessageManager messageManager = new MessageManager();
+
+        // Constantes pour les indices du tableau data
+        private const int DATA_RECIPIENT_INDEX = 2; // Index pour le destinataire
+        private const int DATA_MESSAGE_INDEX = 3;   // Index pour le message
+
         public void Execute(Client sender, string[] data, GameType gameType, ref string response, ref string type)
         {
-            string recipient = data[2];
-            string message = data[3];
+            string recipient = data[DATA_RECIPIENT_INDEX];
+            string message = data[DATA_MESSAGE_INDEX];
 
             // Vérifie si le destinataire existe
             if (Server.ConnectedClients.TryGetValue(recipient, out _))

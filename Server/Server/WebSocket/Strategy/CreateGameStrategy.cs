@@ -1,14 +1,7 @@
-﻿using MySqlX.XDevAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebSocket.Model.DAO;
-using WebSocket.Model;
-using System.Globalization;
+﻿using WebSocket.Model;
 using WebSocket.Strategy.Enumerations;
 using WebSocket.Model.Managers;
+using System.Globalization;
 
 namespace WebSocket.Strategy
 {
@@ -17,7 +10,6 @@ namespace WebSocket.Strategy
     /// </summary>
     public class CreateGameStrategy : IStrategy
     {
-
         // Constantes pour les index de tableau
         private const int SIZE_INDEX = 3;
         private const int RULE_INDEX = 4;
@@ -26,7 +18,7 @@ namespace WebSocket.Strategy
         private const int HANDICAP_INDEX = 7;
         private const int COLOR_HANDICAP_INDEX = 8;
 
-        private AvailableGameManager availableGameManager;
+        private readonly AvailableGameManager availableGameManager;
 
         public CreateGameStrategy()
         {
@@ -36,41 +28,95 @@ namespace WebSocket.Strategy
         /// <summary>
         /// Exécute la création d'une nouvelle partie
         /// </summary>
-        /// <param name="player">Le joueur qui créé la partie</param>
-        /// <param name="data">Les données du message sous forme de tableau de chaînes</param>
-        /// <param name="gameType">Le type de partie concernée ("custom" ou "matchmaking")</param>
-        /// <param name="response">La réponse à envoyer au client (modifiée par référence)</param>
-        /// <param name="type">Le type de réponse (modifié par référence)</param>
         public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
         {
-            if (gameType == GameType.CUSTOM) // la partie est personnalisée
+            int id = GenerateGameId(gameType);
+            Game newGame = CreateGame(player, data, gameType);
+            
+            StoreGame(newGame, id, gameType);
+            SetResponse(id, ref response, ref type);
+        }
+
+        /// <summary>
+        /// Génère un nouvel ID de partie
+        /// </summary>
+        private int GenerateGameId(GameType gameType)
+        {
+            return gameType == GameType.CUSTOM 
+                ? Server.CustomGames.Count + 1 
+                : Server.MatchmakingGames.Count + 1;
+        }
+
+        /// <summary>
+        /// Crée une nouvelle partie selon le type spécifié
+        /// </summary>
+        private Game CreateGame(Client player, string[] data, GameType gameType)
+        {
+            Game newGame = gameType == GameType.CUSTOM 
+                ? CreateCustomGame(data)
+                : CreateMatchmakingGame();
+
+            newGame.AddPlayer(player);
+            newGame.Player1 = player;
+            
+            return newGame;
+        }
+
+        /// <summary>
+        /// Crée une partie personnalisée avec les paramètres spécifiés
+        /// </summary>
+        private Game CreateCustomGame(string[] data)
+        {
+            GameConfiguration config = CreateGameConfiguration(data);
+            return GameFactory.CreateCustomGame(config);
+        }
+
+        /// <summary>
+        /// Crée une configuration de jeu à partir des données
+        /// </summary>
+        private GameConfiguration CreateGameConfiguration(string[] data)
+        {
+            return new GameConfiguration(
+                size: Convert.ToInt16(data[SIZE_INDEX]),
+                rule: data[RULE_INDEX],
+                komi: float.Parse(data[KOMI_INDEX], CultureInfo.InvariantCulture.NumberFormat),
+                name: data[NAME_INDEX],
+                handicap: int.Parse(data[HANDICAP_INDEX]),
+                handicapColor: data[COLOR_HANDICAP_INDEX]
+            );
+        }
+
+        /// <summary>
+        /// Crée une partie de matchmaking
+        /// </summary>
+        private Game CreateMatchmakingGame()
+        {
+            return GameFactory.CreateMatchmakingGame();
+        }
+
+        /// <summary>
+        /// Stocke la partie dans la collection appropriée
+        /// </summary>
+        private void StoreGame(Game game, int id, GameType gameType)
+        {
+            if (gameType == GameType.CUSTOM)
             {
-                int size = Convert.ToInt16(data[SIZE_INDEX]);
-                string rule = data[RULE_INDEX];
-                string name = data[NAME_INDEX];
-                float komi = float.Parse(data[KOMI_INDEX], CultureInfo.InvariantCulture.NumberFormat);
-                int handicap = int.Parse(data[HANDICAP_INDEX]);
-                string colorHandicap = data[COLOR_HANDICAP_INDEX];
-                int id = Server.CustomGames.Count + 1; 
-                GameConfiguration config = new GameConfiguration(size, rule, komi, name, handicap, colorHandicap);
-                Game newGame = GameFactory.CreateCustomGame(config);
-                newGame.AddPlayer(player);
-                Server.CustomGames[id] = newGame;
-                availableGameManager.InsertAvailableGame(newGame); // Ajout de la partie dans le dictionnaire des parties
-                Server.CustomGames[id].Player1 = player; // Ajout du client en tant que joueur 1
-                response = $"{id}-"; // Renvoi de l'id de la partie créée
-                type = "Send_";
+                Server.CustomGames[id] = game;
+                availableGameManager.InsertAvailableGame(game);
             }
-            else if (gameType == GameType.MATCHMAKING)
+            else
             {
-                int id = Server.MatchmakingGames.Count + 1;
-                Game newGame = GameFactory.CreateMatchmakingGame();
-                newGame.AddPlayer(player);
-                Server.MatchmakingGames[id] = newGame;
-                Server.MatchmakingGames[id].Player1 = player;
-                response = $"{id}-"; // Renvoi del'id de la partie créée
-                type = "Send_";
+                Server.MatchmakingGames[id] = game;
             }
+        }
+
+        /// <summary>
+        /// Définit la réponse à renvoyer au client
+        /// </summary>
+        private void SetResponse(int id, ref string response, ref string type)
+        {
+            response = $"{id}-";
+            type = "Send_";
         }
     }
 }

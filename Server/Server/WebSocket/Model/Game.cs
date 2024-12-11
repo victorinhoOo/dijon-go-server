@@ -97,8 +97,8 @@ namespace WebSocket.Model
         {
             this.started = true;
             this.gameManager.InsertGame(this);
+            this.gameManager.InsertGameState(this);
         }
-
 
         /// <summary>
         /// Ajouter un joueur à la partie

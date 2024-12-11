@@ -121,8 +121,9 @@ namespace WebSocket
                                 {
                                     // À la déconnexion, retire le client de la liste des  et broadcaster la nouvelle liste
                                     connectedClients.TryRemove(client.User.Name, out _);
-                                    this.BroadcastUserList();
                                     this.DisconnectClient(client, ex, ref endOfCommunication);
+                                    this.BroadcastUserList();
+                                    
                                 }
                             }
                             if (!endOfCommunication)

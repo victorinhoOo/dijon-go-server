@@ -39,45 +39,61 @@ namespace WebSocket.Strategy
         {
             Server.WaitingPlayers.Enqueue(player);
             int initialNbMatchmakingGames = Server.MatchmakingGames.Count();
-            MatchmakingState state;
+            MatchmakingState state = MatchmakingState.RETRY;
 
-            Client player1 = Server.WaitingPlayers.Peek();
             int idLobby = initialNbMatchmakingGames + 1;
             if (!Server.Lobbies.ContainsKey(idLobby))
             {
                 Server.Lobbies[idLobby] = new Lobby(idLobby);
             }
 
-            if (player == player1) // Le joueur qui rejoint est le premier joueur
+            if (Server.WaitingPlayers.Count == 1) // Le joueur qui rejoint est le premier joueur
             {
-                Server.Lobbies[idLobby].Player1 = player;
-                // Attente du second joueur
-                state = WaitForCondition(() => Server.WaitingPlayers.Count >= 2, () => !Server.Lobbies.ContainsKey(idLobby));
-                if (state == MatchmakingState.OK)
-                {
-                    Client opponement = Server.Lobbies[idLobby].Player2;
-                    string opponentUsername = opponement.User.Name;
-                    int opponentElo = opponement.User.Elo;
-                    Server.WaitingPlayers.Dequeue();
-                    response = $"0-Create-matchmaking-{idLobby}-{opponentUsername}-{opponentElo}";
-                }
+                HandleFirstPlayer(player, idLobby, ref response, ref state);
             }
             else // le joueur qui rejoint est le deuxième joueur
             {
-                Server.Lobbies[idLobby].Player2 = player;
-                // Attente de la création de la partie
-                state = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames, () => !Server.Lobbies.ContainsKey(idLobby) );
-                if (state == MatchmakingState.OK)
-                {
-                    Client opponement = Server.Lobbies[idLobby].Player1;
-                    string opponentUsername = opponement.User.Name;
-                    int opponentElo = opponement.User.Elo;
-                    Server.WaitingPlayers.Dequeue();
-                    string idGame = Server.MatchmakingGames.Count().ToString();
-                    response = $"{idGame}-Join-matchmaking-{idLobby}-{opponentUsername}-{opponentElo}";
-                }
+                HandleSecondPlayer(player, idLobby, initialNbMatchmakingGames, ref response, ref state);
             }
-            if(state == MatchmakingState.RETRY)
+
+            HandleState(state, ref response);
+            type = "Send_";
+        }
+
+        private void HandleFirstPlayer(Client player, int idLobby, ref string response, ref MatchmakingState state)
+        {
+            Server.Lobbies[idLobby].Player1 = player;
+            // Attente du second joueur
+            state = WaitForCondition(() => Server.WaitingPlayers.Count >= 2, () => !Server.Lobbies.ContainsKey(idLobby));
+            if (state == MatchmakingState.OK)
+            {
+                Client opponement = Server.Lobbies[idLobby].Player2;
+                string opponentUsername = opponement.User.Name;
+                int opponentElo = opponement.User.Elo;
+                Server.WaitingPlayers.Dequeue();
+                response = $"0-Create-matchmaking-{idLobby}-{opponentUsername}-{opponentElo}";
+            }
+        }
+
+        private void HandleSecondPlayer(Client player, int idLobby, int initialNbMatchmakingGames, ref string response, ref MatchmakingState state)
+        {
+            Server.Lobbies[idLobby].Player2 = player;
+            // Attente de la création de la partie
+            state = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames, () => !Server.Lobbies.ContainsKey(idLobby));
+            if (state == MatchmakingState.OK)
+            {
+                Client opponement = Server.Lobbies[idLobby].Player1;
+                string opponentUsername = opponement.User.Name;
+                int opponentElo = opponement.User.Elo;
+                Server.WaitingPlayers.Dequeue();
+                string idGame = Server.MatchmakingGames.Count().ToString();
+                response = $"{idGame}-Join-matchmaking-{idLobby}-{opponentUsername}-{opponentElo}";
+            }
+        }
+
+        private void HandleState(MatchmakingState state, ref string response)
+        {
+            if (state == MatchmakingState.RETRY)
             {
                 Server.WaitingPlayers.Dequeue();
                 response = "0-Retry";
@@ -87,7 +103,6 @@ namespace WebSocket.Strategy
                 Server.WaitingPlayers.Dequeue();
                 response = "0-Timeout";
             }
-            type = "Send_";
         }
 
         /// <summary>
