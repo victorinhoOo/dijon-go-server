@@ -81,9 +81,10 @@
 
 
 
-.last-game {
+#last-game {
     text-decoration: none;
     color: black;
+    border: none;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -96,17 +97,17 @@
     transition: background-color 0.2s ease;
 }
 
-.last-game:hover {
+#last-game:hover {
     background-color: #f3ad09;
     transform: scale(1.02);
 }
 
-.last-game h2 {
+#last-game h2 {
     color: black;
     margin-bottom: 0;
 }
 
-.last-game i {
+#last-game i {
     margin-right: 5px;
 }
 
@@ -389,7 +390,7 @@
     .rank img{
         margin-left: 12px;
     }
-    .last-game {
+    #last-game {
         width: 90%;
         margin: 10px 0;
         text-align: center;
