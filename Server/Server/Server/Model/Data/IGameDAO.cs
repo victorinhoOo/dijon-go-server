@@ -21,6 +21,13 @@ namespace Server.Model.Data
         public List<GameInfoDTO> GetGamesByToken(string token);
 
         /// <summary>
+        /// Récupère l'id de la dernière partie jouée par un joueur
+        /// </summary>
+        /// <param name="token">Token utilisateur du joueur</param>
+        /// <returns>L'ID de la dernière partie joué par l'utilisateur</returns>
+        public int GetLastGameIdByToken(string token);
+
+        /// <summary>
         /// Récupère la liste des états de la partie (les coups) pour une partie donnée.
         /// </summary>
         /// <param name="gameId">L'identifiant de la partie.</param>
