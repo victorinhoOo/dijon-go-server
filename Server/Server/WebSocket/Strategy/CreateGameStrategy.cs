@@ -28,7 +28,12 @@ namespace WebSocket.Strategy
         /// <summary>
         /// Exécute la création d'une nouvelle partie
         /// </summary>
-        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
+        /// <param name="player">Le joueur qui créé la partie</param>
+        /// <param name="data">Les données du message sous forme de tableau de chaînes</param>
+        /// <param name="gameType">Le type de partie concernée ("custom" ou "matchmaking")</param>
+        /// <param name="response">La réponse à envoyer au client (modifiée par référence)</param>
+        /// <param name="type">Le type de réponse (modifié par référence)</param>
+        public void Execute(IClient player, string[] data, GameType gameType, ref string response, ref string type)
         {
             int id = GenerateGameId(gameType);
             Game newGame = CreateGame(player, data, gameType);
@@ -50,7 +55,7 @@ namespace WebSocket.Strategy
         /// <summary>
         /// Crée une nouvelle partie selon le type spécifié
         /// </summary>
-        private Game CreateGame(Client player, string[] data, GameType gameType)
+        private Game CreateGame(IClient player, string[] data, GameType gameType)
         {
             Game newGame = gameType == GameType.CUSTOM 
                 ? CreateCustomGame(data)

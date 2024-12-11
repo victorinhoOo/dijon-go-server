@@ -25,13 +25,13 @@ namespace WebSocket
         private static ConcurrentDictionary<int, Game> customGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Game> matchmakingGames = new ConcurrentDictionary<int, Game>();
         private static ConcurrentDictionary<int, Lobby> lobbies = new ConcurrentDictionary<int, Lobby>();
-        private static readonly Queue<Client> waitingPlayers = new Queue<Client>();
+        private static readonly Queue<IClient> waitingPlayers = new Queue<IClient>();
 
         private Interpreter interpreter;
         private GameManager gameManager;
 
         // Ajout d'un dictionnaire pour stocker tous les clients connectés
-        private static ConcurrentDictionary<string, Client> connectedClients = new ConcurrentDictionary<string, Client>();
+        private static ConcurrentDictionary<string, IClient> connectedClients = new ConcurrentDictionary<string, IClient>();
 
         /// <summary>
         /// Dictionnaire qui contient les parties personnalisées en cours
@@ -51,12 +51,12 @@ namespace WebSocket
         /// <summary>
         /// File d'attente des joueurs en attente de matchmaking
         /// </summary>
-        public static Queue<Client> WaitingPlayers => waitingPlayers;
+        public static Queue<IClient> WaitingPlayers => waitingPlayers;
 
         /// <summary>
         /// Renvoi les clients connectés
         /// </summary>
-        public static ConcurrentDictionary<string, Client> ConnectedClients { get => connectedClients; }
+        public static ConcurrentDictionary<string, IClient> ConnectedClients { get => connectedClients; }
 
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace WebSocket
                     Thread thread = new Thread(() =>
                     {
                         TcpClient tcp = this.webSocket.AcceptClient();
-                        Client client = new Client(tcp);
+                        IClient client = new Client(tcp);
                         this.interpreter = new Interpreter();
                         bool endOfCommunication = false;
 
@@ -154,7 +154,7 @@ namespace WebSocket
         /// <summary>
         /// Procède à l'établissement de la connexion avec le client
         /// </summary>
-        private void ProceedHandshake(string message, Client client, ref string response)
+        private void ProceedHandshake(string message, IClient client, ref string response)
         {
             ExtractTokenUserFromHandshake(message, client);
             byte[] handshake = this.webSocket.BuildHandShake(message);
@@ -165,18 +165,18 @@ namespace WebSocket
         /// <summary>
         /// Extrait le token de la demande de l'url de demande de connexion entre le client et le server
         /// </summary>
-        private void ExtractTokenUserFromHandshake(string message, Client client)
+        private void ExtractTokenUserFromHandshake(string message, IClient client)
         {
             string url = message.Split(" ")[1];
             var uri = new Uri($"http://{Environment.GetEnvironmentVariable("SERVER_IP")}:{Environment.GetEnvironmentVariable("SERVER_PORT")}{url}");
             string token = HttpUtility.ParseQueryString(uri.Query).Get("token");
-            client.User = gameManager.GetUserByToken(token);
+            client.ChangeUser(gameManager.GetUserByToken(token));
         }
 
         /// <summary>
         /// Déconnecte un joueur de sa partie
         /// </summary>
-        private void DisconnectClient(Client client, DisconnectionException ex, ref bool endOfCommunication)
+        private void DisconnectClient(IClient client, DisconnectionException ex, ref bool endOfCommunication)
         {
             foreach (var game in Server.CustomGames)
             {
@@ -199,7 +199,7 @@ namespace WebSocket
         /// <summary>
         /// Traite le message reçu par le client
         /// </summary>
-        private void TreatMessage(byte[] bytes, Client client, ref string message, ref string response)
+        private void TreatMessage(byte[] bytes, IClient client, ref string message, ref string response)
         {
             byte[] decryptedMessage = this.webSocket.DecryptMessage(bytes);
             message = Encoding.UTF8.GetString(decryptedMessage);        
@@ -247,7 +247,7 @@ namespace WebSocket
             if (responseType.StartsWith("Private"))
             {
                 string recipient = responseType.Split('-')[1];
-                if (Server.ConnectedClients.TryGetValue(recipient, out Client recipientClient))
+                if (Server.ConnectedClients.TryGetValue(recipient, out IClient recipientClient))
                 {
                     byte[] messageBytes = this.webSocket.BuildMessage(responseData);
                     this.SendMessage(recipientClient, messageBytes);
@@ -260,7 +260,7 @@ namespace WebSocket
             response = responseData;
         }
 
-        private void SendMessage(Client client, byte[] bytes)
+        private void SendMessage(IClient client, byte[] bytes)
         {
             if (client != null)
             {
