@@ -9,6 +9,8 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Output,EventEmitter, } from '@angular/core';
 import { WebsocketService } from '../websocket.service';
+import { GameDAO } from '../Model/DAO/GameDAO';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -40,7 +42,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.tokenUser;
   }
 
-  public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef, websocketService: WebsocketService) {
+  public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef, websocketService: WebsocketService, private gameDAO: GameDAO) {
     this.websocketService = websocketService;
     this.lightIsBlack = false;
     this.isNavbarVisible = true;
@@ -114,6 +116,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
       });
     }    
     
+  }
+
+  public async replayLastGame():Promise<void>{
+    let token = this.userCookieService.getToken();
+    let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));
+    console.log(id);
+    let game = await firstValueFrom(this.gameDAO.GetGameById(id));
+    let size = game["size"];
+    this.router.navigate(['/replay', id, size]);
   }
 
   /**

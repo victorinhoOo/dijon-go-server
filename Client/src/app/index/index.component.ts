@@ -14,7 +14,7 @@ import { UserDAO } from '../Model/DAO/UserDAO';
 import { RankprogressComponent } from "../rankprogress/rankprogress.component";
 import { CommonModule } from '@angular/common';
 import { PlayerListComponent } from '../player-list/player-list.component';
-import { HistoryComponent } from '../history/history.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -353,28 +353,14 @@ private populateLeaderboard(): void {
     },
   });
 }
+public async replayLastGame():Promise<void>{
+  let token = this.userCookieService.getToken();
+  let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));
+  console.log(id);
+  let game = await firstValueFrom(this.gameDAO.GetGameById(id));
+  let size = game["size"];
+  this.router.navigate(['/replay', id, size]);
+}
 
-  public showHistory() {
-    const componentRef = this.createComponent(HistoryComponent);
-    const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0];
-
-    Swal.fire({
-      title: 'Visualiser une autre de vos parties',
-      html: domElem,
-      width: '55%',
-      showConfirmButton: false,
-      showCloseButton: true,
-      didOpen: () => {
-        this.appRef.attachView(componentRef.hostView);
-      },
-      willClose: () => {
-        componentRef.destroy();
-      }
-    });
-  }
-
-  private createComponent(component: any): ComponentRef<any> {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
-    return componentFactory.create(this.injector);
-  }
+  
 }

@@ -1,21 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, ComponentRef, ApplicationRef, EmbeddedViewRef, ComponentFactoryResolver, Injector } from '@angular/core';
 import { GridComponent } from '../grid/grid.component';
 import { UserCookieService } from '../Model/UserCookieService';
 import { environment } from '../environment';
 import { GameDAO } from '../Model/DAO/GameDAO';
-import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { GameStateDTO } from '../Model/DTO/GameStateDTO';
 import { firstValueFrom } from 'rxjs';
-import { stat } from 'fs';
-
+import { MatIcon } from '@angular/material/icon';
+import Swal from 'sweetalert2';
+import { HistoryComponent } from '../history/history.component';
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
 
 @Component({
   selector: 'app-replay-screen',
   standalone: true,
-  imports: [GridComponent],
+  imports: [GridComponent, MatIcon, HistoryComponent],
   templateUrl: './replay-screen.component.html',
   styleUrl: './replay-screen.component.css',
 })
@@ -35,7 +35,10 @@ export class ReplayScreenComponent {
   constructor(
     private userCookieService: UserCookieService,
     private route: ActivatedRoute,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private appRef: ApplicationRef,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private injector: Injector
   ) {
     this.stateNumber = 0;
     this.gameDAO = new GameDAO(this.httpClient);
@@ -98,6 +101,8 @@ export class ReplayScreenComponent {
     let state = this.states[number];
     let blackCaptured = state.CapturedBlack();
     let whiteCaptured = state.CapturedWhite();
+    let input = document.getElementById('move-number') as HTMLInputElement;
+    input.value = state.MoveNumber().toString();
     this.updateCapturedCounters(blackCaptured.toString(), whiteCaptured.toString());
     let board = state.Board();
     let lines = board.split('!');
@@ -138,6 +143,8 @@ export class ReplayScreenComponent {
   }
 
   private async loadGameStates(): Promise<void> {
+    this.states = [];
+    console.log(this.states);
     const response = await firstValueFrom(
       this.gameDAO.GetGameStatesById(this.id)
     );
@@ -174,13 +181,13 @@ export class ReplayScreenComponent {
           console.log(gameInfo.usernamePlayer1);
           opponentPseudoContainer.innerText = gameInfo.usernamePlayer2;
           opponentAvatarContainer.src = `${PROFILE_PIC_URL}${gameInfo.usernamePlayer2}`;
-          this.blackCapturedContainer = document.getElementById('player-score-value');
-          this.whiteCapturedContainer = document.getElementById('opponent-score-value');
+          this.blackCapturedContainer = document.getElementById('opponent-score-value');
+          this.whiteCapturedContainer = document.getElementById('player-score-value');
         } else {
           opponentPseudoContainer.innerText = gameInfo.usernamePlayer1;
           opponentAvatarContainer.src = `${PROFILE_PIC_URL}${gameInfo.usernamePlayer1}`;
-          this.blackCapturedContainer = document.getElementById('opponent-score-value');
-          this.whiteCapturedContainer = document.getElementById('player-score-value');
+          this.blackCapturedContainer = document.getElementById('player-score-value');
+          this.whiteCapturedContainer = document.getElementById('opponent-score-value');
         }
       }
     });
@@ -195,5 +202,40 @@ export class ReplayScreenComponent {
     playerTimer!.style.display = 'none';
     opponentTimer!.style.display = 'none';
     ruleContainer!.style.display = 'none';
+  }
+
+  public firstState(): void {
+    this.stateNumber = 0;
+    this.displayState(this.stateNumber);
+  }
+
+  public lastState(): void {
+    this.stateNumber = this.states.length - 1;
+    this.displayState(this.stateNumber);
+  }
+
+  
+  public showHistory() {
+    const componentRef = this.createComponent(HistoryComponent);
+    const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0];
+
+    Swal.fire({
+      title: 'Visualiser une autre de vos parties',
+      html: domElem,
+      width: '55%',
+      showConfirmButton: false,
+      showCloseButton: true,
+      didOpen: () => {
+        this.appRef.attachView(componentRef.hostView);
+      },
+      willClose: () => {
+        componentRef.destroy();
+      }
+    });
+  }
+
+  private createComponent(component: any): ComponentRef<any> {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
+    return componentFactory.create(this.injector);
   }
 }

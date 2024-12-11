@@ -79,40 +79,11 @@
     transition: outline 0.3s ease-in-out;
 }
 
-.choose-history{
+
+#last-game {
     text-decoration: none;
     color: black;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    margin-left: 90px;
-    background-color: #EBB840;
-    padding-left: 20px;
-    border: none;  
-    padding-bottom: 10px;
-    padding-right: 20px;
-    border-radius: 10px;
-    transition: background-color 0.2s ease;
-}
-
-.choose-history:hover {
-    background-color: #f3ad09;
-    transform: scale(1.02);
-}
-
-.choose-history h2 {
-    color: black;
-    margin-bottom: 0;
-}
-
-.choose-history i {
-    margin-right: 5px;
-}
-
-
-.last-game {
-    text-decoration: none;
-    color: black;
+    border: none;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -125,17 +96,17 @@
     transition: background-color 0.2s ease;
 }
 
-.last-game:hover {
+#last-game:hover {
     background-color: #f3ad09;
     transform: scale(1.02);
 }
 
-.last-game h2 {
+#last-game h2 {
     color: black;
     margin-bottom: 0;
 }
 
-.last-game i {
+#last-game i {
     margin-right: 5px;
 }
 
@@ -418,7 +389,7 @@
     .rank img{
         margin-left: 12px;
     }
-    .last-game {
+    #last-game {
         width: 90%;
         margin: 10px 0;
         text-align: center;
@@ -643,14 +614,4 @@
 /* Avatar pour la liste des joueurs connectés */
 ::ng-deep .player-avatar {
     margin-right: 8px !important;
-}
-
-::ng-deep .history-popup {
-  max-width: none !important;
-  width: auto !important;
-  margin: 20px !important;
-}
-
-::ng-deep .history-popup-container {
-  padding: 0 !important;
 }

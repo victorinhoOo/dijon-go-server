@@ -68,11 +68,35 @@ namespace Server.Controllers
 
 
         /// <summary>
-        /// Récupère les informations d'une partie identifiée par un ID
+        /// Récupère l'id de la dernière partie jouée par un joueur
         /// </summary>
-        /// <param name="id">ID de la partie dont on veut récupérer les infos</param>
-        /// <returns>Les informations de la partie en question</returns>
-        [HttpPost("Game")]
+        /// <param name="token">Token utilisateur du joueur</param>
+        /// <returns>L'ID de la dernière partie joué par l'utilisateur</returns>
+        [HttpPost("Last-game-id")]
+        public IActionResult GetLastGameIdByToken(string token)
+        {
+            IActionResult result = BadRequest(new { Message = "Impossible de récupérer l'ID de la dernière partie" });
+            try
+            {
+                int id = this.gameManager.GetLastGameIdByToken(token);
+                result = Ok(new { Id = id });
+                logger.LogInformation("ID de la dernière partie récupéré");
+            }
+            catch (Exception ex)
+            {
+                result = BadRequest(new { Message = ex.Message });
+                logger.LogInformation("Erreur lors de la récupération de l'ID de la dernière partie : " + ex.Message);
+            }
+            return result;
+        }
+
+
+            /// <summary>
+            /// Récupère les informations d'une partie identifiée par un ID
+            /// </summary>
+            /// <param name="id">ID de la partie dont on veut récupérer les infos</param>
+            /// <returns>Les informations de la partie en question</returns>
+            [HttpPost("Game")]
         public IActionResult GetGameById(int id)
         {
             IActionResult result = BadRequest(new { Message = "Impossible de récupérer la partie" });

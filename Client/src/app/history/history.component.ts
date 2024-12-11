@@ -5,7 +5,8 @@ import { GameDAO } from '../Model/DAO/GameDAO';
 import { environment } from '../environment';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-history',
@@ -77,13 +78,16 @@ export class HistoryComponent implements OnInit {
             game.scorePlayer2,
             game.won,
             new Date(game.date) // Conversion explicite en Date si nécessaire
-          )
+              )
       );
     });
   }
 
   public replayGame(game: any){
-    this.router.navigate(['replay', game.id, game.size]);
+    this.router.navigate(['replay', game.id, game.size]).then(() => {
+      Swal.close(); 
+      window.location.reload(); 
+    });
   }
 
 }

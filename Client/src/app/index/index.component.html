@@ -11,12 +11,9 @@
                 <p class="rank-value">{{UserRank}} <app-rankprogress *ngIf="UserRank"></app-rankprogress></p>
             </div>
         </div>                
-        <a class="last-game" href="">
+        <button id="last-game" (click)="this.replayLastGame()">
             <h2>Replay de partie</h2>
             <p class="replay-last"><i class="fas fa-redo"></i>  Revoyez votre dernière partie</p>
-        </a>
-        <button class="choose-history" (click)="showHistory()">
-            <h2><i class="fas fa-history"></i> Visualiser une autre partie</h2>
         </button>
     </div>
     <div class="game-options focus">
