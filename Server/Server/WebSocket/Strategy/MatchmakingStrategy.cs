@@ -35,7 +35,7 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie demandée (ici "matchmaking")</param>
         /// <param name="response">Réponse à envoyer au client (modifiée par référence)</param>
         /// <param name="type">Type de réponse à envoyer (modifié par référence)</param>
-        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
+        public void Execute(IClient player, string[] data, GameType gameType, ref string response, ref string type)
         {
             Server.WaitingPlayers.Enqueue(player);
             int initialNbMatchmakingGames = Server.MatchmakingGames.Count();
@@ -60,14 +60,14 @@ namespace WebSocket.Strategy
             type = "Send_";
         }
 
-        private void HandleFirstPlayer(Client player, int idLobby, ref string response, ref MatchmakingState state)
+        private void HandleFirstPlayer(IClient player, int idLobby, ref string response, ref MatchmakingState state)
         {
             Server.Lobbies[idLobby].Player1 = player;
             // Attente du second joueur
             state = WaitForCondition(() => Server.WaitingPlayers.Count >= 2, () => !Server.Lobbies.ContainsKey(idLobby));
             if (state == MatchmakingState.OK)
             {
-                Client opponement = Server.Lobbies[idLobby].Player2;
+                IClient opponement = Server.Lobbies[idLobby].Player2;
                 string opponentUsername = opponement.User.Name;
                 int opponentElo = opponement.User.Elo;
                 Server.WaitingPlayers.Dequeue();
@@ -75,14 +75,14 @@ namespace WebSocket.Strategy
             }
         }
 
-        private void HandleSecondPlayer(Client player, int idLobby, int initialNbMatchmakingGames, ref string response, ref MatchmakingState state)
+        private void HandleSecondPlayer(IClient player, int idLobby, int initialNbMatchmakingGames, ref string response, ref MatchmakingState state)
         {
             Server.Lobbies[idLobby].Player2 = player;
             // Attente de la création de la partie
             state = WaitForCondition(() => Server.MatchmakingGames.Count > initialNbMatchmakingGames, () => !Server.Lobbies.ContainsKey(idLobby));
             if (state == MatchmakingState.OK)
             {
-                Client opponement = Server.Lobbies[idLobby].Player1;
+                IClient opponement = Server.Lobbies[idLobby].Player1;
                 string opponentUsername = opponement.User.Name;
                 int opponentElo = opponement.User.Elo;
                 Server.WaitingPlayers.Dequeue();

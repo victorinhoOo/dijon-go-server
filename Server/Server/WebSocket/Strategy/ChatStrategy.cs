@@ -15,7 +15,7 @@ namespace WebSocket.Strategy
         private const int DATA_RECIPIENT_INDEX = 2; // Index pour le destinataire
         private const int DATA_MESSAGE_INDEX = 3;   // Index pour le message
 
-        public void Execute(Client sender, string[] data, GameType gameType, ref string response, ref string type)
+        public void Execute(IClient sender, string[] data, GameType gameType, ref string response, ref string type)
         {
             string recipient = data[DATA_RECIPIENT_INDEX];
             string message = data[DATA_MESSAGE_INDEX];
