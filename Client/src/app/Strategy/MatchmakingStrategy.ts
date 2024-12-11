@@ -3,6 +3,7 @@ import { Game } from '../Model/Game';
 import { WebsocketService } from '../websocket.service';
 import { User } from '../Model/User';
 import Swal from 'sweetalert2';
+import { MatchmakingPopupDisplayer } from '../MatchmakingPopupDisplayer';
 
 // Constantes pour les index de tableau
 const INDEX_LOBBY = 3;
@@ -16,7 +17,11 @@ const INDEX_JOIN_LOBBY = 0;
 export class MatchmakingStrategy implements IStrategy {
   private matchmakingResolve: ((value: void) => void) | null = null;
 
-  public constructor(private websocketService: WebsocketService) {}
+  private matchmakingPopupDisplayer: MatchmakingPopupDisplayer;
+
+  public constructor(private websocketService: WebsocketService) {
+    this.matchmakingPopupDisplayer = new MatchmakingPopupDisplayer();
+  }
 
   /**
    * Exécute la stratégie de matchmaking.
@@ -78,24 +83,8 @@ export class MatchmakingStrategy implements IStrategy {
   }
 
   private confirmMatchmaking(opponentUsername: string, opponentElo: string) {
-    let user = new User(opponentUsername,'',parseInt(opponentElo))
-    return Swal.fire({
-      title: `Une partie a été trouvée contre ${user.Username} (Rank: ${user.getRank()})`,
-      text: 'Voulez-vous la rejoindre ?',
-      showConfirmButton: true,
-      showCancelButton: true,
-      confirmButtonText: 'Oui',
-      cancelButtonText: 'Non',
-      customClass: {
-        confirmButton: 'custom-yes-button',
-        cancelButton: 'custom-no-button',
-        timerProgressBar: "custom-timer-progress-bar"
-        
-      },
-      timer: 10000,
-      timerProgressBar: true,
-      didOpen: () => {
-        
-    }});
+    let user = new User(opponentUsername,'',parseInt(opponentElo));
+     return this.matchmakingPopupDisplayer.displayMatchmakingPopup(user);
+    
   }
 }
