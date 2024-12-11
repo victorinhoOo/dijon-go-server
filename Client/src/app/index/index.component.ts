@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ComponentRef } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MatIcon } from '@angular/material/icon';
 import { UserCookieService } from '../Model/UserCookieService';
@@ -64,7 +64,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
     private router: Router,
     private httpClient: HttpClient,
     private websocketService: WebsocketService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private appRef: ApplicationRef,
+    private injector: Injector
   ) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
@@ -350,7 +353,6 @@ private populateLeaderboard(): void {
     },
   });
 }
-
 public async replayLastGame():Promise<void>{
   let token = this.userCookieService.getToken();
   let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));

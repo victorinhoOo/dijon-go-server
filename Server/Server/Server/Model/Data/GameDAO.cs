@@ -116,6 +116,44 @@ namespace Server.Model.Data
 
             return games;
         }
+        /// <inheritdoc/> 
+        public int GetLastGameIdByToken(string token)
+        {
+            string id = "";
+            database.Connect();
+            try
+            {
+                string query = @"
+                SELECT
+                    g.id,
+                    CASE 
+                        WHEN g.winner_id = u.idUser THEN 1
+                        ELSE 0
+                    END AS won
+                FROM savedgame g
+                INNER JOIN user u1 ON g.player1_id = u1.idUser
+                INNER JOIN user u2 ON g.player2_id = u2.idUser
+                INNER JOIN user u ON (u.idUser = g.player1_id OR u.idUser = g.player2_id)
+                INNER JOIN tokenuser t ON u.idToken = t.idToken
+                WHERE t.token = @token
+                ORDER BY g.date DESC
+                LIMIT 1";
+
+
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@token", token }
+                };
+                var result = database.ExecuteQuery(query, parameters);
+                id = result.Rows[0]["id"].ToString();
+            }
+            finally
+            {
+                database.Disconnect();
+            }
+            logger.LogInformation($"Récupération de l'id de la dernière partie : {id}");
+            return Convert.ToInt32(id);
+        }
 
         /// <inheritdoc/>
         public GameInfoDTO GetGameById(int id)
@@ -223,5 +261,6 @@ namespace Server.Model.Data
             return gameStates;
         }
 
+        
     }
 }

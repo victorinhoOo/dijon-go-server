@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ComponentRef, ApplicationRef, EmbeddedViewRef, ComponentFactoryResolver, Injector } from '@angular/core';
 import { GridComponent } from '../grid/grid.component';
 import { UserCookieService } from '../Model/UserCookieService';
 import { environment } from '../environment';
@@ -10,13 +10,14 @@ import { firstValueFrom } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { IGameBoardDrawer } from '../IGameBoardDrawer';
 import { GameBoardDrawer } from '../GameBoardDrawer';
-
+import Swal from 'sweetalert2';
+import { HistoryComponent } from '../history/history.component';
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
 
 @Component({
   selector: 'app-replay-screen',
   standalone: true,
-  imports: [GridComponent, MatIcon],
+  imports: [GridComponent, MatIcon, HistoryComponent],
   templateUrl: './replay-screen.component.html',
   styleUrl: './replay-screen.component.css',
 })
@@ -38,7 +39,10 @@ export class ReplayScreenComponent {
   constructor(
     private userCookieService: UserCookieService,
     private route: ActivatedRoute,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private appRef: ApplicationRef,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private injector: Injector
   ) {
     this.stateNumber = 0;
     this.boardDrawer = new GameBoardDrawer();
@@ -179,5 +183,30 @@ export class ReplayScreenComponent {
   public lastState(): void {
     this.stateNumber = this.states.length - 1;
     this.displayState(this.stateNumber);
+  }
+
+  
+  public showHistory() {
+    const componentRef = this.createComponent(HistoryComponent);
+    const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0];
+
+    Swal.fire({
+      title: 'Visualiser une autre de vos parties',
+      html: domElem,
+      width: '55%',
+      showConfirmButton: false,
+      showCloseButton: true,
+      didOpen: () => {
+        this.appRef.attachView(componentRef.hostView);
+      },
+      willClose: () => {
+        componentRef.destroy();
+      }
+    });
+  }
+
+  private createComponent(component: any): ComponentRef<any> {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
+    return componentFactory.create(this.injector);
   }
 }
