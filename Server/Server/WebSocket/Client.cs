@@ -11,7 +11,7 @@ namespace WebSocket
     /// <summary>
     /// Classe qui sert d'intermédiaire entre le client et le serveur
     /// </summary>
-    public class Client
+    public class Client : IClient
     {
         private TcpClient client;
         private NetworkStream stream;
@@ -28,7 +28,15 @@ namespace WebSocket
         /// <summary>
         /// Récupère ou modifie l'utilisateur associé au client
         /// </summary>
-        public GameUserDTO User { get => user; set => user = value; }
+        public GameUserDTO User { get => user; }
+
+        public void ChangeUser(GameUserDTO user)
+        {
+                this.user.Token = user.Token;
+            this.user.Name = user.Name;
+            this.user.Elo = user.Elo;
+            this.user.Id = user.Id;
+        }
 
         /// <summary>
         /// Reçois un message du client
