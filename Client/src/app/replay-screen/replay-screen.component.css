@@ -7,11 +7,22 @@
     width: 100%;
 }
 
+#next, #previous, #first, #last{
+    border: none; 
+    background: transparent;
+}
+
+#move-number{
+    width: 60px;
+}
+
 #nav-container{
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    align-items: center;
 }
+
 
 @media (max-width:750px){
 
