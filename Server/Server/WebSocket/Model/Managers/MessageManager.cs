@@ -22,6 +22,17 @@ namespace WebSocket.Model.Managers
         }
 
         /// <summary>
+        /// Constructeur pour les tests
+        /// </summary>
+        /// <param name="messageDAO"></param>
+        /// <param name="userDAO"></param>
+        public MessageManager(IMessageDAO messageDAO, IUserDAO userDAO)
+        {
+            this.messageDAO = messageDAO;
+            this.userDAO = userDAO;
+        }
+
+        /// <summary>
         /// Ajoute un message à la base de données.
         /// </summary>
         /// <param name="senderUserName">Le nom d'utilisateur de l'envoyeur du message</param>
