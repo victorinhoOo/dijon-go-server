@@ -67,16 +67,28 @@ export class User {
     public get Elo(): number {
         return this.elo;
     }
-
+    /**
+    * set l'email de l'utilisateur utilise pour les tests
+    */
+    public set Email(value: string)
+    {
+        this.email = value;
+    }
     /**
      * Renvoie le rang de l'utilisateur à partir de son Elo.
      */
     public getRank(): string {
-        for (const entry of this.rankDictionary) {
-            if (this.elo < entry.maxElo) {
-                return entry.rank;
-            }
+        let rank = "9 Dan"; // Valeur par défaut si l'Elo est supérieur ou égal à 3600
+        let index = 0;
+
+     // parcour le tableau a la recherche du rang du joueur,sort quand le rang est trouvé ou tableau fini
+        while (this.elo >= this.rankDictionary[index].maxElo && this.Elo < 3600) 
+        {
+            index++;
+            rank = this.rankDictionary[index].rank; // Mise à jour du rang
         }
-        return "9 Dan"; // Valeur par défaut si l'Elo est supérieur ou égal à 3600
+    
+        return rank;
     }
+    
 }

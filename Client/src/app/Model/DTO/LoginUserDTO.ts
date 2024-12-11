@@ -10,6 +10,14 @@ export class LoginUserDTO {
       this.username = username;
       this.password = password;
     }
-  
+    
+    /**
+   * Obtient le nom d'utilisateur. utilie pour les test
+   * @returns Le nom d'utilisateur
+   */
+  public get Username(): string {
+    return this.username;
+  }
+
 }
   

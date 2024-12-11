@@ -28,7 +28,7 @@ export class UpdateUserDTO {
     public get Email(): string {
         return this.email;
     }
-
+    
     /**
      * Renvoi l'ancien mot de passe de l'utilisateur
      */
