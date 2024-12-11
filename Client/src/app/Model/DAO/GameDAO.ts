@@ -3,6 +3,12 @@ import { map, Observable } from 'rxjs';
 import { AvailableGameInfoDTO } from '../DTO/AvailableGameInfoDTO';
 import { environment } from '../../environment';
 import { GameInfoDTO } from '../DTO/GameInfoDTO';
+import { GameStateDTO } from '../DTO/GameStateDTO';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
 
 /**
  * Gère les requêtes HTTP vers l'API concernant les parties de jeu
@@ -33,13 +39,52 @@ export class GameDAO {
    * @returns Un Observable qui émet la liste des parties jouées
    */
   public GetGamesPlayed(token: string): Observable<GameInfoDTO[]> {
-    const params = new HttpParams().set('token', token); 
+    const params = new HttpParams().set('token', token);
     return this.http
       .post<{ games: GameInfoDTO[] }>(
-        `${environment.apiUrl}/Games/Played-games`,null, { params }
+        `${environment.apiUrl}/Games/Played-games`,
+        null,
+        { params }
       )
       .pipe(map((response) => response.games));
   }
 
+  /**
+   * Récupère les informations d'une partie en fonction de son identifiant
+   * @param id identifiant de la partie
+   * @returns les informations de la partie
+   */
+  public GetGameById(id: number): Observable<GameInfoDTO> {
+    const params = new HttpParams().set('id', id);
+    return this.http
+      .post<{ game: GameInfoDTO }>(`${environment.apiUrl}/Games/Game`, null, {
+        params,
+      })
+      .pipe(map((response) => response.game));
+  }
 
+  /**
+   * Récupère les états d'une partie en fonction de son identifiant
+   * @param id identifiant de la partie
+   * @returns les états de la partie
+   */
+  public GetGameStatesById(id: number): Observable<GameStateDTO[]> {
+    const params = new HttpParams().set('id', id);
+    return this.http
+      .post<{ states: GameStateDTO[] }>(
+        `${environment.apiUrl}/Games/Game-states`,
+        null,
+        { params }
+      )
+      .pipe(map((response) => response.states));
+  }
+
+  public GetLastGameId(token: string): Observable<number> {
+    const params = new HttpParams().set('token', token);
+    return this.http
+      .post<{ id: number }>(`${environment.apiUrl}/Games/Last-game-id`, null, {
+        params,
+      })
+      .pipe(map((response) => response.id));
+  }
 }

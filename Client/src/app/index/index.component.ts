@@ -14,6 +14,7 @@ import { UserDAO } from '../Model/DAO/UserDAO';
 import { RankprogressComponent } from "../rankprogress/rankprogress.component";
 import { CommonModule } from '@angular/common';
 import { PlayerListComponent } from '../player-list/player-list.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -348,6 +349,15 @@ private populateLeaderboard(): void {
       });
     },
   });
+}
+
+public async replayLastGame():Promise<void>{
+  let token = this.userCookieService.getToken();
+  let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));
+  console.log(id);
+  let game = await firstValueFrom(this.gameDAO.GetGameById(id));
+  let size = game["size"];
+  this.router.navigate(['/replay', id, size]);
 }
 
   
