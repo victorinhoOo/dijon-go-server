@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ComponentRef } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MatIcon } from '@angular/material/icon';
 import { UserCookieService } from '../Model/UserCookieService';
@@ -14,6 +14,7 @@ import { UserDAO } from '../Model/DAO/UserDAO';
 import { RankprogressComponent } from "../rankprogress/rankprogress.component";
 import { CommonModule } from '@angular/common';
 import { PlayerListComponent } from '../player-list/player-list.component';
+import { HistoryComponent } from '../history/history.component';
 
 @Component({
   selector: 'app-index',
@@ -63,7 +64,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
     private router: Router,
     private httpClient: HttpClient,
     private websocketService: WebsocketService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private appRef: ApplicationRef,
+    private injector: Injector
   ) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
@@ -350,5 +354,27 @@ private populateLeaderboard(): void {
   });
 }
 
-  
+  public showHistory() {
+    const componentRef = this.createComponent(HistoryComponent);
+    const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0];
+
+    Swal.fire({
+      title: 'Visualiser une autre de vos parties',
+      html: domElem,
+      width: '55%',
+      showConfirmButton: false,
+      showCloseButton: true,
+      didOpen: () => {
+        this.appRef.attachView(componentRef.hostView);
+      },
+      willClose: () => {
+        componentRef.destroy();
+      }
+    });
+  }
+
+  private createComponent(component: any): ComponentRef<any> {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
+    return componentFactory.create(this.injector);
+  }
 }

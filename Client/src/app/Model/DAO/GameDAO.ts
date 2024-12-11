@@ -4,10 +4,14 @@ import { AvailableGameInfoDTO } from '../DTO/AvailableGameInfoDTO';
 import { environment } from '../../environment';
 import { GameInfoDTO } from '../DTO/GameInfoDTO';
 import { GameStateDTO } from '../DTO/GameStateDTO';
+import { Injectable } from '@angular/core';
 
 /**
  * Gère les requêtes HTTP vers l'API concernant les parties de jeu
  */
+@Injectable({
+  providedIn: 'root'
+})
 export class GameDAO {
   /**
    * Constructeur de la classe GameDAO.

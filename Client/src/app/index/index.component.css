@@ -79,6 +79,35 @@
     transition: outline 0.3s ease-in-out;
 }
 
+.choose-history{
+    text-decoration: none;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 90px;
+    background-color: #EBB840;
+    padding-left: 20px;
+    border: none;  
+    padding-bottom: 10px;
+    padding-right: 20px;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.choose-history:hover {
+    background-color: #f3ad09;
+    transform: scale(1.02);
+}
+
+.choose-history h2 {
+    color: black;
+    margin-bottom: 0;
+}
+
+.choose-history i {
+    margin-right: 5px;
+}
 
 
 .last-game {
@@ -614,4 +643,14 @@
 /* Avatar pour la liste des joueurs connectés */
 ::ng-deep .player-avatar {
     margin-right: 8px !important;
+}
+
+::ng-deep .history-popup {
+  max-width: none !important;
+  width: auto !important;
+  margin: 20px !important;
+}
+
+::ng-deep .history-popup-container {
+  padding: 0 !important;
 }
