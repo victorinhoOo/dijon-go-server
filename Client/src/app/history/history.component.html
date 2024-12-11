@@ -5,11 +5,12 @@
       class="game-line"
       [ngStyle]="{ 'border-color': game.Won() ? '#96CEB4' : '#FF8080' }"
       tabindex="0"
+      (click)="replayGame(game)"
     >
       <div class="date-rule-information">
         <div class="replay-container">
           <!-- Icône Replay -->
-          <button class="replay-button" (click)="replayGame(game)">
+          <button class="replay-button">
             <mat-icon class="replay-icon">replay</mat-icon>
           </button>
           <div class="replay-text">
