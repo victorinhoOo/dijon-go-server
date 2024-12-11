@@ -8,6 +8,8 @@ import {IObserver} from '../Observer/IObserver';
 import {Observable} from '../Observer/Observable';
 import {environment} from '../environment';
 import Swal from 'sweetalert2';
+import { IGameBoardDrawer } from '../IGameBoardDrawer';
+import { GameBoardDrawer } from '../GameBoardDrawer';
 
 
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
@@ -31,6 +33,7 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
   private playerPseudo: string;
   private game: Game;
   private size: number;
+  private boardDrawer: IGameBoardDrawer;
 
 
   public constructor(private websocketService: WebsocketService,private userCookieService: UserCookieService,private route: ActivatedRoute){
@@ -40,6 +43,7 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
     this.rule = '';
     this.game = this.websocketService.getGame();
     this.game.register(this);
+    this.boardDrawer = new GameBoardDrawer();
   }
 
 
@@ -264,43 +268,7 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
 
   private updateBoard() {
     let board = this.game.getBoard();
-    let lines = board.split('!');
-    const colorMap: { [key: string]: string } = {
-        'White': 'white',
-        'Black': 'black',
-        'Empty': 'transparent'
-    };
-
-    for (let i = 1; i < lines.length; i++) {
-        let stoneData = lines[i].split(',');
-        let x = stoneData[0];
-        let y = stoneData[1];
-        let color = stoneData[2];
-        let stone = document.getElementById(`${x}-${y}`);
-        this.discardKo(stone);
-
-        if (colorMap[color]) {
-            stone!.style.background = colorMap[color];
-        } else if (color === 'Ko') {
-            this.drawKo(stone);
-        }
-    }
-  }
-
-  private discardKo(stone: HTMLElement | null):void{
-    if(stone != null){
-      stone.style.border = "none";
-      stone.style.borderRadius = "50%";
-    }
-
-  }
-
-  private drawKo(stone: HTMLElement | null):void{
-    stone!.style.borderRadius = "0";
-    stone!.style.border = "5px solid #A7001E";
-    stone!.style.boxSizing = "border-box";
-    stone!.style.background = "transparent";
-
+    this.boardDrawer.drawBoardState(board);
   }
 
   private updateCaptures(captures: string, playerCapturesContainer: HTMLElement, opponentCapturesContainer: HTMLElement): void {

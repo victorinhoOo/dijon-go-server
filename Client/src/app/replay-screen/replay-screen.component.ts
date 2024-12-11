@@ -8,6 +8,8 @@ import { HttpClient } from '@angular/common/http';
 import { GameStateDTO } from '../Model/DTO/GameStateDTO';
 import { firstValueFrom } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
+import { IGameBoardDrawer } from '../IGameBoardDrawer';
+import { GameBoardDrawer } from '../GameBoardDrawer';
 
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
 
@@ -31,12 +33,15 @@ export class ReplayScreenComponent {
 
   private states: GameStateDTO[];
 
+  private boardDrawer: IGameBoardDrawer;
+
   constructor(
     private userCookieService: UserCookieService,
     private route: ActivatedRoute,
     private httpClient: HttpClient
   ) {
     this.stateNumber = 0;
+    this.boardDrawer = new GameBoardDrawer();
     this.gameDAO = new GameDAO(this.httpClient);
     this.playerPseudo = this.userCookieService.getUser()!.Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
     this.playerAvatar = PROFILE_PIC_URL + this.playerPseudo;
@@ -101,41 +106,7 @@ export class ReplayScreenComponent {
     input.value = state.MoveNumber().toString();
     this.updateCapturedCounters(blackCaptured.toString(), whiteCaptured.toString());
     let board = state.Board();
-    let lines = board.split('!');
-    const colorMap: { [key: string]: string } = {
-      White: 'white',
-      Black: 'black',
-      Empty: 'transparent',
-    };
-
-    for (let i = 1; i < lines.length; i++) {
-      let stoneData = lines[i].split(',');
-      let x = stoneData[0];
-      let y = stoneData[1];
-      let color = stoneData[2];
-      let stone = document.getElementById(`${x}-${y}`);
-      this.discardKo(stone);
-
-      if (colorMap[color]) {
-        stone!.style.background = colorMap[color];
-      } else if (color === 'Ko') {
-        this.drawKo(stone);
-      }
-    }
-  }
-
-  private discardKo(stone: HTMLElement | null): void {
-    if (stone != null) {
-      stone.style.border = 'none';
-      stone.style.borderRadius = '50%';
-    }
-  }
-
-  private drawKo(stone: HTMLElement | null): void {
-    stone!.style.borderRadius = '0';
-    stone!.style.border = '5px solid #A7001E';
-    stone!.style.boxSizing = 'border-box';
-    stone!.style.background = 'transparent';
+    this.boardDrawer.drawBoardState(board);
   }
 
   private async loadGameStates(): Promise<void> {
