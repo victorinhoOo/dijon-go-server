@@ -26,10 +26,14 @@ namespace WebSocket
         }
 
         /// <summary>
-        /// Récupère ou modifie l'utilisateur associé au client
+        /// Récupère l'utilisateur associé au client
         /// </summary>
         public GameUserDTO User { get => user; }
 
+        /// <summary>
+        /// Change l'utilisateur associé au client
+        /// </summary>
+        /// <param name="user">Le nouvel utilisateur</param>
         public void ChangeUser(GameUserDTO user)
         {
                 this.user.Token = user.Token;

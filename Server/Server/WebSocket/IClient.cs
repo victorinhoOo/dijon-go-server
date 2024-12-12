@@ -17,18 +17,22 @@ namespace WebSocket
         /// </summary>
         public GameUserDTO User { get; }
 
+        /// <summary>
+        /// Change l'utilisateur associé au client
+        /// </summary>
+        /// <param name="user">le nouvel utilisateur</param>
         public void ChangeUser(GameUserDTO user);
 
         /// <summary>
         /// Reçois un message du client
         /// </summary>
         /// <returns>un tableau d'octets contenant la trame qui encapsule le message</returns>
-        byte[] ReceiveMessage();
+        public byte[] ReceiveMessage();
 
         /// <summary>
         /// Envoie un message au client
         /// </summary>
         /// <param name="bytes">tableau d'octets contenant la trame qui encapsule le message</param>
-        void SendMessage(byte[] bytes);
+        public void SendMessage(byte[] bytes);
     }
 }

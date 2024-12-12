@@ -21,7 +21,7 @@ namespace WebSocket.Strategy
         /// <summary>
         /// Temps en secondes au bout duquel le matchmaking s'annule 
         /// </summary>
-        private const int TIMEOUT_SECONDS = 20;
+        private const int TIMEOUT_SECONDS = 2000000;
 
         public MatchmakingStrategy()
         {
