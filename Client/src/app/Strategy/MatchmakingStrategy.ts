@@ -3,7 +3,7 @@ import { Game } from '../Model/Game';
 import { WebsocketService } from '../websocket.service';
 import { User } from '../Model/User';
 import Swal from 'sweetalert2';
-import { MatchmakingPopupDisplayer } from '../MatchmakingPopupDisplayer';
+import { GamePopupDisplayer } from '../GamePopupDisplayer';
 
 // Constantes pour les index de tableau
 const INDEX_LOBBY = 3;
@@ -17,10 +17,10 @@ const INDEX_JOIN_LOBBY = 0;
 export class MatchmakingStrategy implements IStrategy {
   private matchmakingResolve: ((value: void) => void) | null = null;
 
-  private matchmakingPopupDisplayer: MatchmakingPopupDisplayer;
+  private matchmakingPopupDisplayer: GamePopupDisplayer;
 
   public constructor(private websocketService: WebsocketService) {
-    this.matchmakingPopupDisplayer = new MatchmakingPopupDisplayer();
+    this.matchmakingPopupDisplayer = new GamePopupDisplayer();
   }
 
   /**

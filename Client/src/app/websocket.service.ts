@@ -31,9 +31,9 @@ export class WebsocketService implements IObserver {
    */
   constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient, private connectedUsersService: ConnectedUsersService, private chatService: ChatService) {
     this.websocket = null;
-    this.game = new Game();
+    this.game = new Game(this.router);
     this.game.register(this);
-    this.interpreter = new Interpreter(this.game, this, this.connectedUsersService, this.chatService, this.userCookieService);
+    this.interpreter = new Interpreter(this.game,this.httpclient, this, this.connectedUsersService, this.chatService, this.userCookieService);
     this.userDAO = new UserDAO(httpclient);
   }
 
@@ -68,13 +68,6 @@ export class WebsocketService implements IObserver {
 
       this.websocket.onmessage = (message) => {
         this.interpreter.interpret(message.data);
-        if (this.game.isEndOfGame()) {
-          console.log('end of game');
-          let won = this.game.getWon();
-          let player1score = this.game.getPlayerScore();
-          let player2score = this.game.getOpponentScore();
-          this.endGame(won, player1score, player2score);
-        }
       };
 
       this.websocket.onclose = () => {
@@ -89,42 +82,6 @@ export class WebsocketService implements IObserver {
    */
   public isWebsocketConnected(): boolean{
     return this.websocket?.OPEN ? true : false;
-  }
-
-  /**
-   * Gère la fin de partie en affichant un popup indiquant le gagnant et son score ainsi que le nouvel elo
-   * @param won gagné ou non
-   * @param player1score score du joueur 
-   * @param player2score score de son adversaire
-   */
-  private endGame(won: boolean, player1score: string, player2score: string) {
-    // On récupère les nouvelles informations utilisateurs car elles ont été modifiées (elo)
-    let token = this.userCookieService.getToken();
-    this.userDAO.GetUser(token).subscribe({
-      next: (user: User) => {
-        this.userCookieService.setUser(user);
-        Swal.fire({
-          title: won ? 'Victoire ! 🌸' : 'Défaite 👺',
-          html: `
-          <div class="game-result">
-            <p>Score final : ${player1score} - ${player2score}</p>
-            <div class="elo-message">
-              Rang : ${user.getRank()}
-            </div>
-          </div>
-        `,
-          icon: won ? 'success' : 'error',
-          confirmButtonText: 'Fermer',
-          customClass: {
-            confirmButton: 'custom-ok-button',
-          },
-        }).then(() => {
-          // Redirection vers l'index après la fermeture du popup
-          this.game.destroy();
-          this.router.navigate(['/index']);
-        });
-      }
-    });
   }
 
 

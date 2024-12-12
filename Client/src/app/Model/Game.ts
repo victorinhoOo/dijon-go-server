@@ -1,4 +1,7 @@
 import { Observable } from "../Observer/Observable";
+import { GamePopupDisplayer } from "../GamePopupDisplayer";
+import { User } from "./User";
+import { Router } from "@angular/router";
 
 const ONE_HOUR_IN_MS = 3600000;
 const TIMER_INTERVAL = 1000;
@@ -6,6 +9,7 @@ const TIMER_INTERVAL = 1000;
 export class Game extends Observable{
 
   private currentTurn: string;
+  
   private playerColor: string;
 
   private playerMs:number;
@@ -28,8 +32,10 @@ export class Game extends Observable{
 
   private timerInterval: NodeJS.Timeout | null;
 
+  private gameDisplayer: GamePopupDisplayer
 
-  public constructor() {
+
+  public constructor(private router: Router) {
     super();
     this.currentTurn = '';
     this.playerColor = '';
@@ -43,6 +49,7 @@ export class Game extends Observable{
     this.won = false;
     this.playerScore = "";
     this.opponentScore = "";
+    this.gameDisplayer = new GamePopupDisplayer();
   }
 
   /**
@@ -200,13 +207,17 @@ export class Game extends Observable{
   /**
    * Exécuté à la fin de la partie, réinitialise les timers et les attributs
    */
-  public endGame(playerScore: string, opponentScore: string, won: boolean): void {
+  public endGame(playerScore: string, opponentScore: string, won: boolean, user: User): void {
     this.endOfGame = true;
     this.playerScore = playerScore;
     this.opponentScore = opponentScore;
     this.won = won;
     this.notifyChange(this);
     this.clearTimer();
+    this.gameDisplayer.displayEndGamePopup(this.won, this.playerScore, this.opponentScore, user).then(() => {
+      this.destroy();
+      this.router.navigate(['/index']);
+    });
   }
 
   /**

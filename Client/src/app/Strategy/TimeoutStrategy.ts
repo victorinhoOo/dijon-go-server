@@ -1,16 +1,16 @@
 import { IStrategy } from './IStrategy';
 import { Game } from '../Model/Game';
-import { MatchmakingPopupDisplayer } from '../MatchmakingPopupDisplayer';
+import { GamePopupDisplayer } from '../GamePopupDisplayer';
 
 /**
  * Implémentation de la stratégie de timeout
  */
 export class TimeoutStrategy implements IStrategy {
 
-    private popUpDisdaplayer: MatchmakingPopupDisplayer;
+    private popUpDisdaplayer: GamePopupDisplayer;
 
     public constructor() {
-        this.popUpDisdaplayer = new MatchmakingPopupDisplayer();
+        this.popUpDisdaplayer = new GamePopupDisplayer();
     }
     public execute(data: string[], idGame: {value: string}, game:Game):void {
        this.popUpDisdaplayer.displayTimeOutPopup();

@@ -17,6 +17,7 @@ import { ConnectedUsersService } from "./services/connected-users.service";
 import { ChatService } from "./services/chat.service";
 import { ChatStrategy } from "./Strategy/ChatStrategy";
 import { UserCookieService } from "./Model/UserCookieService";
+import { HttpClient } from "@angular/common/http";
 
 
 /**
@@ -59,13 +60,13 @@ export class Interpreter implements IObserver{
   /**
    * Constructeur de la classe
    */
-  constructor(game:Game, private websocketService: WebsocketService, private connectedUsersService: ConnectedUsersService, private chatService: ChatService, private userCookieService: UserCookieService) {
+  constructor(game:Game,private http:HttpClient, private websocketService: WebsocketService, private connectedUsersService: ConnectedUsersService, private chatService: ChatService, private userCookieService: UserCookieService) {
     this.idGame = {value: ''};
     this.game = game;
     this.game.register(this);
     let matchmakingStrategy = new MatchmakingStrategy(this.websocketService);
     this.strategies = new Map<string, IStrategy>();
-    this.strategies.set("EndOfGame", new EndOfGameStrategy());
+    this.strategies.set("EndOfGame", new EndOfGameStrategy(this.userCookieService, this.http));
     this.strategies.set("Init", new InitIdGameStrategy());
     this.strategies.set("Create", matchmakingStrategy);
     this.strategies.set("Join", matchmakingStrategy);
