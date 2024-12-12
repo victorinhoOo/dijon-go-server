@@ -32,6 +32,11 @@ namespace Server.Model.Data
             return availableGames;
         }
 
+        public GameInfoDTO GetGameById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<GameInfoDTO> GetGamesByToken(string token)
         {
             // Simule la récupération des jeux par token
@@ -46,6 +51,11 @@ namespace Server.Model.Data
                 new GameStateDTO("BoardState1", 0, 0, 1),
                 new GameStateDTO("BoardState2", 1, 1, 2)
             };
+        }
+
+        public int GetLastGameIdByToken(string token)
+        {
+            throw new NotImplementedException();
         }
     }
 } 
