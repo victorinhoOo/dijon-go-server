@@ -1,9 +1,9 @@
 import { Observable, of, throwError } from 'rxjs';
-import { User } from '../Model/User';
-import { RegisterUserDTO } from '../Model/DTO/RegisterUserDTO';
-import { LoginUserDTO } from '../Model/DTO/LoginUserDTO';
-import { UpdateUserDTO } from '../Model/DTO/UpdateUserDTO';
-import { IUserDAO } from '../Model/DAO/IUserDAO';
+import { User } from '../../Model/User';
+import { RegisterUserDTO } from '../../Model/DTO/RegisterUserDTO';
+import { LoginUserDTO } from '../../Model/DTO/LoginUserDTO';
+import { UpdateUserDTO } from '../../Model/DTO/UpdateUserDTO';
+import { IUserDAO } from '../../Model/DAO/IUserDAO';
 
 export class FakeUserDAO implements IUserDAO {
   private users: User[] = []; // Simule une base de données en mémoire

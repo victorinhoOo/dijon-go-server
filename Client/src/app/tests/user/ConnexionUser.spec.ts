@@ -1,8 +1,8 @@
-import { LoginUserDTO } from "../Model/DTO/LoginUserDTO";
-import { FakeUserDAO } from "./FakeUserDAO";
+import { LoginUserDTO } from "../../Model/DTO/LoginUserDTO";
+import { FakeUserDAO } from "../FakeDAO/FakeUserDAO";
 
 
-describe('FakeUserDAO', () => {
+describe('Test Connexion', () => {
     let dao: FakeUserDAO;
   
     beforeEach(() => {

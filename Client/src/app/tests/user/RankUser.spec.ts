@@ -1,7 +1,7 @@
-import { User } from "../Model/User";
-import { FakeUserDAO } from "./FakeUserDAO";
+import { User } from "../../Model/User";
+import { FakeUserDAO } from "../FakeDAO/FakeUserDAO";
 
-describe('User', () => {
+describe('Test Rank', () => {
     let fakeUserDAO: FakeUserDAO;
     let users: User[];
 
@@ -25,11 +25,11 @@ describe('User', () => {
 
         // Test pour bob avec Elo = 200
         const bob = users.find(user => user.Username === 'bob');
-        expect(bob?.getRank()).toBe('18 Kyu'); // Elo = 200 correspond à 19 Kyu
+        expect(bob?.getRank()).toBe('18 Kyu');
 
         // Test pour alice avec Elo = 150
         const alice = users.find(user => user.Username === 'alice');
-        expect(alice?.getRank()).toBe('19 Kyu'); // Elo = 150 correspond à 20 Kyu
+        expect(alice?.getRank()).toBe('19 Kyu');
 
         // Test pour un utilisateur avec un Elo supérieur à 3600 (9 Dan)
         const highEloUser = new User('highEloPlayer', 'highelo@example.com', 4000);

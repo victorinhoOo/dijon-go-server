@@ -11,19 +11,13 @@ import { environment } from '../../environment';
 /**
  * Gère les requêtes liées aux messages entre deux joueurs
  */
-export class MessageDAO {
+export class MessageDAO implements MessageDAO {
   private baseUrl: string;
 
   constructor(private http: HttpClient) {
     this.baseUrl = environment.apiUrl + '/Messages';
   }
 
-  /**
-   * Récupère la conversation entre l'utilisateur courant et un autre utilisateur
-   * @param token Le token de l'utilisateur courant
-   * @param usernameRecipient Le nom d'utilisateur de l'interlocuteur
-   * @returns Un Observable contenant la liste des messages
-   */
   public GetConversation(token: string, usernameRecipient: string): Observable<{ Messages: MessageDTO[] }> {
     const params = {
       token: token,

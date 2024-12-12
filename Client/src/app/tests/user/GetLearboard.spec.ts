@@ -1,7 +1,7 @@
-import { FakeUserDAO } from "./FakeUserDAO";
+import { FakeUserDAO } from "../FakeDAO/FakeUserDAO";
 
 
-describe('FakeUserDAO', () => {
+describe('Test Leaderboard', () => {
     let dao: FakeUserDAO;
   
     beforeEach(() => {
