@@ -62,6 +62,7 @@ export class ReplayScreenComponent {
    * Charge les états de la partie et affiche le 1er
    */
   async ngAfterViewInit(): Promise<void> {
+    this.states = [];
     this.hideGameElements();
     this.displayPlayersInformations();
     
