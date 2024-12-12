@@ -67,10 +67,13 @@ export class WebsocketService implements IObserver {
       };
 
       this.websocket.onmessage = (message) => {
-        let state = { end: false, won: "false", player1score: '0', player2score: '0' };
-        this.interpreter.interpret(message.data, state);
-        if (state.end) {
-          this.endGame(state.won, state.player1score, state.player2score);
+        this.interpreter.interpret(message.data);
+        if (this.game.isEndOfGame()) {
+          console.log('end of game');
+          let won = this.game.getWon();
+          let player1score = this.game.getPlayerScore();
+          let player2score = this.game.getOpponentScore();
+          this.endGame(won, player1score, player2score);
         }
       };
 
@@ -94,14 +97,14 @@ export class WebsocketService implements IObserver {
    * @param player1score score du joueur 
    * @param player2score score de son adversaire
    */
-  private endGame(won: string, player1score: string, player2score: string) {
+  private endGame(won: boolean, player1score: string, player2score: string) {
     // On récupère les nouvelles informations utilisateurs car elles ont été modifiées (elo)
     let token = this.userCookieService.getToken();
     this.userDAO.GetUser(token).subscribe({
       next: (user: User) => {
         this.userCookieService.setUser(user);
         Swal.fire({
-          title: won === "True" ? 'Victoire ! 🌸' : 'Défaite 👺',
+          title: won ? 'Victoire ! 🌸' : 'Défaite 👺',
           html: `
           <div class="game-result">
             <p>Score final : ${player1score} - ${player2score}</p>
@@ -110,13 +113,14 @@ export class WebsocketService implements IObserver {
             </div>
           </div>
         `,
-          icon: won === "True" ? 'success' : 'error',
+          icon: won ? 'success' : 'error',
           confirmButtonText: 'Fermer',
           customClass: {
             confirmButton: 'custom-ok-button',
           },
         }).then(() => {
           // Redirection vers l'index après la fermeture du popup
+          this.game.destroy();
           this.router.navigate(['/index']);
         });
       }

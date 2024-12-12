@@ -18,6 +18,14 @@ export class Game extends Observable{
 
   private captures : string;
 
+  private endOfGame: boolean;
+
+  private won: boolean;
+
+  private playerScore: string;
+
+  private opponentScore: string;
+
   private timerInterval: NodeJS.Timeout | null;
 
 
@@ -31,6 +39,43 @@ export class Game extends Observable{
     this.timerInterval = null;
     this.playerMs = ONE_HOUR_IN_MS;
     this.opponentMs = ONE_HOUR_IN_MS;
+    this.endOfGame = false;
+    this.won = false;
+    this.playerScore = "";
+    this.opponentScore = "";
+  }
+
+  /**
+   * Récupère le score de l'adversaire
+   * @returns le score de l'adversaire
+   */
+  public getOpponentScore():string{
+    return this.opponentScore;
+  }
+
+  /**
+   * Récupère le score du joueur
+   * @returns le score du joueur
+   */
+  public getPlayerScore():string{
+    return this.playerScore;
+  }
+
+  /**
+   * Détermine si le joueur a gagné ou non
+   * @returns true si le joueur a gagné, false sinon
+   */
+  public getWon():boolean{
+    return this.won;
+  }
+
+
+  /**
+   * Savoir si la partie est terminée
+   * @returns True si la partie est terminée, sinon false
+   */
+  public isEndOfGame(): boolean {
+    return this.endOfGame;
   }
 
   /**
@@ -155,7 +200,19 @@ export class Game extends Observable{
   /**
    * Exécuté à la fin de la partie, réinitialise les timers et les attributs
    */
-  public endGame(){
+  public endGame(playerScore: string, opponentScore: string, won: boolean): void {
+    this.endOfGame = true;
+    this.playerScore = playerScore;
+    this.opponentScore = opponentScore;
+    this.won = won;
+    this.notifyChange(this);
+    this.clearTimer();
+  }
+
+  /**
+   * Un joueur quitte la partie
+   */
+  public leaveGame():void{
     this.clearTimer();
     this.destroy();
   }
@@ -189,7 +246,7 @@ export class Game extends Observable{
     this.notifyChange(this);
   }
 
-  private destroy():void{
+  public destroy():void{
     this.currentTurn = '';
     this.playerColor = '';
     this.opponentPseudo = '';
@@ -197,6 +254,10 @@ export class Game extends Observable{
     this.captures = '';
     this.playerMs = ONE_HOUR_IN_MS;
     this.opponentMs = ONE_HOUR_IN_MS;
+    this.endOfGame = false;
+    this.won = false;
+    this.playerScore = "";
+    this.opponentScore = "";
     this.notifyChange(this);
   }
 

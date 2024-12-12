@@ -12,7 +12,7 @@ export class TimeoutStrategy implements IStrategy {
     public constructor() {
         this.popUpDisdaplayer = new MatchmakingPopupDisplayer();
     }
-    public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game):void {
+    public execute(data: string[], idGame: {value: string}, game:Game):void {
        this.popUpDisdaplayer.displayTimeOutPopup();
     }
 }

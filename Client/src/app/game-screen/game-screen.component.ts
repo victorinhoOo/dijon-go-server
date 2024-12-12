@@ -55,7 +55,7 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
    * Destruction du composant
    */
   public ngOnDestroy(): void {
-    this.game.endGame();
+    this.game.leaveGame();
   }
 
   /**

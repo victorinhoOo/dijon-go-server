@@ -25,7 +25,7 @@ export class CancelStrategy implements IStrategy {
      * @param idGame - Un objet contenant la valeur de l'identifiant du jeu.
      * @param game - Une instance de la classe Game représentant le jeu en cours.
      */
-    public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game: Game): void
+    public execute(data: string[], idGame: {value: string}, game: Game): void
     {
         if(idGame.value != ""){
             idGame.value = "";

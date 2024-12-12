@@ -94,13 +94,13 @@ export class Interpreter implements IObserver{
    * @param message message envoyé par le serveur websocket
    * @param state définit l'état de la partie (en cours ou terminée)
    */
-  public interpret(message: string, state: { end: boolean, won: string, player1score: string, player2score: string}): void {
+  public interpret(message: string): void {
     console.log("Received: " + message);
     let data = message.split('-');
-    let action = data[1];
+    let action = data[1]; // todo: valeur magique
     if (message.length <= 3) {
       action = "Init";
     } 
-    this.strategies.get(action)?.execute(data, state, this.idGame, this.game);
+    this.strategies.get(action)?.execute(data, this.idGame, this.game);
   }
 }

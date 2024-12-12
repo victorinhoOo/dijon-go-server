@@ -9,12 +9,9 @@ const WON_INDEX = 4;
  * Implémente la stratégie de fin de partie
  */
 export class EndOfGameStrategy implements IStrategy {
-    public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game):void{
-        state.player1score = data[PLAYER1_SCORE_INDEX];
-        state.player2score = data[PLAYER2_SCORE_INDEX];
-        state.won = data[WON_INDEX];
-        state.end = true;
+    public execute(data: string[], idGame: {value: string}, game:Game):void{
+        let won = data[WON_INDEX] == "True";
         idGame.value = "";
-        game.endGame();
+        game.endGame(data[PLAYER1_SCORE_INDEX], data[PLAYER2_SCORE_INDEX], won);
     }
 }
