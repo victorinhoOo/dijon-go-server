@@ -11,10 +11,10 @@
                 <p class="rank-value">{{UserRank}} <app-rankprogress *ngIf="UserRank"></app-rankprogress></p>
             </div>
         </div>                
-        <a class="last-game" href="">
+        <button id="last-game" (click)="this.replayLastGame()">
             <h2>Replay de partie</h2>
             <p class="replay-last"><i class="fas fa-redo"></i>  Revoyez votre dernière partie</p>
-        </a>
+        </button>
     </div>
     <div class="game-options focus">
         <button id="join-matchmaking" tabindex="0">

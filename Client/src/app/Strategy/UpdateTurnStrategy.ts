@@ -9,7 +9,7 @@ const SCORE_INDEX_OPPONENT = 4;
  */
 export class UpdateTurnStrategy implements IStrategy {
 
-    public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game):void {
+    public execute(data: string[], idGame: {value: string}, game:Game):void {
         let board = data[BOARD_INDEX];
         let score = `${data[SCORE_INDEX_PLAYER]};${data[SCORE_INDEX_OPPONENT]}`;
         game.changeTurn();

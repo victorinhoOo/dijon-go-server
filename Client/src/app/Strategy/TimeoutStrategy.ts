@@ -1,24 +1,18 @@
 import { IStrategy } from './IStrategy';
-import Swal from 'sweetalert2';
 import { Game } from '../Model/Game';
+import { GamePopupDisplayer } from '../GamePopupDisplayer';
 
 /**
  * Implémentation de la stratégie de timeout
  */
 export class TimeoutStrategy implements IStrategy {
-    public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game):void {
-        Swal.close();
-      
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000
-      });
 
-      Toast.fire({
-        icon: 'error',
-        title: 'Aucun adversaire trouvé'
-      });
+    private popUpDisdaplayer: GamePopupDisplayer;
+
+    public constructor() {
+        this.popUpDisdaplayer = new GamePopupDisplayer();
+    }
+    public execute(data: string[], idGame: {value: string}, game:Game):void {
+       this.popUpDisdaplayer.displayTimeOutPopup();
     }
 }

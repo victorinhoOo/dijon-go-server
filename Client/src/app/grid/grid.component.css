@@ -5,7 +5,6 @@
 }
 
 #global-container{
-    margin-top: 70px;
     cursor: not-allowed;
 }
 
@@ -149,7 +148,7 @@
     margin-left: 30px;
 }
 
-.rule-container {
+#rule-container {
     font-size: 13px;
     display: flex;
     justify-content: center; /* Centre l'élément horizontalement */

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ComponentRef } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MatIcon } from '@angular/material/icon';
 import { UserCookieService } from '../Model/UserCookieService';
@@ -14,7 +14,11 @@ import { UserDAO } from '../Model/DAO/UserDAO';
 import { RankprogressComponent } from "../rankprogress/rankprogress.component";
 import { CommonModule } from '@angular/common';
 import { PlayerListComponent } from '../player-list/player-list.component';
+import { firstValueFrom } from 'rxjs';
 
+/**
+ * Composant de la page d'accueil
+ */
 @Component({
   selector: 'app-index',
   standalone: true,
@@ -39,8 +43,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
 
   /**
- * Getter pour le lien d'affichage de l'avatar
- */
+   * Getter pour l'avatar de l'utilisateur
+   */
   public get Avatar(): string {
     return this.avatar;
   }
@@ -63,7 +67,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
     private router: Router,
     private httpClient: HttpClient,
     private websocketService: WebsocketService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private appRef: ApplicationRef,
+    private injector: Injector
   ) {
     this.avatar = 'https://localhost:7065/profile-pics/';
     this.token = '';
@@ -348,6 +355,19 @@ private populateLeaderboard(): void {
       });
     },
   });
+}
+
+/**
+ * Appel à l'API pour rejouer la dernière partie
+ */
+public async replayLastGame():Promise<void>{
+  let token = this.userCookieService.getToken();
+  let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));
+  console.log(id);
+  let game = await firstValueFrom(this.gameDAO.GetGameById(id));
+  let size = game["size"];
+  await this.router.navigate(['/replay', id, size]);
+  window.location.reload();
 }
 
   

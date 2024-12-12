@@ -4,8 +4,11 @@ import { ChatService } from "../services/chat.service";
 import { UserCookieService } from "../Model/UserCookieService";
 import { MessageDTO } from "../Model/DTO/MessageDTO";
 
-const DATA_SENDER_INDEX = 2; // Index pour l'expéditeur
+// Constantes pour les indices du tableau data
+const DATA_ACTION_INDEX = 1;  // Index pour l'action (Chat)
+const DATA_SENDER_INDEX = 2;  // Index pour l'expéditeur
 const DATA_MESSAGE_INDEX = 3; // Index pour le message
+const MINIMUM_DATA_LENGTH = 4; // Longueur minimale attendue du tableau data
 
 /**
  * Gère l'exécution des stratégies de chat dans le jeu.
@@ -22,14 +25,13 @@ export class ChatStrategy implements IStrategy {
      */
     public execute(
         data: string[],
-        state: { end: boolean; won: string; player1score: string; player2score: string; },
         idGame: { value: string; },
         game: Game
     ): void {
         // Format reçu: 0-Chat-sender-message
-        if (data.length >= 4) {
-            const sender = data[DATA_SENDER_INDEX]; // Utilisation de la constante pour l'expéditeur
-            const message = data[DATA_MESSAGE_INDEX]; // Utilisation de la constante pour le message
+        if (data.length >= MINIMUM_DATA_LENGTH) {
+            const sender = data[DATA_SENDER_INDEX];
+            const message = data[DATA_MESSAGE_INDEX];
             const receiver = this.userCookieService.getUser()!.Username;
             const messageDTO = new MessageDTO(sender, receiver, message, new Date());
             this.chatService.addMessage(messageDTO);

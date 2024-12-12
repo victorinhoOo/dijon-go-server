@@ -33,6 +33,28 @@ namespace Server.Model.Managers
             return gameDAO.GetGamesByToken(token);
         }
 
+
+        /// <summary>
+        /// Récupère l'id de la dernière partie jouée par un joueur
+        /// </summary>
+        /// <param name="token">Token utilisateur du joueur</param>
+        /// <returns>L'ID de la dernière partie joué par l'utilisateur</returns>
+        public int GetLastGameIdByToken(string token)
+        {
+            return this.gameDAO.GetLastGameIdByToken(token);
+        }
+
+
+        /// <summary>
+        /// Renvoi les infomations de la partie identifiée par l'ID
+        /// </summary>
+        /// <param name="id">Identifiant de la partie à récupérer</param>
+        /// <returns>Les informations de la partie en question</returns>
+        public GameInfoDTO GetGameById(int id)
+        {
+            return this.gameDAO.GetGameById(id);
+        }
+
         /// <summary>
         /// Renvoi la liste des coups / états de jeu d'une partie
         /// </summary>

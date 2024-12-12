@@ -199,10 +199,16 @@ export class PlayerListComponent implements OnInit, IObserver {
     this.scrollToBottomWithDelay();
   }
 
+  /**
+   * Ferme la conversation actuelle.
+   */
   public closeChat() {
     this.selectedPlayer = null;
   }
 
+  /**
+   * Bascule l'état d'ouverture du panneau de messagerie.
+   */
   public toggleChat() {
     this.isChatOpen = !this.isChatOpen;
   }
@@ -212,6 +218,10 @@ export class PlayerListComponent implements OnInit, IObserver {
     return this.unreadMessageCounts.get(player) || 0;
   }
 
+  /**
+   * Récupère le nombre total de messages non lus.
+   * @returns le nombre total de messages non lus.
+   */
   public getTotalUnreadMessages(): number {
     return Array.from(this.unreadMessageCounts.values()).reduce((a, b) => a + b, 0);
   }
@@ -295,7 +305,10 @@ export class PlayerListComponent implements OnInit, IObserver {
     }
   }
 
-  // Utilitaires
+  /**
+   * Affiche un popup d'erreur avec un message donné.
+   * @param message message d'ereur à afficher
+   */
   private showErrorPopup(message: string) {
     Swal.fire({
       icon: 'error',

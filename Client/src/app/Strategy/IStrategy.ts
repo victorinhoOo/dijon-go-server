@@ -11,5 +11,5 @@ export interface IStrategy {
      * @param idGame identifiant de la partie
      * @param game partie en cours
      */
-    execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game,):void;
+    execute(data: string[], idGame: {value: string}, game:Game,):void;
 }
