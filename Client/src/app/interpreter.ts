@@ -28,7 +28,6 @@ export class Interpreter implements IObserver{
 
   private strategies : Map<string, IStrategy>;
 
-  //#region Propriétés
 
   /**
    * Modifie la valeur de l'attribut game
@@ -55,8 +54,6 @@ export class Interpreter implements IObserver{
   }
 
 
-  //#endregion
-
 
 
   /**
@@ -81,6 +78,11 @@ export class Interpreter implements IObserver{
     this.strategies.set("UserList", new UserListStrategy(this.connectedUsersService));
     this.strategies.set("Chat", new ChatStrategy(this.chatService, this.userCookieService));
   }
+
+  /**
+   * Appelé par l'observable pour mettre à jour l'objet
+   * @param object mise à jour de l'objet
+   */
   public update(object: Observable): void {
     this.game = object as Game;
   }

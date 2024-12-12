@@ -78,6 +78,12 @@ export class GameDAO {
       .pipe(map((response) => response.states));
   }
 
+
+  /**
+   * Récupère l'identifiant de la dernière partie jouée par un joueur
+   * @param token token utilisateur du joueur souhaitant récupérer l'identifiant de sa dernière partie
+   * @returns l'id de sa dernière partie jouée
+   */
   public GetLastGameId(token: string): Observable<number> {
     const params = new HttpParams().set('token', token);
     return this.http

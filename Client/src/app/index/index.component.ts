@@ -16,6 +16,9 @@ import { CommonModule } from '@angular/common';
 import { PlayerListComponent } from '../player-list/player-list.component';
 import { firstValueFrom } from 'rxjs';
 
+/**
+ * Composant de la page d'accueil
+ */
 @Component({
   selector: 'app-index',
   standalone: true,
@@ -40,8 +43,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
 
   /**
- * Getter pour le lien d'affichage de l'avatar
- */
+   * Getter pour l'avatar de l'utilisateur
+   */
   public get Avatar(): string {
     return this.avatar;
   }
@@ -353,6 +356,10 @@ private populateLeaderboard(): void {
     },
   });
 }
+
+/**
+ * Appel à l'API pour rejouer la dernière partie
+ */
 public async replayLastGame():Promise<void>{
   let token = this.userCookieService.getToken();
   let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));

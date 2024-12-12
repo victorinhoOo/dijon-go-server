@@ -37,10 +37,18 @@ export class WebsocketService implements IObserver {
     this.userDAO = new UserDAO(httpclient);
   }
 
+  /**
+   * Appelée par l'observable pour mettre à jour les informations du service
+   * @param object nouvelle version de l'objet observé
+   */
   public update(object: Observable):void{
     this.game = object as Game;
   }
 
+  /**
+   * Récupère la partie en cours
+   * @returns la partie en cours
+   */
   public getGame():Game{
     return this.game;
   }
@@ -145,6 +153,7 @@ export class WebsocketService implements IObserver {
         this.router.navigate(['game', size, rule]);
       }
     }
+    
   /**
    * Envoi un message de demande de rejoindre une partie
    * @param id l'id de la partie à rejoindre

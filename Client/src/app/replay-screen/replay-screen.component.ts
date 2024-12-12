@@ -14,6 +14,9 @@ import Swal from 'sweetalert2';
 import { HistoryComponent } from '../history/history.component';
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
 
+/**
+ * Composant qui gère les replays de parties
+ */
 @Component({
   selector: 'app-replay-screen',
   standalone: true,
@@ -55,6 +58,9 @@ export class ReplayScreenComponent {
     this.whiteCapturedContainer = null;
   }
 
+  /**
+   * Charge les états de la partie et affiche le 1er
+   */
   async ngAfterViewInit(): Promise<void> {
     this.hideGameElements();
     this.displayPlayersInformations();
@@ -77,6 +83,9 @@ export class ReplayScreenComponent {
     }
   }
 
+  /**
+   * Passe à l'état de partie suivant
+   */
   public nextState(): void {
     if (this.stateNumber < this.states.length - 1) {
       this.stateNumber++;
@@ -84,6 +93,9 @@ export class ReplayScreenComponent {
     }
   }
 
+  /**
+   * Reviens à l'état de partie précédent
+   */
   public previousState(): void {
     if (this.stateNumber > 0) {
       this.stateNumber--;
@@ -91,6 +103,9 @@ export class ReplayScreenComponent {
     }
   }
 
+  /**
+   * Déplace à l'état de partie demandé
+   */
   public moveToState():void{
     let input = document.getElementById('move-number') as HTMLInputElement;
     let moveNumber = Number(input.value)-1;
@@ -175,17 +190,25 @@ export class ReplayScreenComponent {
     ruleContainer!.style.display = 'none';
   }
 
+  /**
+   * Affiche le premier état de la partie
+   */
   public firstState(): void {
     this.stateNumber = 0;
     this.displayState(this.stateNumber);
   }
 
+  /**
+   * Affiche le dernier état de la partie
+   */
   public lastState(): void {
     this.stateNumber = this.states.length - 1;
     this.displayState(this.stateNumber);
   }
 
-  
+  /**
+   * Affiche un popup pour visualiser l'historique des parties
+   */
   public showHistory() {
     const componentRef = this.createComponent(HistoryComponent);
     const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0];

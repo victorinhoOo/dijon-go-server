@@ -1,4 +1,3 @@
-import { clear } from "console";
 import { Observable } from "../Observer/Observable";
 
 const ONE_HOUR_IN_MS = 3600000;
@@ -34,36 +33,71 @@ export class Game extends Observable{
     this.opponentMs = ONE_HOUR_IN_MS;
   }
 
+  /**
+   * Récupère les captures
+   * @returns les captures
+   */
   public getCaptures():string{
     return this.captures;
   }
 
+  /**
+   * Chang la valeur de l'attribut puis notify ses observateurs
+   * @param captures valeur à attribuer 
+   */
   public setCaptures(captures:string){  
     this.captures = captures;
     this.notifyChange(this);
   }
 
+  /**
+   * récupère le plateau de jeu
+   * @returns le plateau de jeu
+   */
   public getBoard():string{
     return this.board;
   }
 
+
+  /**
+   * Modifie le plateau de jeu puis notifie ses observateurs
+   * @param board nouveau plateau de jeu
+   */
   public setBoard(board:string){
     this.board = board;
     this.notifyChange(this);
   }
 
+  /**
+   * Récupère le pseudo de l'adversaire
+   * @returns le pseudo de l'adversaire
+   */
   public getOpponentPseudo():string{
     return this.opponentPseudo;
   }
 
+  /**
+   * Modifier le pseudo de l'adversaire puis notifie ses observateurs
+   * @param pseudo le nouveau pseudo de l'adversaire
+   */
   public setOpponentPseudo(pseudo:string){
     this.opponentPseudo = pseudo;
     this.notifyChange(this);
   }
 
+  /**
+   * Récupère le temps restant du joueur
+   * @returns le nombre de millisecondes restantes
+   */
   public getPlayerMs():number{
     return this.playerMs;
   }
+
+
+  /**
+   * Récupère le temps restant de l'adversaire
+   * @returns le nombre de millisecondes restantes
+   */
   public getOpponentMs():number{
     return this.opponentMs;
   }
@@ -94,7 +128,7 @@ export class Game extends Observable{
   /**
    * Initialisation du tour actuel
    */
-  public initCurrentTurn() {
+  public initCurrentTurn():void {
     this.currentTurn = 'black';
     this.notifyChange(this);
   }
@@ -118,11 +152,17 @@ export class Game extends Observable{
     return this.playerColor == this.currentTurn;
   }
 
+  /**
+   * Exécuté à la fin de la partie, réinitialise les timers et les attributs
+   */
   public endGame(){
     this.clearTimer();
     this.destroy();
   }
   
+  /**
+   * Lance le timer du joueur qui doit jouer
+   */
   public launchTimer(){
     this.timerInterval = setInterval(() => {
       if(this.playerColor == this.currentTurn){

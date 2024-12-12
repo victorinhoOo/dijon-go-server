@@ -35,7 +35,12 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
   private size: number;
   private boardDrawer: IGameBoardDrawer;
 
-
+  /**
+   * Initialisation des attributs du composant
+   * @param websocketService Service de gestion de la websocket
+   * @param userCookieService Service de gestion des cookies utilisateur
+   * @param route Service de gestion des routes
+   */
   public constructor(private websocketService: WebsocketService,private userCookieService: UserCookieService,private route: ActivatedRoute){
     this.size = 0;
     this.playerPseudo = this.userCookieService.getUser()!.Username; // Récupère le nom d'utilisateur et l'avatar pour l'afficher sur la page
@@ -46,7 +51,9 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
     this.boardDrawer = new GameBoardDrawer();
   }
 
-
+  /**
+   * Destruction du composant
+   */
   public ngOnDestroy(): void {
     this.game.endGame();
   }
@@ -109,6 +116,10 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
     }
   }
 
+  /**
+   * Méthode appelée lors de la mise à jour de l'observable game
+   * @param object Nouvel état du jeu
+   */
   public update(object: Observable): void {
     this.game = object as Game;
     let playerTimerContainer = document.getElementById('player-timer');

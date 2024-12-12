@@ -118,6 +118,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     
   }
 
+  /**
+   * Rejoue la dernière partie jouée
+   */
   public async replayLastGame():Promise<void>{
     let token = this.userCookieService.getToken();
     let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));
@@ -161,8 +164,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.lightIsBlack = !this.lightIsBlack;
       this.changeColor.emit(this.lightIsBlack);
   }
+
+  /**
+   * Détermine la largeur de l'écran
+   * @returns true si la largeur de l'écran est supérieure ou égale à 1025 pixels, false sinon 
+   */
   public isPC(): boolean {
-    return window.innerWidth >= 1025; // Définir la largeur pour le mode téléphone
+    return window.innerWidth >= 1025; 
   }
 
 }

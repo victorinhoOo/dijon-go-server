@@ -26,11 +26,16 @@ export class GridComponent implements OnInit, AfterViewInit{
     this.size = 0;
   }
 
-
+  /**
+   * Récupère la taille de la grille dans l'URL
+   */
   ngOnInit(): void {
     this.size = Number(this.route.snapshot.paramMap.get('size'));
   }
 
+  /**
+   * Augmente la taille des cellules et des pierres si la grille est trop petite
+   */
   ngAfterViewInit(): void {
     if (this.size < 13) {
       let cells = document.querySelectorAll('.cell, .cell-bottom');
@@ -48,6 +53,10 @@ export class GridComponent implements OnInit, AfterViewInit{
     }
   }
 
+  /**
+   * Récupère la taille de la grille
+   * @returns la taille de la grille
+   */
   public getSize(): number {
     return this.size-1;
   }
