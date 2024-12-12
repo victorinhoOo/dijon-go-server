@@ -366,7 +366,8 @@ public async replayLastGame():Promise<void>{
   console.log(id);
   let game = await firstValueFrom(this.gameDAO.GetGameById(id));
   let size = game["size"];
-  this.router.navigate(['/replay', id, size]);
+  await this.router.navigate(['/replay', id, size]);
+  window.location.reload();
 }
 
   
