@@ -5,7 +5,7 @@ export class GamePopupDisplayer {
     
 
     /**
-     * 
+     * Affiche une popup de timeout
      */
     public displayTimeOutPopup():void {
         Swal.close();
@@ -24,9 +24,9 @@ export class GamePopupDisplayer {
     }
 
     /**
-     * 
-     * @param opponent 
-     * @returns 
+     * Affiche une popu indiquant qu'une partie a été trouvée
+     * @param opponent information sur l'adversaire
+     * @returns la popup
      */
     public displayMatchmakingPopup(opponent:User){
         return Swal.fire({
@@ -48,12 +48,12 @@ export class GamePopupDisplayer {
     }
 
     /**
-     * 
-     * @param won 
-     * @param player1score 
-     * @param player2score 
-     * @param user 
-     * @returns 
+     * Affiche la popup de fin de partie
+     * @param won vrai si le joueur a gagné, faux sinon
+     * @param player1score score du joueur 1
+     * @param player2score score du joueur 2
+     * @param user information sur je joueur
+     * @returns la popup
      */
     public displayEndGamePopup(won:boolean, player1score:string, player2score:string, user:User){
       return Swal.fire({
