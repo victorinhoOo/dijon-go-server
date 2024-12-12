@@ -255,7 +255,7 @@ export class PlayerListComponent implements OnInit, IObserver {
    * Fait défiler le conteneur de messages vers le bas après un délai.
    */
   private scrollToBottomWithDelay() {
-    setTimeout(() => this.scrollToBottom(), 100);
+    setTimeout(() => this.scrollToBottom(), 10);
   }
 
   /**

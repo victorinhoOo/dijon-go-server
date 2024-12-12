@@ -21,9 +21,11 @@ namespace Server.Model.Managers
         {
             List<MessageDTO> messages = new List<MessageDTO>();
             User user = tokenDAO.GetUserByToken(token);
-            if(user != null)
+            this.logger.LogInformation("Récupération de l'utilisateur " + user.Username + "correspondant à " + token);
+            if (user != null)
             {
                 messages = messageDAO.GetConversation(user.Username, usernameRecipient);
+                this.logger.LogInformation("Récupération de la conversation entre " + user.Username + " et " + usernameRecipient);
             }
             return messages;
         }
