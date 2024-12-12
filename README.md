@@ -12,7 +12,7 @@ DGS propose les fonctionnalités suivantes :
   
 - Classements
   
-- Tournois
+- Voir les joueurs connectés et discuter avec eux dans un Chat
   
 - Rediffusion des parties
   
@@ -23,23 +23,58 @@ DGS propose les fonctionnalités suivantes :
 
 **Back-end** : ASP.NET Core 
 
+**Databases** : Redis / SQLite
+
 ## Comment faire tourner l'application DGS en local ?  
 
 **Prérequis : Vous devez avoir NodeJs installé sur votre machine : https://nodejs.org/fr**
 
-1) Cloner le repository GitHub dans un dossier spécifique
-2) Ouvrez la solution Server.sln avec Visual Studio 2022
-3) Définir plusieurs projets de démarrage :
+**Prérequis : Vous devez avoir Docker installé sur votre machine : https://www.docker.com/products/docker-desktop/**
+
+Pour enregistrer les coups en temps réel, DGS utilise une base de données Redis.
+Redis est une base de données en mémoire rapide et légère. 
+
+1) Exécutez la commande suivante pour télécharger l'image Redis et créer un conteneur nommé `redis-server` :
+
+```bash
+docker run --name redis-server -d -p 6379:6379 redis
+```
+
+2) Vérifier que le conteneur est actif
+
+Pour vérifier que Redis est en cours d'exécution, utilisez la commande suivante :
+
+```bash
+docker ps
+```
+---
+
+3) Tester Redis avec `redis-cli`
+
+Connectez-vous à Redis via le client intégré `redis-cli` :
+
+   ```bash
+  docker exec -it redis-server redis-cli
+  ```
+Testez la connexion au serveur Redis en envoyant une commande PING :
+```bash
+PING
+```
+Le serveur doit répondre avec PONG
+
+4) Cloner le repository GitHub dans un dossier spécifique
+5) Ouvrez la solution Server.sln avec Visual Studio 2022
+6) Définir plusieurs projets de démarrage :
    
    ![image](https://github.com/user-attachments/assets/5c8b88e1-3c87-4f57-93fa-7702662ec1b0)
  
    ![image](https://github.com/user-attachments/assets/fab6f130-3e8a-4476-ac9b-ed7b3cb2ca88)
 
-4) Cliquer sur "Démarrer"
-5) Ouvrez ensuite un terminal et déplacez-vous de le répértoire "Client"
-6) Saisissez la commande ```npm install``` (en cas d'erreur saisissez ```npm install --force```)
-7) Enfin lancez le serveur angular : ```npm start```
-8) Félicitations ! Le client, l'API et le websocket sont désormais exécution, vous pouvez parcourir et utiliser le site à votre guise.
+7) Cliquer sur "Démarrer"
+8) Ouvrez ensuite un terminal et déplacez-vous de le répértoire "Client"
+9) Saisissez la commande ```npm install``` (en cas d'erreur saisissez ```npm install --force```)
+10) Enfin lancez le serveur angular : ```npm start```
+11) Félicitations ! Le client, l'API et le websocket sont désormais exécution, vous pouvez parcourir et utiliser le site à votre guise.
 
 Note : Pour jouer une partie de Go en local, il vous faudra deux fenêtres avec deux comptes différents sur chacune des fenêtres, l'un des clients doit créer la partie, l'autre doit la rejoindre
    
