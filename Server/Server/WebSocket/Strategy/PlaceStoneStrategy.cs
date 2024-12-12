@@ -27,7 +27,7 @@ namespace WebSocket.Strategy
         /// <param name="gameType">Type de partie ("custom" ou "matchmaking")</param>
         /// <param name="response">Message de réponse à envoyer aux clients (modifié par référence)</param>
         /// <param name="type">Type de réponse ("Broadcast_" ou "Send_") (modifié par référence)</param>
-        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
+        public void Execute(IClient player, string[] data, GameType gameType, ref string response, ref string type)
         {
             string stringGameId = data[GAME_ID];
             int idGame = Convert.ToInt16(stringGameId);
