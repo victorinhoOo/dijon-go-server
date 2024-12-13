@@ -17,7 +17,6 @@ export abstract class Observable{
      */
     public register(observer:IObserver){
         this.observers.push(observer);
-        console.log(this.observers.length);
     }
 
     /**
@@ -25,7 +24,6 @@ export abstract class Observable{
      * @param object L'objet Observable qui a changé.
      */
     protected notifyChange(object:Observable){  
-        console.log(object);
         this.observers.forEach(obs=>{
             obs.update(object);
         })

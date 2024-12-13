@@ -62,7 +62,6 @@ export class WebsocketService implements IObserver {
     return new Promise((resolve, reject) => {
       this.websocket = new WebSocket(`ws:///${environment.websocketUrl}/?token=${userToken}`);
       this.websocket.onopen = () => {
-        console.log('connected');
         resolve();
       };
 
@@ -71,7 +70,6 @@ export class WebsocketService implements IObserver {
       };
 
       this.websocket.onclose = () => {
-        console.log('disconnected');
       };
     });
   }
@@ -180,7 +178,6 @@ export class WebsocketService implements IObserver {
 
   public cancelMatchmaking(idLobby:string) {
     if (this.websocket != null && this.websocket.OPEN) {
-      console.log("cancel matchmaking");
       this.websocket.send(`${idLobby}-Cancel`);
     }
   }

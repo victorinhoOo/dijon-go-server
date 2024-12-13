@@ -131,7 +131,6 @@ export class ReplayScreenComponent {
 
   private async loadGameStates(): Promise<void> {
     this.states = [];
-    console.log(this.states);
     const response = await firstValueFrom(
       this.gameDAO.GetGameStatesById(this.id)
     );
@@ -165,7 +164,6 @@ export class ReplayScreenComponent {
       let opponentAvatarContainer = document.getElementById('opponent-pic') as HTMLImageElement;
       if (opponentPseudoContainer != undefined && opponentAvatarContainer != undefined) {
         if (this.playerPseudo == gameInfo.usernamePlayer1) {
-          console.log(gameInfo.usernamePlayer1);
           opponentPseudoContainer.innerText = gameInfo.usernamePlayer2;
           opponentAvatarContainer.src = `${PROFILE_PIC_URL}${gameInfo.usernamePlayer2}`;
           this.blackCapturedContainer = document.getElementById('opponent-score-value');

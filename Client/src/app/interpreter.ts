@@ -96,7 +96,6 @@ export class Interpreter implements IObserver{
    * @param state définit l'état de la partie (en cours ou terminée)
    */
   public interpret(message: string): void {
-    console.log("Received: " + message);
     let data = message.split('-');
     let action = data[1]; // todo: valeur magique
     if (message.length <= 3) {

@@ -144,7 +144,6 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
     if(playerCapturesContainer != undefined && opponentCapturesContainer != undefined){
       let captures = this.game.getCaptures();
       if(captures != ""){
-        console.log(captures);
         this.updateCaptures(captures, playerCapturesContainer, opponentCapturesContainer);
       }
     }

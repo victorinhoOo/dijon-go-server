@@ -363,7 +363,6 @@ private populateLeaderboard(): void {
 public async replayLastGame():Promise<void>{
   let token = this.userCookieService.getToken();
   let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));
-  console.log(id);
   let game = await firstValueFrom(this.gameDAO.GetGameById(id));
   let size = game["size"];
   await this.router.navigate(['/replay', id, size]);
