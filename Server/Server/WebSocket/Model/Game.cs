@@ -129,7 +129,8 @@ namespace WebSocket.Model
             this.logic.PlaceStone(x, y);
             this.timerManager.SwitchToNextPlayer();
             await this.SaveGameState();
-            return GetPreviousPlayerTime();
+            string timeLeft = GetPreviousPlayerTime();
+            return timeLeft;
         }
 
         /// <summary>

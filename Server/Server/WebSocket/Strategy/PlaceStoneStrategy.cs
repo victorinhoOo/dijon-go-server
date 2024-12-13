@@ -49,9 +49,9 @@ namespace WebSocket.Strategy
                         int x = Convert.ToInt32(data[STONEPLACED_X]);
                         int y = Convert.ToInt32(data[STONEPLACED_Y]);
 
-                        Task<string> timeRemaining = game.PlaceStone(x, y); // pose de la pierre et récupération du temps restant à l'adversaire
-                        (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone(); // récupération des pierres capturées
-                        game.ChangeTurn(); // changement de tour
+                        string timeRemaining = game.PlaceStone(x, y).Result;
+                        (int capturedBlackStones, int capturedWhiteStones) = game.GetCapturedStone();
+                        game.ChangeTurn();
                         response = $"{idGame}-Stone-{game.StringifyGameBoard()}-{capturedBlackStones}-{capturedWhiteStones}-{timeRemaining}";
                         type = "Broadcast_";
                     }
