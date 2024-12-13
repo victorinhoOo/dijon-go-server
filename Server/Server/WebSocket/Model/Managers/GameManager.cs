@@ -93,7 +93,7 @@ namespace WebSocket.Model.Managers
         /// Insère un "état de partie" correspondant à un coup en base de données.
         /// </summary>
         /// <param name="game">La partie en cours</param>
-        public void InsertGameState(Game game)
+        public async Task InsertGameState(Game game)
         {
             gameDAO.InsertGameState(game);
         }
