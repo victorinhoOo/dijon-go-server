@@ -122,11 +122,11 @@ export class PlayerListComponent implements OnInit, IObserver {
 
   // Gestion des messages
   public selectPlayer(player: string) {
-    if (player === this.currentUser) return;
-
-    this.selectedPlayer = player;
-    this.resetUnreadCount(player);
-    this.loadConversation(player);
+    if (player !== this.currentUser){
+      this.selectedPlayer = player;
+      this.resetUnreadCount(player);
+      this.loadConversation(player);
+    }
   }
 
   /**
@@ -166,16 +166,17 @@ export class PlayerListComponent implements OnInit, IObserver {
    * @param player Le joueur dont la conversation est mise à jour.
    */
   private handleHistoricalMessages(response: { Messages: MessageDTO[] }, currentMessages: MessageDTO[], player: string) {
-    if (!response?.Messages) return;
-
-    response.Messages.forEach((msg: MessageDTO) => {
-        if (!this.messageExists(msg, currentMessages)) {
-            this.chatService.addMessage(msg);
-        }
-    });
-
-    this.chatService.markConversationAsLoaded(player);
-    this.updateMessages();
+    if (response?.Messages){
+      response.Messages.forEach((msg: MessageDTO) => {
+        console.log(msg.Id());
+          if (!this.messageExists(msg, currentMessages)) {
+              this.chatService.addMessage(msg);
+          }
+      });
+  
+      this.chatService.markConversationAsLoaded(player);
+      this.updateMessages();
+    }
   }
 
   /**
@@ -190,13 +191,13 @@ export class PlayerListComponent implements OnInit, IObserver {
 
   // Actions utilisateur
   public sendMessage() {
-    if (!this.newMessage.trim() || !this.selectedPlayer) return;
-
-    const message = new MessageDTO(this.currentUser, this.selectedPlayer, this.newMessage);
-    this.websocketService.sendMessage(this.newMessage, this.selectedPlayer);
-    this.chatService.addMessage(message);
-    this.newMessage = '';
-    this.scrollToBottomWithDelay();
+    if (this.newMessage.trim() && this.selectedPlayer){
+      const message = new MessageDTO(this.currentUser, this.selectedPlayer, this.newMessage);
+      this.websocketService.sendMessage(this.newMessage, this.selectedPlayer);
+      this.chatService.addMessage(message);
+      this.newMessage = '';
+      this.scrollToBottomWithDelay();
+    }
   }
 
   /**

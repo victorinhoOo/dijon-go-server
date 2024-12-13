@@ -8,6 +8,7 @@ import { MessageDTO } from "../Model/DTO/MessageDTO";
 const DATA_ACTION_INDEX = 1;  // Index pour l'action (Chat)
 const DATA_SENDER_INDEX = 2;  // Index pour l'expéditeur
 const DATA_MESSAGE_INDEX = 3; // Index pour le message
+const DATA_TIMESTAMP_INDEX = 4; // Index pour le timestamp
 const MINIMUM_DATA_LENGTH = 4; // Longueur minimale attendue du tableau data
 
 /**
@@ -33,7 +34,14 @@ export class ChatStrategy implements IStrategy {
             const sender = data[DATA_SENDER_INDEX];
             const message = data[DATA_MESSAGE_INDEX];
             const receiver = this.userCookieService.getUser()!.Username;
-            const messageDTO = new MessageDTO(sender, receiver, message, new Date());
+            
+            // Reformate la date pour qu'elle soit valide en format ISO 8601
+            const timestampString = data[DATA_TIMESTAMP_INDEX];
+            const [datePart, timePart] = timestampString.split(' ');
+            const [day, month, year] = datePart.split('/');
+            const formattedDate = `${year}-${month}-${day}T${timePart}`; // Format ISO 8601          
+            const timestamp = new Date(formattedDate);
+            const messageDTO = new MessageDTO(sender, receiver, message, timestamp);
             this.chatService.addMessage(messageDTO);
         }
     }

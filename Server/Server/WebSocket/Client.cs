@@ -36,7 +36,7 @@ namespace WebSocket
         /// <param name="user">Le nouvel utilisateur</param>
         public void ChangeUser(GameUserDTO user)
         {
-                this.user.Token = user.Token;
+            this.user.Token = user.Token;
             this.user.Name = user.Name;
             this.user.Elo = user.Elo;
             this.user.Id = user.Id;

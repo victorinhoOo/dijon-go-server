@@ -97,7 +97,7 @@ namespace WebSocket.Model
         {
             this.started = true;
             this.gameManager.InsertGame(this);
-            this.gameManager.InsertGameState(this);
+            this.SaveGameState();
         }
 
         /// <summary>

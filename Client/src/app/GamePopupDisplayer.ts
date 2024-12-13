@@ -32,7 +32,7 @@ export class GamePopupDisplayer {
      */
     public displayMatchmakingPopup(opponent:User){
         return Swal.fire({
-            title: `Une partie a été trouvée contre ${opponent.Username} (Rank: ${opponent.getRank()})`,
+            title: `Une partie a été trouvée contre ${opponent.Username} (Rang: ${opponent.getRank()})`,
             text: 'Voulez-vous la rejoindre ?',
             showConfirmButton: true,
             showCancelButton: true,

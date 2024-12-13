@@ -53,39 +53,6 @@ export class Game extends Observable{
   }
 
   /**
-   * Récupère le score de l'adversaire
-   * @returns le score de l'adversaire
-   */
-  public getOpponentScore():string{
-    return this.opponentScore;
-  }
-
-  /**
-   * Récupère le score du joueur
-   * @returns le score du joueur
-   */
-  public getPlayerScore():string{
-    return this.playerScore;
-  }
-
-  /**
-   * Détermine si le joueur a gagné ou non
-   * @returns true si le joueur a gagné, false sinon
-   */
-  public getWon():boolean{
-    return this.won;
-  }
-
-
-  /**
-   * Savoir si la partie est terminée
-   * @returns True si la partie est terminée, sinon false
-   */
-  public isEndOfGame(): boolean {
-    return this.endOfGame;
-  }
-
-  /**
    * Récupère les captures
    * @returns les captures
    */
@@ -271,8 +238,4 @@ export class Game extends Observable{
     this.opponentScore = "";
     this.notifyChange(this);
   }
-
-
-
-
 }

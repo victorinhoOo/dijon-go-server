@@ -32,13 +32,6 @@ export class Interpreter implements IObserver{
   private strategies : Map<string, IStrategy>;
 
 
-  /**
-   * Modifie la valeur de l'attribut game
-   * @param game partie concernée
-   */
-  public setGame(game:Game){
-    this.game = game;
-  } 
 
   /**
    * Récupère l'id de jeu

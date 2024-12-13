@@ -12,6 +12,7 @@ import { IGameBoardDrawer } from '../IGameBoardDrawer';
 import { GameBoardDrawer } from '../GameBoardDrawer';
 import Swal from 'sweetalert2';
 import { HistoryComponent } from '../history/history.component';
+import { WebsocketService } from '../websocket.service';
 
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
 const FIRST_ROOT_NODE_INDEX = 0;
@@ -47,7 +48,8 @@ export class ReplayScreenComponent {
     private httpClient: HttpClient,
     private appRef: ApplicationRef,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private injector: Injector
+    private injector: Injector,
+    private websocketService: WebsocketService
   ) {
     this.stateNumber = 0;
     this.boardDrawer = new GameBoardDrawer();
@@ -64,6 +66,8 @@ export class ReplayScreenComponent {
    * Charge les états de la partie et affiche le 1er
    */
   async ngAfterViewInit(): Promise<void> {
+    this.websocketService.disconnectWebsocket();
+    this.websocketService.connectWebsocket();
     this.states = [];
     this.hideGameElements();
     this.displayPlayersInformations();

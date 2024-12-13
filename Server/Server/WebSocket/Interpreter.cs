@@ -11,14 +11,12 @@ using WebSocket.Strategy.Enumerations;
 namespace WebSocket
 {
 
-    private const int ACTION_INDEX = 1;
-
-
     /// <summary>
     /// Interprète les messages reçus par le serveur
     /// </summary>
     public class Interpreter
     {
+        private const int ACTION_INDEX = 1;
         private Dictionary<string,IStrategy> strategies;
 
         /// <summary>

@@ -23,7 +23,6 @@ export class ChatService extends Observable {
    */
   public addMessage(message: MessageDTO) {
     const isDuplicate = this.messages.some(msg => msg.Id() === message.Id());
-
     if (!isDuplicate) {
       this.messages.push(message);
       this.notifyChange(this);
