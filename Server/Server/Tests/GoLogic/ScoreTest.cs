@@ -2,7 +2,7 @@
 using GoLogic.Goban;
 using GoLogic.Score;
 
-namespace Tests.Test_GoLogic
+namespace Tests.GoLogic
 {
     public class ScoreTest
     {
@@ -34,10 +34,10 @@ namespace Tests.Test_GoLogic
             // . . . @ . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(6, black);
-            Assert.Equal(3, white);
+            Assert.Equal(9.5, white);
         }
 
         [Fact]
@@ -68,10 +68,10 @@ namespace Tests.Test_GoLogic
             // . . . @ . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
             
             Assert.Equal(2, black);
-            Assert.Equal(0, white);
+            Assert.Equal(6.5, white);
         }
 
         [Fact]
@@ -105,10 +105,10 @@ namespace Tests.Test_GoLogic
             // @ @ . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(2, black);
-            Assert.Equal(9, white);
+            Assert.Equal(15.5, white);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace Tests.Test_GoLogic
             // . . . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.True(gameScore.IsGroupDead(gameBoard.GetStone(0, 2)));
+            Assert.True(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 2)));
 
         }
 
@@ -209,7 +209,7 @@ namespace Tests.Test_GoLogic
             // . . . @ . . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(2, 3)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(2, 3)));
         }
 
         [Fact]
@@ -237,7 +237,7 @@ namespace Tests.Test_GoLogic
             // . . . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(2, 2)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(2, 2)));
         }
 
         [Fact]
@@ -266,8 +266,8 @@ namespace Tests.Test_GoLogic
             gameLogic.PlaceStone(3, 6); // noir
             gameLogic.PlaceStone(3, 5); // blanc
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(0, 4)));
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(0, 6)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 4)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 6)));
 
             // . . . O @ . O @ .
             // . . . O @ . O @ .
@@ -316,7 +316,7 @@ namespace Tests.Test_GoLogic
             gameLogic.PlaceStone(4, 7); // blanc
             gameLogic.PlaceStone(8, 3); // noir
 
-            Assert.False(gameScore.IsGroupDead(gameBoard.GetStone(0, 4)));
+            Assert.False(gameScore.DeadStoneAnalyzer.IsGroupDead(gameBoard.GetStone(0, 4)));
 
             // . . . O @ . @ O .
             // . . . O @ @ @ O .
@@ -357,9 +357,6 @@ namespace Tests.Test_GoLogic
             gameLogic.PlaceStone(2, 6); // blanc
             gameLogic.PlaceStone(8, 4); // noir
 
-            // Capture du groupe de pierres noirs en plaçant un blanc en (0, 4)
-            gameLogic.PlaceStone(0, 4);
-
             // . . O @ . @ O . .
             // . . O @ @ @ O . .
             // . . O O O O O . .
@@ -368,11 +365,15 @@ namespace Tests.Test_GoLogic
             // . . . . . . . . .
             // . . . . . . . . .
             // . . . . . . . . .
-            // . . . . . . . . .
+            // @ @ @ @ @ . . . .
             // . : vide, @ : noir, O : blanc
 
-            Assert.Equal(StoneColor.White, gameBoard.GetStone(0, 4).Color);
+            gameScore.CalculateScore();
+
+            Assert.Equal(StoneColor.White, gameBoard.GetStone(0, 2).Color);
             Assert.Equal(StoneColor.Empty, gameBoard.GetStone(1, 4).Color);
+            Assert.Equal(StoneColor.Empty, gameBoard.GetStone(1, 3).Color);
+            Assert.Equal(StoneColor.Black, gameBoard.GetStone(8, 0).Color);
         }
 
         [Fact]
@@ -406,10 +407,10 @@ namespace Tests.Test_GoLogic
             // @ @ . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(2, black);
-            Assert.Equal(12, white);
+            Assert.Equal(18.5, white);
         }
 
         [Fact]
@@ -443,10 +444,10 @@ namespace Tests.Test_GoLogic
             // @ @ . . . . . . .
             // . : vide, @ : noir, O : blanc
 
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(0, black);
-            Assert.Equal(6, white);
+            Assert.Equal(12.5, white);
         }
 
         [Fact] //TODO: !!! Penser à le retier
@@ -457,10 +458,10 @@ namespace Tests.Test_GoLogic
             ScoreRule gameScore = new JapaneseScoreRule(gameBoard);
 
             gameLogic.PlaceStone(8, 8);
-            (int black, int white) = gameScore.CalculateScore();
+            (float black, float white) = gameScore.CalculateScore();
 
             Assert.Equal(0, black);
-            Assert.Equal(0, white);
+            Assert.Equal(6.5, white);
         }
     }
 }

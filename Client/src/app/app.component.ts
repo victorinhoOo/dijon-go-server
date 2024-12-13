@@ -1,16 +1,15 @@
 import { AfterViewInit, Component, OnInit, OnDestroy,ViewChild, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { GridComponent } from './grid/grid.component';
-import { RegisterComponent } from './register/register.component';  
-import { UploadImageComponent } from './upload-image/upload-image.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { ConnexionComponent } from './connexion/connexion.component';
-import { ProfileComponent }  from './profile/profile.component'
-import { IndexComponent } from './index/index.component';
-import { FooterComponent } from "./footer/footer.component";
-import { WebsocketService } from './websocket.service';
+import { GridComponent } from './IHM/Components/grid/grid.component';
+import { RegisterComponent } from './IHM/Components/register/register.component';  
+import { UploadImageComponent } from './IHM/Components/upload-image/upload-image.component';
+import { NavbarComponent } from './IHM/Components/navbar/navbar.component';
+import { ConnexionComponent } from './IHM/Components/connexion/connexion.component';
+import { ProfileComponent }  from './IHM/Components/profile/profile.component'
+import { IndexComponent } from './IHM/Components/index/index.component';
+import { FooterComponent } from "./IHM/Components/footer/footer.component";
 import { CommonModule } from '@angular/common';
-import { HamburgerBtnComponent } from './hamburger-btn/hamburger-btn.component';
+import { HamburgerBtnComponent } from './IHM/Components/hamburger-btn/hamburger-btn.component';
 import { HostListener } from '@angular/core';
 
 @Component({
@@ -112,7 +111,9 @@ export class AppComponent implements AfterViewInit{
     }
   }
   
-  // Méthode pour basculer la visibilité de la navbar
+  /**
+   * Méthode pour basculer la visibilité de la navbar
+   */
   public toggleNavbar(): void {
     
     
@@ -124,20 +125,27 @@ export class AppComponent implements AfterViewInit{
     }
   }
 
-   // Méthode pour gérer la fermeture de la navbar
+   /**
+    * Méthode pour fermer la navbar
+    */
    public onCloseNavbar(): void {
     this._isNavbarVisible = false;
     this._isButtonClicked = true;
     this.changeLightState();
   }
   
-  // Méthode pour vérifier la taille de l'écran et ajuster la navbar
+  /**
+   *  Méthode pour vérifier la taille de l'écran et ajuster la navbar
+   */ 
   private checkScreenSize(): void {
     const screenWidth = window.innerWidth;
     this._isNavbarVisible = screenWidth >= 1025;
   }
 
-  // Écouter les changements de taille de l'écran
+  /**
+   * Écouter les changements de taille de l'écran
+   * @param event evenement de changement de taille de l'écran
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.checkScreenSize();

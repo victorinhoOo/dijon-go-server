@@ -1,10 +1,124 @@
-export class Game {
+import { Observable } from "./Observer/Observable";
+import { GamePopupDisplayer } from "../IHM/GamePopupDisplayer";
+import { User } from "./User";
+import { Router } from "@angular/router";
+
+const ONE_HOUR_IN_MS = 3600000;
+const TIMER_INTERVAL = 1000;
+
+export class Game extends Observable{
+
   private currentTurn: string;
+  
   private playerColor: string;
 
-  public constructor() {
+  private playerMs:number;
+
+  private opponentMs:number;
+
+  private opponentPseudo : string;
+
+  private board: string;
+
+  private captures : string;
+
+  private endOfGame: boolean;
+
+  private won: boolean;
+
+  private playerScore: string;
+
+  private opponentScore: string;
+
+  private timerInterval: NodeJS.Timeout | null;
+
+  private gameDisplayer: GamePopupDisplayer
+
+
+  public constructor(private router: Router) {
+    super();
     this.currentTurn = '';
     this.playerColor = '';
+    this.opponentPseudo = '';
+    this.board = '';
+    this.captures = '';
+    this.timerInterval = null;
+    this.playerMs = ONE_HOUR_IN_MS;
+    this.opponentMs = ONE_HOUR_IN_MS;
+    this.endOfGame = false;
+    this.won = false;
+    this.playerScore = "";
+    this.opponentScore = "";
+    this.gameDisplayer = new GamePopupDisplayer();
+  }
+
+  /**
+   * Récupère les captures
+   * @returns les captures
+   */
+  public getCaptures():string{
+    return this.captures;
+  }
+
+  /**
+   * Chang la valeur de l'attribut puis notify ses observateurs
+   * @param captures valeur à attribuer 
+   */
+  public setCaptures(captures:string){  
+    this.captures = captures;
+    this.notifyChange(this);
+  }
+
+  /**
+   * récupère le plateau de jeu
+   * @returns le plateau de jeu
+   */
+  public getBoard():string{
+    return this.board;
+  }
+
+
+  /**
+   * Modifie le plateau de jeu puis notifie ses observateurs
+   * @param board nouveau plateau de jeu
+   */
+  public setBoard(board:string){
+    this.board = board;
+    this.notifyChange(this);
+  }
+
+  /**
+   * Récupère le pseudo de l'adversaire
+   * @returns le pseudo de l'adversaire
+   */
+  public getOpponentPseudo():string{
+    return this.opponentPseudo;
+  }
+
+  /**
+   * Modifier le pseudo de l'adversaire puis notifie ses observateurs
+   * @param pseudo le nouveau pseudo de l'adversaire
+   */
+  public setOpponentPseudo(pseudo:string){
+    this.opponentPseudo = pseudo;
+    this.notifyChange(this);
+  }
+
+  /**
+   * Récupère le temps restant du joueur
+   * @returns le nombre de millisecondes restantes
+   */
+  public getPlayerMs():number{
+    return this.playerMs;
+  }
+
+
+  /**
+   * Récupère le temps restant de l'adversaire
+   * @returns le nombre de millisecondes restantes
+   */
+  public getOpponentMs():number{
+    return this.opponentMs;
   }
 
   /**
@@ -33,8 +147,9 @@ export class Game {
   /**
    * Initialisation du tour actuel
    */
-  public initCurrentTurn() {
+  public initCurrentTurn():void {
     this.currentTurn = 'black';
+    this.notifyChange(this);
   }
 
 
@@ -56,68 +171,71 @@ export class Game {
     return this.playerColor == this.currentTurn;
   }
 
-  private timerToMs(timer: string) {
-    let minutes = Number(timer.split(':')[0]);
-    let seconds = Number(timer.split(':')[1]);
-    return (seconds + minutes * 60) * 1000;
+  /**
+   * Exécuté à la fin de la partie, réinitialise les timers et les attributs
+   */
+  public endGame(playerScore: string, opponentScore: string, won: boolean, user: User): void {
+    this.endOfGame = true;
+    this.playerScore = playerScore;
+    this.opponentScore = opponentScore;
+    this.won = won;
+    this.notifyChange(this);
+    this.clearTimer();
+    this.gameDisplayer.displayEndGamePopup(this.won, this.playerScore, this.opponentScore, user).then(() => {
+      this.destroy();
+      this.router.navigate(['/index']);
+    });
   }
 
-
   /**
-   * Trasforme un nombre de ms en un timer
-   * @param ms nombre de ms
-   * @returns un timer en string
+   * Un joueur quitte la partie
    */
-  public msToTimer(ms:string):string{
-    let totalMs = Number(ms);
-    let totalSeconds = Math.floor(totalMs/1000);
-    let minutes = Math.floor(totalSeconds/60);
-    let seconds = totalSeconds % 60;
-    let stringMiniutes = minutes.toString().padStart(2,'0');
-    let stringSeconds = seconds.toString().padStart(2,'0');
-    let result = `${stringMiniutes}:${stringSeconds}`;
-    return result;
-
+  public leaveGame():void{
+    this.clearTimer();
+    this.destroy();
+  }
+  
+  /**
+   * Lance le timer du joueur qui doit jouer
+   */
+  public launchTimer(){
+    this.timerInterval = setInterval(() => {
+      if(this.playerColor == this.currentTurn){
+        this.playerTimerTick();
+      }else{
+        this.opponentTimerTick();
+      }
+    }, TIMER_INTERVAL);
   }
 
-
-  /**
-   * Lance le timer de la partie
-   */
-  public launchTimer() {
-    if (this.playerColor == this.currentTurn) {
-        let timer = document.getElementById("player-timer")!.innerText
-        let ms = this.timerToMs(timer);
-        ms -= 1000;
-        timer = this.msToTimer(ms.toString());
-        document.getElementById("player-timer")!.innerText = timer;
-    }
-    else{
-        let timer = document.getElementById("opponent-timer")!.innerText
-        let ms = this.timerToMs(timer);
-        ms -= 1000;
-        timer = this.msToTimer(ms.toString());
-        document.getElementById("opponent-timer")!.innerText = timer;
+  private clearTimer(){
+    if(this.timerInterval != null){
+      clearInterval(this.timerInterval);
     }
   }
 
+  private playerTimerTick(){
+    this.playerMs -= 1000;
+    this.notifyChange(this);
+  }
 
-  /**
-   * Met à jour le hover des pierres
-   */
-  public updateHover(){
-    let stones = document.querySelectorAll(".stone, .bigger-stone");
-    let stonesArray = Array.from(stones);
-    if(this.isPlayerTurn()){
-      document.getElementById("global-container")!.style.cursor = "pointer";
-      stonesArray.forEach((stone)=>{
-        stone.classList.add("active");
-      })
-    }else{
-      document.getElementById("global-container")!.style.cursor = "not-allowed";
-      stonesArray.forEach((stone)=>{
-        stone.classList.remove("active");
-      })
-    }
-}
+  private opponentTimerTick(){
+    this.opponentMs -= 1000;
+    this.notifyChange(this);
+  }
+
+  public destroy():void{
+    this.currentTurn = '';
+    this.playerColor = '';
+    this.opponentPseudo = '';
+    this.board = '';
+    this.captures = '';
+    this.playerMs = ONE_HOUR_IN_MS;
+    this.opponentMs = ONE_HOUR_IN_MS;
+    this.endOfGame = false;
+    this.won = false;
+    this.playerScore = "";
+    this.opponentScore = "";
+    this.notifyChange(this);
+  }
 }

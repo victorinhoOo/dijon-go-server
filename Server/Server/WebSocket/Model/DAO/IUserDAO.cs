@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebSocket.Model.DTO;
+﻿using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
 {
@@ -25,5 +20,12 @@ namespace WebSocket.Model.DAO
         /// <param name="token">Token de l'utilisateur</param>
         /// <param name="elo">Le nouvel elo de l'utilisateur</param>
         public void UpdateEloByToken(string token, int elo);
+
+        /// <summary>
+        /// Récupère l'id d'un utilisateur à partir de son nom d'utilisateur
+        /// </summary>
+        /// <param name="username">le nom de l'utilisateur</param>
+        /// <returns>l'id correspondant en bdd</returns>
+        public int GetIdByUsername(string username);
     }
 }

@@ -1,0 +1,196 @@
+#grid-container{
+    padding: 20px;
+    background-color: rgb(207, 156, 89);
+    position: relative;
+}
+
+#global-container{
+    cursor: not-allowed;
+}
+
+#player, #opponent{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between ;
+    margin-top: 10px;
+}
+
+#player{
+    bottom: -60px;
+}
+
+#opponent{
+    top: -60px;
+    margin-bottom: 10px;
+}
+
+
+.pseudo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+
+.pseudo img{
+    width: 50px;
+    margin-right: 5px;
+}
+
+.timer{
+    padding : 10px 15px
+}
+
+#player .timer{
+    border: 1px solid black
+}
+
+#opponent .timer{
+    border: 1px solid black
+}
+
+#pass{
+    margin-left: auto;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid transparent;
+}
+
+#pass:hover{
+    box-sizing: border-box;
+    border: 1px solid black;
+}
+
+#cells-container{
+    position: relative;
+    border: 0.5px solid black;
+}
+
+#pass-icon{
+    margin-right: 3.22px;
+}
+
+.cell{
+    width: 30px;
+    height: 30px;
+    border: 0.5px solid black;
+    position: relative;
+}
+
+.bigger-cell{
+    width: 45px;
+    height: 45px;
+    border: 0.5px solid black;
+    position: relative;
+}
+
+.bigger-stone{
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    left: -50%;
+    top: -50%;
+    z-index: 3;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    
+}
+
+.stone{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    left: -50%;
+    top: -50%;
+    z-index: 3;
+}
+
+.right{
+    left: unset;
+    right: -50%;
+}
+
+.row-bottom{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+
+.bottom{
+    top: unset;
+    bottom: -50%;
+}
+
+
+
+.active:hover{
+    background-color: grey !important;
+    opacity: 0.8 !important;
+}
+
+
+.score{
+    margin-left: 30px;
+}
+
+#rule-container {
+    font-size: 13px;
+    display: flex;
+    justify-content: center; /* Centre l'élément horizontalement */
+    align-items: center; /* Centre le texte et l'icône verticalement */
+    margin: 20px auto; /* Ajoute de l'espace autour et centre horizontalement */
+}
+
+#rule-text {
+    display: flex;
+    align-items: center; /* Aligne le texte et l'icône au même niveau */
+    font-size: 1.2em; /* Ajustez la taille de police selon vos besoins */
+}
+
+#rule-icon {
+    text-decoration: none;
+    cursor: pointer;
+    background-color: inherit;
+    border: none;
+    color: rgb(207, 156, 89);
+    display: flex;
+    align-items: center; /* Aligne l'icône avec le texte */
+    margin-left: 5px; /* Ajoute un espace entre le texte et l'icône */
+}
+
+
+::ng-deep .custom-yes-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-no-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+}
+
+/* Ajoutez ce style pour positionner le composant des joueurs connectés */
+.player-list-container {
+    position: fixed; /* Position fixe */
+    bottom: 0px; /* Distance du bas de la page */
+    right: 30px; /* Distance de la droite de la page */
+    z-index: 1000; /* Assurez-vous qu'il soit au-dessus des autres éléments */
+    width: 300px;
+}
+
+

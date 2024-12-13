@@ -8,20 +8,21 @@ namespace GoLogic.Score
     /// </summary>
     public class ChineseScoreRule : ScoreRule
     {
-        public ChineseScoreRule(IBoard gameBoard) : base(gameBoard) { }
+        public ChineseScoreRule(IBoard gameBoard, float komi = 6.5f) : base(gameBoard, komi) { }
 
         /// <summary>
         /// Règles de décompte des points Chinoise
         /// </summary>
         /// <returns>Tuple d'entier correspondant aux scores noir et blanc</returns>
-        public override (int blackStones, int whiteStones) CalculateScore()
+        public override (float blackStones, float whiteStones) CalculateScore()
         {
             RemoveDeadStones();
-            (int blackStones, int whiteStones) = CountStones();
+            (int blackStones, int whiteStones) = this.gameBoard.CountStones();
             (int territoryBlack, int territoryWhite) = FindTerritory();
 
-            return (blackStones + territoryBlack, whiteStones + territoryWhite);
+            return (blackStones + territoryBlack, whiteStones + territoryWhite + komi);
         }
 
     }
 }
+    

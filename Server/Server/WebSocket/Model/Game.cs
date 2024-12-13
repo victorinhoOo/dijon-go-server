@@ -3,6 +3,8 @@ using GoLogic.Goban;
 using GoLogic.Score;
 using GoLogic.Serializer;
 using GoLogic.Timer;
+using System.Xml.Linq;
+using WebSocket.Model.Managers;
 
 namespace WebSocket.Model
 {
@@ -11,18 +13,18 @@ namespace WebSocket.Model
     /// </summary>
     public class Game
     {
-        private Client player1;
-        private Client player2;
-        private Client currentTurn;
-        private GameBoard gameBoard;
+        private IClient player1;
+        private IClient player2;
+        private IClient currentTurn;
+        private IBoard gameBoard;
         private GameLogic logic;
         private BoardSerializer boardSerializer;
         private ScoreRule score;
         private bool started;
-        private string rule;
-        private int size;
         private int id;
+        private GameConfiguration config;
         private TimerManager timerManager;
+        private GameManager gameManager;
 
         /// <summary>
         /// Proprité qui indique si la partie est pleine
@@ -43,31 +45,24 @@ namespace WebSocket.Model
         /// <summary>
         /// Récupérer ou modifier le joueur 1
         /// </summary>
-        public Client Player1 { get => player1; set => player1 = value; }
+        public IClient Player1 { get => player1; set => player1 = value; }
 
 
         /// <summary>
         /// Récupérer ou modifier le joueur 2
         /// </summary>
-        public Client Player2 { get => player2; set => player2 = value; }
+        public IClient Player2 { get => player2; set => player2 = value; }
 
 
         /// <summary>
         /// Récupére le joueur qui doit jouer
         /// </summary>
-        public Client CurrentTurn { get => currentTurn; }
-
-
-        /// <summary>
-        /// Récupére la taille du plateau
-        /// </summary>
-        public int Size { get => size; }
+        public IClient CurrentTurn { get => currentTurn; }
 
         /// <summary>
-        /// Renvoi les règles de la partie
+        /// Récupère la configuration de la partie
         /// </summary>
-        public string Rule { get => rule; }
-
+        public GameConfiguration Config { get => config; }
 
         /// <summary>
         /// Récupére l'identifiant de la partie
@@ -76,39 +71,40 @@ namespace WebSocket.Model
 
 
         /// <summary>
-        /// Constructeur de la classe Game
+        /// Constructeur d'une partie
         /// </summary>
-        public Game(int size, string rule)
+        public Game(GameConfiguration config, GameBoard gameBoard, GameLogic logic, BoardSerializer boardSerializer, ScoreRule scoreRule, GameManager gameManager, TimerManager timerManager)
         {
             this.started = false;
             this.id = Server.CustomGames.Count + 1;
-            this.size = size;
-            this.gameBoard = new GameBoard(size);
-            this.logic = new GameLogic(gameBoard);
-            this.boardSerializer = new BoardSerializer(this.logic);
-            this.rule = rule;
-            switch (this.rule)
-            {
-                case "c": this.score = new ChineseScoreRule(gameBoard);break;
-                case "j": this.score = new JapaneseScoreRule(gameBoard);break;
-            }
+
+            // Configuration
+            this.config = config;
+
+            // Dépendances
+            this.gameBoard = gameBoard;
+            this.logic = logic;
+            this.boardSerializer = boardSerializer;
+            this.score = scoreRule;
+            this.gameManager = gameManager;
+            this.timerManager = timerManager;
         }
 
         /// <summary>
         /// Démarre la partie
         /// </summary>
-        public void Start()
+        public async void Start()
         {
             this.started = true;
-            this.timerManager = new TimerManager();
+            this.gameManager.InsertGame(this);
+            await this.SaveGameState();
         }
-
 
         /// <summary>
         /// Ajouter un joueur à la partie
         /// </summary>
         /// <param name="player">Joueur à ajouter</param>
-        public void AddPlayer(Client player)
+        public void AddPlayer(IClient player)
         {
             if (this.player1 == null)
             {
@@ -128,13 +124,39 @@ namespace WebSocket.Model
         /// <param name="x">Coordonées en x de la pierre</param>
         /// <param name="y">Coordonnées en y de la pierre</param>
         /// <returns>Temps restant du joueur précédent</returns>
-        public string PlaceStone(int x, int y)
+        public async Task<string> PlaceStone(int x, int y)
         {
-            this.timerManager.SwitchToNextPlayer();
-            string time = this.timerManager.GetPreviousTimer().TotalTime.TotalMilliseconds.ToString();
             this.logic.PlaceStone(x, y);
-            return time;
+            this.timerManager.SwitchToNextPlayer();
+            await this.SaveGameState();
+            string timeLeft = GetPreviousPlayerTime();
+            return timeLeft;
         }
+
+        /// <summary>
+        /// Enregistre l'état de la partie actuelle en base de données
+        /// </summary>
+        private async Task SaveGameState()
+        {
+            await this.gameManager.InsertGameState(this);
+        }
+
+
+        /// <summary>
+        /// Récupérer le temps restant du joueur précédent 
+        /// </summary>
+        /// <returns>temps restant du joueur qui vient de jouer en chaîne de caractères</returns>
+        private string GetPreviousPlayerTime()
+        {
+            string result = null;
+            ISystemTimer previousTimer = this.timerManager.GetPreviousTimer();
+            TimeSpan previousTimeSpan = previousTimer.TotalTime;
+            double previousTimerInMs = previousTimeSpan.TotalMilliseconds;
+            double roundedResult = Math.Round(previousTimerInMs);
+            result = roundedResult.ToString();
+            return result;
+        }
+
 
 
         /// <summary>
@@ -152,14 +174,14 @@ namespace WebSocket.Model
         /// <returns>état de la partie en string</returns>
         public string StringifyGameBoard()
         {
-            return boardSerializer.StringifyGoban(logic, logic.CurrentTurn);
+            return boardSerializer.StringifyGoban(logic.CurrentTurn);
         }
 
         /// <summary>
         /// Récupérer le score de la partie
         /// </summary>
         /// <returns>Score de la partie sous forme de tuple</returns>
-        public (int, int) GetScore()
+        public (float, float) GetScore()
         {
             return score.CalculateScore();
         }
@@ -183,14 +205,33 @@ namespace WebSocket.Model
             ChangeTurn();
         }
 
-
         /// <summary>
-        /// Test si la partie est terminée
+        /// Test si la partie est terminée. Si oui, déclenche les opérations de BDD en arrière-plan.
         /// </summary>
         /// <returns>True si la partie est terminée, False sinon</returns>
-        public bool TestWin()
+        public Task<bool> TestWinAsync()
         {
-            return logic.IsEndGame;
+            bool result = false;
+
+            if (logic.IsEndGame)
+            {
+                result = true;
+
+                // Exécuter les tâches BDD en arrière-plan
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await gameManager.TransferMovesToSqlAsync(this);
+                        await gameManager.UpdateGameAsync(this);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Erreur lors des opérations de transfert de Redis vers Sqlite : {ex.Message}");
+                    }
+                });
+            }
+            return Task.FromResult(result);
         }
     }
 }

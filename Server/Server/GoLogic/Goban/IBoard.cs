@@ -19,17 +19,30 @@ namespace GoLogic.Goban
         /// <summary>
         /// Tour actuel, Noir ou Blanc
         /// </summary>
-        public StoneColor CurrentTurn { get; set; }
+        public StoneColor CurrentTurn { get; }
 
         /// <summary>
         /// Pierre noire qui ont été capturée
         /// </summary>
-        public int CapturedBlackStones { get; set; }
+        public int CapturedBlackStones { get; }
 
         /// <summary>
         /// Pierre blanche qui ont été capturée
         /// </summary>
-        public int CapturedWhiteStones { get; set; }
+        public int CapturedWhiteStones { get; }
+
+        /// <summary>
+        /// Change le tour des joueur
+        /// </summary>
+        public void NextTurn();
+
+        /// <summary>
+        /// Ajoute au joueur de la couleur spécifié
+        /// le nombre de pierres capturer
+        /// </summary>
+        /// <param name="color">Couleur des pierres capturé</param>
+        /// <param name="amount">quantité de pierres capturé</param>
+        public void AddCapturedStone(StoneColor color, int amount);
 
         /// <summary>
         /// Gets the stone at the specified coordinates
@@ -40,10 +53,9 @@ namespace GoLogic.Goban
         Stone GetStone(int x, int y);
 
         /// <summary>
-        /// Change la couleur de la pierre aux coordonnés spécifié
+        /// Change la couleur de la pierre spécifié
         /// </summary>
-        /// <param name="x">X coordinate</param>
-        /// <param name="y">Y coordinate</param>
+        /// <param name="stone">La pierre à changer la couleur</param>
         /// <param name="color">Couleur de la pierre à placer</param>
         /// <returns>A new board state with the stone placed</returns>
         void PlaceStone(Stone stone, StoneColor color);
@@ -75,5 +87,11 @@ namespace GoLogic.Goban
         /// </summary>
         /// <returns>Vraie si le coup ne respecte pas la règle, faux sinon</returns>
         public bool IsKoViolation();
+
+        /// <summary>
+        /// Compte les nombres de pierres de chaque couleur sur le plateau
+        /// </summary>
+        /// <returns>Un tuple d'entier correspondant aux pierres noires et blanches</returns>
+        public (int blackStones, int whiteStones) CountStones();
     }
 }

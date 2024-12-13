@@ -1,9 +1,4 @@
-﻿using GoLogic.Goban;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GoLogic.Goban;
 
 namespace GoLogic
 {
@@ -76,16 +71,13 @@ namespace GoLogic
                 // Si la pierre qu'on visite est de même couleur que celle initiale, on continu
                 if (stone.Color == initialStoneColor)
                 {
-                    bool result = false;
-
                     // On continu la récursion sur tous les voisins
                     foreach (Stone neighbor in this.goban.GetNeighbors(stone))
                     {
                         // Si un voisin renvoie True on s'arrête (libertée)
                         if (CheckLiberties(neighbor, visited, stone.Color))
-                            result = true;
+                            res = true;
                     }
-                    return result;
                 }
             }
 
@@ -122,8 +114,8 @@ namespace GoLogic
         /// <param name="stone">La pierre initiale dont l'on veut capturer le groupe</param>
         private void CaptureGroup(Stone stone)
         {
-            HashSet<Stone> visited = []; // collection sans doublon 
-            List<Stone> group = [];
+            HashSet<Stone> visited = new HashSet<Stone>(); // collection sans doublon 
+            List<Stone> group = new List<Stone>();
 
             // Récupére le groupe de la pierre passé en paramétre
             group = FindGroup(stone, visited, group, stone.Color);
@@ -132,14 +124,10 @@ namespace GoLogic
             {
                 stoneInGroup.ChangeColor(StoneColor.Empty); // Retire les pierres capturées (couleur Empty)
             }
-            if (this.goban.CurrentTurn == StoneColor.Black)
-            {
-                this.goban.CapturedWhiteStones += group.Count;
-            }
-            else
-            {
-                this.goban.CapturedBlackStones += group.Count;
-            }
+
+            if (this.goban.CurrentTurn == StoneColor.Black) goban.AddCapturedStone(StoneColor.White, group.Count);
+            
+            else goban.AddCapturedStone(StoneColor.Black, group.Count);
         }
 
         /// <summary>
@@ -152,15 +140,14 @@ namespace GoLogic
         /// <returns>Liste de Pierre de même couleur toutes adjacentes</returns>
         private List<Stone> FindGroup(Stone stone, HashSet<Stone> visited, List<Stone> group, StoneColor initialStoneColor)
         {
-            if (visited.Contains(stone) || !this.goban.IsValidCoordinate(stone.X, stone.Y) || stone.Color != initialStoneColor)
+            if (!visited.Contains(stone) && this.goban.IsValidCoordinate(stone.X, stone.Y) && stone.Color == initialStoneColor)
             {
-                return group;
-            }
-            visited.Add(stone);
-            group.Add(stone);
-            foreach (Stone neighbor in this.goban.GetNeighbors(stone))
-            {
-                group = FindGroup(neighbor, visited, group, initialStoneColor);
+                visited.Add(stone);
+                group.Add(stone);
+                foreach (Stone neighbor in this.goban.GetNeighbors(stone))
+                {
+                    FindGroup(neighbor, visited, group, initialStoneColor);
+                }
             }
             return group;
         }

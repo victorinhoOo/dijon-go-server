@@ -11,7 +11,7 @@ namespace WebSocket
     /// <summary>
     /// Classe qui sert d'intermédiaire entre le client et le serveur
     /// </summary>
-    public class Client
+    public class Client : IClient
     {
         private TcpClient client;
         private NetworkStream stream;
@@ -26,9 +26,21 @@ namespace WebSocket
         }
 
         /// <summary>
-        /// Récupère ou modifie l'utilisateur associé au client
+        /// Récupère l'utilisateur associé au client
         /// </summary>
-        public GameUserDTO User { get => user; set => user = value; }
+        public GameUserDTO User { get => user; }
+
+        /// <summary>
+        /// Change l'utilisateur associé au client
+        /// </summary>
+        /// <param name="user">Le nouvel utilisateur</param>
+        public void ChangeUser(GameUserDTO user)
+        {
+            this.user.Token = user.Token;
+            this.user.Name = user.Name;
+            this.user.Elo = user.Elo;
+            this.user.Id = user.Id;
+        }
 
         /// <summary>
         /// Reçois un message du client
@@ -49,7 +61,14 @@ namespace WebSocket
         /// <param name="bytes">tableau d'octets contenant la trame qui encapsule le message</param>
         public void SendMessage(byte[] bytes)
         {
-            this.stream.Write(bytes, 0, bytes.Length);
+            try
+            {
+                this.stream.Write(bytes, 0, bytes.Length);
+            }
+            catch(Exception ex)
+            {
+                // On ne fait rien en cas d'exception, si un client se déconnecte on ne veut pas que le serveur crash
+            }
         }
     }
 }

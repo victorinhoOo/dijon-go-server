@@ -78,14 +78,15 @@ Le serveur doit répondre avec PONG
  
    ![image](https://github.com/user-attachments/assets/fab6f130-3e8a-4476-ac9b-ed7b3cb2ca88)
 
----
-9) Ouvrez ensuite un terminal et déplacez-vous de le répértoire "Client"
+
+7) Ouvrez ensuite un terminal et déplacez-vous de le répértoire "Client"
 Saisissez la commande ```npm install``` (en cas d'erreur saisissez ```npm install --force```)
 Enfin lancez le serveur angular : ```npm start```
 
 ---
 
 Félicitations ! Le client, l'API et le websocket sont désormais exécution, vous pouvez parcourir et utiliser le site à votre guise.
+
 
 Note : Pour jouer une partie de Go en local, il vous faudra deux fenêtres avec deux comptes différents sur chacune des fenêtres, l'un des clients doit créer la partie, l'autre doit la rejoindre
    

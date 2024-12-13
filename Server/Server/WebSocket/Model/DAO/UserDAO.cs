@@ -1,14 +1,12 @@
-﻿using Server.Model.Data;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DotNetEnv;
+using Server.Model.Data;
 using WebSocket.Model.DTO;
 
 namespace WebSocket.Model.DAO
 {
+    /// <summary>
+    /// Classe permettant d'accéder aux données des utilisateurs.
+    /// </summary>
     public class UserDAO : IUserDAO
     {
 
@@ -16,8 +14,8 @@ namespace WebSocket.Model.DAO
 
         public UserDAO()
         {
-            this.database = new SQLiteDatabase("Data Source= ../../../../Server/dgs.db");
-
+            string sqliteConnectionString = Env.GetString("SQLITE_CONNECTION_STRING");
+            this.database = new SQLiteDatabase(sqliteConnectionString);
         }
         /// <inheritdoc/>
         public GameUserDTO GetUserByToken(string token)
@@ -45,6 +43,7 @@ namespace WebSocket.Model.DAO
                 {
                     userResult = new GameUserDTO
                     {
+                        Id = Convert.ToInt32(result.Rows[0]["idUser"]),
                         Name = result.Rows[0]["username"].ToString(),
                         Elo = Convert.ToInt32(result.Rows[0]["elo"]),
                         Token = token
@@ -85,6 +84,29 @@ namespace WebSocket.Model.DAO
             }
         }
 
-
+        /// <inheritdoc/>
+        public int GetIdByUsername(string username)
+        {
+            database.Connect();
+            int id = -1;
+            try
+            {
+                string query = "SELECT idUser FROM user WHERE username = @username";
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@username", username }
+                };
+                var result = database.ExecuteQuery(query, parameters);
+                if (result.Rows.Count > 0)
+                {
+                    id = Convert.ToInt32(result.Rows[0]["idUser"]);
+                }
+            }
+            finally
+            {
+                database.Disconnect();
+            }
+            return id;
+        }
     }
 }

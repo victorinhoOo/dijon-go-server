@@ -6,11 +6,12 @@ import { UpdateUserDTO }from '../DTO/UpdateUserDTO';
 import { User } from '../User';
 import { HttpParams } from '@angular/common/http';
 import { environment } from '../../environment';
+import { IUserDAO } from './IUserDAO';
 
 /**
  * Gère les requêtes HTTP vers l'API pour la gestion des comptes utilisateurs
  */
-export class UserDAO {
+export class UserDAO implements IUserDAO{
   
   // URL de base pour les requêtes vers l'API utilisateur
   private readonly url = `${environment.apiUrl}/User/`;
@@ -23,9 +24,9 @@ export class UserDAO {
   constructor(private http: HttpClient) {}
 
   /**
-   * Envoie une requête POST au serveur pour enregistrer un nouvel utilisateur
-   * @param user Objet contenant les données de l'utilisateur à enregistrer (RegisterUserDTO)
-   * @returns Un Observable qui émet la réponse du serveur ou une erreur
+   * Enregistre un nouvel utilisateur
+   * @param registerUserDTO Les informations nécessaires à l'enregistrement d'un utilisateur
+   * @returns Un Observable émettant la réponse du serveur ou une erreur
    */
   public registerUser(registerUserDTO: RegisterUserDTO): Observable<any> {
     // On passe par un formdata pour envoyer les données car on envoie un fichier (l'image de profil)
@@ -46,9 +47,9 @@ export class UserDAO {
   }
 
   /**
-   * Envoie une requête POST pour se connecter au serveur
-   * @param loginUserDTO Objet contenant les données de l'utilisateur (LoginUserDTO)
-   * @returns Un Observable qui émet la réponse du serveur ou une erreur
+   * Connecte un utilisateur
+   * @param loginUserDTO Les informations nécessaires à la connexion d'un utilisateur
+   * @returns Un Observable émettant le token utilisateur ou une erreur
    */
   public LoginUser(loginUserDTO: LoginUserDTO): Observable<any> {
     return this.http.post<{ token: string, message?: string }>(this.url + 'Login', loginUserDTO).pipe(
@@ -68,12 +69,11 @@ export class UserDAO {
     return this.http.post<{ token: string }>(`${this.url}GoogleLogin`, null, { params });
   }
 
-
   /**
-   * Envoie une requête GET pour récupérer les informations de l'utilisateur
-   * @param token token utilisateur
-   * @returns Les informations de l'utilisateur sous forme d'objet
-  **/
+   * Récupère les informations d'un utilisateur via son token
+   * @param token Le token de l'utilisateur
+   * @returns Un Observable émettant un objet User ou une erreur
+   */
   public GetUser(token: string): Observable<User> {
     const params = new HttpParams().set('tokenUser', token);
     return this.http.get<{ user: { username: string, email: string, elo: number } }>(this.url + 'Get', { params }).pipe(
@@ -88,9 +88,9 @@ export class UserDAO {
   }
 
   /**
-   * Envoie une requête POST pour mettre à jour les informations de l'utilisateur
-   * @param user L'utilisateur à modifier (UpdateUserDTO)
-   * @returns un message d'erreur ou de succès
+   * Met à jour les informations d'un utilisateur
+   * @param user Les nouvelles informations de l'utilisateur
+   * @returns Un Observable émettant un message de succès ou une erreur
    */
   public UpdateUser(user: UpdateUserDTO): Observable<any> {
     // On passe par un formdata pour envoyer les données car on envoie un fichier (l'image de profil)
@@ -112,9 +112,10 @@ export class UserDAO {
   }
 
   /**
-   * Récupère le classement des 5 meilleurs joueurs via une requête GET.
-   * @returns Un Observable contenant un dictionnaire avec les noms et les Elos des joueurs.
+   * Récupère le classement des meilleurs joueurs
+   * @returns Un Observable contenant un dictionnaire des joueurs et leurs Elos
    */
+
   public GetLeaderboard(): Observable<{ [username: string]: number }> {
     return this.http.get<{ [username: string]: number }>((this.url) + 'Leaderboard').pipe(
       map((response) => response),

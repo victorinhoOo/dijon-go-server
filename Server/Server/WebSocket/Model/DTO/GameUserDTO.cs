@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebSocket.Model.DTO
+﻿namespace WebSocket.Model.DTO
 {
 
     /// <summary>
@@ -12,11 +6,18 @@ namespace WebSocket.Model.DTO
     /// </summary>
     public class GameUserDTO
     {
+        private int id;
+
         private string name;
 
         private int elo;
 
         private string token;
+
+        /// <summary>
+        /// Renvoi ou modifie l'id d'un utilisateur jouant une partie
+        /// </summary>
+        public int Id { get => id; set => id = value; }
 
         /// <summary>
         /// Renvoi ou modifie le Token d'un utilisateur jouant une partie

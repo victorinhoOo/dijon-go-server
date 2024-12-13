@@ -13,6 +13,7 @@ namespace Server.Model.Data
         private string connectionString;
         private SqliteConnection connection;
         private SqliteTransaction transaction;
+        private static readonly object _lock = new object();
 
         public SQLiteDatabase(string connectionString)
         {
@@ -84,20 +85,27 @@ namespace Server.Model.Data
         /// <inheritdoc/>
         public DataTable ExecuteQuery(string query, Dictionary<string, object> parameters)
         {
-            using (var command = new SqliteCommand(query, connection, transaction))
+            lock (_lock)
             {
-                if (parameters != null)
+                using (var connection = new SqliteConnection(connectionString))
                 {
-                    foreach (var param in parameters)
+                    connection.Open();
+                    using (var command = new SqliteCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue(param.Key, param.Value);
+                        if (parameters != null)
+                        {
+                            foreach (var param in parameters)
+                            {
+                                command.Parameters.AddWithValue(param.Key, param.Value);
+                            }
+                        }
+                        using (var reader = command.ExecuteReader())
+                        {
+                            var result = new DataTable();
+                            result.Load(reader); // Remplit le DataTable avec les résultats du reader
+                            return result;
+                        }
                     }
-                }
-                using (var reader = command.ExecuteReader())
-                {
-                    var result = new DataTable();
-                    result.Load(reader); // Remplit le DataTable avec les résultats du reader
-                    return result;
                 }
             }
         }
