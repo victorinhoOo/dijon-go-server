@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { IGameBoardDrawer } from './IGameBoardDrawer';
-
+/**
+ * Classe qui dessine le plateau de jeu
+ */
 export class GameBoardDrawer implements IGameBoardDrawer {
+
+  /**
+   * <inheritdoc/>
+   */
   public drawBoardState(board: string): void {
     let lines = board.split('!');
     const colorMap: { [key: string]: string } = {
@@ -25,12 +31,20 @@ export class GameBoardDrawer implements IGameBoardDrawer {
       }
     }
   }
+
+  /**
+   * <inheritdoc />
+   */
   public drawKo(stone: HTMLElement | null): void {
     stone!.style.borderRadius = '0';
     stone!.style.border = '5px solid #A7001E';
     stone!.style.boxSizing = 'border-box';
     stone!.style.background = 'transparent';
   }
+
+  /**
+   * <inheritdoc />
+   */
   public discardKo(stone: HTMLElement | null): void {
     if (stone != null) {
         stone.style.border = 'none';

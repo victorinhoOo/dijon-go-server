@@ -1,6 +1,8 @@
 import Swal from 'sweetalert2';
 import { User } from './Model/User';
-
+/**
+ * Classe permettant d'afficher les popups du jeu
+ */
 export class GamePopupDisplayer {
     
 
