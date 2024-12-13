@@ -1,16 +1,15 @@
 import { AfterViewInit, Component, OnInit, OnDestroy,ViewChild, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { GridComponent } from './grid/grid.component';
-import { RegisterComponent } from './register/register.component';  
-import { UploadImageComponent } from './upload-image/upload-image.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { ConnexionComponent } from './connexion/connexion.component';
-import { ProfileComponent }  from './profile/profile.component'
-import { IndexComponent } from './index/index.component';
-import { FooterComponent } from "./footer/footer.component";
-import { WebsocketService } from './websocket.service';
+import { GridComponent } from './IHM/Components/grid/grid.component';
+import { RegisterComponent } from './IHM/Components/register/register.component';  
+import { UploadImageComponent } from './IHM/Components/upload-image/upload-image.component';
+import { NavbarComponent } from './IHM/Components/navbar/navbar.component';
+import { ConnexionComponent } from './IHM/Components/connexion/connexion.component';
+import { ProfileComponent }  from './IHM/Components/profile/profile.component'
+import { IndexComponent } from './IHM/Components/index/index.component';
+import { FooterComponent } from "./IHM/Components/footer/footer.component";
 import { CommonModule } from '@angular/common';
-import { HamburgerBtnComponent } from './hamburger-btn/hamburger-btn.component';
+import { HamburgerBtnComponent } from './IHM/Components/hamburger-btn/hamburger-btn.component';
 import { HostListener } from '@angular/core';
 
 @Component({

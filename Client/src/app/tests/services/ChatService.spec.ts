@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { ChatService } from '../../services/chat.service';
-import { UserCookieService } from '../../Model/UserCookieService';
+import { ChatService } from '../../Model/services/chat.service';
+import { UserCookieService } from '../../Model/services/UserCookieService';
 import { MessageDTO } from '../../Model/DTO/MessageDTO';
 
 describe('Test ChatService', () => {

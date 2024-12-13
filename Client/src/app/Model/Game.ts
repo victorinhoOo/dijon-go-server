@@ -1,5 +1,5 @@
-import { Observable } from "../Observer/Observable";
-import { GamePopupDisplayer } from "../GamePopupDisplayer";
+import { Observable } from "./Observer/Observable";
+import { GamePopupDisplayer } from "../IHM/GamePopupDisplayer";
 import { User } from "./User";
 import { Router } from "@angular/router";
 
