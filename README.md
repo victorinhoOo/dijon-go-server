@@ -96,9 +96,14 @@ Note : Pour jouer une partie de Go en local, il vous faudra deux fenêtres avec 
 ![image](https://github.com/user-attachments/assets/3ead29d9-6572-49e8-a93f-a77cc8169795)
 ![image](https://github.com/user-attachments/assets/fe2aae9d-d976-413f-8b04-3bd06fb7f8ef)
 ![image](https://github.com/user-attachments/assets/fc5d85a0-3fd5-49bc-8b88-ccf369394629)
-![image](https://github.com/user-attachments/assets/49fee3b5-70ba-407e-aa11-76caf0804ea5)
-![image](https://github.com/user-attachments/assets/dddb3e59-d354-4b0c-ae52-8b963b3f2b7b)
-![image](https://github.com/user-attachments/assets/fc36d6e4-fbad-4dad-8d17-75d818a9f6d3)
+![image](https://github.com/user-attachments/assets/6047a70e-590f-44dd-871a-6227cb616435)
+![image](https://github.com/user-attachments/assets/c60a5d72-a1e7-437f-8dd8-5454f4b4e1b6)
+![image](https://github.com/user-attachments/assets/94852c35-caa4-4ee9-a681-5cc93d2a8f71)
+![image](https://github.com/user-attachments/assets/3aec2aea-4d51-46ab-9a23-4e1dc4698879)
+![image](https://github.com/user-attachments/assets/fcef8ff0-6881-43b3-ac9a-26553da992d2)
+![image](https://github.com/user-attachments/assets/92fc3ac0-9a4a-4414-945e-fb862d60822c)
+![image](https://github.com/user-attachments/assets/4b90274c-7812-4374-9779-33cfbf1362a1)
+
 
 
 
