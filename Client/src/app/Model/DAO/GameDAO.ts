@@ -5,6 +5,7 @@ import { environment } from '../../environment';
 import { GameInfoDTO } from '../DTO/GameInfoDTO';
 import { GameStateDTO } from '../DTO/GameStateDTO';
 import { Injectable } from '@angular/core';
+import { IGameDAO } from './IGameDAO';
 
 /**
  * Gère les requêtes HTTP vers l'API concernant les parties de jeu
@@ -12,7 +13,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class GameDAO {
+export class GameDAO implements IGameDAO{
   /**
    * Constructeur de la classe GameDAO.
    * Initialise HttpClient pour effectuer des requêtes HTTP
@@ -31,10 +32,9 @@ export class GameDAO {
       )
       .pipe(map((response) => response.games));
   }
-
   /**
    * Récupère la liste des parties jouées par un joueur
-   * @param token token utilisateur du joueur souhaitant récupérer la liste de ses parties
+   * @param token Le token utilisateur du joueur souhaitant récupérer la liste de ses parties
    * @returns Un Observable qui émet la liste des parties jouées
    */
   public GetGamesPlayed(token: string): Observable<GameInfoDTO[]> {
