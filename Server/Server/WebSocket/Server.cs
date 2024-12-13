@@ -20,6 +20,11 @@ namespace WebSocket
     /// </summary>
     public class Server
     {
+        private const int URL_INDEX = 1;
+        private const int RESPONSE_TYPE_INDEX = 0;
+        private const int RESPONSE_DATA_INDEX = 1;
+        private const int RECIPIENT_INDEX = 1;
+        private const int ID_INDEX = 0;
         private IWebProtocol webSocket;
         private bool isRunning;
         private GameType gameType;
@@ -166,7 +171,7 @@ namespace WebSocket
         /// </summary>
         private void ExtractTokenUserFromHandshake(string message, IClient client)
         {
-            string url = message.Split(" ")[1];
+            string url = message.Split(" ")[URL_INDEX];
             var uri = new Uri($"http://{Environment.GetEnvironmentVariable("SERVER_IP")}:{Environment.GetEnvironmentVariable("SERVER_PORT")}{url}");
             string token = HttpUtility.ParseQueryString(uri.Query).Get("token");
             client.ChangeUser(gameManager.GetUserByToken(token));
@@ -241,10 +246,10 @@ namespace WebSocket
             // Interprète le message
             response = this.interpreter.Interpret(message, client, gameType);
             string[] data = response.Split("_");
-            string responseType = data[0];
-            string responseData = data[1];
+            string responseType = data[RESPONSE_TYPE_INDEX];
+            string responseData = data[RESPONSE_DATA_INDEX];
 
-            string stringId = responseData.Split("-")[0];
+            string stringId = responseData.Split("-")[ID_INDEX];
             int idGame = Convert.ToInt32(stringId);
             byte[] responseBytes = this.webSocket.BuildMessage(responseData);
             if (this.IsGameAction(responseData))
@@ -321,7 +326,7 @@ namespace WebSocket
             }
             else if (responseType.StartsWith("Private"))
             {
-                string recipient = responseType.Split('-')[1];
+                string recipient = responseType.Split('-')[RECIPIENT_INDEX];
                 if (Server.ConnectedClients.TryGetValue(recipient, out IClient recipientClient))
                 {
                     byte[] messageBytes = this.webSocket.BuildMessage(responseData);
