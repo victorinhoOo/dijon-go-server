@@ -83,18 +83,12 @@ export class FakeUserDAO implements IUserDAO {
       user.Email = updateUserDTO.Email;
     }
   
-    if (updateUserDTO.ProfilePic) {
-      console.log(`Profile picture updated for user: ${user.Username}`);
-      // Vous pouvez gérer l'image comme vous le souhaitez ici
-    }
-  
     // Vérifie si un changement de mot de passe est demandé
     if (updateUserDTO.OldPassword && updateUserDTO.Password) {
       // Simule une validation de l'ancien mot de passe (exemple simplifié)
       if (updateUserDTO.OldPassword !== 'fake-old-password') {
         return throwError(() => new Error('Old password is incorrect.'));
       }
-      console.log(`Password updated for user: ${user.Username}`);
     }
   
     return of({ message: 'User updated successfully.' });

@@ -168,7 +168,6 @@ export class PlayerListComponent implements OnInit, IObserver {
   private handleHistoricalMessages(response: { Messages: MessageDTO[] }, currentMessages: MessageDTO[], player: string) {
     if (response?.Messages){
       response.Messages.forEach((msg: MessageDTO) => {
-        console.log(msg.Id());
           if (!this.messageExists(msg, currentMessages)) {
               this.chatService.addMessage(msg);
           }
