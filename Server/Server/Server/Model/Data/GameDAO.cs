@@ -116,6 +116,103 @@ namespace Server.Model.Data
 
             return games;
         }
+        /// <inheritdoc/> 
+        public int GetLastGameIdByToken(string token)
+        {
+            string id = "";
+            database.Connect();
+            try
+            {
+                string query = @"
+                SELECT
+                    g.id,
+                    CASE 
+                        WHEN g.winner_id = u.idUser THEN 1
+                        ELSE 0
+                    END AS won
+                FROM savedgame g
+                INNER JOIN user u1 ON g.player1_id = u1.idUser
+                INNER JOIN user u2 ON g.player2_id = u2.idUser
+                INNER JOIN user u ON (u.idUser = g.player1_id OR u.idUser = g.player2_id)
+                INNER JOIN tokenuser t ON u.idToken = t.idToken
+                WHERE t.token = @token
+                ORDER BY g.date DESC
+                LIMIT 1";
+
+
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@token", token }
+                };
+                var result = database.ExecuteQuery(query, parameters);
+                id = result.Rows[0]["id"].ToString();
+            }
+            finally
+            {
+                database.Disconnect();
+            }
+            logger.LogInformation($"Récupération de l'id de la dernière partie : {id}");
+            return Convert.ToInt32(id);
+        }
+
+        /// <inheritdoc/>
+        public GameInfoDTO GetGameById(int id)
+        {
+            GameInfoDTO game = null;
+            database.Connect();
+            try
+            {
+
+                string query = @"
+                    SELECT 
+                        g.id,
+                        g.size,
+                        g.rule,
+                        g.score_player_1,
+                        g.score_player_2,
+                        g.date,
+                        u1.username AS player1,
+                        u2.username AS player2,
+                        CASE 
+                            WHEN g.winner_id = u.idUser THEN 1
+                        ELSE 0
+                    END AS won
+                    FROM savedgame g
+                    INNER JOIN user u1 ON g.player1_id = u1.idUser
+                    INNER JOIN user u2 ON g.player2_id = u2.idUser
+                    INNER JOIN user u ON (u.idUser = g.player1_id OR u.idUser = g.player2_id)
+                    WHERE g.id = @id
+                ";
+                var parameters = new Dictionary<string, object>
+                {
+                    {"@id", id}
+                };
+
+                var result = database.ExecuteQuery(query, parameters);
+
+                if (result.Rows.Count > 0)
+                {
+                    game = new GameInfoDTO(
+                        Convert.ToInt32(result.Rows[0]["id"]),
+                            result.Rows[0]["player1"].ToString(),
+                            result.Rows[0]["player2"].ToString(),
+                            Convert.ToInt32(result.Rows[0]["size"]),
+                            result.Rows[0]["rule"].ToString(),
+                            Convert.ToSingle(result.Rows[0]["score_player_1"]),
+                            Convert.ToSingle(result.Rows[0]["score_player_2"]),
+                            Convert.ToBoolean(result.Rows[0]["won"]), // Déduit si le joueur a gagné
+                            Convert.ToDateTime(result.Rows[0]["date"])
+
+                    );
+                }
+            }
+            finally
+            {
+                database.Disconnect();
+            }
+            logger.LogInformation($"Récupération de la partie numéro {id}");
+            return game;
+        }
 
         /// <inheritdoc/>
         public List<GameStateDTO> GetGameStatesByGameId(int gameId)
@@ -164,5 +261,6 @@ namespace Server.Model.Data
             return gameStates;
         }
 
+        
     }
 }

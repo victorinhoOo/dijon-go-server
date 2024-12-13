@@ -9,6 +9,8 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Output,EventEmitter, } from '@angular/core';
 import { WebsocketService } from '../websocket.service';
+import { GameDAO } from '../Model/DAO/GameDAO';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -40,7 +42,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.tokenUser;
   }
 
-  public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef, websocketService: WebsocketService) {
+  public constructor(private router: Router, private userCookieService: UserCookieService, private cdr: ChangeDetectorRef, websocketService: WebsocketService, private gameDAO: GameDAO) {
     this.websocketService = websocketService;
     this.lightIsBlack = false;
     this.isNavbarVisible = true;
@@ -117,6 +119,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Rejoue la dernière partie jouée
+   */
+  public async replayLastGame():Promise<void>{
+    let token = this.userCookieService.getToken();
+    let id = await firstValueFrom(this.gameDAO.GetLastGameId(token));
+    console.log(id);
+    let game = await firstValueFrom(this.gameDAO.GetGameById(id));
+    let size = game["size"];
+    await this.router.navigate(['/replay', id, size]);
+    window.location.reload();
+  }
+
+  /**
    * Detruction de la page
    */
   public ngOnDestroy(): void {
@@ -150,8 +165,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.lightIsBlack = !this.lightIsBlack;
       this.changeColor.emit(this.lightIsBlack);
   }
+
+  /**
+   * Détermine la largeur de l'écran
+   * @returns true si la largeur de l'écran est supérieure ou égale à 1025 pixels, false sinon 
+   */
   public isPC(): boolean {
-    return window.innerWidth >= 1025; // Définir la largeur pour le mode téléphone
+    return window.innerWidth >= 1025; 
   }
 
 }

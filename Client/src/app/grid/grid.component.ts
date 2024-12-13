@@ -18,18 +18,46 @@ import { PlayerListComponent } from '../player-list/player-list.component';
 /**
  * Composant de la grille de jeu
  */
-export class GridComponent implements OnInit{
+export class GridComponent implements OnInit, AfterViewInit{
   private size: number;
   
 
   public constructor(private route: ActivatedRoute){
     this.size = 0;
   }
+
+  /**
+   * Récupère la taille de la grille dans l'URL
+   */
   ngOnInit(): void {
     this.size = Number(this.route.snapshot.paramMap.get('size'));
   }
 
+  /**
+   * Augmente la taille des cellules et des pierres si la grille est trop petite
+   */
+  ngAfterViewInit(): void {
+    if (this.size < 13) {
+      let cells = document.querySelectorAll('.cell, .cell-bottom');
+      let stones = document.getElementsByClassName('stone');
+      let arrayCells = Array.from(cells);
+      let arrayStones = Array.from(stones);
+      arrayCells.forEach((cell) => {
+        cell.classList.remove(cell.classList[0]);
+        cell.classList.add('bigger-cell');
+      });
+      arrayStones.forEach((stone) => {
+        stone.classList.remove('stone');
+        stone.classList.add('bigger-stone');
+      });
+    }
+  }
+
+  /**
+   * Récupère la taille de la grille
+   * @returns la taille de la grille
+   */
   public getSize(): number {
-    return this.size;
+    return this.size-1;
   }
 }

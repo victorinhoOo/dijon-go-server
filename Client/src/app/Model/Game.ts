@@ -1,5 +1,7 @@
-import { clear } from "console";
 import { Observable } from "../Observer/Observable";
+import { GamePopupDisplayer } from "../GamePopupDisplayer";
+import { User } from "./User";
+import { Router } from "@angular/router";
 
 const ONE_HOUR_IN_MS = 3600000;
 const TIMER_INTERVAL = 1000;
@@ -7,6 +9,7 @@ const TIMER_INTERVAL = 1000;
 export class Game extends Observable{
 
   private currentTurn: string;
+  
   private playerColor: string;
 
   private playerMs:number;
@@ -19,10 +22,20 @@ export class Game extends Observable{
 
   private captures : string;
 
+  private endOfGame: boolean;
+
+  private won: boolean;
+
+  private playerScore: string;
+
+  private opponentScore: string;
+
   private timerInterval: NodeJS.Timeout | null;
 
+  private gameDisplayer: GamePopupDisplayer
 
-  public constructor() {
+
+  public constructor(private router: Router) {
     super();
     this.currentTurn = '';
     this.playerColor = '';
@@ -32,38 +45,111 @@ export class Game extends Observable{
     this.timerInterval = null;
     this.playerMs = ONE_HOUR_IN_MS;
     this.opponentMs = ONE_HOUR_IN_MS;
+    this.endOfGame = false;
+    this.won = false;
+    this.playerScore = "";
+    this.opponentScore = "";
+    this.gameDisplayer = new GamePopupDisplayer();
   }
 
+  /**
+   * Récupère le score de l'adversaire
+   * @returns le score de l'adversaire
+   */
+  public getOpponentScore():string{
+    return this.opponentScore;
+  }
+
+  /**
+   * Récupère le score du joueur
+   * @returns le score du joueur
+   */
+  public getPlayerScore():string{
+    return this.playerScore;
+  }
+
+  /**
+   * Détermine si le joueur a gagné ou non
+   * @returns true si le joueur a gagné, false sinon
+   */
+  public getWon():boolean{
+    return this.won;
+  }
+
+
+  /**
+   * Savoir si la partie est terminée
+   * @returns True si la partie est terminée, sinon false
+   */
+  public isEndOfGame(): boolean {
+    return this.endOfGame;
+  }
+
+  /**
+   * Récupère les captures
+   * @returns les captures
+   */
   public getCaptures():string{
     return this.captures;
   }
 
+  /**
+   * Chang la valeur de l'attribut puis notify ses observateurs
+   * @param captures valeur à attribuer 
+   */
   public setCaptures(captures:string){  
     this.captures = captures;
     this.notifyChange(this);
   }
 
+  /**
+   * récupère le plateau de jeu
+   * @returns le plateau de jeu
+   */
   public getBoard():string{
     return this.board;
   }
 
+
+  /**
+   * Modifie le plateau de jeu puis notifie ses observateurs
+   * @param board nouveau plateau de jeu
+   */
   public setBoard(board:string){
     this.board = board;
     this.notifyChange(this);
   }
 
+  /**
+   * Récupère le pseudo de l'adversaire
+   * @returns le pseudo de l'adversaire
+   */
   public getOpponentPseudo():string{
     return this.opponentPseudo;
   }
 
+  /**
+   * Modifier le pseudo de l'adversaire puis notifie ses observateurs
+   * @param pseudo le nouveau pseudo de l'adversaire
+   */
   public setOpponentPseudo(pseudo:string){
     this.opponentPseudo = pseudo;
     this.notifyChange(this);
   }
 
+  /**
+   * Récupère le temps restant du joueur
+   * @returns le nombre de millisecondes restantes
+   */
   public getPlayerMs():number{
     return this.playerMs;
   }
+
+
+  /**
+   * Récupère le temps restant de l'adversaire
+   * @returns le nombre de millisecondes restantes
+   */
   public getOpponentMs():number{
     return this.opponentMs;
   }
@@ -94,7 +180,7 @@ export class Game extends Observable{
   /**
    * Initialisation du tour actuel
    */
-  public initCurrentTurn() {
+  public initCurrentTurn():void {
     this.currentTurn = 'black';
     this.notifyChange(this);
   }
@@ -118,11 +204,33 @@ export class Game extends Observable{
     return this.playerColor == this.currentTurn;
   }
 
-  public endGame(){
+  /**
+   * Exécuté à la fin de la partie, réinitialise les timers et les attributs
+   */
+  public endGame(playerScore: string, opponentScore: string, won: boolean, user: User): void {
+    this.endOfGame = true;
+    this.playerScore = playerScore;
+    this.opponentScore = opponentScore;
+    this.won = won;
+    this.notifyChange(this);
+    this.clearTimer();
+    this.gameDisplayer.displayEndGamePopup(this.won, this.playerScore, this.opponentScore, user).then(() => {
+      this.destroy();
+      this.router.navigate(['/index']);
+    });
+  }
+
+  /**
+   * Un joueur quitte la partie
+   */
+  public leaveGame():void{
     this.clearTimer();
     this.destroy();
   }
   
+  /**
+   * Lance le timer du joueur qui doit jouer
+   */
   public launchTimer(){
     this.timerInterval = setInterval(() => {
       if(this.playerColor == this.currentTurn){
@@ -149,7 +257,7 @@ export class Game extends Observable{
     this.notifyChange(this);
   }
 
-  private destroy():void{
+  public destroy():void{
     this.currentTurn = '';
     this.playerColor = '';
     this.opponentPseudo = '';
@@ -157,6 +265,10 @@ export class Game extends Observable{
     this.captures = '';
     this.playerMs = ONE_HOUR_IN_MS;
     this.opponentMs = ONE_HOUR_IN_MS;
+    this.endOfGame = false;
+    this.won = false;
+    this.playerScore = "";
+    this.opponentScore = "";
     this.notifyChange(this);
   }
 

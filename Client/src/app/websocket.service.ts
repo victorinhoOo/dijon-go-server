@@ -31,16 +31,24 @@ export class WebsocketService implements IObserver {
    */
   constructor(private userCookieService: UserCookieService, private router: Router, private httpclient: HttpClient, private connectedUsersService: ConnectedUsersService, private chatService: ChatService) {
     this.websocket = null;
-    this.game = new Game();
+    this.game = new Game(this.router);
     this.game.register(this);
-    this.interpreter = new Interpreter(this.game, this, this.connectedUsersService, this.chatService, this.userCookieService);
+    this.interpreter = new Interpreter(this.game,this.httpclient, this, this.connectedUsersService, this.chatService, this.userCookieService);
     this.userDAO = new UserDAO(httpclient);
   }
 
+  /**
+   * Appelée par l'observable pour mettre à jour les informations du service
+   * @param object nouvelle version de l'objet observé
+   */
   public update(object: Observable):void{
     this.game = object as Game;
   }
 
+  /**
+   * Récupère la partie en cours
+   * @returns la partie en cours
+   */
   public getGame():Game{
     return this.game;
   }
@@ -59,11 +67,7 @@ export class WebsocketService implements IObserver {
       };
 
       this.websocket.onmessage = (message) => {
-        let state = { end: false, won: "false", player1score: '0', player2score: '0' };
-        this.interpreter.interpret(message.data, state);
-        if (state.end) {
-          this.endGame(state.won, state.player1score, state.player2score);
-        }
+        this.interpreter.interpret(message.data);
       };
 
       this.websocket.onclose = () => {
@@ -78,41 +82,6 @@ export class WebsocketService implements IObserver {
    */
   public isWebsocketConnected(): boolean{
     return this.websocket?.OPEN ? true : false;
-  }
-
-  /**
-   * Gère la fin de partie en affichant un popup indiquant le gagnant et son score ainsi que le nouvel elo
-   * @param won gagné ou non
-   * @param player1score score du joueur 
-   * @param player2score score de son adversaire
-   */
-  private endGame(won: string, player1score: string, player2score: string) {
-    // On récupère les nouvelles informations utilisateurs car elles ont été modifiées (elo)
-    let token = this.userCookieService.getToken();
-    this.userDAO.GetUser(token).subscribe({
-      next: (user: User) => {
-        this.userCookieService.setUser(user);
-        Swal.fire({
-          title: won === "True" ? 'Victoire ! 🌸' : 'Défaite 👺',
-          html: `
-          <div class="game-result">
-            <p>Score final : ${player1score} - ${player2score}</p>
-            <div class="elo-message">
-              Rang : ${user.getRank()}
-            </div>
-          </div>
-        `,
-          icon: won === "True" ? 'success' : 'error',
-          confirmButtonText: 'Fermer',
-          customClass: {
-            confirmButton: 'custom-ok-button',
-          },
-        }).then(() => {
-          // Redirection vers l'index après la fermeture du popup
-          this.router.navigate(['/index']);
-        });
-      }
-    });
   }
 
 
@@ -145,6 +114,7 @@ export class WebsocketService implements IObserver {
         this.router.navigate(['game', size, rule]);
       }
     }
+    
   /**
    * Envoi un message de demande de rejoindre une partie
    * @param id l'id de la partie à rejoindre

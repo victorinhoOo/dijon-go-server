@@ -8,7 +8,7 @@ const DEFAULT_ID_INDEX = 0;
  */
 export class InitIdGameStrategy implements IStrategy {
     
-    public execute(data: string[], state: { end: boolean, won: string, player1score: string, player2score: string}, idGame: {value: string}, game:Game):void
+    public execute(data: string[], idGame: {value: string}, game:Game):void
     {
         idGame.value = data[DEFAULT_ID_INDEX];
     }

@@ -17,6 +17,7 @@ import { ConnectedUsersService } from "./services/connected-users.service";
 import { ChatService } from "./services/chat.service";
 import { ChatStrategy } from "./Strategy/ChatStrategy";
 import { UserCookieService } from "./Model/UserCookieService";
+import { HttpClient } from "@angular/common/http";
 
 
 /**
@@ -28,7 +29,6 @@ export class Interpreter implements IObserver{
 
   private strategies : Map<string, IStrategy>;
 
-  //#region Propriétés
 
   /**
    * Modifie la valeur de l'attribut game
@@ -55,20 +55,18 @@ export class Interpreter implements IObserver{
   }
 
 
-  //#endregion
-
 
 
   /**
    * Constructeur de la classe
    */
-  constructor(game:Game, private websocketService: WebsocketService, private connectedUsersService: ConnectedUsersService, private chatService: ChatService, private userCookieService: UserCookieService) {
+  constructor(game:Game,private http:HttpClient, private websocketService: WebsocketService, private connectedUsersService: ConnectedUsersService, private chatService: ChatService, private userCookieService: UserCookieService) {
     this.idGame = {value: ''};
     this.game = game;
     this.game.register(this);
     let matchmakingStrategy = new MatchmakingStrategy(this.websocketService);
     this.strategies = new Map<string, IStrategy>();
-    this.strategies.set("EndOfGame", new EndOfGameStrategy());
+    this.strategies.set("EndOfGame", new EndOfGameStrategy(this.userCookieService, this.http));
     this.strategies.set("Init", new InitIdGameStrategy());
     this.strategies.set("Create", matchmakingStrategy);
     this.strategies.set("Join", matchmakingStrategy);
@@ -81,6 +79,11 @@ export class Interpreter implements IObserver{
     this.strategies.set("UserList", new UserListStrategy(this.connectedUsersService));
     this.strategies.set("Chat", new ChatStrategy(this.chatService, this.userCookieService));
   }
+
+  /**
+   * Appelé par l'observable pour mettre à jour l'objet
+   * @param object mise à jour de l'objet
+   */
   public update(object: Observable): void {
     this.game = object as Game;
   }
@@ -92,13 +95,13 @@ export class Interpreter implements IObserver{
    * @param message message envoyé par le serveur websocket
    * @param state définit l'état de la partie (en cours ou terminée)
    */
-  public interpret(message: string, state: { end: boolean, won: string, player1score: string, player2score: string}): void {
+  public interpret(message: string): void {
     console.log("Received: " + message);
     let data = message.split('-');
-    let action = data[1];
+    let action = data[1]; // todo: valeur magique
     if (message.length <= 3) {
       action = "Init";
     } 
-    this.strategies.get(action)?.execute(data, state, this.idGame, this.game);
+    this.strategies.get(action)?.execute(data, this.idGame, this.game);
   }
 }

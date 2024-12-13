@@ -7,18 +7,23 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserCookieService } from '../Model/UserCookieService';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { User } from '../Model/User';
-import { GameDAO } from '../Model/DAO/GameDAO';
-import { GameInfoDTO } from '../Model/DTO/GameInfoDTO';
-import { Game } from '../Model/Game';
 import { PlayerListComponent } from '../player-list/player-list.component';
+import { WebsocketService } from '../websocket.service';
+import { HistoryComponent } from '../history/history.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatIconModule,MatButtonModule, HttpClientModule,CommonModule, PlayerListComponent],
+  imports: [
+    HistoryComponent,
+    MatIconModule,
+    MatButtonModule,
+    HttpClientModule,
+    CommonModule,
+    PlayerListComponent
+  ],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+  styleUrls: ['./profile.component.css']
 })
 
 /**
@@ -30,13 +35,6 @@ export class ProfileComponent {
   private userEmail: string;
   private rank: string;
   private avatar: string;
-  private historyData: GameInfoDTO[] = [];
-  private gameDAO: GameDAO;
-
-  // Getter pour accéder aux données
-  public getHistoryData(): GameInfoDTO[] {
-    return this.historyData;
-  }
 
   /**
    * Renvoi l'avatar de l'utilisateur
@@ -72,7 +70,7 @@ export class ProfileComponent {
    * à partir des cookies. Si le jeton n'est pas valide, l'utilisateur est redirigé vers 
    * la page de connexion.
    * */
-  constructor(public dialog: MatDialog, private userCookieService: UserCookieService, private router: Router, private http: HttpClient) {
+  constructor(public dialog: MatDialog,private websocketService: WebsocketService, private userCookieService: UserCookieService, private router: Router) {
     // Récupère le token utilisateur
     this.token = this.userCookieService.getToken();
     //verfication du token utilisateur sinon redirection login
@@ -85,13 +83,15 @@ export class ProfileComponent {
     this.userEmail = this.userCookieService.getUser()!.Email;
     this.rank = this.userCookieService.getUser()!.getRank();
     this.avatar = 'https://localhost:7065/profile-pics/' + this.userPseudo;        
-    this.gameDAO = new GameDAO(this.http);
   }
 
 
   ngOnInit(): void {
     // Appel de la méthode pour charger l'historique au moment de l'initialisation
-    this.getHistory();
+    if(!this.websocketService.isWebsocketConnected()){
+      this.websocketService.disconnectWebsocket();
+      this.websocketService.connectWebsocket();
+    }
   }
 
   /**
@@ -110,36 +110,7 @@ export class ProfileComponent {
       this.avatar = `https://localhost:7065/profile-pics/${this.userPseudo}?t=${new Date().getTime()}`; // cache-busting pour mettre à jour l'avatar
       this.rank = this.userCookieService.getUser()!.getRank();
     });
-  }
-
-  /**
-   * permet d'afficher l'historique des parties de l'utilisateurs 
-   */
-  public getHistory(): void {
-    const token = this.userCookieService.getToken();
-    this.gameDAO.GetGamesPlayed(token).subscribe((history: any[]) => {
-      // Convertir les objets JSON en instances de GameInfoDTO
-      this.historyData = history.map(
-        (game) =>
-          new GameInfoDTO(
-            game.id,
-            game.usernamePlayer1,
-            game.usernamePlayer2,
-            game.size,
-            game.rule,
-            game.scorePlayer1,
-            game.scorePlayer2,
-            game.won,
-            new Date(game.date) // Conversion explicite en Date si nécessaire
-          )
-      );
-    });
-  }
-
-  public replayGame(game: any){
-
-  }
-  
+  } 
 }
 
 

@@ -86,7 +86,7 @@ export class ProfileSettingsComponent {
   /**
    * Initialise le composant en créant un objet UserDAO et en récupérant les informations de l'utilisateurice 
    */
-  constructor(private fb: FormBuilder, private userCookieService: UserCookieService, private http: HttpClient, private dialogRef: MatDialogRef<ProfileSettingsComponent>) {
+  constructor(private fb: FormBuilder, private userCookieService: UserCookieService, private http: HttpClient, private dialogRef: MatDialogRef<ProfileSettingsComponent> ) {
     this.userDAO = new UserDAO(this.http);
     this.token = this.userCookieService.getToken();
     this.userPseudo = this.userCookieService.getUser()!.Username;

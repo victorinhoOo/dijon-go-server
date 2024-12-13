@@ -12,9 +12,11 @@ namespace Server.Controllers
     public class MessageController: Controller
     {
         private readonly MessageManager messageManager;
-        public MessageController(MessageManager messageManager)
+        private ILogger<MessageController> logger;
+        public MessageController(MessageManager messageManager, ILogger<MessageController> logger)
         {
             this.messageManager = messageManager;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -30,6 +32,7 @@ namespace Server.Controllers
             try
             {
                 List<MessageDTO> messages = messageManager.GetConversation(token, usernameRecipient);
+                this.logger.LogInformation($"Récupération de la conversation entre {token} et {usernameRecipient}");
                 result = Ok(new { Messages = messages });
             }
             catch (Exception ex)

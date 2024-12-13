@@ -21,7 +21,7 @@ namespace WebSocket.Strategy
         /// <param name="gameType"></param>
         /// <param name="response"></param>
         /// <param name="type"></param>
-        public void Execute(Client player, string[] data, GameType gameType, ref string response, ref string type)
+        public void Execute(IClient player, string[] data, GameType gameType, ref string response, ref string type)
         {
             if(gameType == GameType.MATCHMAKING)
             {

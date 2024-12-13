@@ -13,9 +13,9 @@ namespace WebSocket.Model
     /// </summary>
     public class Game
     {
-        private Client player1;
-        private Client player2;
-        private Client currentTurn;
+        private IClient player1;
+        private IClient player2;
+        private IClient currentTurn;
         private IBoard gameBoard;
         private GameLogic logic;
         private BoardSerializer boardSerializer;
@@ -45,19 +45,19 @@ namespace WebSocket.Model
         /// <summary>
         /// Récupérer ou modifier le joueur 1
         /// </summary>
-        public Client Player1 { get => player1; set => player1 = value; }
+        public IClient Player1 { get => player1; set => player1 = value; }
 
 
         /// <summary>
         /// Récupérer ou modifier le joueur 2
         /// </summary>
-        public Client Player2 { get => player2; set => player2 = value; }
+        public IClient Player2 { get => player2; set => player2 = value; }
 
 
         /// <summary>
         /// Récupére le joueur qui doit jouer
         /// </summary>
-        public Client CurrentTurn { get => currentTurn; }
+        public IClient CurrentTurn { get => currentTurn; }
 
         /// <summary>
         /// Récupère la configuration de la partie
@@ -97,14 +97,14 @@ namespace WebSocket.Model
         {
             this.started = true;
             this.gameManager.InsertGame(this);
+            this.gameManager.InsertGameState(this);
         }
-
 
         /// <summary>
         /// Ajouter un joueur à la partie
         /// </summary>
         /// <param name="player">Joueur à ajouter</param>
-        public void AddPlayer(Client player)
+        public void AddPlayer(IClient player)
         {
             if (this.player1 == null)
             {

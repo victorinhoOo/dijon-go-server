@@ -6,6 +6,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   templateUrl: './upload-image.component.html',
   styleUrls: ['./upload-image.component.css']
 })
+/**
+ * Composant pour télécharger une image
+ */
 export class UploadImageComponent {
   
   // Variable privée pour stocker l'image téléchargée 
@@ -35,7 +38,7 @@ export class UploadImageComponent {
    * Elle convertit le fichier sélectionné en URL pour l'afficher et émet l'image brute
    * @param e Événement déclenché lors du changement de fichier (Event)
    */
-  fileChange(e: any) {
+  public fileChange(e: any) {
     // Vérifie si un fichier a bien été sélectionné
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];

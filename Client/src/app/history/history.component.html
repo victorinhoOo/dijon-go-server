@@ -1,0 +1,112 @@
+<div *ngIf="getHistoryData().length > 0; else noHistory" class="history-container">
+  <div *ngFor="let game of getHistoryData(); let i = index" class="history-item">
+    
+    <div
+      class="game-line"
+      [ngStyle]="{ 'border-color': game.Won() ? '#96CEB4' : '#FF8080' }"
+      tabindex="0"
+      (click)="replayGame(game)"
+    >
+      <div class="date-rule-information">
+        <div class="replay-container">
+          <!-- Icône Replay -->
+          <button class="replay-button">
+            <mat-icon class="replay-icon">replay</mat-icon>
+          </button>
+          <div class="replay-text">
+            Revoir
+          </div>
+        </div>
+        <!-- Date de la partie -->
+        <strong>{{ game.Date() | date: 'dd/MM/yyyy HH:mm' }}</strong>
+
+        <!-- Règles de la partie -->
+        <span *ngIf="game.Rule() === 'c'">
+          <img class="flag" src="china.svg" alt="Drapeau de la Chine" />
+        </span>
+        <span *ngIf="game.Rule() === 'j'">
+          <img class="flag" src="japan.svg" alt="Drapeau du Japon" />
+        </span>
+
+        
+        <!-- Taille de la grille -->
+      <span id="sizeMobile">{{ game.Size() }}x{{ game.Size() }}</span>
+      </div>
+
+      <!-- Taille de la grille -->
+      <span id="sizeOrdi">{{ game.Size() }}x{{ game.Size() }}</span>
+
+
+      <div class="game-result">
+        <span class="left-player-info player-info">
+          <div class="stone-container">
+            <mat-icon
+            class="stone"
+            [ngClass]="{
+              white: game.UsernamePlayer2() === UserPseudo,
+              black: game.UsernamePlayer1() === UserPseudo
+            }"
+          >
+            brightness_1
+          </mat-icon>
+          </div>
+          <div class="username-container">
+            {{ UserPseudo }}
+            <img
+            *ngIf="game.Won()"
+            class="crown"
+            src="crown.svg"
+            alt="Couronne"
+          />
+          </div>
+  
+        </span>
+  
+        <!-- Scores -->
+        <span class="score-container">
+          <span *ngIf="game.UsernamePlayer1() === UserPseudo" class="left-player">
+            {{ game.ScorePlayer1() }}
+          </span>
+          <span *ngIf="game.UsernamePlayer2() === UserPseudo" class="left-player">
+            {{ game.ScorePlayer2() }}
+          </span>
+          -
+          <span *ngIf="game.UsernamePlayer1() !== UserPseudo" class="right-player">
+            {{ game.ScorePlayer1() }}
+          </span>
+          <span *ngIf="game.UsernamePlayer2() !== UserPseudo" class="right-player">
+            {{ game.ScorePlayer2() }}
+          </span>
+        </span>
+  
+        <!-- Joueur droite (toujours adversaire) -->
+        <span class="right-player-info player-info">
+          <div class="stone-container">
+            <mat-icon
+            class="stone"
+            [ngClass]="{
+              white: game.UsernamePlayer2() !== UserPseudo,
+              black: game.UsernamePlayer1() !== UserPseudo
+            }"
+          >
+            brightness_1
+          </mat-icon>
+        </div>
+        <div class="username-container">
+          {{ game.UsernamePlayer1() === UserPseudo ? game.UsernamePlayer2() : game.UsernamePlayer1() }}
+          <img
+          *ngIf="game.Won() === false"
+          class="crown"
+          src="crown.svg"
+          alt="Couronne"
+        />
+        </div>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noHistory>
+  <p>Aucune partie trouvée</p>
+</ng-template>

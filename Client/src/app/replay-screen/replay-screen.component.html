@@ -1,0 +1,13 @@
+<div id="replay-screen-container">
+    <app-grid></app-grid>
+    <div id="nav-container">
+      <button id="first" (click)="this.firstState()"><mat-icon>keyboard_double_arrow_left</mat-icon></button>
+      <button id="previous" (click)="this.previousState()"><mat-icon>keyboard_arrow_left</mat-icon></button>
+      <input type="number" id="move-number" min="0"/>
+      <button id="next" (click)="this.nextState()"><mat-icon>keyboard_arrow_right</mat-icon></button>
+      <button id="last" (click)="this.lastState()"><mat-icon>keyboard_double_arrow_right</mat-icon></button>
+    </div>
+    <button class="choose-history" (click)="showHistory()">
+      <i class="fas fa-history"></i> Visualiser une autre partie
+  </button>                                                     
+  </div>

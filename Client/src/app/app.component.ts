@@ -112,7 +112,9 @@ export class AppComponent implements AfterViewInit{
     }
   }
   
-  // Méthode pour basculer la visibilité de la navbar
+  /**
+   * Méthode pour basculer la visibilité de la navbar
+   */
   public toggleNavbar(): void {
     
     
@@ -124,20 +126,27 @@ export class AppComponent implements AfterViewInit{
     }
   }
 
-   // Méthode pour gérer la fermeture de la navbar
+   /**
+    * Méthode pour fermer la navbar
+    */
    public onCloseNavbar(): void {
     this._isNavbarVisible = false;
     this._isButtonClicked = true;
     this.changeLightState();
   }
   
-  // Méthode pour vérifier la taille de l'écran et ajuster la navbar
+  /**
+   *  Méthode pour vérifier la taille de l'écran et ajuster la navbar
+   */ 
   private checkScreenSize(): void {
     const screenWidth = window.innerWidth;
     this._isNavbarVisible = screenWidth >= 1025;
   }
 
-  // Écouter les changements de taille de l'écran
+  /**
+   * Écouter les changements de taille de l'écran
+   * @param event evenement de changement de taille de l'écran
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.checkScreenSize();

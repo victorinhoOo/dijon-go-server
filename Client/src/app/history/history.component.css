@@ -1,0 +1,258 @@
+
+.date-rule-information{
+    display: flex;
+    width: 40%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game-result{
+    display: flex;
+    width: 40%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-info{
+    width: 30%;
+}
+
+.score-container{
+    display: flex;
+    width: 30%;
+    justify-content: space-around;
+}
+
+/* Section historique */
+.history-container {
+    text-align: center;
+    margin: 30px auto;
+    max-width:  100%;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background-color: #F5F5F5;
+    color: black;
+    padding-bottom: 10px;
+}
+
+/* Ligne des jeux */
+.game-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    border: 3px solid;
+    opacity: 0.9;
+    transition: transform 0.1s ease, background-color 0.3s ease;
+    cursor: pointer;
+    background-color: transparent;
+    justify-content: space-between; /* Espace égal entre les éléments */
+    align-items: center; /* Centrer verticalement les éléments */
+}
+
+/* Animation au survol des lignes */
+.game-line:hover {
+    transform: scale(1.02);
+    background-color: rgba(112, 112, 112, 0.1);
+    /* Ajout de la classe pour faire tourner l'icône Replay */
+    .replay-icon {
+        transform: rotate(360deg); /* Rotation de l'icône */
+        transition: transform 0.3s ease; /* Transition pour l'animation */
+    }
+
+    .replay-text {
+        visibility: visible; /* Rendre l'élément visible */
+        opacity: 1; /* Rendre le texte visible */
+        transition: opacity 0.3s ease; /* Transition pour l'animation */
+    }
+}
+
+/* Style pour aligner les mat-icons avec le texte */
+.game-line mat-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+    color: #000;
+}
+
+/* Texte pour les lignes */
+.game-line span {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+/* Espacement entre les items */
+.history-item {
+    margin-bottom: 15px;
+}
+
+/* Titre des parties */
+.game-title {
+    font-weight: bold;
+    color: #333;
+}
+
+.crown {
+    margin-left: 5px;
+    height:15px;
+    width: auto;
+}
+
+.stone {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.points {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.flag {
+    height: 20px;
+    margin-right: 5px;
+    border-radius: 3px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stone-container{
+    overflow: visible;
+}
+
+.stone.white {
+    color: white !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+  .stone.black {
+    color: black;
+    text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.8);
+  }
+  
+  .espaceGauche{
+    margin-left: 10px;
+  }
+
+  .espaceDroit{
+    margin-right: 10px;
+  }
+
+  /* Style pour le bouton Replay */
+.replay-button {
+    background-color: transparent; /* Fond transparent pour l'icône */
+    border: none;
+    cursor: pointer;
+    padding: 0; /* Pas de padding pour centrer l'icône */
+}
+
+/* Icône Replay */
+.replay-icon {
+    text-align: left;
+    font-size: 24px; /* Taille de l'icône */
+    transition: transform 0.3s ease; /* Transition pour l'animation */
+}
+
+.replay-container{
+    width: 100px;
+    display: flex;
+    align-items: baseline;
+}
+
+.replay-text {
+    visibility: hidden; /* Masquer l'élément par défaut */
+    opacity: 0; /* Opacité initiale */
+    transition: opacity 0.3s ease; /* Transition pour l'animation */
+}
+
+.historique-title{
+    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Ajoutez ce style pour positionner le composant des joueurs connectés */
+.player-list-container {
+    position: fixed; /* Position fixe */
+    bottom: 0px; /* Distance du bas de la page */
+    right: 30px; /* Distance de la droite de la page */
+    z-index: 1000; /* Assurez-vous qu'il soit au-dessus des autres éléments */
+    width: 300px;
+}
+
+h3{
+    font-size: 18px;
+    font-family: 'Roboto', sans-serif;
+}
+
+#sizeMobile{
+    display: none;
+}
+#sizeOrdi{
+    display: block;
+}
+@media (max-width: 1263px) {
+
+    .player-info{
+        width: 20%;
+    }
+
+    #sizeOrdi{
+        display: none;
+    }
+
+    #sizeMobile{
+        display: block;
+    }
+
+    .historique-title {
+        font-size: 20px; /* Taille réduite pour les petits écrans */
+        text-align: center;
+    }
+
+    .history-item {
+        margin-bottom: 10px;
+    }
+
+    .game-line {
+        flex-direction: column; /* Empile les éléments */
+        align-items: flex-start; /* Aligne les éléments au début */
+        padding: 10px;
+    }
+
+    .date-rule-information,
+    .game-result {
+        width: 100%; /* Prend toute la largeur disponible */
+        justify-content: space-between;
+        margin-bottom: 10px; /* Espacement entre les sections */
+    }
+
+    .player-info,
+    .score-container {
+        text-align: center;
+    }
+
+    .score-container span {
+        display: inline-block; /* Affiche les scores en ligne */
+    }
+
+    .replay-button {
+        margin: 0 auto;
+    }
+    .game-result{
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .history-container {
+        max-width: 90%;
+        padding: 10px;
+    }
+
+}
