@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { IObserver } from '../../Observer/IObserver';
-import { ConnectedUsersService } from '../../services/connected-users.service';
-import { Observable } from '../../Observer/Observable';
+import { IObserver } from '../../Model/Observer/IObserver';
+import { ConnectedUsersService } from '../../Model/services/connected-users.service';
+import { Observable } from '../../Model/Observer/Observable';
 import { FakeUserDAO } from '../FakeDAO/FakeUserDAO';
 
 

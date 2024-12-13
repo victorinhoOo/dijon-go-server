@@ -10,11 +10,13 @@ using WebSocket.Strategy.Enumerations;
 
 namespace WebSocket
 {
+
     /// <summary>
     /// Interprète les messages reçus par le serveur
     /// </summary>
     public class Interpreter
     {
+        private const int ACTION_INDEX = 1;
         private Dictionary<string,IStrategy> strategies;
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace WebSocket
         public string Interpret(string message, IClient client, GameType gameType)
         {
             string[] data = message.Split("-");
-            string action = data[1]; // action à effectuer
+            string action = data[ACTION_INDEX]; // action à effectuer
             string type = ""; // type de réponse (send ou broadcast)
             string response = "";
             this.strategies[action].Execute(client, data, gameType, ref response, ref type);

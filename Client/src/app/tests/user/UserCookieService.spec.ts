@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject } from 'rxjs';
-import { UserCookieService } from '../../Model/UserCookieService';
+import { UserCookieService } from '../../Model/services/UserCookieService';
 import { User } from '../../Model/User';
 
 describe('Test du service UserCookieService', () => {

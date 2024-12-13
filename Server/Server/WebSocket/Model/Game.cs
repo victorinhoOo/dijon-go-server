@@ -93,11 +93,11 @@ namespace WebSocket.Model
         /// <summary>
         /// Démarre la partie
         /// </summary>
-        public void Start()
+        public async void Start()
         {
             this.started = true;
             this.gameManager.InsertGame(this);
-            this.gameManager.InsertGameState(this);
+            await this.SaveGameState();
         }
 
         /// <summary>
@@ -124,20 +124,21 @@ namespace WebSocket.Model
         /// <param name="x">Coordonées en x de la pierre</param>
         /// <param name="y">Coordonnées en y de la pierre</param>
         /// <returns>Temps restant du joueur précédent</returns>
-        public string PlaceStone(int x, int y)
+        public async Task<string> PlaceStone(int x, int y)
         {
             this.logic.PlaceStone(x, y);
             this.timerManager.SwitchToNextPlayer();
-            this.SaveGameState();
-            return GetPreviousPlayerTime();
+            await this.SaveGameState();
+            string timeLeft = GetPreviousPlayerTime();
+            return timeLeft;
         }
 
         /// <summary>
         /// Enregistre l'état de la partie actuelle en base de données
         /// </summary>
-        private void SaveGameState()
+        private async Task SaveGameState()
         {
-            this.gameManager.InsertGameState(this);
+            await this.gameManager.InsertGameState(this);
         }
 
 

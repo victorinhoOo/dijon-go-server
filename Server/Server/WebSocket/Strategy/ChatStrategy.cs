@@ -23,9 +23,9 @@ namespace WebSocket.Strategy
             // Vérifie si le destinataire existe
             if (Server.ConnectedClients.TryGetValue(recipient, out _))
             {
-                response = $"0-Chat-{sender.User.Name}-{message}";
-                type = $"Private-{recipient}_";
-                messageManager.AddMessage(sender.User.Name, recipient, message);
+                DateTime timestampMessage = messageManager.AddMessage(sender.User.Name, recipient, message);
+                response = $"0-Chat-{sender.User.Name}-{message}-{timestampMessage}";
+                type = $"Private-{recipient}_";                
             }
             else
             {

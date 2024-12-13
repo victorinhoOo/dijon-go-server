@@ -8,14 +8,20 @@ export class MessageDTO {
     private timestamp: Date;
     private id: string;
 
-    constructor(sender: string, receiver: string, content: string, timestamp: Date = new Date()) {
+    constructor(sender: string, receiver: string, content: string, timestamp?: Date) {
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
-        this.timestamp = timestamp;
+        if(timestamp){
+            this.timestamp = timestamp;
+        }else{
+            this.timestamp = new Date();
+        }
         // Génère un identifiant unique pour chaque message à partir du timestamp, de l'expéditeur, du destinataire et du contenu
-        const roundedTimestamp = Math.floor(this.timestamp.getTime() / 1000) * 1000;
-        this.id = `${roundedTimestamp}-${sender}-${receiver}-${content}`;
+        const time = this.timestamp.getTime();
+        const roundedTimestamp = Math.floor(time / 1000) * 1000; // Arrondi à la seconde près
+        const trimmedTimestamp = roundedTimestamp.toString().slice(0, 10); // Prend seulement les 10 premiers caractères
+        this.id = `${trimmedTimestamp}-${sender}-${receiver}-${content}`;
     }
 
     /**

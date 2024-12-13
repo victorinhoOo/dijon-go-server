@@ -226,7 +226,7 @@ namespace WebSocket.Model.DAO
 
             try
             {
-                foreach (var move in moves)
+                foreach (GameState move in moves)
                 {
                     string query = @"
                 INSERT INTO gamestate 

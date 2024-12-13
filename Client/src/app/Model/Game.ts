@@ -1,5 +1,5 @@
-import { Observable } from "../Observer/Observable";
-import { GamePopupDisplayer } from "../GamePopupDisplayer";
+import { Observable } from "./Observer/Observable";
+import { GamePopupDisplayer } from "../IHM/GamePopupDisplayer";
 import { User } from "./User";
 import { Router } from "@angular/router";
 
@@ -50,39 +50,6 @@ export class Game extends Observable{
     this.playerScore = "";
     this.opponentScore = "";
     this.gameDisplayer = new GamePopupDisplayer();
-  }
-
-  /**
-   * Récupère le score de l'adversaire
-   * @returns le score de l'adversaire
-   */
-  public getOpponentScore():string{
-    return this.opponentScore;
-  }
-
-  /**
-   * Récupère le score du joueur
-   * @returns le score du joueur
-   */
-  public getPlayerScore():string{
-    return this.playerScore;
-  }
-
-  /**
-   * Détermine si le joueur a gagné ou non
-   * @returns true si le joueur a gagné, false sinon
-   */
-  public getWon():boolean{
-    return this.won;
-  }
-
-
-  /**
-   * Savoir si la partie est terminée
-   * @returns True si la partie est terminée, sinon false
-   */
-  public isEndOfGame(): boolean {
-    return this.endOfGame;
   }
 
   /**
@@ -271,8 +238,4 @@ export class Game extends Observable{
     this.opponentScore = "";
     this.notifyChange(this);
   }
-
-
-
-
 }

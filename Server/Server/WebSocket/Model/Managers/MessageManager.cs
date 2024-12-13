@@ -38,12 +38,14 @@ namespace WebSocket.Model.Managers
         /// <param name="senderUserName">Le nom d'utilisateur de l'envoyeur du message</param>
         /// <param name="receiverUserName">Le nom d'utilisateur du receveur du message</param>
         /// <param name="content">le contenu du message</param>
-        public void AddMessage(string senderUserName, string receiverUserName, string content)
+        public DateTime AddMessage(string senderUserName, string receiverUserName, string content)
         {
             int idSender = this.userDAO.GetIdByUsername(senderUserName);
             int idReceiver = this.userDAO.GetIdByUsername(receiverUserName);
-            MessageDTO message = new MessageDTO(idSender, idReceiver, content, DateTime.Now);
+            DateTime timestampMessageCreated = DateTime.Now;
+            MessageDTO message = new MessageDTO(idSender, idReceiver, content, timestampMessageCreated);
             messageDAO.InsertMessage(message);
+            return timestampMessageCreated;
         }
     }
 }
