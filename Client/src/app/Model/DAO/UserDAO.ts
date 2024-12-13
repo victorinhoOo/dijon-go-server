@@ -23,6 +23,11 @@ export class UserDAO implements IUserDAO{
    */
   constructor(private http: HttpClient) {}
 
+  /**
+   * Enregistre un nouvel utilisateur
+   * @param registerUserDTO Les informations nécessaires à l'enregistrement d'un utilisateur
+   * @returns Un Observable émettant la réponse du serveur ou une erreur
+   */
   public registerUser(registerUserDTO: RegisterUserDTO): Observable<any> {
     // On passe par un formdata pour envoyer les données car on envoie un fichier (l'image de profil)
     const formData: FormData = new FormData();  
@@ -41,6 +46,11 @@ export class UserDAO implements IUserDAO{
     );
   }
 
+  /**
+   * Connecte un utilisateur
+   * @param loginUserDTO Les informations nécessaires à la connexion d'un utilisateur
+   * @returns Un Observable émettant le token utilisateur ou une erreur
+   */
   public LoginUser(loginUserDTO: LoginUserDTO): Observable<any> {
     return this.http.post<{ token: string, message?: string }>(this.url + 'Login', loginUserDTO).pipe(
       catchError(error => {
@@ -59,6 +69,11 @@ export class UserDAO implements IUserDAO{
     return this.http.post<{ token: string }>(`${this.url}GoogleLogin`, null, { params });
   }
 
+  /**
+   * Récupère les informations d'un utilisateur via son token
+   * @param token Le token de l'utilisateur
+   * @returns Un Observable émettant un objet User ou une erreur
+   */
   public GetUser(token: string): Observable<User> {
     const params = new HttpParams().set('tokenUser', token);
     return this.http.get<{ user: { username: string, email: string, elo: number } }>(this.url + 'Get', { params }).pipe(
@@ -71,6 +86,12 @@ export class UserDAO implements IUserDAO{
       })
     );
   }
+
+  /**
+   * Met à jour les informations d'un utilisateur
+   * @param user Les nouvelles informations de l'utilisateur
+   * @returns Un Observable émettant un message de succès ou une erreur
+   */
   public UpdateUser(user: UpdateUserDTO): Observable<any> {
     // On passe par un formdata pour envoyer les données car on envoie un fichier (l'image de profil)
     const formData: FormData = new FormData();  
@@ -89,6 +110,11 @@ export class UserDAO implements IUserDAO{
       })
     );
   }
+
+  /**
+   * Récupère le classement des meilleurs joueurs
+   * @returns Un Observable contenant un dictionnaire des joueurs et leurs Elos
+   */
 
   public GetLeaderboard(): Observable<{ [username: string]: number }> {
     return this.http.get<{ [username: string]: number }>((this.url) + 'Leaderboard').pipe(

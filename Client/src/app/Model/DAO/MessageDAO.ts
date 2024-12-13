@@ -18,6 +18,12 @@ export class MessageDAO implements MessageDAO {
     this.baseUrl = environment.apiUrl + '/Messages';
   }
 
+   /**
+   * Récupère la conversation entre l'utilisateur courant et un autre utilisateur.
+   * @param token Le token de l'utilisateur courant
+   * @param usernameRecipient Le nom d'utilisateur du destinataire
+   * @returns Un Observable contenant la liste des messages dans une propriété Messages.
+   */
   public GetConversation(token: string, usernameRecipient: string): Observable<{ Messages: MessageDTO[] }> {
     const params = {
       token: token,
