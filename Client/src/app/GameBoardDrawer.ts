@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
 import { IGameBoardDrawer } from './IGameBoardDrawer';
+
+const X_STONE_COORDINATE_POSITION = 0;
+const Y_STONE_COORDINATE_POSITION = 1;
+const STONE_COLOR_POSITION = 2;
+
 /**
  * Classe qui dessine le plateau de jeu
  */
@@ -18,9 +23,9 @@ export class GameBoardDrawer implements IGameBoardDrawer {
 
     for (let i = 1; i < lines.length; i++) {
       let stoneData = lines[i].split(',');
-      let x = stoneData[0];
-      let y = stoneData[1];
-      let color = stoneData[2];
+      let x = stoneData[X_STONE_COORDINATE_POSITION];
+      let y = stoneData[Y_STONE_COORDINATE_POSITION];
+      let color = stoneData[STONE_COLOR_POSITION];
       let stone = document.getElementById(`${x}-${y}`);
       this.discardKo(stone);
 

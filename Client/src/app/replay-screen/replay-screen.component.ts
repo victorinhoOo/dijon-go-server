@@ -12,7 +12,9 @@ import { IGameBoardDrawer } from '../IGameBoardDrawer';
 import { GameBoardDrawer } from '../GameBoardDrawer';
 import Swal from 'sweetalert2';
 import { HistoryComponent } from '../history/history.component';
+
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
+const FIRST_ROOT_NODE_INDEX = 0;
 
 /**
  * Composant qui gère les replays de parties
@@ -210,7 +212,7 @@ export class ReplayScreenComponent {
    */
   public showHistory() {
     const componentRef = this.createComponent(HistoryComponent);
-    const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0];
+    const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[FIRST_ROOT_NODE_INDEX];
 
     Swal.fire({
       title: 'Visualiser une autre de vos parties',

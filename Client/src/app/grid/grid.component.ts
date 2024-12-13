@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { PlayerListComponent } from '../player-list/player-list.component';
 
+const CELL_CLASS_POSITION = 0
 
 @Component({
   selector: 'app-grid',
@@ -43,7 +44,7 @@ export class GridComponent implements OnInit, AfterViewInit{
       let arrayCells = Array.from(cells);
       let arrayStones = Array.from(stones);
       arrayCells.forEach((cell) => {
-        cell.classList.remove(cell.classList[0]);
+        cell.classList.remove(cell.classList[CELL_CLASS_POSITION]);
         cell.classList.add('bigger-cell');
       });
       arrayStones.forEach((stone) => {

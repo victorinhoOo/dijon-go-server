@@ -19,6 +19,8 @@ import { ChatStrategy } from "./Strategy/ChatStrategy";
 import { UserCookieService } from "./Model/UserCookieService";
 import { HttpClient } from "@angular/common/http";
 
+const ACTION_POSITION = 1
+
 
 /**
  * Classe qui interprete les messages envoyés par le serveur websocket
@@ -97,7 +99,7 @@ export class Interpreter implements IObserver{
    */
   public interpret(message: string): void {
     let data = message.split('-');
-    let action = data[1]; // todo: valeur magique
+    let action = data[ACTION_POSITION];
     if (message.length <= 3) {
       action = "Init";
     } 

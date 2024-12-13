@@ -12,7 +12,11 @@ import { IGameBoardDrawer } from '../IGameBoardDrawer';
 import { GameBoardDrawer } from '../GameBoardDrawer';
 
 
+
+const BLACK_STONES_CAPTURED_POSITION = 0
+const WHITE_STONES_CAPTURED_POSITION = 1
 const PROFILE_PIC_URL = environment.apiUrl + '/profile-pics/';
+const CELL_CLASS_POSITION = 0
 
 
 @Component({
@@ -62,21 +66,6 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
    * Mise en place des écouteurs d'événements sur les boutons, après l'initialisation complète de la page
    */
   public ngAfterViewInit(): void {
-    if (this.size < 13) {
-      let cells = document.querySelectorAll('.cell, .cell-bottom');
-      let stones = document.getElementsByClassName('stone');
-      let arrayCells = Array.from(cells);
-      let arrayStones = Array.from(stones);
-      arrayCells.forEach((cell) => {
-        cell.classList.remove(cell.classList[0]);
-        cell.classList.add('bigger-cell');
-      });
-      arrayStones.forEach((stone) => {
-        stone.classList.remove('stone');
-        stone.classList.add('bigger-stone');
-      });
-    }
-
     let stones = document.querySelectorAll('.stone, .bigger-stone');
     let stonesArray = Array.from(stones);
 
@@ -285,11 +274,11 @@ export class GameScreenComponent implements IObserver, AfterViewInit, OnDestroy 
     let playerCaptures;
     let opponentCaptures;
     if (this.game.getPlayerColor() == 'black') { 
-      playerCaptures = captures.split(';')[1];
-      opponentCaptures = captures.split(';')[0];
+      playerCaptures = captures.split(';')[WHITE_STONES_CAPTURED_POSITION];
+      opponentCaptures = captures.split(';')[BLACK_STONES_CAPTURED_POSITION];
     } else {
-      playerCaptures = captures.split(';')[0];
-      opponentCaptures = captures.split(';')[1];
+      playerCaptures = captures.split(';')[BLACK_STONES_CAPTURED_POSITION];
+      opponentCaptures = captures.split(';')[WHITE_STONES_CAPTURED_POSITION];
     }
 
     document.getElementById('opponent-score-value')!.innerHTML =

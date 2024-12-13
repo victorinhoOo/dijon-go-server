@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
+const FIRST_FILE_INDEX = 0;
+
 @Component({
   selector: 'app-upload-image',
   standalone: true,
@@ -40,8 +42,8 @@ export class UploadImageComponent {
    */
   public fileChange(e: any) {
     // Vérifie si un fichier a bien été sélectionné
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+    if (e.target.files && e.target.files[FIRST_FILE_INDEX]) {
+      const file = e.target.files[FIRST_FILE_INDEX];
       // Génère une URL pour prévisualiser l'image
       this.uploadedImage = URL.createObjectURL(file); // Utilisation du setter
       // Émet le fichier sélectionné brut via EventEmitter
