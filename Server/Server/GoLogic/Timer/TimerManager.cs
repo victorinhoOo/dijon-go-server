@@ -11,16 +11,6 @@ public class TimerManager
     private ISystemTimer whitePlayerTimer;
     private StoneColor currentPlayer;
 
-    /// <summary>
-    /// Obtient ou définit le minuteur du joueur noir.
-    /// </summary>
-    public ISystemTimer BlackPlayerTimer { get => blackPlayerTimer; set => blackPlayerTimer = value; }
-
-    /// <summary>
-    /// Obtient ou définit le minuteur du joueur blanc.
-    /// </summary>
-    public ISystemTimer WhitePlayerTimer { get => whitePlayerTimer; set => whitePlayerTimer = value; }
-
     public TimerManager()
     {
         this.currentPlayer = StoneColor.Black;

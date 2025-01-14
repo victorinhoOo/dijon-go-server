@@ -1,0 +1,617 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.player-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.player-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.top-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    width: 60%;
+}
+
+.rank {
+    display: grid;
+    grid-template-columns: 80px auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    margin-right: 70px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.rank img {
+    width: 80px;
+    height: 80px;
+}
+
+.rank-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.rank-label {
+    margin: 0;
+    margin-top: 15px;
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
+.rank-value {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center; 
+    gap: 2px; 
+    width: auto;
+}
+.elo-value
+{
+    margin: 0;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+::ng-deep .focus :focus-visible{
+    outline: 2px solid blue !important; /* Ajoute un contour bleu */
+    transition: outline 0.3s ease-in-out;
+}
+
+
+#last-game {
+    text-decoration: none;
+    color: black;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 90px;
+    background-color: #EBB840;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+#last-game:hover {
+    background-color: #f3ad09;
+    transform: scale(1.02);
+}
+
+#last-game h2 {
+    color: black;
+    margin-bottom: 0;
+}
+
+#last-game i {
+    margin-right: 5px;
+}
+
+.replay-last {
+    margin-top: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+.presentation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-right: 60px;
+    margin-left: 60px;
+    font-style: justify;
+}
+
+.game-options {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.game-options button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fadbb5;
+    padding: 20px;
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 240px;
+    height: 180px;
+    border: none;
+    transition: background-color 0.1s ease;
+    text-align: center;
+    font-family:Roboto;
+}
+
+.game-options button:hover {
+    background-color: #f1c690;
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+.game-options img {
+    width: 100px;
+    height: 100px;
+}
+
+.invitations-section {
+    margin-top: 10px;
+}
+
+.invitation-card {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    color: black;
+}
+
+.leaderboard-section h2 {
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+
+::ng-deep .leaderboard {
+    background-color: #F5F5F5;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 0 auto;
+    width: 400px;
+    min-width: 400px;
+    color: black;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .leaderboard h2 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+}
+
+::ng-deep .leaderboard-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+::ng-deep .leaderboard-rank {
+    font-weight: bold;
+    font-size: 18px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.leaderboard-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+    min-width: 35px;
+    min-height: 35px;
+}
+
+.leaderboard-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard-name {
+    font-weight: 500;
+    font-size: 16px;
+    color: #333;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+::ng-deep .leaderboard-rank-info {
+    margin-left: 10px;
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.bottom-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 20px;
+    width: 60%;
+}
+
+.invitation-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.accept-btn,
+.decline-btn {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    transition: background-color 0.1s ease;
+}
+
+.accept-btn:hover,
+.decline-btn:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    color: #EBB840;
+}
+
+::ng-deep .flag{
+    margin-left: auto;
+    width: 25px;
+    height: 15px;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+::ng-deep .game-choice {
+    background-color: #FADBB5;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 5px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+::ng-deep .game-choice button {
+    color: black;
+    text-decoration: none;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+::ng-deep .game-choice i {
+    margin-right: 20px;
+}
+
+::ng-deep .custom-ok-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .game-choice:hover {
+    background-color: #F1C690;
+}
+
+::ng-deep #create-game-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    color: black;
+}
+
+::ng-deep #create-game-form select{
+    width: 500px;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+::ng-deep #create-game-form button{
+    background-color: #FA7E5C;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    width: 500px;
+}
+  
+  /* Ciblez l'animation spécifique de chargement */
+::ng-deep .swal2-popup .swal2-loading .swal2-loader {
+    border-color: #F3AD09 !important; /* Couleur de bordure */
+    border-left-color: transparent !important; /* Effet de rotation */
+    border-right-color: transparent !important;
+}
+  
+
+
+
+
+/* Media Queries pour les écrans plus petits */
+@media (max-width: 1100px) {
+    .top-section,
+    .bottom-section {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .rank {
+        grid-template-columns: 1fr;
+        margin: 10px 0;
+        padding: 10px;
+        text-align: center;
+    }
+    .rank img{
+        margin-left: 12px;
+    }
+    #last-game {
+        width: 90%;
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .game-options {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .game-options a {
+        width: 90%;
+        margin: 10px 0;
+    }
+
+    .game-options img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .leaderboard,
+    .invitation-card {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .leaderboard{
+        width: 100%;
+        text-align: center;
+    }
+    .leaderboard-section {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .invitations-section {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+}
+@media (max-width: 600px){
+    ::ng-deep  .grid-column {
+        display: none !important;; /* Cache le komi et handicap */
+      }
+    
+}
+
+::ng-deep .flag-container {
+    display: flex !important;
+    align-items: center !important;
+    margin-left: auto !important;
+}
+
+::ng-deep .flag {
+    width: 25px !important;
+    height: 15px !important;
+    pointer-events: none !important;
+    object-fit: contain !important;
+}
+
+::ng-deep .game-title {
+    flex: 1 !important;
+}
+
+::ng-deep .game-button {
+    color: black !important;
+    text-decoration: none !important;
+    text-align: left !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    cursor: pointer !important;
+    padding: 5px !important;
+    user-select: none !important;
+}
+
+::ng-deep .flag-container {
+    display: flex !important;
+    align-items: center !important;
+    margin-left: auto !important;
+    pointer-events: none !important;
+}
+
+::ng-deep .flag {
+    width: 25px !important;
+    height: 15px !important;
+    pointer-events: none !important;
+    object-fit: contain !important;
+    -webkit-user-drag: none !important;
+}
+
+::ng-deep .game-title {
+    flex: 1 !important;
+    pointer-events: none !important;
+}
+::ng-deep #game-name{
+    width: 100% !important;
+}
+::ng-deep #komi{
+    width: 100% !important;
+}
+::ng-deep #gameName{
+    font-weight: bold !important;
+    margin-right: 5px;
+}
+::ng-deep  #handicap{
+    width: 100%;
+}
+
+
+::ng-deep .game-info {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Ajuste l'espace entre la colonne et le drapeau */
+    margin-left: auto !important;
+  }
+  
+  ::ng-deep .grid-column {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  ::ng-deep .flag {
+    width: 24px;
+    height: auto;
+  }
+
+::ng-deep .custom-yes-button{
+    background-color: #F3AD09 !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-no-button{
+    background-color: #FA7E5C !important;
+    outline: none !important;
+}
+
+::ng-deep .custom-timer-progress-bar{
+    background-color: #F3AD09 !important;
+}
+  
+ /* Alignement sur une ligne */
+ ::ng-deep .radio-container {
+    display: flex;
+    gap: 30px; /* Espacement entre les boutons */
+    align-items: center;
+    margin-top: 5px;
+  }
+
+  /* Styles personnalisés pour les boutons radio */
+  ::ng-deep input[type="radio"].demo3 {
+    display: none;
+  }
+
+  ::ng-deep input[type="radio"].demo3 + label::before {
+    font-family: "Font Awesome 5 Free";
+    content: '\f0c8';
+    font-size: 1.2em;  
+    margin-right: 0.3rem;
+  }
+
+  ::ng-deep input[type="radio"].demo3:checked + label::before {
+    content: '\f14a';
+  }
+  
+  .stone-container{
+    overflow: visible;
+}
+::ng-deep .handicap {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espace entre le texte et l'image */
+}
+
+::ng-deep #stone-black {
+    width: 18px;
+    height: 15px;
+    vertical-align: middle;
+}
+::ng-deep #stone-white{
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+}
+
+/* Ajoutez ce style pour positionner le composant des joueurs connectés */
+.player-list-container {
+    position: fixed; /* Position fixe */
+    bottom: 0px; /* Distance du bas de la page */
+    right: 30px; /* Distance de la droite de la page */
+    z-index: 1000; /* Assurez-vous qu'il soit au-dessus des autres éléments */
+    width: 300px;
+}
+
+/* Style commun pour tous les avatars */
+::ng-deep .avatar,
+::ng-deep .player-avatar,
+::ng-deep .leaderboard-avatar {
+    width: 35px !important;
+    height: 35px !important;
+    min-width: 35px !important;
+    min-height: 35px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    margin-right: 10px !important;
+}
+
+/* Avatar spécifique pour le profil utilisateur en haut */
+::ng-deep .player-info .avatar {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+}
+
+/* Avatar pour le leaderboard */
+::ng-deep .leaderboard-avatar {
+    margin-right: 15px !important;
+}
+
+/* Avatar pour la liste des joueurs connectés */
+::ng-deep .player-avatar {
+    margin-right: 8px !important;
+}

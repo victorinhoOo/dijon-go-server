@@ -1,0 +1,44 @@
+<div class="main-container">
+    <div class="player-info">
+        <img class="avatar" src="{{ Avatar }}" alt="photo de profil">
+        <p class="pseudo">{{ UserPseudo }}</p>
+    </div>
+    <div class="top-section focus">
+        <div class="rank">
+            <img class="trophy-pic" src="trophy.png" alt="Trophy">
+            <div class="rank-text">
+                <p class="rank-label">Rang</p>
+                <p class="rank-value">{{UserRank}} <app-rankprogress *ngIf="UserRank"></app-rankprogress></p>
+            </div>
+        </div>                
+        <button id="last-game" (click)="this.replayLastGame()">
+            <h2>Replay de partie</h2>
+            <p class="replay-last"><i class="fas fa-redo"></i>  Revoyez votre dernière partie</p>
+        </button>
+    </div>
+    <div class="game-options focus">
+        <button id="join-matchmaking" tabindex="0">
+            <img src="matchmaking.png" alt="Matchmaking">
+            Matchmaking en ligne
+        </button>
+        <button id="create-game" tabindex="0">
+            <img src="create.png" alt="Créer une partie" >
+            Créer une partie personnalisée
+        </button>
+        <button id="joinGames" tabindex="0">
+            <img src="join.png" alt="Rejoindre une partie">
+            Rejoindre une partie personnalisée
+        </button>
+    </div>
+    
+<div class="bottom-section">
+    <div class="leaderboard-section">
+        <h2>Leaderboard</h2>
+        <div class="leaderboard">
+            <!-- Leaderboard entries go here -->
+        </div>
+    </div>
+</div>
+<div class="player-list-container">
+    <app-player-list></app-player-list>
+</div>

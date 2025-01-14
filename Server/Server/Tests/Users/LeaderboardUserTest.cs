@@ -1,24 +1,34 @@
 ﻿using Server.Model.Data;
-using WebSocket.Model;
+using Tests.WebSockets;
+using Tests.WebSockets.FakeDAO;
+using WebSocket.Model.Managers;
 
 namespace Tests.Users
 {
+    /// <summary>
+    /// Classe de tests pour le leaderboard et le calcul des classements
+    /// </summary>
     public class LeaderboardUserTest
     {
-
-        private IUserDAO fakeUserDAO;
+        // Les dao ont les même noms à travers différents namespaces d'ou leur 
+        private IUserDAO fakeUserDAOApi;
+        private WebSocket.Model.DAO.IUserDAO fakeUserDAOWebsocket;
+        private WebSocket.Model.DAO.IGameDAO fakeGameDAO;
         private GameManager gameManager;
         public LeaderboardUserTest()
         {
-            fakeUserDAO = new FakeUserDAO();
-            gameManager = new GameManager();
+            DotNetEnv.Env.Load();
+            fakeUserDAOApi = new Server.Model.Data.FakeUserDAO();
+            fakeUserDAOWebsocket = new WebSockets.FakeDAO.FakeUserDAO();
+            fakeGameDAO = new WebSockets.FakeDAO.FakeGameDAO();
+            gameManager = new WebSocket.Model.Managers.GameManager(fakeUserDAOWebsocket, fakeGameDAO);
         }
         // Test de la méthode GetTop5Users
         [Fact]
         public void GetTop5Users_ReturnsTop5UsersSortedByElo()
         {
             // Act: Récupérer le top 5 des utilisateurs
-            var top5Users = fakeUserDAO.GetTop5Users();
+            var top5Users = fakeUserDAOApi.GetTop5Users();
 
             // Assert: Vérifier que les utilisateurs sont triés par Elo décroissant et qu'il y a 5 utilisateurs
             Assert.Equal(5, top5Users.Count);
@@ -67,7 +77,5 @@ namespace Tests.Users
             // verifie si l'elo du perdant a diminuer
             Assert.True(newPlayerElo < playerElo);
         }
-
-
     }
 }

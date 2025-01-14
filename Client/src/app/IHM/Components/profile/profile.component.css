@@ -1,0 +1,74 @@
+/* Carte de profil et historique */
+.card-pos {
+    max-width: 50%;
+    margin: 0 auto;
+    padding: 1%;
+    background-color: #F5F5F5;
+    padding-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Bouton des paramètres */
+#params {
+    margin-left: auto;
+    display: block;
+    padding-top: 5px;
+    background-color: #FA7E5C !important;
+    border: none;
+}
+
+#params mat-icon {
+    color: white;
+}
+
+/* Titre de la carte */
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Couleur principale pour les modals/dialogues */
+.custom-dialog-container {
+    background-color: #FFF3E4;
+}
+
+/* Conteneur global */
+.container {
+    color: black;
+}
+
+/* Classe pour le rang */
+.card-rank {
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+/* Texte spécifique au rang/elo */
+.text-elo {
+    font-weight: lighter;
+    margin-top: -10px;
+}
+
+/* Image du trophée */
+.trophy-pic {
+    display: inline-block;
+    width: 50px;
+    height: auto;
+    position: relative;
+    top: 0;
+    max-width: 100%;
+}
+
+.history-container{
+    max-width: 55%;
+    margin: 0 auto;
+}
+
+.historique-title{
+    text-align: center;
+    margin-top: 20px;
+}
+
+

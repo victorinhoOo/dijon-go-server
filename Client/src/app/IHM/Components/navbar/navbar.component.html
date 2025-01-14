@@ -1,0 +1,68 @@
+<div id="navbar-container"  >
+  
+  <div mode="'over'"   opened="IsNavbarVisible"  id="navbar-sidenav">
+  
+    <div id="closeBtn" (click)="close()">
+          <mat-icon>close</mat-icon> 
+    </div>
+
+    <div id="logo-container">
+      <img src="renard.png" id="logo" alt="logo">
+      <span class="logo-text">DGS</span>
+    </div>
+
+    <div class="sidenav focus">
+      <button class="navBtn hovered " mat-primary id="play-button" tabindex="0">
+          <mat-icon>sports_esports</mat-icon>
+          Jouer 
+      </button>
+    </div>
+
+    <div class="sidenav focus">
+      <button class="navBtn hovered" tabindex="0" (click)="this.replayLastGame()">
+          <mat-icon>replay</mat-icon>
+          Replay
+      </button>
+    </div>
+
+
+    <div class="sidenav focus" *ngIf="this.TokenUser != ''">
+      <button class="navBtn hovered" id="profile-button" tabindex="0">
+          <mat-icon class="icon">person</mat-icon>
+          Mon compte
+        
+      </button>
+    </div>
+
+    <div class="sidenav focus">
+      <button  class="navBtn hovered" id="state-button" (click)="switchTheme()" tabindex="0">
+        <mat-icon>light_mode</mat-icon>
+        <span id="state">Interface sombre</span>
+      </button>
+    </div >
+
+    <div class="sidenav focus" id="register-div" *ngIf="this.TokenUser == ''">
+        <button class="navBtn" id="register-button" tabindex="0">
+          <mat-icon class="icon">person_add</mat-icon>
+          Créer un compte
+        </button>
+    </div>
+
+  <div class="sidenav focus" id="login-container" *ngIf="this.TokenUser == ''" >
+    <button class="navBtn" id="login-button" tabindex="0">
+        <mat-icon class="icon" >login</mat-icon>
+        Se connecter
+    </button>
+  </div>
+
+  <div class="sidenav focus"  *ngIf="this.TokenUser != ''">
+    <button class="navBtn hovered" id="logout-button" tabindex="0">
+        <mat-icon>logout</mat-icon>
+        Déconnexion
+    </button>
+  </div>
+
+  
+
+</div>
+</div>

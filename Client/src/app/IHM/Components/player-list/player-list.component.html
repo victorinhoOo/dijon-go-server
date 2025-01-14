@@ -1,0 +1,54 @@
+<!-- Bouton pour ouvrir le chat -->
+<div class="chat-toggle" [class.open]="IsChatOpen()" (click)="toggleChat()">
+  <mat-icon *ngIf="!IsChatOpen()">chat</mat-icon>
+  <mat-icon *ngIf="IsChatOpen()">close</mat-icon>
+  <span *ngIf="getTotalUnreadMessages() > 0 && !IsChatOpen()" class="total-unread">
+    {{ getTotalUnreadMessages() }}
+  </span>
+</div>
+
+<!-- Panneau de chat -->
+<div class="chat-panel" [class.open]="IsChatOpen()">
+  <div class="player-list-container">
+    <h3 id="titre">Joueurs connectés</h3>
+    <div class="player-list">
+      <div *ngIf="ConnectedPlayers().length === 0">Aucun joueur connecté...</div>
+      <div *ngFor="let player of ConnectedPlayers()" 
+           class="player-item" 
+           (click)="selectPlayer(player)"
+           [class.selected]="SelectedPlayer() === player">
+        <span class="player-name">
+          <img [src]="'https://localhost:7065/profile-pics/' + player" alt="{{ player }}'s avatar" class="player-avatar" />
+          {{ player }} 
+          <span class="unread-messages" *ngIf="getUnreadMessageCount(player) > 0">
+            {{ getUnreadMessageCount(player) }}
+          </span>
+        </span>
+        <div class="online-status"></div>
+      </div>
+    </div>
+
+    <!-- Chat avec le joueur sélectionné -->
+    <div *ngIf="SelectedPlayer()" class="chat-section">
+      <div class="chat-header">
+        Chat avec {{ SelectedPlayer() }}
+        <button class="close-chat" (click)="closeChat()"><mat-icon>close</mat-icon></button>
+      </div>
+      <div class="chat-messages" #messageContainer>
+        <div *ngFor="let msg of Messages()" class="message" 
+             [class.sent]="msg.Sender() === CurrentUser()"
+             [class.received]="msg.Sender() !== CurrentUser()">
+          <span class="message-content">{{ msg.Content() }}</span>
+          <span class="message-time">{{ msg.Timestamp() | date:'HH:mm' }}</span>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input [ngModel]="NewMessage()" 
+               (ngModelChange)="SetNewMessage($event)"
+               (keyup.enter)="sendMessage()"
+               placeholder="Écrivez votre message...">
+        <button (click)="sendMessage()">Envoyer</button>
+      </div>
+    </div>
+  </div>
+</div>
