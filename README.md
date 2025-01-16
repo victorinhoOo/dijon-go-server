@@ -25,6 +25,14 @@ DGS propose les fonctionnalités suivantes :
 
 **Databases** : Redis / SQLite
 
+## Vidéo de présentation des fonctionnalités
+
+
+
+https://github.com/user-attachments/assets/9aae57e8-16ba-49ba-9d01-2af291d98051
+
+
+
 ## Comment faire tourner l'application DGS en local ?  
 
 **Prérequis : Vous devez avoir NodeJs installé sur votre machine : https://nodejs.org/fr**
